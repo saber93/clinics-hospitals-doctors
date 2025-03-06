@@ -5,11 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const LoginForm = () => {
   const [searchParams] = useSearchParams();
   const mode = searchParams.get("mode") || "login";
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   
   const [formData, setFormData] = useState({
     email: "",
@@ -23,7 +25,7 @@ const LoginForm = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic form validation
@@ -44,13 +46,51 @@ const LoginForm = () => {
       }
     }
     
-    // Mock authentication success
-    toast.success(mode === "login" ? "Logged in successfully!" : "Account created successfully!");
-    
-    // Redirect to dashboard after successful authentication instead of homepage
-    setTimeout(() => {
-      navigate("/dashboard");
-    }, 1500);
+    setIsLoading(true);
+
+    try {
+      if (mode === "login") {
+        // Sign in with Supabase
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        });
+
+        if (error) {
+          throw error;
+        }
+
+        toast.success("Logged in successfully!");
+      } else {
+        // Register with Supabase
+        const { data, error } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+          options: {
+            data: {
+              name: formData.name,
+              role: 'client', // Default role
+            },
+          },
+        });
+
+        if (error) {
+          throw error;
+        }
+
+        toast.success("Account created successfully! Please check your email for verification.");
+      }
+
+      // Redirect to dashboard after successful authentication
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1500);
+    } catch (error: any) {
+      console.error("Authentication error:", error);
+      toast.error(error.message || "Authentication failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -65,6 +105,7 @@ const LoginForm = () => {
             placeholder="Enter your full name"
             value={formData.name}
             onChange={handleChange}
+            disabled={isLoading}
           />
         </div>
       )}
@@ -78,6 +119,7 @@ const LoginForm = () => {
           placeholder="Enter your email address"
           value={formData.email}
           onChange={handleChange}
+          disabled={isLoading}
         />
       </div>
       
@@ -90,6 +132,7 @@ const LoginForm = () => {
           placeholder="Enter your password"
           value={formData.password}
           onChange={handleChange}
+          disabled={isLoading}
         />
       </div>
       
@@ -103,12 +146,13 @@ const LoginForm = () => {
             placeholder="Confirm your password"
             value={formData.confirmPassword}
             onChange={handleChange}
+            disabled={isLoading}
           />
         </div>
       )}
       
-      <Button type="submit" className="w-full skinnect-button-primary">
-        {mode === "login" ? "Sign In" : "Create Account"}
+      <Button type="submit" className="w-full skinnect-button-primary" disabled={isLoading}>
+        {isLoading ? "Loading..." : mode === "login" ? "Sign In" : "Create Account"}
       </Button>
       
       <div className="text-center text-sm">
