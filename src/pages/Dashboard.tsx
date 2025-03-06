@@ -1,12 +1,11 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams, Navigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { seedTestData } from "@/utils/seedTestData";
+import "../utils/auth";
 
-// Placeholder components - these will be implemented later
 const ClientDashboard = () => (
   <div className="p-6">
     <h2 className="text-2xl font-bold mb-4">Client Dashboard</h2>
@@ -89,62 +88,109 @@ const AdminDashboard = ({ handleSeedData }: { handleSeedData: () => Promise<void
 );
 
 const Dashboard = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const userType = searchParams.get("userType") || "client";
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    // Check for existing session
     const checkAuth = async () => {
-      const { data } = await supabase.auth.getSession();
-      
-      if (data.session) {
-        setIsAuthenticated(true);
+      try {
+        const { data } = await supabase.auth.getSession();
         
-        // Fetch user profile to get role
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', data.session.user.id)
-          .single();
+        if (data.session) {
+          setIsAuthenticated(true);
           
-        if (profile) {
-          setUserRole(profile.role);
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', data.session.user.id)
+            .single();
+            
+          if (profile) {
+            setUserRole(profile.role);
+            
+            if (!searchParams.get("userType")) {
+              const newParams = new URLSearchParams(searchParams);
+              newParams.set("userType", profile.role === 'admin' ? 'admin' : 
+                                       profile.role === 'vendor' ? 'vendor' : 'client');
+              setSearchParams(newParams);
+            }
+          }
+        } else {
+          setIsAuthenticated(false);
         }
-        
-        setLoading(false);
-      } else {
+      } catch (error) {
+        console.error("Error checking auth:", error);
         setIsAuthenticated(false);
+      } finally {
         setLoading(false);
       }
     };
     
     checkAuth();
-  }, []);
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        setIsAuthenticated(true);
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single();
+          
+        if (profile) {
+          setUserRole(profile.role);
+        }
+      } else if (event === 'SIGNED_OUT') {
+        setIsAuthenticated(false);
+        setUserRole(null);
+      }
+    });
+    
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [searchParams, setSearchParams]);
   
   const handleSeedData = async () => {
-    await seedTestData();
+    try {
+      toast.loading("Generating test data...");
+      await seedTestData();
+      toast.dismiss();
+    } catch (error) {
+      toast.dismiss();
+      console.error("Error in seed data:", error);
+      toast.error("Failed to seed test data");
+    }
+  };
+  
+  const handleViewChange = (view: string) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("userType", view);
+    setSearchParams(newParams);
   };
   
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+        <p className="ml-2 text-gray-600">Loading dashboard...</p>
       </div>
     );
   }
   
-  if (!isAuthenticated) {
+  if (isAuthenticated === false) {
     toast.error("Please login to access the dashboard");
     return <Navigate to="/auth" />;
   }
   
-  // If user is admin, default to admin view
-  const effectiveUserType = userRole === 'admin' ? 'admin' : 
-                           userRole === 'vendor' ? 'vendor' : 
-                           userType;
+  const effectiveUserType = userRole === 'admin' ? 
+                           (userType === 'admin' ? 'admin' : userType) : 
+                           userRole === 'vendor' ? 
+                           (userType === 'vendor' || userType === 'admin' ? userType : 'vendor') : 
+                           'client';
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -158,12 +204,7 @@ const Dashboard = () => {
                     ? "border-primary text-primary"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
-                onClick={() => {
-                  const newParams = new URLSearchParams(searchParams);
-                  newParams.set("userType", "client");
-                  window.history.pushState({}, "", `?${newParams.toString()}`);
-                  window.location.reload();
-                }}
+                onClick={() => handleViewChange("client")}
               >
                 Client View
               </button>
@@ -173,30 +214,32 @@ const Dashboard = () => {
                     ? "border-primary text-primary"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
-                onClick={() => {
-                  const newParams = new URLSearchParams(searchParams);
-                  newParams.set("userType", "vendor");
-                  window.history.pushState({}, "", `?${newParams.toString()}`);
-                  window.location.reload();
-                }}
+                onClick={() => handleViewChange("vendor")}
               >
                 Vendor View
               </button>
-              <button
-                className={`inline-flex items-center py-4 px-6 border-b-2 font-medium text-sm ${
-                  effectiveUserType === "admin"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }`}
-                onClick={() => {
-                  const newParams = new URLSearchParams(searchParams);
-                  newParams.set("userType", "admin");
-                  window.history.pushState({}, "", `?${newParams.toString()}`);
-                  window.location.reload();
-                }}
-              >
-                Admin View
-              </button>
+              {userRole === 'admin' && (
+                <button
+                  className={`inline-flex items-center py-4 px-6 border-b-2 font-medium text-sm ${
+                    effectiveUserType === "admin"
+                      ? "border-primary text-primary"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  }`}
+                  onClick={() => handleViewChange("admin")}
+                >
+                  Admin View
+                </button>
+              )}
+              <div className="ml-auto mr-4 flex items-center">
+                <Button 
+                  variant="outline" 
+                  onClick={() => window.logoutUser()}
+                  size="sm"
+                  className="text-gray-600"
+                >
+                  Logout
+                </Button>
+              </div>
             </nav>
           </div>
           <div>
