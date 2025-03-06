@@ -16,7 +16,7 @@ export const seedTestData = async () => {
     toast.loading("Creating test accounts...");
     
     // Create admin account
-    const { error: adminError } = await supabase.functions.invoke('create-test-user', {
+    const { data: adminData, error: adminError } = await supabase.functions.invoke('create-test-user', {
       body: {
         email: 'admin@skinnect.com', 
         password: 'Admin123!',
@@ -29,11 +29,11 @@ export const seedTestData = async () => {
       console.error("Error creating admin account:", adminError);
       toast.error("Failed to create admin account");
     } else {
-      console.log("Admin account created or updated successfully");
+      console.log("Admin account created or updated successfully", adminData);
     }
     
     // Create vendor account
-    const { error: vendorError } = await supabase.functions.invoke('create-test-user', {
+    const { data: vendorData, error: vendorError } = await supabase.functions.invoke('create-test-user', {
       body: {
         email: 'vendor@skinnect.com',
         password: 'Vendor123!',
@@ -46,7 +46,7 @@ export const seedTestData = async () => {
       console.error("Error creating vendor account:", vendorError);
       toast.error("Failed to create vendor account");
     } else {
-      console.log("Vendor account created or updated successfully");
+      console.log("Vendor account created or updated successfully", vendorData);
     }
     
     toast.dismiss();

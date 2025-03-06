@@ -8,7 +8,17 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 console.log("Hello from create-test-user!")
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
 serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
   // Create a Supabase client with the Auth context of the function
   const supabaseClient = createClient(
     // Supabase API URL - env var exposed by default.
@@ -28,33 +38,38 @@ serve(async (req) => {
     const { email, password, role, name } = await req.json()
     
     // Check if user already exists
-    const { data: existingUsers, error: searchError } = await supabaseClient
-      .from('profiles')
-      .select('id')
-      .eq('email', email)
-      .limit(1)
+    const { data: existingUser, error: userError } = await supabaseClient.auth
+      .admin.getUserByEmail(email)
     
-    if (searchError) {
-      throw searchError
+    if (userError && userError.status !== 400) {
+      throw userError
     }
     
-    if (existingUsers && existingUsers.length > 0) {
-      // Update existing user
-      const { error: updateError } = await supabaseClient
-        .from('profiles')
-        .update({ role })
-        .eq('email', email)
+    if (existingUser) {
+      // Update existing user - first update auth metadata
+      const { error: updateUserError } = await supabaseClient.auth.admin.updateUserById(
+        existingUser.id,
+        { email_confirm: true, user_metadata: { role, name } }
+      )
       
-      if (updateError) throw updateError
+      if (updateUserError) throw updateUserError
+      
+      // Then update profile
+      const { error: updateProfileError } = await supabaseClient
+        .from('profiles')
+        .update({ role, name })
+        .eq('id', existingUser.id)
+      
+      if (updateProfileError) throw updateProfileError
       
       return new Response(
-        JSON.stringify({ message: `User ${email} role updated to ${role}` }),
-        { headers: { 'Content-Type': 'application/json' }, status: 200 }
+        JSON.stringify({ message: `User ${email} updated with role ${role}` }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
       )
     }
     
     // Create new user
-    const { data, error: createError } = await supabaseClient.auth.admin.createUser({
+    const { data: newUser, error: createError } = await supabaseClient.auth.admin.createUser({
       email,
       password,
       email_confirm: true,
@@ -63,14 +78,26 @@ serve(async (req) => {
     
     if (createError) throw createError
     
+    // Ensure profile exists (the trigger might have created it, but let's be sure)
+    const { error: upsertError } = await supabaseClient
+      .from('profiles')
+      .upsert({ 
+        id: newUser.user.id, 
+        role,
+        name 
+      })
+    
+    if (upsertError) throw upsertError
+    
     return new Response(
       JSON.stringify({ message: `User ${email} created with role ${role}` }),
-      { headers: { 'Content-Type': 'application/json' }, status: 201 }
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 201 }
     )
   } catch (error) {
+    console.error("Error:", error)
     return new Response(
       JSON.stringify({ error: error.message }),
-      { headers: { 'Content-Type': 'application/json' }, status: 400 }
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
     )
   }
 })
