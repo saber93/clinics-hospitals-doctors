@@ -28,7 +28,7 @@ export const seedTestData = async () => {
     
     if (adminError || !adminData?.success) {
       console.error("Error creating admin account:", adminError || adminData?.error);
-      toast.error("Failed to create admin account");
+      toast.error(`Failed to create admin account: ${adminError?.message || adminData?.error || 'Unknown error'}`);
     } else {
       console.log("Admin account created or updated successfully", adminData);
     }
@@ -46,17 +46,22 @@ export const seedTestData = async () => {
     
     if (vendorError || !vendorData?.success) {
       console.error("Error creating vendor account:", vendorError || vendorData?.error);
-      toast.error("Failed to create vendor account");
+      toast.error(`Failed to create vendor account: ${vendorError?.message || vendorData?.error || 'Unknown error'}`);
     } else {
       console.log("Vendor account created or updated successfully", vendorData);
     }
     
     toast.dismiss();
-    toast.success("Test accounts created! You can login with:\n\nAdmin: admin@skinnect.com / Admin123!\nVendor: vendor@skinnect.com / Vendor123!");
+    
+    if ((adminData?.success || vendorData?.success)) {
+      toast.success("Test accounts created! You can login with:\n\nAdmin: admin@skinnect.com / Admin123!\nVendor: vendor@skinnect.com / Vendor123!");
+    } else {
+      toast.error("Failed to create test accounts. See console for details.");
+    }
     
   } catch (error) {
     toast.dismiss();
     console.error("Error seeding test data:", error);
-    toast.error("Failed to seed test data. See console for details.");
+    toast.error(`Failed to seed test data: ${error.message || 'Unknown error'}`);
   }
 };

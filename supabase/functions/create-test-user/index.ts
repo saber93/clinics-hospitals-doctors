@@ -66,7 +66,10 @@ serve(async (req) => {
         }
       )
       
-      if (error) throw error
+      if (error) {
+        console.log(`Error updating user: ${JSON.stringify(error)}`)
+        throw error
+      }
       
       userId = existingUser.id
       console.log(`Updated user ${email} successfully`)
@@ -89,23 +92,51 @@ serve(async (req) => {
       console.log(`Created user ${email} with ID ${userId} successfully`)
     }
     
-    // Ensure profile exists with correct role
+    // Now explicitly create or update the profile record
     if (userId) {
-      console.log(`Updating profile for user ${userId} with role ${role}`)
-      const { error } = await supabaseClient
-        .from('profiles')
-        .upsert({ 
-          id: userId, 
-          role,
-          name 
-        })
+      console.log(`Ensuring profile exists for user ${userId} with role ${role}`)
       
-      if (error) {
-        console.log(`Error updating profile: ${JSON.stringify(error)}`)
-        throw error
+      // First check if profile already exists
+      const { data: existingProfile } = await supabaseClient
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle();
+        
+      if (existingProfile) {
+        console.log(`Updating existing profile for ${email}`);
+        const { error: profileUpdateError } = await supabaseClient
+          .from('profiles')
+          .update({ 
+            role,
+            name,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', userId);
+          
+        if (profileUpdateError) {
+          console.log(`Error updating profile: ${JSON.stringify(profileUpdateError)}`);
+          throw profileUpdateError;
+        }
+      } else {
+        console.log(`Creating new profile for ${email}`);
+        const { error: profileInsertError } = await supabaseClient
+          .from('profiles')
+          .insert({ 
+            id: userId, 
+            role,
+            name,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          });
+          
+        if (profileInsertError) {
+          console.log(`Error creating profile: ${JSON.stringify(profileInsertError)}`);
+          throw profileInsertError;
+        }
       }
       
-      console.log(`Profile updated successfully for ${email}`)
+      console.log(`Profile ensured successfully for ${email}`);
     }
     
     return new Response(

@@ -3,6 +3,7 @@ import { useSearchParams, Navigate } from "react-router-dom";
 import LoginForm from "@/components/auth/LoginForm";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -14,10 +15,15 @@ const Auth = () => {
     // Check current auth status
     const checkSession = async () => {
       try {
-        const { data } = await supabase.auth.getSession();
+        const { data, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Error checking session:", error);
+          toast.error(`Authentication error: ${error.message}`);
+        }
         setSession(data.session);
       } catch (error) {
         console.error("Error checking session:", error);
+        toast.error(`Authentication error: ${error.message}`);
       } finally {
         setLoading(false);
       }
