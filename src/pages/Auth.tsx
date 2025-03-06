@@ -12,10 +12,13 @@ const Auth = () => {
 
   useEffect(() => {
     // Check current auth status
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session);
       setLoading(false);
-    });
+    };
+    
+    checkSession();
 
     // Listen for auth changes
     const {

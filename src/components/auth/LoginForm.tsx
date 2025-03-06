@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,7 +34,7 @@ const LoginForm = () => {
         throw error;
       }
       toast.success("Logged out successfully");
-      navigate("/");
+      navigate("/auth");
     } catch (error: any) {
       toast.error(error.message || "Error logging out");
       console.error("Logout error:", error);
@@ -79,6 +79,7 @@ const LoginForm = () => {
         }
 
         toast.success("Logged in successfully!");
+        navigate("/dashboard");
       } else {
         // Register with Supabase
         const { data, error } = await supabase.auth.signUp({
@@ -97,12 +98,9 @@ const LoginForm = () => {
         }
 
         toast.success("Account created successfully! Please check your email for verification.");
+        // Redirect to login page after successful registration
+        navigate("/auth?mode=login");
       }
-
-      // Redirect to dashboard after successful authentication
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 1500);
     } catch (error: any) {
       console.error("Authentication error:", error);
       toast.error(error.message || "Authentication failed. Please try again.");
@@ -111,14 +109,8 @@ const LoginForm = () => {
     }
   };
 
-  // Expose the logout function to the window object for global access
-  useEffect(() => {
-    (window as any).logoutUser = handleLogout;
-    
-    return () => {
-      delete (window as any).logoutUser;
-    };
-  }, []);
+  // Make logout function globally available
+  window.logoutUser = handleLogout;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">

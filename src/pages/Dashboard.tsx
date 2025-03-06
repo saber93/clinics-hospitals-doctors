@@ -11,20 +11,20 @@ const ClientDashboard = () => (
   <div className="p-6">
     <h2 className="text-2xl font-bold mb-4">Client Dashboard</h2>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div className="skinnect-card">
+      <div className="border rounded-lg p-4 shadow-sm">
         <h3 className="text-lg font-semibold mb-2">My Appointments</h3>
         <p className="text-gray-600 mb-4">You have no upcoming appointments</p>
-        <button className="skinnect-button-primary">Book Now</button>
+        <Button variant="default">Book Now</Button>
       </div>
-      <div className="skinnect-card">
+      <div className="border rounded-lg p-4 shadow-sm">
         <h3 className="text-lg font-semibold mb-2">My Vouchers</h3>
         <p className="text-gray-600 mb-4">You have no active vouchers</p>
-        <button className="skinnect-button-outline">Browse Offers</button>
+        <Button variant="outline">Browse Offers</Button>
       </div>
-      <div className="skinnect-card">
+      <div className="border rounded-lg p-4 shadow-sm">
         <h3 className="text-lg font-semibold mb-2">Special Offers</h3>
         <p className="text-gray-600 mb-4">Check out the latest deals!</p>
-        <button className="skinnect-button-outline">View All</button>
+        <Button variant="outline">View All</Button>
       </div>
     </div>
   </div>
@@ -34,20 +34,20 @@ const VendorDashboard = () => (
   <div className="p-6">
     <h2 className="text-2xl font-bold mb-4">Vendor Dashboard</h2>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div className="skinnect-card">
+      <div className="border rounded-lg p-4 shadow-sm">
         <h3 className="text-lg font-semibold mb-2">Appointments Today</h3>
         <p className="text-gray-600 mb-4">No appointments scheduled for today</p>
-        <button className="skinnect-button-primary">View Calendar</button>
+        <Button variant="default">View Calendar</Button>
       </div>
-      <div className="skinnect-card">
+      <div className="border rounded-lg p-4 shadow-sm">
         <h3 className="text-lg font-semibold mb-2">Active Offers</h3>
         <p className="text-gray-600 mb-4">You have no active offers</p>
-        <button className="skinnect-button-outline">Create Offer</button>
+        <Button variant="outline">Create Offer</Button>
       </div>
-      <div className="skinnect-card">
+      <div className="border rounded-lg p-4 shadow-sm">
         <h3 className="text-lg font-semibold mb-2">Voucher Management</h3>
         <p className="text-gray-600 mb-4">Create and manage vouchers</p>
-        <button className="skinnect-button-outline">Manage Vouchers</button>
+        <Button variant="outline">Manage Vouchers</Button>
       </div>
     </div>
   </div>
@@ -57,20 +57,20 @@ const AdminDashboard = ({ handleSeedData }: { handleSeedData: () => Promise<void
   <div className="p-6">
     <h2 className="text-2xl font-bold mb-4">Admin Dashboard</h2>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div className="skinnect-card">
+      <div className="border rounded-lg p-4 shadow-sm">
         <h3 className="text-lg font-semibold mb-2">Vendors</h3>
         <p className="text-gray-600 mb-4">Manage vendor accounts</p>
-        <button className="skinnect-button-primary">View All</button>
+        <Button variant="default">View All</Button>
       </div>
-      <div className="skinnect-card">
+      <div className="border rounded-lg p-4 shadow-sm">
         <h3 className="text-lg font-semibold mb-2">Clients</h3>
         <p className="text-gray-600 mb-4">Manage client accounts</p>
-        <button className="skinnect-button-outline">View All</button>
+        <Button variant="outline">View All</Button>
       </div>
-      <div className="skinnect-card">
+      <div className="border rounded-lg p-4 shadow-sm">
         <h3 className="text-lg font-semibold mb-2">System Analytics</h3>
         <p className="text-gray-600 mb-4">View platform statistics</p>
-        <button className="skinnect-button-outline">View Reports</button>
+        <Button variant="outline">View Reports</Button>
       </div>
     </div>
     
@@ -93,27 +93,31 @@ const Dashboard = () => {
   const userType = searchParams.get("userType") || "client";
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
     // Check for existing session
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data } = await supabase.auth.getSession();
       
-      if (session) {
+      if (data.session) {
         setIsAuthenticated(true);
         
         // Fetch user profile to get role
         const { data: profile } = await supabase
           .from('profiles')
           .select('role')
-          .eq('id', session.user.id)
+          .eq('id', data.session.user.id)
           .single();
           
         if (profile) {
           setUserRole(profile.role);
         }
+        
+        setLoading(false);
       } else {
         setIsAuthenticated(false);
+        setLoading(false);
       }
     };
     
@@ -123,6 +127,14 @@ const Dashboard = () => {
   const handleSeedData = async () => {
     await seedTestData();
   };
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
   
   if (!isAuthenticated) {
     toast.error("Please login to access the dashboard");
