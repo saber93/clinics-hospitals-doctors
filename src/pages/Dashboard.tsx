@@ -2,6 +2,9 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, Navigate } from "react-router-dom";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { seedTestData } from "@/utils/seedTestData";
 
 // Placeholder components - these will be implemented later
 const ClientDashboard = () => (
@@ -50,7 +53,7 @@ const VendorDashboard = () => (
   </div>
 );
 
-const AdminDashboard = () => (
+const AdminDashboard = ({ handleSeedData }: { handleSeedData: () => Promise<void> }) => (
   <div className="p-6">
     <h2 className="text-2xl font-bold mb-4">Admin Dashboard</h2>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -70,6 +73,18 @@ const AdminDashboard = () => (
         <button className="skinnect-button-outline">View Reports</button>
       </div>
     </div>
+    
+    <div className="mt-6 p-4 bg-gray-100 rounded-lg border border-gray-200">
+      <h3 className="text-lg font-semibold mb-2">Development Tools</h3>
+      <p className="text-gray-600 mb-4">Create test accounts and sample data</p>
+      <Button 
+        variant="outline" 
+        onClick={handleSeedData}
+        className="bg-amber-100 hover:bg-amber-200 text-amber-800 border-amber-300"
+      >
+        Generate Test Data
+      </Button>
+    </div>
   </div>
 );
 
@@ -77,22 +92,47 @@ const Dashboard = () => {
   const [searchParams] = useSearchParams();
   const userType = searchParams.get("userType") || "client";
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
   
-  // Simulating auth check (this would be replaced with actual auth check)
   useEffect(() => {
-    // Mock authentication check - replace with actual logic later
-    const checkAuth = () => {
-      // For now, we'll just assume the user is authenticated
-      setIsAuthenticated(true);
+    // Check for existing session
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session) {
+        setIsAuthenticated(true);
+        
+        // Fetch user profile to get role
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single();
+          
+        if (profile) {
+          setUserRole(profile.role);
+        }
+      } else {
+        setIsAuthenticated(false);
+      }
     };
     
     checkAuth();
   }, []);
   
+  const handleSeedData = async () => {
+    await seedTestData();
+  };
+  
   if (!isAuthenticated) {
     toast.error("Please login to access the dashboard");
     return <Navigate to="/auth" />;
   }
+  
+  // If user is admin, default to admin view
+  const effectiveUserType = userRole === 'admin' ? 'admin' : 
+                           userRole === 'vendor' ? 'vendor' : 
+                           userType;
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -102,7 +142,7 @@ const Dashboard = () => {
             <nav className="-mb-px flex">
               <button
                 className={`inline-flex items-center py-4 px-6 border-b-2 font-medium text-sm ${
-                  userType === "client"
+                  effectiveUserType === "client"
                     ? "border-primary text-primary"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
@@ -117,7 +157,7 @@ const Dashboard = () => {
               </button>
               <button
                 className={`inline-flex items-center py-4 px-6 border-b-2 font-medium text-sm ${
-                  userType === "vendor"
+                  effectiveUserType === "vendor"
                     ? "border-primary text-primary"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
@@ -132,7 +172,7 @@ const Dashboard = () => {
               </button>
               <button
                 className={`inline-flex items-center py-4 px-6 border-b-2 font-medium text-sm ${
-                  userType === "admin"
+                  effectiveUserType === "admin"
                     ? "border-primary text-primary"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
@@ -148,9 +188,9 @@ const Dashboard = () => {
             </nav>
           </div>
           <div>
-            {userType === "client" && <ClientDashboard />}
-            {userType === "vendor" && <VendorDashboard />}
-            {userType === "admin" && <AdminDashboard />}
+            {effectiveUserType === "client" && <ClientDashboard />}
+            {effectiveUserType === "vendor" && <VendorDashboard />}
+            {effectiveUserType === "admin" && <AdminDashboard handleSeedData={handleSeedData} />}
           </div>
         </div>
       </div>
