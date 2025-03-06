@@ -42,7 +42,10 @@ const Index = () => {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold mb-2">Easy Booking</h3>
-              <p className="text-gray-600">Book appointments with your favorite specialists with just a few clicks.</p>
+              <p className="text-gray-600 mb-4">Book appointments with your favorite specialists with just a few clicks.</p>
+              <Button asChild className="skinnect-button-outline w-full">
+                <Link to="/reservations">Book Now</Link>
+              </Button>
             </div>
             <div className="skinnect-card">
               <div className="mb-4">
@@ -53,7 +56,10 @@ const Index = () => {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold mb-2">Special Offers</h3>
-              <p className="text-gray-600">Get access to exclusive deals and promotions from top clinics.</p>
+              <p className="text-gray-600 mb-4">Get access to exclusive deals and promotions from top clinics.</p>
+              <Button asChild className="skinnect-button-outline w-full">
+                <Link to="/offers">View Offers</Link>
+              </Button>
             </div>
             <div className="skinnect-card">
               <div className="mb-4">
@@ -63,7 +69,10 @@ const Index = () => {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold mb-2">Digital Vouchers</h3>
-              <p className="text-gray-600">Easily redeem and manage your vouchers and promo codes.</p>
+              <p className="text-gray-600 mb-4">Easily redeem and manage your vouchers and promo codes.</p>
+              <Button asChild className="skinnect-button-outline w-full">
+                <Link to="/vouchers">My Vouchers</Link>
+              </Button>
             </div>
           </div>
         </div>
@@ -76,9 +85,14 @@ const Index = () => {
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
             Join thousands of happy clients who have transformed their skin and body care routine.
           </p>
-          <Button asChild size="lg" className="skinnect-button-primary">
-            <Link to="/auth?mode=register">Get Started Today</Link>
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg" className="skinnect-button-primary">
+              <Link to="/auth?mode=register">Get Started Today</Link>
+            </Button>
+            <Button asChild size="lg" className="skinnect-button-outline">
+              <Link to="/dashboard">View Dashboard</Link>
+            </Button>
+          </div>
         </div>
       </section>
     </div>

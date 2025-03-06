@@ -47,9 +47,9 @@ const LoginForm = () => {
     // Mock authentication success
     toast.success(mode === "login" ? "Logged in successfully!" : "Account created successfully!");
     
-    // Redirect to home page after successful authentication
+    // Redirect to dashboard after successful authentication instead of homepage
     setTimeout(() => {
-      navigate("/");
+      navigate("/dashboard");
     }, 1500);
   };
 
