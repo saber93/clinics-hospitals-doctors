@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +23,24 @@ const LoginForm = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Function to handle user logout
+  const handleLogout = async () => {
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        throw error;
+      }
+      toast.success("Logged out successfully");
+      navigate("/");
+    } catch (error: any) {
+      toast.error(error.message || "Error logging out");
+      console.error("Logout error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -93,6 +111,15 @@ const LoginForm = () => {
     }
   };
 
+  // Expose the logout function to the window object for global access
+  useEffect(() => {
+    (window as any).logoutUser = handleLogout;
+    
+    return () => {
+      delete (window as any).logoutUser;
+    };
+  }, []);
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {mode === "register" && (
@@ -151,7 +178,7 @@ const LoginForm = () => {
         </div>
       )}
       
-      <Button type="submit" className="w-full skinnect-button-primary" disabled={isLoading}>
+      <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? "Loading..." : mode === "login" ? "Sign In" : "Create Account"}
       </Button>
       

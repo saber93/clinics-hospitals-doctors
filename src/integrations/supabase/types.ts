@@ -33,6 +33,83 @@ export type Database = {
         }
         Relationships: []
       }
+      reservations: {
+        Row: {
+          client_id: string | null
+          created_at: string | null
+          date: string
+          id: string
+          service_id: string | null
+          status: string
+          time: string
+          updated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          client_id?: string | null
+          created_at?: string | null
+          date: string
+          id?: string
+          service_id?: string | null
+          status?: string
+          time: string
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          client_id?: string | null
+          created_at?: string | null
+          date?: string
+          id?: string
+          service_id?: string | null
+          status?: string
+          time?: string
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservations_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      services: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          duration: number
+          id: string
+          name: string
+          price: number
+          updated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          duration: number
+          id?: string
+          name: string
+          price: number
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          duration?: number
+          id?: string
+          name?: string
+          price?: number
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

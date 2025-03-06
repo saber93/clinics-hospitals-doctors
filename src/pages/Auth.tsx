@@ -1,10 +1,45 @@
 
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Navigate } from "react-router-dom";
 import LoginForm from "@/components/auth/LoginForm";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
   const mode = searchParams.get("mode") || "login";
+  const [session, setSession] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Check current auth status
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoading(false);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // If still loading, show a loading indicator
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+
+  // If authenticated, redirect to dashboard
+  if (session) {
+    return <Navigate to="/dashboard" />;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
