@@ -36,124 +36,94 @@ serve(async (req) => {
   // Now we can use supabase_admin to create users, etc
   try {
     const { email, password, role, name } = await req.json()
-    console.log(`Processing user creation/update for ${email} with role ${role}`)
+    console.log(`Processing user creation for ${email} with role ${role}`)
     
-    // Check if user already exists
-    let existingUser = null
+    // Force delete any user that might have the same email (to ensure clean setup)
     try {
-      const { data, error } = await supabaseClient.auth.admin.getUserByEmail(email)
-      if (!error && data) {
-        existingUser = data
-        console.log(`Found existing user: ${email}`)
+      console.log(`Attempting to delete existing user with email: ${email}`)
+      const { data: userData } = await supabaseClient.auth.admin.listUsers();
+      
+      const existingUser = userData?.users?.find(user => user.email === email);
+      
+      if (existingUser) {
+        console.log(`Found existing user with email ${email}, deleting...`);
+        const { error: deleteError } = await supabaseClient.auth.admin.deleteUser(existingUser.id);
+        
+        if (deleteError) {
+          console.log(`Error deleting user: ${JSON.stringify(deleteError)}`);
+        } else {
+          console.log(`Successfully deleted user with email: ${email}`);
+        }
+      } else {
+        console.log(`No existing user found with email: ${email}`);
       }
     } catch (err) {
-      console.log(`Error checking for existing user: ${err.message}`)
-      // Continue as if user doesn't exist
+      console.log(`Error checking/deleting existing user: ${err.message}`);
     }
     
-    let userId
-    let userOperation = existingUser ? "updated" : "created"
+    // Create new user
+    console.log(`Creating new user: ${email}`);
+    const { data, error } = await supabaseClient.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+      user_metadata: { role, name }
+    });
     
-    if (existingUser) {
-      // Update existing user
-      console.log(`Updating existing user: ${email}`)
-      const { data, error } = await supabaseClient.auth.admin.updateUserById(
-        existingUser.id,
-        { 
-          email,
-          password,
-          email_confirm: true,
-          user_metadata: { role, name } 
-        }
-      )
-      
-      if (error) {
-        console.log(`Error updating user: ${JSON.stringify(error)}`)
-        throw error
-      }
-      
-      userId = existingUser.id
-      console.log(`Updated user ${email} successfully with ID ${userId}`)
-    } else {
-      // Force delete any user that might have the same email but wasn't found
-      try {
-        console.log(`Attempting to delete any conflicting user with email: ${email}`)
-        const { error: deleteError } = await supabaseClient.auth.admin.deleteUser(email, true)
-        if (deleteError) {
-          console.log(`No conflicting user found or error deleting: ${JSON.stringify(deleteError)}`)
-        } else {
-          console.log(`Deleted conflicting user with email: ${email}`)
-        }
-      } catch (err) {
-        console.log(`Error during forced deletion: ${err.message}`)
-      }
-      
-      // Create new user
-      console.log(`Creating new user: ${email}`)
-      const { data, error } = await supabaseClient.auth.admin.createUser({
-        email,
-        password,
-        email_confirm: true,
-        user_metadata: { role, name }
-      })
-      
-      if (error) {
-        console.log(`Error creating user: ${JSON.stringify(error)}`)
-        throw error
-      }
-      
-      userId = data.user.id
-      console.log(`Created user ${email} with ID ${userId} successfully`)
+    if (error) {
+      console.log(`Error creating user: ${JSON.stringify(error)}`);
+      throw error;
     }
     
-    // Now explicitly create or update the profile record
-    if (userId) {
-      console.log(`Ensuring profile exists for user ${userId} with role ${role}`)
+    const userId = data.user.id;
+    console.log(`Created user ${email} with ID ${userId} successfully`);
+    
+    // Create or update profile
+    console.log(`Ensuring profile exists for user ${userId} with role ${role}`);
+    
+    // First check if profile already exists
+    const { data: existingProfile } = await supabaseClient
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .maybeSingle();
       
-      // First check if profile already exists
-      const { data: existingProfile } = await supabaseClient
+    if (existingProfile) {
+      console.log(`Updating existing profile for ${email}`);
+      const { error: profileUpdateError } = await supabaseClient
         .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .maybeSingle();
+        .update({ 
+          role,
+          name,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', userId);
         
-      if (existingProfile) {
-        console.log(`Updating existing profile for ${email}`);
-        const { error: profileUpdateError } = await supabaseClient
-          .from('profiles')
-          .update({ 
-            role,
-            name,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', userId);
-          
-        if (profileUpdateError) {
-          console.log(`Error updating profile: ${JSON.stringify(profileUpdateError)}`);
-          throw profileUpdateError;
-        }
-        console.log(`Profile updated successfully for ${email}`);
-      } else {
-        console.log(`Creating new profile for ${email}`);
-        const { error: profileInsertError } = await supabaseClient
-          .from('profiles')
-          .insert({ 
-            id: userId, 
-            role,
-            name,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          });
-          
-        if (profileInsertError) {
-          console.log(`Error creating profile: ${JSON.stringify(profileInsertError)}`);
-          throw profileInsertError;
-        }
-        console.log(`Profile created successfully for ${email}`);
+      if (profileUpdateError) {
+        console.log(`Error updating profile: ${JSON.stringify(profileUpdateError)}`);
+        throw profileUpdateError;
       }
+      console.log(`Profile updated successfully for ${email}`);
+    } else {
+      console.log(`Creating new profile for ${email}`);
+      const { error: profileInsertError } = await supabaseClient
+        .from('profiles')
+        .insert({ 
+          id: userId, 
+          role,
+          name,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
+        
+      if (profileInsertError) {
+        console.log(`Error creating profile: ${JSON.stringify(profileInsertError)}`);
+        throw profileInsertError;
+      }
+      console.log(`Profile created successfully for ${email}`);
     }
     
-    // After creating the user and profile, attempt a test login to verify credentials
+    // Test login to verify credentials are working
     console.log(`Testing login credentials for ${email}`);
     const { data: loginTest, error: loginError } = await supabaseClient.auth.signInWithPassword({
       email,
@@ -165,7 +135,7 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ 
           success: true,
-          message: `User ${email} ${userOperation} with role ${role}, but test login failed!`,
+          message: `User ${email} created with role ${role}, but test login failed!`,
           userId,
           warning: `Test login failed: ${loginError.message}`
         }),
@@ -183,7 +153,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: true,
-        message: `User ${email} ${userOperation} with role ${role}`,
+        message: `User ${email} created with role ${role}`,
         userId
       }),
       { 
