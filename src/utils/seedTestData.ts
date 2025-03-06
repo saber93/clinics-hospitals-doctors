@@ -13,63 +13,47 @@ export const seedTestData = async () => {
       return;
     }
     
-    // Create admin account if it doesn't exist
-    const { error: adminError } = await supabase.auth.admin.createUser({
-      email: 'admin@skinnect.com',
-      password: 'Admin123!',
-      email_confirm: true,
-      user_metadata: {
+    toast.loading("Creating test accounts...");
+    
+    // Create admin account
+    const { error: adminError } = await supabase.functions.invoke('create-test-user', {
+      body: {
+        email: 'admin@skinnect.com', 
+        password: 'Admin123!',
         role: 'admin',
         name: 'Admin User'
       }
     });
     
     if (adminError) {
-      console.log("Admin account might already exist:", adminError.message);
-      // Try to update the user role instead
-      const { data: adminUserData } = await supabase
-        .from('profiles')
-        .update({ role: 'admin' })
-        .eq('email', 'admin@skinnect.com')
-        .select();
-        
-      if (adminUserData) {
-        toast.success("Admin user role updated");
-      }
+      console.error("Error creating admin account:", adminError);
+      toast.error("Failed to create admin account");
     } else {
-      toast.success("Admin account created successfully");
+      console.log("Admin account created or updated successfully");
     }
     
-    // Create vendor account if it doesn't exist
-    const { error: vendorError } = await supabase.auth.admin.createUser({
-      email: 'vendor@skinnect.com',
-      password: 'Vendor123!',
-      email_confirm: true,
-      user_metadata: {
+    // Create vendor account
+    const { error: vendorError } = await supabase.functions.invoke('create-test-user', {
+      body: {
+        email: 'vendor@skinnect.com',
+        password: 'Vendor123!',
         role: 'vendor',
         name: 'Vendor User'
       }
     });
     
     if (vendorError) {
-      console.log("Vendor account might already exist:", vendorError.message);
-      // Try to update the user role instead
-      const { data: vendorUserData } = await supabase
-        .from('profiles')
-        .update({ role: 'vendor' })
-        .eq('email', 'vendor@skinnect.com')
-        .select();
-        
-      if (vendorUserData) {
-        toast.success("Vendor user role updated");
-      }
+      console.error("Error creating vendor account:", vendorError);
+      toast.error("Failed to create vendor account");
     } else {
-      toast.success("Vendor account created successfully");
+      console.log("Vendor account created or updated successfully");
     }
     
+    toast.dismiss();
     toast.success("Test accounts created! You can login with:\n\nAdmin: admin@skinnect.com / Admin123!\nVendor: vendor@skinnect.com / Vendor123!");
     
   } catch (error) {
+    toast.dismiss();
     console.error("Error seeding test data:", error);
     toast.error("Failed to seed test data. See console for details.");
   }
