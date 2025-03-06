@@ -4,12 +4,15 @@ import LoginForm from "@/components/auth/LoginForm";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { seedTestData } from "@/utils/seedTestData";
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
   const mode = searchParams.get("mode") || "login";
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     // Check current auth status
@@ -21,6 +24,12 @@ const Auth = () => {
           toast.error(`Authentication error: ${error.message}`);
         }
         setSession(data.session);
+        
+        // Check if user is admin (for test data seeding button)
+        if (data.session) {
+          const { data: user } = await supabase.auth.getUser();
+          setIsAdmin(user?.user?.user_metadata?.role === 'admin');
+        }
       } catch (error) {
         console.error("Error checking session:", error);
         toast.error(`Authentication error: ${error.message}`);
@@ -37,10 +46,21 @@ const Auth = () => {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log("Auth state changed:", _event, session ? "User logged in" : "No session");
       setSession(session);
+      
+      if (session) {
+        const role = session.user?.user_metadata?.role;
+        setIsAdmin(role === 'admin');
+      } else {
+        setIsAdmin(false);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const handleSeedTestData = async () => {
+    await seedTestData();
+  };
 
   // If still loading, show a loading indicator
   if (loading) {
@@ -72,6 +92,19 @@ const Auth = () => {
         </div>
         <div className="mt-8 bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <LoginForm />
+          
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <p className="text-center text-sm text-gray-600 mb-4">
+              Development Tools
+            </p>
+            <Button 
+              onClick={handleSeedTestData} 
+              variant="outline" 
+              className="w-full"
+            >
+              Create Test Accounts
+            </Button>
+          </div>
         </div>
       </div>
     </div>

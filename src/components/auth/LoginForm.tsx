@@ -149,6 +149,7 @@ const LoginForm = () => {
           value={formData.email}
           onChange={handleChange}
           disabled={isLoading}
+          autoComplete="email"
         />
       </div>
       
@@ -162,6 +163,7 @@ const LoginForm = () => {
           value={formData.password}
           onChange={handleChange}
           disabled={isLoading}
+          autoComplete={mode === "login" ? "current-password" : "new-password"}
         />
       </div>
       
@@ -176,6 +178,7 @@ const LoginForm = () => {
             value={formData.confirmPassword}
             onChange={handleChange}
             disabled={isLoading}
+            autoComplete="new-password"
           />
         </div>
       )}

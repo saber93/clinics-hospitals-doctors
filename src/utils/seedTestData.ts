@@ -26,11 +26,17 @@ export const seedTestData = async () => {
       }
     });
     
-    if (adminError || !adminData?.success) {
-      console.error("Error creating admin account:", adminError || adminData?.error);
-      toast.error(`Failed to create admin account: ${adminError?.message || adminData?.error || 'Unknown error'}`);
+    if (adminError) {
+      console.error("Error calling create-test-user function for admin:", adminError);
+      toast.error(`Failed to create admin account: ${adminError.message || 'Unknown error'}`);
+    } else if (!adminData?.success) {
+      console.error("Error creating admin account:", adminData?.error);
+      toast.error(`Failed to create admin account: ${adminData?.error || 'Unknown error'}`);
     } else {
       console.log("Admin account created or updated successfully", adminData);
+      if (adminData.warning) {
+        console.warn("Warning for admin account:", adminData.warning);
+      }
     }
     
     // Create vendor account
@@ -44,17 +50,41 @@ export const seedTestData = async () => {
       }
     });
     
-    if (vendorError || !vendorData?.success) {
-      console.error("Error creating vendor account:", vendorError || vendorData?.error);
-      toast.error(`Failed to create vendor account: ${vendorError?.message || vendorData?.error || 'Unknown error'}`);
+    if (vendorError) {
+      console.error("Error calling create-test-user function for vendor:", vendorError);
+      toast.error(`Failed to create vendor account: ${vendorError.message || 'Unknown error'}`);
+    } else if (!vendorData?.success) {
+      console.error("Error creating vendor account:", vendorData?.error);
+      toast.error(`Failed to create vendor account: ${vendorData?.error || 'Unknown error'}`);
     } else {
       console.log("Vendor account created or updated successfully", vendorData);
+      if (vendorData.warning) {
+        console.warn("Warning for vendor account:", vendorData.warning);
+      }
     }
     
     toast.dismiss();
     
-    if ((adminData?.success || vendorData?.success)) {
-      toast.success("Test accounts created! You can login with:\n\nAdmin: admin@skinnect.com / Admin123!\nVendor: vendor@skinnect.com / Vendor123!");
+    const adminSuccess = adminData?.success;
+    const vendorSuccess = vendorData?.success;
+    
+    if (adminSuccess || vendorSuccess) {
+      let successMessage = "Test accounts created!\n\n";
+      
+      if (adminSuccess) {
+        successMessage += "Admin: admin@skinnect.com / Admin123!\n";
+      }
+      
+      if (vendorSuccess) {
+        successMessage += "Vendor: vendor@skinnect.com / Vendor123!";
+      }
+      
+      toast.success(successMessage);
+      
+      // If there were warnings, show them
+      if (adminData?.warning || vendorData?.warning) {
+        toast.warning("Accounts created, but there might be login issues. Check console for details.");
+      }
     } else {
       toast.error("Failed to create test accounts. See console for details.");
     }

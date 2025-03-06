@@ -72,7 +72,7 @@ serve(async (req) => {
       }
       
       userId = existingUser.id
-      console.log(`Updated user ${email} successfully`)
+      console.log(`Updated user ${email} successfully with ID ${userId}`)
     } else {
       // Create new user
       console.log(`Creating new user: ${email}`)
@@ -118,6 +118,7 @@ serve(async (req) => {
           console.log(`Error updating profile: ${JSON.stringify(profileUpdateError)}`);
           throw profileUpdateError;
         }
+        console.log(`Profile updated successfully for ${email}`);
       } else {
         console.log(`Creating new profile for ${email}`);
         const { error: profileInsertError } = await supabaseClient
@@ -134,11 +135,40 @@ serve(async (req) => {
           console.log(`Error creating profile: ${JSON.stringify(profileInsertError)}`);
           throw profileInsertError;
         }
+        console.log(`Profile created successfully for ${email}`);
       }
-      
-      console.log(`Profile ensured successfully for ${email}`);
     }
     
+    // After creating the user and profile, attempt a test login to verify credentials
+    console.log(`Testing login credentials for ${email}`);
+    const { data: loginTest, error: loginError } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
+    
+    if (loginError) {
+      console.log(`WARNING: Test login failed for ${email}: ${JSON.stringify(loginError)}`);
+      // Don't throw error, but include the warning in the response
+      return new Response(
+        JSON.stringify({ 
+          success: true,
+          message: existingUser 
+            ? `User ${email} updated with role ${role}, but test login failed!` 
+            : `User ${email} created with role ${role}, but test login failed!`,
+          userId,
+          warning: `Test login failed: ${loginError.message}`
+        }),
+        { 
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json' 
+          }, 
+          status: existingUser ? 200 : 201 
+        }
+      );
+    }
+    
+    console.log(`Test login succeeded for ${email}`);
     return new Response(
       JSON.stringify({ 
         success: true,
