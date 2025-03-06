@@ -1,5 +1,6 @@
 
 import { useSearchParams } from "react-router-dom";
+import LoginForm from "@/components/auth/LoginForm";
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -19,7 +20,7 @@ const Auth = () => {
           </p>
         </div>
         <div className="mt-8 bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <p className="text-center">Authentication form will go here</p>
+          <LoginForm />
         </div>
       </div>
     </div>
