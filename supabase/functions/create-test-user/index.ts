@@ -52,6 +52,7 @@ serve(async (req) => {
     }
     
     let userId
+    let userOperation = existingUser ? "updated" : "created"
     
     if (existingUser) {
       // Update existing user
@@ -74,6 +75,19 @@ serve(async (req) => {
       userId = existingUser.id
       console.log(`Updated user ${email} successfully with ID ${userId}`)
     } else {
+      // Force delete any user that might have the same email but wasn't found
+      try {
+        console.log(`Attempting to delete any conflicting user with email: ${email}`)
+        const { error: deleteError } = await supabaseClient.auth.admin.deleteUser(email, true)
+        if (deleteError) {
+          console.log(`No conflicting user found or error deleting: ${JSON.stringify(deleteError)}`)
+        } else {
+          console.log(`Deleted conflicting user with email: ${email}`)
+        }
+      } catch (err) {
+        console.log(`Error during forced deletion: ${err.message}`)
+      }
+      
       // Create new user
       console.log(`Creating new user: ${email}`)
       const { data, error } = await supabaseClient.auth.admin.createUser({
@@ -148,13 +162,10 @@ serve(async (req) => {
     
     if (loginError) {
       console.log(`WARNING: Test login failed for ${email}: ${JSON.stringify(loginError)}`);
-      // Don't throw error, but include the warning in the response
       return new Response(
         JSON.stringify({ 
           success: true,
-          message: existingUser 
-            ? `User ${email} updated with role ${role}, but test login failed!` 
-            : `User ${email} created with role ${role}, but test login failed!`,
+          message: `User ${email} ${userOperation} with role ${role}, but test login failed!`,
           userId,
           warning: `Test login failed: ${loginError.message}`
         }),
@@ -163,7 +174,7 @@ serve(async (req) => {
             ...corsHeaders, 
             'Content-Type': 'application/json' 
           }, 
-          status: existingUser ? 200 : 201 
+          status: 200
         }
       );
     }
@@ -172,9 +183,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: true,
-        message: existingUser 
-          ? `User ${email} updated with role ${role}` 
-          : `User ${email} created with role ${role}`,
+        message: `User ${email} ${userOperation} with role ${role}`,
         userId
       }),
       { 
@@ -182,7 +191,7 @@ serve(async (req) => {
           ...corsHeaders, 
           'Content-Type': 'application/json' 
         }, 
-        status: existingUser ? 200 : 201 
+        status: 200
       }
     )
   } catch (error) {

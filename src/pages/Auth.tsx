@@ -12,7 +12,7 @@ const Auth = () => {
   const mode = searchParams.get("mode") || "login";
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isCreatingTestAccounts, setIsCreatingTestAccounts] = useState(false);
 
   useEffect(() => {
     // Check current auth status
@@ -24,12 +24,6 @@ const Auth = () => {
           toast.error(`Authentication error: ${error.message}`);
         }
         setSession(data.session);
-        
-        // Check if user is admin (for test data seeding button)
-        if (data.session) {
-          const { data: user } = await supabase.auth.getUser();
-          setIsAdmin(user?.user?.user_metadata?.role === 'admin');
-        }
       } catch (error) {
         console.error("Error checking session:", error);
         toast.error(`Authentication error: ${error.message}`);
@@ -46,20 +40,18 @@ const Auth = () => {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log("Auth state changed:", _event, session ? "User logged in" : "No session");
       setSession(session);
-      
-      if (session) {
-        const role = session.user?.user_metadata?.role;
-        setIsAdmin(role === 'admin');
-      } else {
-        setIsAdmin(false);
-      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
   const handleSeedTestData = async () => {
-    await seedTestData();
+    setIsCreatingTestAccounts(true);
+    try {
+      await seedTestData();
+    } finally {
+      setIsCreatingTestAccounts(false);
+    }
   };
 
   // If still loading, show a loading indicator
@@ -101,9 +93,20 @@ const Auth = () => {
               onClick={handleSeedTestData} 
               variant="outline" 
               className="w-full"
+              disabled={isCreatingTestAccounts}
             >
-              Create Test Accounts
+              {isCreatingTestAccounts ? "Creating Test Accounts..." : "Create Test Accounts"}
             </Button>
+            
+            {mode === "login" && (
+              <div className="mt-4 text-center text-sm">
+                <p className="text-gray-600">Test Credentials:</p>
+                <div className="mt-2 p-3 bg-gray-50 rounded text-left">
+                  <p><strong>Admin:</strong> admin@skinnect.com / Admin123!</p>
+                  <p><strong>Vendor:</strong> vendor@skinnect.com / Vendor123!</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
