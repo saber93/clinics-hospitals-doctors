@@ -29,6 +29,7 @@ const Auth = () => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("Auth state changed:", _event, session ? "User logged in" : "No session");
       setSession(session);
     });
 
@@ -46,6 +47,7 @@ const Auth = () => {
 
   // If authenticated, redirect to dashboard
   if (session) {
+    console.log("User is authenticated, redirecting to dashboard");
     return <Navigate to="/dashboard" />;
   }
 

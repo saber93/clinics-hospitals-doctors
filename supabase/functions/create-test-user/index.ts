@@ -36,68 +36,108 @@ serve(async (req) => {
   // Now we can use supabase_admin to create users, etc
   try {
     const { email, password, role, name } = await req.json()
+    console.log(`Processing user creation/update for ${email} with role ${role}`)
     
     // Check if user already exists
-    const { data: existingUser, error: userError } = await supabaseClient.auth
-      .admin.getUserByEmail(email)
-    
-    if (userError && userError.status !== 400) {
-      throw userError
+    let existingUser = null
+    try {
+      const { data, error } = await supabaseClient.auth.admin.getUserByEmail(email)
+      if (!error && data) {
+        existingUser = data
+        console.log(`Found existing user: ${email}`)
+      }
+    } catch (err) {
+      console.log(`Error checking for existing user: ${err.message}`)
+      // Continue as if user doesn't exist
     }
+    
+    let userId
     
     if (existingUser) {
-      // Update existing user - first update auth metadata
-      const { error: updateUserError } = await supabaseClient.auth.admin.updateUserById(
+      // Update existing user
+      console.log(`Updating existing user: ${email}`)
+      const { data, error } = await supabaseClient.auth.admin.updateUserById(
         existingUser.id,
-        { email_confirm: true, user_metadata: { role, name } }
+        { 
+          email,
+          password,
+          email_confirm: true,
+          user_metadata: { role, name } 
+        }
       )
       
-      if (updateUserError) throw updateUserError
+      if (error) throw error
       
-      // Then update profile
-      const { error: updateProfileError } = await supabaseClient
-        .from('profiles')
-        .update({ role, name })
-        .eq('id', existingUser.id)
+      userId = existingUser.id
+      console.log(`Updated user ${email} successfully`)
+    } else {
+      // Create new user
+      console.log(`Creating new user: ${email}`)
+      const { data, error } = await supabaseClient.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+        user_metadata: { role, name }
+      })
       
-      if (updateProfileError) throw updateProfileError
+      if (error) {
+        console.log(`Error creating user: ${JSON.stringify(error)}`)
+        throw error
+      }
       
-      return new Response(
-        JSON.stringify({ message: `User ${email} updated with role ${role}` }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
-      )
+      userId = data.user.id
+      console.log(`Created user ${email} with ID ${userId} successfully`)
     }
     
-    // Create new user
-    const { data: newUser, error: createError } = await supabaseClient.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true,
-      user_metadata: { role, name }
-    })
-    
-    if (createError) throw createError
-    
-    // Ensure profile exists (the trigger might have created it, but let's be sure)
-    const { error: upsertError } = await supabaseClient
-      .from('profiles')
-      .upsert({ 
-        id: newUser.user.id, 
-        role,
-        name 
-      })
-    
-    if (upsertError) throw upsertError
+    // Ensure profile exists with correct role
+    if (userId) {
+      console.log(`Updating profile for user ${userId} with role ${role}`)
+      const { error } = await supabaseClient
+        .from('profiles')
+        .upsert({ 
+          id: userId, 
+          role,
+          name 
+        })
+      
+      if (error) {
+        console.log(`Error updating profile: ${JSON.stringify(error)}`)
+        throw error
+      }
+      
+      console.log(`Profile updated successfully for ${email}`)
+    }
     
     return new Response(
-      JSON.stringify({ message: `User ${email} created with role ${role}` }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 201 }
+      JSON.stringify({ 
+        success: true,
+        message: existingUser 
+          ? `User ${email} updated with role ${role}` 
+          : `User ${email} created with role ${role}`,
+        userId
+      }),
+      { 
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        }, 
+        status: existingUser ? 200 : 201 
+      }
     )
   } catch (error) {
     console.error("Error:", error)
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      JSON.stringify({ 
+        success: false,
+        error: error.message 
+      }),
+      { 
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        }, 
+        status: 400 
+      }
     )
   }
 })

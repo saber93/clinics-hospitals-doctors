@@ -68,6 +68,8 @@ const LoginForm = () => {
 
     try {
       if (mode === "login") {
+        console.log(`Attempting to log in with email: ${formData.email}`);
+        
         // Sign in with Supabase
         const { data, error } = await supabase.auth.signInWithPassword({
           email: formData.email,
@@ -75,9 +77,11 @@ const LoginForm = () => {
         });
 
         if (error) {
+          console.error("Login error:", error);
           throw error;
         }
 
+        console.log("Login successful:", data);
         toast.success("Logged in successfully!");
         navigate("/dashboard");
       } else {
@@ -103,7 +107,13 @@ const LoginForm = () => {
       }
     } catch (error: any) {
       console.error("Authentication error:", error);
-      toast.error(error.message || "Authentication failed. Please try again.");
+      
+      // Provide more specific error messages
+      if (error.message.includes("Invalid login credentials")) {
+        toast.error("Invalid email or password. Please check your credentials and try again.");
+      } else {
+        toast.error(error.message || "Authentication failed. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
