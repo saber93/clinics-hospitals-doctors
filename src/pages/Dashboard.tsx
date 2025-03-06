@@ -9,6 +9,25 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Users, Store, Calendar, TrendingUp, Activity, Package, BarChart as BarChartIcon } from "lucide-react";
 
+const vendorStats = [
+  { name: 'Jan', count: 5 },
+  { name: 'Feb', count: 8 },
+  { name: 'Mar', count: 12 },
+  { name: 'Apr', count: 10 },
+  { name: 'May', count: 15 },
+  { name: 'Jun', count: 24 },
+];
+
+const categoryData = [
+  { name: 'Beauty', value: 35 },
+  { name: 'Health', value: 25 },
+  { name: 'Fitness', value: 20 },
+  { name: 'Wellness', value: 15 },
+  { name: 'Spa', value: 5 },
+];
+
+const COLORS = ['#8884d8', '#83a6ed', '#8dd1e1', '#82ca9d', '#a4de6c'];
+
 const ClientDashboard = () => (
   <div className="p-6">
     <h2 className="text-2xl font-bold mb-4">Client Dashboard</h2>
@@ -434,3 +453,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
