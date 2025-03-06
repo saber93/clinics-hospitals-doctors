@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -52,16 +53,32 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
-				}
+				skin: {
+					50: '#f7f8f8',
+					100: '#eef0f2',
+					200: '#d9dfe5',
+					300: '#b8c4d0',
+					400: '#92a2b6',
+					500: '#738399',
+					600: '#5d697d',
+					700: '#4c5565',
+					800: '#414855',
+					900: '#383d47',
+					950: '#25282f',
+				},
+				mint: {
+					50: '#f0fdf6',
+					100: '#dcfcec',
+					200: '#baf5d9',
+					300: '#85edc1',
+					400: '#31d795',
+					500: '#0fbf7a',
+					600: '#06aa65',
+					700: '#088554',
+					800: '#0a6a45',
+					900: '#0a573a',
+					950: '#05321f',
+				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +101,21 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'fade-in': {
+					'0%': { opacity: '0' },
+					'100%': { opacity: '1' }
+				},
+				'fade-out': {
+					'0%': { opacity: '1' },
+					'100%': { opacity: '0' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.3s ease-in-out',
+				'fade-out': 'fade-out 0.3s ease-in-out',
 			}
 		}
 	},
