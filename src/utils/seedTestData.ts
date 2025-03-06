@@ -20,12 +20,14 @@ export const seedTestData = async () => {
     
     if (adminError) {
       console.error("Error calling create-test-user function for admin:", adminError);
+      toast.dismiss();
       toast.error(`Failed to create admin account: ${adminError.message || 'Unknown error'}`);
       return;
     } 
     
     if (!adminData?.success) {
       console.error("Error creating admin account:", adminData?.error);
+      toast.dismiss();
       toast.error(`Failed to create admin account: ${adminData?.error || 'Unknown error'}`);
       return;
     }
@@ -45,12 +47,14 @@ export const seedTestData = async () => {
     
     if (vendorError) {
       console.error("Error calling create-test-user function for vendor:", vendorError);
+      toast.dismiss();
       toast.error(`Failed to create vendor account: ${vendorError.message || 'Unknown error'}`);
       return;
     }
     
     if (!vendorData?.success) {
       console.error("Error creating vendor account:", vendorData?.error);
+      toast.dismiss();
       toast.error(`Failed to create vendor account: ${vendorData?.error || 'Unknown error'}`);
       return;
     }

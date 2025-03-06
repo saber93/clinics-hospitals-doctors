@@ -20,16 +20,17 @@ serve(async (req) => {
   }
 
   // Create a Supabase client with the Auth context of the function
-  const supabaseClient = createClient(
+  const supabaseAdmin = createClient(
     // Supabase API URL - env var exposed by default.
     Deno.env.get('SUPABASE_URL') ?? '',
     // Supabase API ANON KEY - env var exposed by default.
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
     // Create client with Auth context of the function
     {
-      global: {
-        headers: { Authorization: req.headers.get('Authorization')! },
-      },
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
     }
   )
 
@@ -41,16 +42,22 @@ serve(async (req) => {
     // Force delete any user that might have the same email (to ensure clean setup)
     try {
       console.log(`Attempting to delete existing user with email: ${email}`)
-      const { data: userData } = await supabaseClient.auth.admin.listUsers();
+      const { data: userData, error: listError } = await supabaseAdmin.auth.admin.listUsers();
+      
+      if (listError) {
+        console.error(`Error listing users: ${JSON.stringify(listError)}`);
+        throw new Error(`Failed to list users: ${listError.message}`);
+      }
       
       const existingUser = userData?.users?.find(user => user.email === email);
       
       if (existingUser) {
         console.log(`Found existing user with email ${email}, deleting...`);
-        const { error: deleteError } = await supabaseClient.auth.admin.deleteUser(existingUser.id);
+        const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(existingUser.id);
         
         if (deleteError) {
-          console.log(`Error deleting user: ${JSON.stringify(deleteError)}`);
+          console.error(`Error deleting user: ${JSON.stringify(deleteError)}`);
+          throw new Error(`Failed to delete user: ${deleteError.message}`);
         } else {
           console.log(`Successfully deleted user with email: ${email}`);
         }
@@ -58,12 +65,13 @@ serve(async (req) => {
         console.log(`No existing user found with email: ${email}`);
       }
     } catch (err) {
-      console.log(`Error checking/deleting existing user: ${err.message}`);
+      console.error(`Error checking/deleting existing user: ${err.message}`);
+      throw new Error(`Failed to check/delete existing user: ${err.message}`);
     }
     
     // Create new user
     console.log(`Creating new user: ${email}`);
-    const { data, error } = await supabaseClient.auth.admin.createUser({
+    const { data, error } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
       email_confirm: true,
@@ -71,8 +79,8 @@ serve(async (req) => {
     });
     
     if (error) {
-      console.log(`Error creating user: ${JSON.stringify(error)}`);
-      throw error;
+      console.error(`Error creating user: ${JSON.stringify(error)}`);
+      throw new Error(`Failed to create user: ${error.message}`);
     }
     
     const userId = data.user.id;
@@ -82,15 +90,20 @@ serve(async (req) => {
     console.log(`Ensuring profile exists for user ${userId} with role ${role}`);
     
     // First check if profile already exists
-    const { data: existingProfile } = await supabaseClient
+    const { data: existingProfile, error: profileFetchError } = await supabaseAdmin
       .from('profiles')
       .select('*')
       .eq('id', userId)
       .maybeSingle();
       
+    if (profileFetchError) {
+      console.error(`Error checking existing profile: ${JSON.stringify(profileFetchError)}`);
+      throw new Error(`Failed to check existing profile: ${profileFetchError.message}`);
+    }
+      
     if (existingProfile) {
       console.log(`Updating existing profile for ${email}`);
-      const { error: profileUpdateError } = await supabaseClient
+      const { error: profileUpdateError } = await supabaseAdmin
         .from('profiles')
         .update({ 
           role,
@@ -100,13 +113,13 @@ serve(async (req) => {
         .eq('id', userId);
         
       if (profileUpdateError) {
-        console.log(`Error updating profile: ${JSON.stringify(profileUpdateError)}`);
-        throw profileUpdateError;
+        console.error(`Error updating profile: ${JSON.stringify(profileUpdateError)}`);
+        throw new Error(`Failed to update profile: ${profileUpdateError.message}`);
       }
       console.log(`Profile updated successfully for ${email}`);
     } else {
       console.log(`Creating new profile for ${email}`);
-      const { error: profileInsertError } = await supabaseClient
+      const { error: profileInsertError } = await supabaseAdmin
         .from('profiles')
         .insert({ 
           id: userId, 
@@ -117,39 +130,14 @@ serve(async (req) => {
         });
         
       if (profileInsertError) {
-        console.log(`Error creating profile: ${JSON.stringify(profileInsertError)}`);
-        throw profileInsertError;
+        console.error(`Error creating profile: ${JSON.stringify(profileInsertError)}`);
+        throw new Error(`Failed to create profile: ${profileInsertError.message}`);
       }
       console.log(`Profile created successfully for ${email}`);
     }
     
-    // Test login to verify credentials are working
-    console.log(`Testing login credentials for ${email}`);
-    const { data: loginTest, error: loginError } = await supabaseClient.auth.signInWithPassword({
-      email,
-      password
-    });
-    
-    if (loginError) {
-      console.log(`WARNING: Test login failed for ${email}: ${JSON.stringify(loginError)}`);
-      return new Response(
-        JSON.stringify({ 
-          success: true,
-          message: `User ${email} created with role ${role}, but test login failed!`,
-          userId,
-          warning: `Test login failed: ${loginError.message}`
-        }),
-        { 
-          headers: { 
-            ...corsHeaders, 
-            'Content-Type': 'application/json' 
-          }, 
-          status: 200
-        }
-      );
-    }
-    
-    console.log(`Test login succeeded for ${email}`);
+    // Return success response
+    console.log(`Test account created successfully for ${email} with role ${role}`);
     return new Response(
       JSON.stringify({ 
         success: true,
@@ -165,7 +153,7 @@ serve(async (req) => {
       }
     )
   } catch (error) {
-    console.error("Error:", error)
+    console.error("Error:", error.message)
     return new Response(
       JSON.stringify({ 
         success: false,
