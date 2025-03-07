@@ -53,6 +53,29 @@ serve(async (req) => {
       
       if (existingUser) {
         console.log(`Found existing user with email ${email}, deleting...`);
+        
+        // First delete any related rows in other tables
+        const { error: deleteServicesError } = await supabaseAdmin
+          .from('services')
+          .delete()
+          .eq('vendor_id', existingUser.id);
+          
+        if (deleteServicesError) {
+          console.log(`Note: Error deleting services: ${JSON.stringify(deleteServicesError)}`);
+          // Continue execution - this is not fatal
+        }
+        
+        const { error: deleteReservationsError } = await supabaseAdmin
+          .from('reservations')
+          .delete()
+          .or(`client_id.eq.${existingUser.id},vendor_id.eq.${existingUser.id}`);
+          
+        if (deleteReservationsError) {
+          console.log(`Note: Error deleting reservations: ${JSON.stringify(deleteReservationsError)}`);
+          // Continue execution - this is not fatal
+        }
+        
+        // Now delete the user
         const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(existingUser.id);
         
         if (deleteError) {

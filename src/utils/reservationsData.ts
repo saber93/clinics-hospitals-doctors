@@ -26,6 +26,9 @@ export const getUserReservations = async (userId: string, userRole: string) => {
   try {
     console.log(`Getting reservations for user ${userId} with role ${userRole}`);
     
+    // Debug log to show we're fetching reservations
+    console.log("Starting to fetch reservations from database");
+    
     // Fetch all reservations for admins without any user ID filter
     let query = supabase.from('reservations').select('*');
     

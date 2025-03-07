@@ -116,9 +116,10 @@ export const seedTestData = async () => {
       }
     ];
     
+    // Fixed: Remove the onConflict option since there's no unique constraint defined
     const { data: servicesData, error: servicesError } = await supabase
       .from('services')
-      .upsert(services, { onConflict: 'vendor_id, name' })
+      .upsert(services)
       .select();
       
     if (servicesError) {
