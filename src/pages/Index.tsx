@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useEffect, useRef } from "react";
@@ -270,12 +269,16 @@ const Index = () => {
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="border-none shadow-lg bg-white fade-in-left stagger-delay-2 hover-lift hover-rotate">
+            <Card className="border-none shadow-lg bg-white fade-in-left stagger-delay-2 testimonial-card">
               <CardContent className="pt-6">
                 <div className="flex items-center mb-4">
                   <div className="mr-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/20 overflow-hidden flex items-center justify-center">
-                      <Heart className="text-primary h-6 w-6" />
+                    <div className="w-12 h-12 rounded-full overflow-hidden">
+                      <img 
+                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80" 
+                        alt="Sarah Johnson" 
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                   </div>
                   <div>
@@ -292,12 +295,16 @@ const Index = () => {
                 <p className="text-gray-600 italic">"Skinnect made it so easy to find the perfect facial treatment. The booking process was smooth, and I could see all the reviews before making my choice."</p>
               </CardContent>
             </Card>
-            <Card className="border-none shadow-lg bg-white fade-in-up stagger-delay-3 hover-lift hover-rotate">
+            <Card className="border-none shadow-lg bg-white fade-in-up stagger-delay-3 testimonial-card">
               <CardContent className="pt-6">
                 <div className="flex items-center mb-4">
                   <div className="mr-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/20 overflow-hidden flex items-center justify-center">
-                      <Heart className="text-primary h-6 w-6" />
+                    <div className="w-12 h-12 rounded-full overflow-hidden">
+                      <img 
+                        src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80" 
+                        alt="Michael Davis" 
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                   </div>
                   <div>
@@ -314,12 +321,16 @@ const Index = () => {
                 <p className="text-gray-600 italic">"As someone who travels frequently, finding consistent quality skincare services was always a challenge until I discovered Skinnect. Now I can book appointments anywhere."</p>
               </CardContent>
             </Card>
-            <Card className="border-none shadow-lg bg-white fade-in-right stagger-delay-4 hover-lift hover-rotate">
+            <Card className="border-none shadow-lg bg-white fade-in-right stagger-delay-4 testimonial-card">
               <CardContent className="pt-6">
                 <div className="flex items-center mb-4">
                   <div className="mr-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/20 overflow-hidden flex items-center justify-center">
-                      <Heart className="text-primary h-6 w-6" />
+                    <div className="w-12 h-12 rounded-full overflow-hidden">
+                      <img 
+                        src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80" 
+                        alt="Jessica Wong" 
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                   </div>
                   <div>
@@ -340,7 +351,7 @@ const Index = () => {
         </div>
       </section>
 
-      <section ref={faqRef} className="py-20 px-4 md:px-8">
+      <section className="py-20 px-4 md:px-8">
         <div className="max-w-3xl mx-auto scroll-animate-container">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 fade-in-up">Frequently Asked Questions</h2>
