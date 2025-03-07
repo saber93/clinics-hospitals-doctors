@@ -28,9 +28,7 @@ export const getUserReservations = async (userId: string, userRole: string) => {
       .from('reservations')
       .select(`
         *,
-        services:service_id (name, duration, price),
-        clients:client_id (name),
-        vendors:vendor_id (name)
+        services(name, duration, price)
       `);
     
     // Filter based on user role
@@ -47,6 +45,52 @@ export const getUserReservations = async (userId: string, userRole: string) => {
       return [];
     }
     
+    // Fetch related user data separately since we can't join directly
+    if (data && data.length > 0) {
+      // Get unique user IDs from reservations
+      const clientIds = [...new Set(data.map(r => r.client_id).filter(Boolean))];
+      const vendorIds = [...new Set(data.map(r => r.vendor_id).filter(Boolean))];
+      
+      // Fetch client profiles
+      let clientProfiles: Record<string, any> = {};
+      if (clientIds.length > 0) {
+        const { data: clientData } = await supabase
+          .from('profiles')
+          .select('id, name')
+          .in('id', clientIds);
+          
+        if (clientData) {
+          clientProfiles = clientData.reduce((acc, profile) => {
+            acc[profile.id] = profile;
+            return acc;
+          }, {} as Record<string, any>);
+        }
+      }
+      
+      // Fetch vendor profiles
+      let vendorProfiles: Record<string, any> = {};
+      if (vendorIds.length > 0) {
+        const { data: vendorData } = await supabase
+          .from('profiles')
+          .select('id, name')
+          .in('id', vendorIds);
+          
+        if (vendorData) {
+          vendorProfiles = vendorData.reduce((acc, profile) => {
+            acc[profile.id] = profile;
+            return acc;
+          }, {} as Record<string, any>);
+        }
+      }
+      
+      // Attach profile data to reservations
+      return data.map(reservation => ({
+        ...reservation,
+        clients: clientProfiles[reservation.client_id] || { name: 'Unknown Client' },
+        vendors: vendorProfiles[reservation.vendor_id] || { name: 'Unknown Provider' }
+      }));
+    }
+    
     return data || [];
   } catch (error) {
     console.error("Error in getUserReservations:", error);
@@ -57,19 +101,40 @@ export const getUserReservations = async (userId: string, userRole: string) => {
 // Function to get available services
 export const getAvailableServices = async () => {
   try {
-    const { data, error } = await supabase
+    const { data: servicesData, error } = await supabase
       .from('services')
-      .select(`
-        *,
-        vendors:vendor_id (name)
-      `);
+      .select('*');
     
     if (error) {
       console.error("Error fetching services:", error);
       return [];
     }
     
-    return data || [];
+    // Fetch vendor information for each service
+    if (servicesData && servicesData.length > 0) {
+      const vendorIds = [...new Set(servicesData.map(s => s.vendor_id).filter(Boolean))];
+      
+      if (vendorIds.length > 0) {
+        const { data: vendorData } = await supabase
+          .from('profiles')
+          .select('id, name')
+          .in('id', vendorIds);
+          
+        if (vendorData) {
+          const vendorProfiles = vendorData.reduce((acc, profile) => {
+            acc[profile.id] = profile;
+            return acc;
+          }, {} as Record<string, any>);
+          
+          return servicesData.map(service => ({
+            ...service,
+            vendors: vendorProfiles[service.vendor_id] || { name: 'Unknown Provider' }
+          }));
+        }
+      }
+    }
+    
+    return servicesData || [];
   } catch (error) {
     console.error("Error in getAvailableServices:", error);
     return [];
