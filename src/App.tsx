@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import Reservations from "./pages/Reservations";
 import Offers from "./pages/Offers";
 import Vouchers from "./pages/Vouchers";
+import AllBookings from "./pages/AllBookings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -64,6 +65,10 @@ const App = () => {
             <Route 
               path="/reservations" 
               element={session ? <Reservations /> : <Navigate to="/auth" />} 
+            />
+            <Route 
+              path="/all-bookings" 
+              element={session ? <AllBookings /> : <Navigate to="/auth" />} 
             />
             <Route 
               path="/offers" 

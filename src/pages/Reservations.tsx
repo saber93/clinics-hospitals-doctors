@@ -1,23 +1,23 @@
-
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { getUserReservations, getAvailableServices, createReservation } from "@/utils/reservationsData";
+import { Button } from "@/components/ui/button";
+import { List, CalendarCheck } from "lucide-react";
 
 const Reservations = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const userType = searchParams.get("userType") || "client";
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const [services, setServices] = useState<any[]>([]);
-  const [reservations, setReservations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
   
-  // Mock time slots
   const timeSlots = [
     "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", 
     "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"
@@ -28,7 +28,6 @@ const Reservations = () => {
       try {
         setLoading(true);
         
-        // Get current user
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session) {
@@ -38,7 +37,6 @@ const Reservations = () => {
         
         setUserId(session.user.id);
         
-        // Get user role
         const { data: profile } = await supabase
           .from('profiles')
           .select('role')
@@ -49,11 +47,9 @@ const Reservations = () => {
           setUserRole(profile.role);
         }
         
-        // Get services
         const servicesData = await getAvailableServices();
         setServices(servicesData);
         
-        // Get reservations
         if (session.user.id) {
           const role = profile?.role || 'client';
           const reservationsData = await getUserReservations(session.user.id, role);
@@ -77,7 +73,6 @@ const Reservations = () => {
     }
     
     try {
-      // Get service details
       const service = services.find(s => s.id === selectedService);
       
       if (!service) {
@@ -87,7 +82,6 @@ const Reservations = () => {
       
       const formattedDate = selectedDate.toISOString().split('T')[0];
       
-      // Create reservation
       await createReservation(
         userId,
         service.vendor_id,
@@ -98,12 +92,10 @@ const Reservations = () => {
       
       toast.success("Appointment booked successfully!");
       
-      // Reset form
       setSelectedDate(new Date());
       setSelectedTimeSlot(null);
       setSelectedService(null);
       
-      // Refresh reservations
       if (userId && userRole) {
         const reservationsData = await getUserReservations(userId, userRole);
         setReservations(reservationsData);
@@ -127,7 +119,17 @@ const Reservations = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold mb-8">{userType === "client" ? "Book an Appointment" : "Manage Appointments"}</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold">Book an Appointment</h1>
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/all-bookings')}
+            className="flex items-center"
+          >
+            <List className="mr-2 h-4 w-4" />
+            View All Bookings
+          </Button>
+        </div>
         
         {userType === "client" ? (
           <div className="bg-white rounded-lg shadow p-6">
@@ -241,58 +243,22 @@ const Reservations = () => {
         ) : (
           <div className="bg-white rounded-lg shadow">
             <div className="p-6 border-b">
-              <h2 className="text-xl font-semibold">Appointment Calendar</h2>
-              <p className="text-gray-500">View and manage upcoming appointments</p>
+              <h2 className="text-xl font-semibold">Appointment Management</h2>
+              <p className="text-gray-500">Manage your availability and appointment settings</p>
             </div>
             <div className="p-6">
-              {reservations.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {reservations.map((reservation) => (
-                        <tr key={reservation.id}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{reservation.clients?.name || 'Unknown Client'}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{reservation.services?.name || 'Unknown Service'}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(reservation.date).toLocaleDateString()}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{reservation.time}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                              ${reservation.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
-                                reservation.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                                reservation.status === 'completed' ? 'bg-blue-100 text-blue-800' :
-                                'bg-yellow-100 text-yellow-800'}`}>
-                              {reservation.status.charAt(0).toUpperCase() + reservation.status.slice(1)}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <button className="text-primary hover:text-primary/80 mr-2">Confirm</button>
-                            <button className="text-red-500 hover:text-red-600">Cancel</button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+              <div className="text-center py-8">
+                <CalendarCheck className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Manage Your Appointments</h3>
+                <p className="text-gray-500 max-w-md mx-auto mb-6">
+                  Set your available time slots, services, and manage incoming appointments
+                </p>
+                <div className="flex justify-center space-x-4">
+                  <Button onClick={() => navigate('/all-bookings')}>
+                    View All Bookings
+                  </Button>
                 </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-gray-500 mb-4">No appointments scheduled yet</p>
-                  {userType === "vendor" && (
-                    <button className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 py-2 px-4 rounded">
-                      Update Available Time Slots
-                    </button>
-                  )}
-                </div>
-              )}
+              </div>
             </div>
           </div>
         )}

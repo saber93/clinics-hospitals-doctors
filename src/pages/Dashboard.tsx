@@ -28,51 +28,59 @@ const categoryData = [
 
 const COLORS = ['#8884d8', '#83a6ed', '#8dd1e1', '#82ca9d', '#a4de6c'];
 
-const ClientDashboard = () => (
-  <div className="p-6">
-    <h2 className="text-2xl font-bold mb-4">Client Dashboard</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div className="border rounded-lg p-4 shadow-sm">
-        <h3 className="text-lg font-semibold mb-2">My Appointments</h3>
-        <p className="text-gray-600 mb-4">You have no upcoming appointments</p>
-        <Button variant="default">Book Now</Button>
-      </div>
-      <div className="border rounded-lg p-4 shadow-sm">
-        <h3 className="text-lg font-semibold mb-2">My Vouchers</h3>
-        <p className="text-gray-600 mb-4">You have no active vouchers</p>
-        <Button variant="outline">Browse Offers</Button>
-      </div>
-      <div className="border rounded-lg p-4 shadow-sm">
-        <h3 className="text-lg font-semibold mb-2">Special Offers</h3>
-        <p className="text-gray-600 mb-4">Check out the latest deals!</p>
-        <Button variant="outline">View All</Button>
+const ClientDashboard = () => {
+  const navigate = useNavigate();
+  
+  return (
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-4">Client Dashboard</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="border rounded-lg p-4 shadow-sm">
+          <h3 className="text-lg font-semibold mb-2">My Appointments</h3>
+          <p className="text-gray-600 mb-4">You have no upcoming appointments</p>
+          <Button variant="default" onClick={() => navigate("/reservations")}>Book Now</Button>
+        </div>
+        <div className="border rounded-lg p-4 shadow-sm">
+          <h3 className="text-lg font-semibold mb-2">My Bookings</h3>
+          <p className="text-gray-600 mb-4">View all your appointments</p>
+          <Button variant="outline" onClick={() => navigate("/all-bookings")}>View All</Button>
+        </div>
+        <div className="border rounded-lg p-4 shadow-sm">
+          <h3 className="text-lg font-semibold mb-2">Special Offers</h3>
+          <p className="text-gray-600 mb-4">Check out the latest deals!</p>
+          <Button variant="outline" onClick={() => navigate("/offers")}>View All</Button>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
-const VendorDashboard = () => (
-  <div className="p-6">
-    <h2 className="text-2xl font-bold mb-4">Vendor Dashboard</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div className="border rounded-lg p-4 shadow-sm">
-        <h3 className="text-lg font-semibold mb-2">Appointments Today</h3>
-        <p className="text-gray-600 mb-4">No appointments scheduled for today</p>
-        <Button variant="default">View Calendar</Button>
-      </div>
-      <div className="border rounded-lg p-4 shadow-sm">
-        <h3 className="text-lg font-semibold mb-2">Active Offers</h3>
-        <p className="text-gray-600 mb-4">You have no active offers</p>
-        <Button variant="outline">Create Offer</Button>
-      </div>
-      <div className="border rounded-lg p-4 shadow-sm">
-        <h3 className="text-lg font-semibold mb-2">Voucher Management</h3>
-        <p className="text-gray-600 mb-4">Create and manage vouchers</p>
-        <Button variant="outline">Manage Vouchers</Button>
+const VendorDashboard = () => {
+  const navigate = useNavigate();
+  
+  return (
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-4">Vendor Dashboard</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="border rounded-lg p-4 shadow-sm">
+          <h3 className="text-lg font-semibold mb-2">Appointments Today</h3>
+          <p className="text-gray-600 mb-4">No appointments scheduled for today</p>
+          <Button variant="default" onClick={() => navigate("/reservations")}>Manage Calendar</Button>
+        </div>
+        <div className="border rounded-lg p-4 shadow-sm">
+          <h3 className="text-lg font-semibold mb-2">All Bookings</h3>
+          <p className="text-gray-600 mb-4">View and manage all bookings</p>
+          <Button variant="outline" onClick={() => navigate("/all-bookings")}>View All</Button>
+        </div>
+        <div className="border rounded-lg p-4 shadow-sm">
+          <h3 className="text-lg font-semibold mb-2">Voucher Management</h3>
+          <p className="text-gray-600 mb-4">Create and manage vouchers</p>
+          <Button variant="outline" onClick={() => navigate("/vouchers")}>Manage Vouchers</Button>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const AdminDashboard = ({ handleSeedData }: { handleSeedData: () => Promise<void> }) => {
   const navigate = useNavigate();
@@ -453,4 +461,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
