@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import GlassyNavbar from "./components/layout/GlassyNavbar";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -64,32 +65,35 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <div className="min-h-screen">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/dashboard" />} />
-              <Route 
-                path="/dashboard" 
-                element={session ? <Dashboard /> : <Navigate to="/auth" />} 
-              />
-              <Route 
-                path="/reservations" 
-                element={session ? <Reservations /> : <Navigate to="/auth" />} 
-              />
-              <Route 
-                path="/all-bookings" 
-                element={session ? <AllBookings /> : <Navigate to="/auth" />} 
-              />
-              <Route 
-                path="/offers" 
-                element={session ? <Offers /> : <Navigate to="/auth" />} 
-              />
-              <Route 
-                path="/vouchers" 
-                element={session ? <Vouchers /> : <Navigate to="/auth" />} 
-              />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <GlassyNavbar />
+            <div className="pt-24">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/dashboard" />} />
+                <Route 
+                  path="/dashboard" 
+                  element={session ? <Dashboard /> : <Navigate to="/auth" />} 
+                />
+                <Route 
+                  path="/reservations" 
+                  element={session ? <Reservations /> : <Navigate to="/auth" />} 
+                />
+                <Route 
+                  path="/all-bookings" 
+                  element={session ? <AllBookings /> : <Navigate to="/auth" />} 
+                />
+                <Route 
+                  path="/offers" 
+                  element={session ? <Offers /> : <Navigate to="/auth" />} 
+                />
+                <Route 
+                  path="/vouchers" 
+                  element={session ? <Vouchers /> : <Navigate to="/auth" />} 
+                />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
           </div>
         </BrowserRouter>
       </TooltipProvider>
