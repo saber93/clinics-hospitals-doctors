@@ -5,7 +5,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Mail, MapPin, Phone, Store } from "lucide-react";
+import { ArrowLeft, Mail, MapPin, Phone, Store, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 interface VendorProfile {
   id: string;
@@ -19,7 +20,9 @@ interface VendorProfile {
 const TotalVendors = () => {
   const navigate = useNavigate();
   const [vendors, setVendors] = useState<VendorProfile[]>([]);
+  const [filteredVendors, setFilteredVendors] = useState<VendorProfile[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchVendors = async () => {
@@ -50,6 +53,7 @@ const TotalVendors = () => {
         );
 
         setVendors(vendorsWithEmail);
+        setFilteredVendors(vendorsWithEmail);
       } catch (error) {
         console.error("Error fetching vendors:", error);
         toast.error("Failed to load vendors");
@@ -60,6 +64,21 @@ const TotalVendors = () => {
 
     fetchVendors();
   }, []);
+
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setFilteredVendors(vendors);
+    } else {
+      const filtered = vendors.filter(
+        (vendor) =>
+          vendor.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          vendor.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          vendor.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          vendor.phone?.includes(searchTerm)
+      );
+      setFilteredVendors(filtered);
+    }
+  }, [searchTerm, vendors]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -81,7 +100,20 @@ const TotalVendors = () => {
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Dashboard
         </Button>
-        <h2 className="text-2xl font-bold">Total Vendors ({vendors.length})</h2>
+        <h2 className="text-2xl font-bold">Total Vendors ({filteredVendors.length})</h2>
+      </div>
+
+      <div className="mb-6 relative max-w-md">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Input
+            type="text"
+            placeholder="Search vendors by name, email, location or phone"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10 w-full"
+          />
+        </div>
       </div>
 
       {loading ? (
@@ -89,9 +121,17 @@ const TotalVendors = () => {
           <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
           <p className="ml-2 text-gray-600">Loading vendors...</p>
         </div>
+      ) : filteredVendors.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-64 text-center">
+          <Store className="w-16 h-16 text-gray-300 mb-4" />
+          <h3 className="text-xl font-medium text-gray-700 mb-2">No vendors found</h3>
+          <p className="text-gray-500">
+            {searchTerm ? "Try a different search term" : "No vendors have been added yet"}
+          </p>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {vendors.map((vendor) => (
+          {filteredVendors.map((vendor) => (
             <Card key={vendor.id} className="hover:shadow-md transition-shadow">
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg flex items-center">

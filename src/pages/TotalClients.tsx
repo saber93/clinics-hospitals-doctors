@@ -5,7 +5,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Mail, Phone, User } from "lucide-react";
+import { ArrowLeft, Mail, Phone, User, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 interface ClientProfile {
   id: string;
@@ -18,7 +19,9 @@ interface ClientProfile {
 const TotalClients = () => {
   const navigate = useNavigate();
   const [clients, setClients] = useState<ClientProfile[]>([]);
+  const [filteredClients, setFilteredClients] = useState<ClientProfile[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -46,6 +49,7 @@ const TotalClients = () => {
         );
 
         setClients(clientsWithEmail);
+        setFilteredClients(clientsWithEmail);
       } catch (error) {
         console.error("Error fetching clients:", error);
         toast.error("Failed to load clients");
@@ -56,6 +60,20 @@ const TotalClients = () => {
 
     fetchClients();
   }, []);
+
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setFilteredClients(clients);
+    } else {
+      const filtered = clients.filter(
+        (client) =>
+          client.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          client.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          client.phone?.includes(searchTerm)
+      );
+      setFilteredClients(filtered);
+    }
+  }, [searchTerm, clients]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -77,7 +95,20 @@ const TotalClients = () => {
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Dashboard
         </Button>
-        <h2 className="text-2xl font-bold">Total Clients ({clients.length})</h2>
+        <h2 className="text-2xl font-bold">Total Clients ({filteredClients.length})</h2>
+      </div>
+
+      <div className="mb-6 relative max-w-md">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Input
+            type="text"
+            placeholder="Search clients by name, email or phone"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10 w-full"
+          />
+        </div>
       </div>
 
       {loading ? (
@@ -85,9 +116,17 @@ const TotalClients = () => {
           <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
           <p className="ml-2 text-gray-600">Loading clients...</p>
         </div>
+      ) : filteredClients.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-64 text-center">
+          <User className="w-16 h-16 text-gray-300 mb-4" />
+          <h3 className="text-xl font-medium text-gray-700 mb-2">No clients found</h3>
+          <p className="text-gray-500">
+            {searchTerm ? "Try a different search term" : "No clients have been added yet"}
+          </p>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {clients.map((client) => (
+          {filteredClients.map((client) => (
             <Card key={client.id} className="hover:shadow-md transition-shadow">
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg flex items-center">
