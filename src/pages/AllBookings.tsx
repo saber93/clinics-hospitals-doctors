@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,7 +18,6 @@ const AllBookings = () => {
         setLoading(true);
         console.log("Fetching user data and reservations...");
         
-        // Get current user
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session) {
@@ -32,7 +30,6 @@ const AllBookings = () => {
         setUserId(currentUserId);
         console.log("Current user ID:", currentUserId);
         
-        // Get user role
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('role')
@@ -50,7 +47,6 @@ const AllBookings = () => {
         setUserRole(role);
         console.log("User role:", role);
         
-        // Fetch reservations using getUserReservations utility
         const reservationsData = await getUserReservations(currentUserId, role);
         console.log("Fetched reservations data:", reservationsData);
         
@@ -80,7 +76,6 @@ const AllBookings = () => {
       
       if (error) throw error;
       
-      // Update local state after successful update
       setReservations(reservations.map(res => 
         res.id === reservationId ? { ...res, status: newStatus } : res
       ));
@@ -101,7 +96,6 @@ const AllBookings = () => {
     );
   }
   
-  // Debug log to check reservations data
   console.log("Rendering with reservations:", reservations);
   
   return (
@@ -128,7 +122,7 @@ const AllBookings = () => {
                 <h2 className="text-xl font-semibold">Bookings</h2>
                 <p className="text-gray-500 text-sm">View and manage all your bookings</p>
               </div>
-              {userRole === 'vendor' && (
+              {(userRole === 'vendor' || userRole === 'admin') && (
                 <Button variant="outline" size="sm">
                   Export Bookings
                 </Button>
@@ -212,7 +206,8 @@ const AllBookings = () => {
                               Cancel
                             </Button>
                           )}
-                          {userRole === 'vendor' && reservation.status === 'pending' && (
+                          
+                          {(userRole === 'vendor' || userRole === 'admin') && reservation.status === 'pending' && (
                             <>
                               <Button 
                                 variant="ghost" 
@@ -234,7 +229,8 @@ const AllBookings = () => {
                               </Button>
                             </>
                           )}
-                          {userRole === 'vendor' && reservation.status === 'confirmed' && (
+                          
+                          {(userRole === 'vendor' || userRole === 'admin') && reservation.status === 'confirmed' && (
                             <Button 
                               variant="ghost" 
                               size="sm" 
@@ -242,16 +238,6 @@ const AllBookings = () => {
                               onClick={() => handleUpdateStatus(reservation.id, 'completed')}
                             >
                               Complete
-                            </Button>
-                          )}
-                          {userRole === 'admin' && (
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="text-blue-600 hover:bg-blue-50"
-                              onClick={() => handleUpdateStatus(reservation.id, reservation.status === 'pending' ? 'confirmed' : 'completed')}
-                            >
-                              Update Status
                             </Button>
                           )}
                         </div>
