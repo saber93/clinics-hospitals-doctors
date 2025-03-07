@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { getUserReservations } from '@/utils/reservationsData';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, XCircle, CheckCircle, Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 
 const AllBookings = () => {
@@ -13,7 +13,8 @@ const AllBookings = () => {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState(null);
-  
+  const [userId, setUserId] = useState(null);
+
   const searchParams = new URLSearchParams(location.search);
   const source = searchParams.get('source');
   const showBackButton = source === 'total' || source === 'pending' || 
@@ -93,7 +94,7 @@ const AllBookings = () => {
       toast.error("Failed to update booking status");
     }
   };
-  
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
@@ -102,9 +103,9 @@ const AllBookings = () => {
       </div>
     );
   }
-  
+
   console.log("Rendering with reservations:", reservations);
-  
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
