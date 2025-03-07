@@ -50,14 +50,101 @@ const AllBookings = () => {
         setUserRole(userRole);
         console.log("User role:", userRole);
         
-        // Get reservations
-        const reservationsData = await getUserReservations(currentUserId, userRole);
-        console.log("Fetched reservations:", reservationsData);
+        // Get reservations with direct query to ensure we get data
+        let query = supabase.from('reservations').select('*');
         
-        if (reservationsData && reservationsData.length > 0) {
-          setReservations(reservationsData);
+        // Apply role-based filters
+        if (userRole === 'client') {
+          query = query.eq('client_id', currentUserId);
+        } else if (userRole === 'vendor') {
+          query = query.eq('vendor_id', currentUserId);
+        }
+        
+        const { data: directReservations, error: resError } = await query;
+        
+        if (resError) {
+          console.error("Error fetching reservations directly:", resError);
+          toast.error("Failed to load booking data");
+          setLoading(false);
+          return;
+        }
+        
+        console.log("Direct reservations query result:", directReservations);
+        
+        if (directReservations && directReservations.length > 0) {
+          // Get unique user IDs from reservations
+          const clientIds = [...new Set(directReservations.map(r => r.client_id).filter(Boolean))];
+          const vendorIds = [...new Set(directReservations.map(r => r.vendor_id).filter(Boolean))];
+          const serviceIds = [...new Set(directReservations.map(r => r.service_id).filter(Boolean))];
+          
+          // Fetch client profiles
+          let clientProfiles: Record<string, any> = {};
+          if (clientIds.length > 0) {
+            const { data: clientData } = await supabase
+              .from('profiles')
+              .select('id, name')
+              .in('id', clientIds);
+              
+            if (clientData) {
+              clientProfiles = clientData.reduce((acc, profile) => {
+                acc[profile.id] = profile;
+                return acc;
+              }, {} as Record<string, any>);
+            }
+          }
+          
+          // Fetch vendor profiles
+          let vendorProfiles: Record<string, any> = {};
+          if (vendorIds.length > 0) {
+            const { data: vendorData } = await supabase
+              .from('profiles')
+              .select('id, name')
+              .in('id', vendorIds);
+              
+            if (vendorData) {
+              vendorProfiles = vendorData.reduce((acc, profile) => {
+                acc[profile.id] = profile;
+                return acc;
+              }, {} as Record<string, any>);
+            }
+          }
+          
+          // Fetch services
+          let services: Record<string, any> = {};
+          if (serviceIds.length > 0) {
+            const { data: servicesData } = await supabase
+              .from('services')
+              .select('id, name, duration, price')
+              .in('id', serviceIds);
+              
+            if (servicesData) {
+              services = servicesData.reduce((acc, service) => {
+                acc[service.id] = service;
+                return acc;
+              }, {} as Record<string, any>);
+            }
+          }
+          
+          // Combine all data
+          const enrichedReservations = directReservations.map(reservation => ({
+            ...reservation,
+            clients: clientProfiles[reservation.client_id] || { name: 'Unknown Client' },
+            vendors: vendorProfiles[reservation.vendor_id] || { name: 'Unknown Provider' },
+            services: services[reservation.service_id] || { name: 'Unknown Service' }
+          }));
+          
+          console.log("Enriched reservations:", enrichedReservations);
+          setReservations(enrichedReservations);
         } else {
-          console.log("No reservations found");
+          console.log("No reservations found in direct query");
+          
+          // Try the utility function as fallback
+          const utilityReservations = await getUserReservations(currentUserId, userRole);
+          console.log("Utility function reservations:", utilityReservations);
+          
+          if (utilityReservations && utilityReservations.length > 0) {
+            setReservations(utilityReservations);
+          }
         }
       } catch (error) {
         console.error("Error fetching data:", error);
