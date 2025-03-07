@@ -69,7 +69,7 @@ const GlassyNavbar = () => {
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between">
         <Link to="/" className="flex items-center">
-          <span className="text-primary text-xl font-bold">Skinnect</span>
+          <span className="text-primary text-xl font-bold">Zams</span>
         </Link>
 
         {/* Desktop Navigation */}
