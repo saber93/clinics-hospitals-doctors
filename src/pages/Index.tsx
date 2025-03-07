@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useEffect, useRef } from "react";
@@ -105,7 +106,7 @@ const Index = () => {
             <div className="relative hidden md:block">
               <div className="absolute -top-8 -left-8 w-full h-full bg-primary/10 rounded-2xl transform rotate-3 initial-animation fade-in-right"></div>
               <img 
-                src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80" 
+                src="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80" 
                 alt="Skin Care Professional" 
                 className="rounded-2xl shadow-xl object-cover w-full h-[500px] initial-animation fade-in-right stagger-delay-1"
               />
@@ -131,7 +132,7 @@ const Index = () => {
             <Card className="border-none shadow-lg fade-in-up stagger-delay-2 hover-lift card-with-image">
               <div className="card-image-hover h-48">
                 <img 
-                  src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  src="https://images.unsplash.com/photo-1527613426441-4da17471b66d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
                   alt="Discover Professionals" 
                   className="w-full h-full object-cover"
                 />
@@ -192,7 +193,7 @@ const Index = () => {
             <div className="skinnect-card fade-in-up stagger-delay-2 hover-scale card-with-image">
               <div className="card-image-hover h-48 -mx-6 -mt-6 mb-4">
                 <img 
-                  src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  src="https://images.unsplash.com/photo-1508599589920-14cfa1c1fe4d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
                   alt="Easy Booking" 
                   className="w-full h-full object-cover"
                 />
@@ -237,7 +238,7 @@ const Index = () => {
             <div className="skinnect-card fade-in-up stagger-delay-4 hover-scale card-with-image">
               <div className="card-image-hover h-48 -mx-6 -mt-6 mb-4">
                 <img 
-                  src="https://images.unsplash.com/photo-1607083206968-13611e3d76db?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
                   alt="Digital Vouchers" 
                   className="w-full h-full object-cover"
                 />
