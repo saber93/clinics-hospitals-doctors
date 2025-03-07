@@ -83,7 +83,16 @@ const ClientDashboard = () => {
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">Client Dashboard</h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div className="border rounded-lg p-4 shadow-sm bg-white mb-6">
+        <h3 className="text-lg font-semibold mb-2">Quick Actions</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <Button variant="outline" onClick={() => navigate("/reservations")}>Book New Appointment</Button>
+          <Button variant="outline" onClick={() => navigate("/all-bookings")}>Manage Bookings</Button>
+          <Button variant="outline" onClick={() => navigate("/offers")}>Browse Offers</Button>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="col-span-1">
           <CardHeader>
             <CardTitle>My Bookings</CardTitle>
@@ -163,15 +172,6 @@ const ClientDashboard = () => {
             </Button>
           </CardFooter>
         </Card>
-      </div>
-      
-      <div className="border rounded-lg p-4 shadow-sm bg-white">
-        <h3 className="text-lg font-semibold mb-2">Quick Actions</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          <Button variant="outline" onClick={() => navigate("/reservations")}>Book New Appointment</Button>
-          <Button variant="outline" onClick={() => navigate("/all-bookings")}>Manage Bookings</Button>
-          <Button variant="outline" onClick={() => navigate("/offers")}>Browse Offers</Button>
-        </div>
       </div>
     </div>
   );
