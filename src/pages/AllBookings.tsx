@@ -24,6 +24,7 @@ const AllBookings = () => {
         
         if (!session) {
           toast.error("Please login to access bookings");
+          setLoading(false);
           return;
         }
         
@@ -41,16 +42,16 @@ const AllBookings = () => {
         if (profileError) {
           console.error("Error fetching profile:", profileError);
           toast.error("Error loading user profile");
+          setLoading(false);
           return;
         }
         
-        if (profile) {
-          setUserRole(profile.role);
-          console.log("User role:", profile.role);
-        }
+        const userRole = profile?.role || 'client';
+        setUserRole(userRole);
+        console.log("User role:", userRole);
         
         // Get reservations
-        const reservationsData = await getUserReservations(currentUserId, profile?.role || 'client');
+        const reservationsData = await getUserReservations(currentUserId, userRole);
         console.log("Fetched reservations:", reservationsData);
         
         if (reservationsData && reservationsData.length > 0) {
@@ -146,6 +147,16 @@ const AllBookings = () => {
                         Provider
                       </th>
                     )}
+                    {userRole === 'admin' && (
+                      <>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Client
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Provider
+                        </th>
+                      </>
+                    )}
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Service
                     </th>
@@ -175,6 +186,16 @@ const AllBookings = () => {
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           {reservation.vendors?.name || 'Unknown Provider'}
                         </td>
+                      )}
+                      {userRole === 'admin' && (
+                        <>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {reservation.clients?.name || 'Unknown Client'}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {reservation.vendors?.name || 'Unknown Provider'}
+                          </td>
+                        </>
                       )}
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {reservation.services?.name || 'Unknown Service'}
@@ -239,6 +260,16 @@ const AllBookings = () => {
                               Complete
                             </Button>
                           )}
+                          {userRole === 'admin' && (
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="text-blue-600 hover:bg-blue-50"
+                              onClick={() => handleUpdateStatus(reservation.id, reservation.status === 'pending' ? 'confirmed' : 'completed')}
+                            >
+                              Update Status
+                            </Button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -255,6 +286,8 @@ const AllBookings = () => {
               <p className="text-gray-500 max-w-sm mx-auto mb-6">
                 {userRole === 'client' 
                   ? "You don't have any bookings yet. Book an appointment to get started."
+                  : userRole === 'admin'
+                  ? "No bookings have been made in the system yet."
                   : "No bookings have been made with your services yet."}
               </p>
               <Button 

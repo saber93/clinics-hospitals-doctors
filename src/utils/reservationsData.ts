@@ -24,6 +24,9 @@ export type Service = {
 // Function to get reservations for a specific user
 export const getUserReservations = async (userId: string, userRole: string) => {
   try {
+    console.log(`Getting reservations for user ${userId} with role ${userRole}`);
+    
+    // Fetch the reservations
     let query = supabase
       .from('reservations')
       .select(`
@@ -36,6 +39,9 @@ export const getUserReservations = async (userId: string, userRole: string) => {
       query = query.eq('client_id', userId);
     } else if (userRole === 'vendor') {
       query = query.eq('vendor_id', userId);
+    } else if (userRole === 'admin') {
+      // Admin can see all reservations
+      console.log("Admin role detected, fetching all reservations");
     }
     
     const { data, error } = await query;
@@ -45,50 +51,70 @@ export const getUserReservations = async (userId: string, userRole: string) => {
       return [];
     }
     
+    console.log(`Found ${data?.length || 0} reservations`);
+    
     // Fetch related user data separately since we can't join directly
     if (data && data.length > 0) {
       // Get unique user IDs from reservations
       const clientIds = [...new Set(data.map(r => r.client_id).filter(Boolean))];
       const vendorIds = [...new Set(data.map(r => r.vendor_id).filter(Boolean))];
       
+      console.log(`Found ${clientIds.length} unique clients and ${vendorIds.length} unique vendors`);
+      
       // Fetch client profiles
       let clientProfiles: Record<string, any> = {};
       if (clientIds.length > 0) {
-        const { data: clientData } = await supabase
+        const { data: clientData, error: clientError } = await supabase
           .from('profiles')
           .select('id, name')
           .in('id', clientIds);
           
+        if (clientError) {
+          console.error("Error fetching client profiles:", clientError);
+        }
+        
         if (clientData) {
           clientProfiles = clientData.reduce((acc, profile) => {
             acc[profile.id] = profile;
             return acc;
           }, {} as Record<string, any>);
+          console.log("Client profiles fetched:", clientProfiles);
         }
       }
       
       // Fetch vendor profiles
       let vendorProfiles: Record<string, any> = {};
       if (vendorIds.length > 0) {
-        const { data: vendorData } = await supabase
+        const { data: vendorData, error: vendorError } = await supabase
           .from('profiles')
           .select('id, name')
           .in('id', vendorIds);
           
+        if (vendorError) {
+          console.error("Error fetching vendor profiles:", vendorError);
+        }
+        
         if (vendorData) {
           vendorProfiles = vendorData.reduce((acc, profile) => {
             acc[profile.id] = profile;
             return acc;
           }, {} as Record<string, any>);
+          console.log("Vendor profiles fetched:", vendorProfiles);
         }
       }
       
       // Attach profile data to reservations
-      return data.map(reservation => ({
-        ...reservation,
-        clients: clientProfiles[reservation.client_id] || { name: 'Unknown Client' },
-        vendors: vendorProfiles[reservation.vendor_id] || { name: 'Unknown Provider' }
-      }));
+      const enrichedReservations = data.map(reservation => {
+        const enriched = {
+          ...reservation,
+          clients: clientProfiles[reservation.client_id] || { name: 'Unknown Client' },
+          vendors: vendorProfiles[reservation.vendor_id] || { name: 'Unknown Provider' }
+        };
+        console.log(`Enriched reservation: ${reservation.id}`, enriched);
+        return enriched;
+      });
+      
+      return enrichedReservations;
     }
     
     return data || [];
