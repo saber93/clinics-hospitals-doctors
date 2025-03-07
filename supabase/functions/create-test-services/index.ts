@@ -42,24 +42,56 @@ serve(async (req) => {
       throw new Error('Services array is required and must contain at least one service');
     }
     
-    // Insert services using the service role (bypasses RLS)
-    const { data: servicesData, error: servicesError } = await supabaseAdmin
-      .from('services')
-      .upsert(services, { onConflict: 'vendor_id, name' })
-      .select();
+    // First, check for existing services to avoid duplicates
+    console.log("Checking for existing services with the same vendor ID and name")
+    for (const service of services) {
+      const { data: existingServices, error: checkError } = await supabaseAdmin
+        .from('services')
+        .select('id')
+        .eq('vendor_id', service.vendor_id)
+        .eq('name', service.name);
+        
+      if (checkError) {
+        console.error(`Error checking for existing services: ${JSON.stringify(checkError)}`);
+        throw new Error(`Failed to check for existing services: ${checkError.message}`);
+      }
       
-    if (servicesError) {
-      console.error(`Error inserting services: ${JSON.stringify(servicesError)}`);
-      throw new Error(`Failed to create services: ${servicesError.message}`);
+      if (existingServices && existingServices.length > 0) {
+        console.log(`Service with name "${service.name}" already exists for this vendor, skipping`);
+        // Remove the service from the array to avoid insertion
+        const index = services.findIndex(s => s.vendor_id === service.vendor_id && s.name === service.name);
+        if (index > -1) {
+          services.splice(index, 1);
+        }
+      }
     }
     
-    console.log(`Successfully created ${servicesData.length} services`);
+    let servicesData = [];
+    
+    // Only insert if we have services left after deduplication
+    if (services.length > 0) {
+      // Insert services using the service role (bypasses RLS)
+      const { data, error: servicesError } = await supabaseAdmin
+        .from('services')
+        .insert(services)
+        .select();
+        
+      if (servicesError) {
+        console.error(`Error inserting services: ${JSON.stringify(servicesError)}`);
+        throw new Error(`Failed to create services: ${servicesError.message}`);
+      }
+      
+      servicesData = data || [];
+      console.log(`Successfully created ${servicesData.length} services`);
+    } else {
+      console.log("No new services to create after checking for duplicates");
+    }
     
     // Return success response
     return new Response(
       JSON.stringify({ 
         success: true,
-        message: `Created ${servicesData.length} services successfully`,
+        message: `Created or found ${servicesData.length} services successfully`,
         services: servicesData
       }),
       { 
