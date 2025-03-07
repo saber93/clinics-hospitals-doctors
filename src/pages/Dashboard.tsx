@@ -31,8 +31,41 @@ const COLORS = ['#8884d8', '#83a6ed', '#8dd1e1', '#82ca9d', '#a4de6c'];
 
 const ClientDashboard = () => {
   const navigate = useNavigate();
-  const [upcomingBookings, setUpcomingBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [upcomingBookings, setUpcomingBookings] = useState([
+    {
+      id: '1',
+      services: { name: 'Facial Treatment', price: 89.99 },
+      vendors: { name: 'Beauty Spa Center' },
+      date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 2 days from now
+      time: '10:00 AM',
+      status: 'confirmed'
+    },
+    {
+      id: '2',
+      services: { name: 'Deep Tissue Massage', price: 129.99 },
+      vendors: { name: 'Wellness Retreat' },
+      date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 5 days from now
+      time: '2:30 PM',
+      status: 'pending'
+    },
+    {
+      id: '3',
+      services: { name: 'Hot Stone Therapy', price: 149.99 },
+      vendors: { name: 'Serenity Spa' },
+      date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 7 days from now
+      time: '11:15 AM',
+      status: 'confirmed'
+    },
+    {
+      id: '4',
+      services: { name: 'Hair Styling', price: 75.00 },
+      vendors: { name: 'Glamour Salon' },
+      date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 14 days from now
+      time: '3:00 PM',
+      status: 'confirmed'
+    }
+  ]);
+  const [loading, setLoading] = useState(false);
   
   useEffect(() => {
     const fetchClientBookings = async () => {
@@ -41,19 +74,23 @@ const ClientDashboard = () => {
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session) {
-          toast.error("Please login to view your bookings");
+          // If not logged in, we'll just use the demo data
+          setLoading(false);
           return;
         }
         
         const reservationsData = await getUserReservations(session.user.id, 'client');
         
-        if (reservationsData) {
+        if (reservationsData && reservationsData.length > 0) {
           const upcoming = reservationsData.filter(r => 
             (r.status === 'confirmed' || r.status === 'pending') && 
             new Date(r.date).getTime() >= new Date().getTime()
           ).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).slice(0, 5);
           
-          setUpcomingBookings(upcoming);
+          // Only override demo data if we actually have real data
+          if (upcoming.length > 0) {
+            setUpcomingBookings(upcoming);
+          }
         }
       } catch (error) {
         console.error("Error fetching client bookings:", error);
@@ -122,6 +159,9 @@ const ClientDashboard = () => {
                         ${booking.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
                         'bg-yellow-100 text-yellow-800'}`}>
                         {booking.status}
+                      </span>
+                      <span className="text-sm font-medium">
+                        ${booking.services?.price?.toFixed(2) || '0.00'}
                       </span>
                     </div>
                   </div>
