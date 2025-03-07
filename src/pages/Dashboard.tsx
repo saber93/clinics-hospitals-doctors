@@ -7,7 +7,7 @@ import { seedTestData } from "@/utils/seedTestData";
 import "../utils/auth";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { Users, Store, Calendar, TrendingUp, Activity, Package, BarChart as BarChartIcon, ArrowLeft } from "lucide-react";
+import { Users, Store, Calendar, TrendingUp, Activity, Package, BarChartIcon, ArrowLeft } from "lucide-react";
 import { getUserReservations } from "@/utils/reservationsData";
 
 const vendorStats = [
@@ -31,25 +31,146 @@ const COLORS = ['#8884d8', '#83a6ed', '#8dd1e1', '#82ca9d', '#a4de6c'];
 
 const ClientDashboard = () => {
   const navigate = useNavigate();
+  const [upcomingBookings, setUpcomingBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    const fetchClientBookings = async () => {
+      try {
+        setLoading(true);
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!session) {
+          toast.error("Please login to view your bookings");
+          return;
+        }
+        
+        const reservationsData = await getUserReservations(session.user.id, 'client');
+        
+        if (reservationsData) {
+          const upcoming = reservationsData.filter(r => 
+            (r.status === 'confirmed' || r.status === 'pending') && 
+            new Date(r.date) >= new Date()
+          ).sort((a, b) => new Date(a.date) - new Date(b.date)).slice(0, 5);
+          
+          setUpcomingBookings(upcoming);
+        }
+      } catch (error) {
+        console.error("Error fetching client bookings:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchClientBookings();
+  }, []);
+  
+  const specialOffers = [
+    { id: 1, title: "30% Off First Massage", provider: "Wellness Spa", validUntil: "2023-12-31" },
+    { id: 2, title: "Buy 3 Sessions, Get 1 Free", provider: "Fitness Studio", validUntil: "2023-11-30" },
+    { id: 3, title: "Free Consultation", provider: "Beauty Clinic", validUntil: "2023-12-15" },
+    { id: 4, title: "Holiday Package Discount", provider: "Health Center", validUntil: "2023-12-25" },
+    { id: 5, title: "Refer a Friend - 20% Off", provider: "Yoga Studio", validUntil: "2023-11-20" },
+  ];
+  
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  };
   
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">Client Dashboard</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="border rounded-lg p-4 shadow-sm">
-          <h3 className="text-lg font-semibold mb-2">My Appointments</h3>
-          <p className="text-gray-600 mb-4">You have no upcoming appointments</p>
-          <Button variant="default" onClick={() => navigate("/reservations")}>Book Now</Button>
-        </div>
-        <div className="border rounded-lg p-4 shadow-sm">
-          <h3 className="text-lg font-semibold mb-2">My Bookings</h3>
-          <p className="text-gray-600 mb-4">View all your appointments</p>
-          <Button variant="outline" onClick={() => navigate("/all-bookings")}>View All</Button>
-        </div>
-        <div className="border rounded-lg p-4 shadow-sm">
-          <h3 className="text-lg font-semibold mb-2">Special Offers</h3>
-          <p className="text-gray-600 mb-4">Check out the latest deals!</p>
-          <Button variant="outline" onClick={() => navigate("/offers")}>View All</Button>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <Card className="col-span-1">
+          <CardHeader>
+            <CardTitle>My Bookings</CardTitle>
+            <CardDescription>Your upcoming appointments</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <div className="flex items-center justify-center py-6">
+                <div className="animate-spin h-6 w-6 border-4 border-primary border-t-transparent rounded-full"></div>
+              </div>
+            ) : upcomingBookings.length > 0 ? (
+              <div className="space-y-4">
+                {upcomingBookings.map((booking) => (
+                  <div key={booking.id} className="border-b pb-3 last:border-0">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="font-medium">{booking.services?.name || 'Unknown Service'}</p>
+                        <p className="text-sm text-gray-600">{booking.vendors?.name || 'Unknown Provider'}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm">{formatDate(booking.date)}</p>
+                        <p className="text-sm text-gray-600">{booking.time}</p>
+                      </div>
+                    </div>
+                    <div className="mt-2 flex justify-between items-center">
+                      <span className={`px-2 py-1 text-xs rounded-full 
+                        ${booking.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
+                        'bg-yellow-100 text-yellow-800'}`}>
+                        {booking.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-6">
+                <p className="text-gray-500 mb-3">You don't have any upcoming appointments</p>
+                <Button variant="outline" size="sm" onClick={() => navigate("/reservations")}>
+                  Book Now
+                </Button>
+              </div>
+            )}
+          </CardContent>
+          <CardFooter>
+            <Button variant="outline" className="w-full" onClick={() => navigate("/all-bookings")}>
+              View All Bookings
+            </Button>
+          </CardFooter>
+        </Card>
+        
+        <Card className="col-span-1">
+          <CardHeader>
+            <CardTitle>Special Offers</CardTitle>
+            <CardDescription>Latest deals and promotions</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {specialOffers.map((offer) => (
+                <div key={offer.id} className="border-b pb-3 last:border-0">
+                  <p className="font-medium">{offer.title}</p>
+                  <p className="text-sm text-gray-600">From: {offer.provider}</p>
+                  <div className="mt-2 flex justify-between items-center">
+                    <span className="text-xs text-gray-500">
+                      Valid until: {formatDate(offer.validUntil)}
+                    </span>
+                    <Button variant="ghost" size="sm" className="text-primary">
+                      Claim
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button variant="outline" className="w-full" onClick={() => navigate("/offers")}>
+              View All Offers
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+      
+      <div className="border rounded-lg p-4 shadow-sm bg-white">
+        <h3 className="text-lg font-semibold mb-2">Quick Actions</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <Button variant="outline" onClick={() => navigate("/reservations")}>Book New Appointment</Button>
+          <Button variant="outline" onClick={() => navigate("/all-bookings")}>Manage Bookings</Button>
+          <Button variant="outline" onClick={() => navigate("/offers")}>Browse Offers</Button>
         </div>
       </div>
     </div>
