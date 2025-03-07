@@ -1,12 +1,10 @@
-
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight, Building2, PuzzlePiece, Users, Stethoscope, Target, TrendingUp } from 'lucide-react';
+import { ArrowRight, Building2, Puzzle, Users, Stethoscope, Target, TrendingUp } from 'lucide-react';
 
 const About = () => {
-  // Animation effect for elements on scroll
   useEffect(() => {
     const animateElements = () => {
       const fadeElements = document.querySelectorAll('.fade-in-up, .fade-in-left, .fade-in-right');
@@ -19,19 +17,15 @@ const About = () => {
       });
     };
 
-    // Initial check
     setTimeout(animateElements, 100);
     
-    // Add scroll event listener
     window.addEventListener('scroll', animateElements);
     
-    // Cleanup
     return () => window.removeEventListener('scroll', animateElements);
   }, []);
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-7xl">
-      {/* Hero Section */}
       <section className="mb-16">
         <h1 className="text-4xl md:text-5xl font-bold mb-6 fade-in-up">About Zams Marketing Management</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -61,14 +55,13 @@ const About = () => {
         </div>
       </section>
 
-      {/* Competitive Advantages */}
       <section className="mb-16 fade-in-up stagger-delay-1">
         <h2 className="text-3xl font-bold mb-8 text-center">Our Competitive Advantages</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="hover-lift hover-glow testimonial-card">
             <CardContent className="p-6">
               <div className="mb-4 text-primary">
-                <PuzzlePiece size={32} />
+                <Puzzle size={32} />
               </div>
               <h3 className="text-xl font-semibold mb-2">Strategic Partnerships</h3>
               <p>Building valuable connections between suppliers, service providers, and customers to create an integrated ecosystem.</p>
@@ -97,7 +90,6 @@ const About = () => {
         </div>
       </section>
 
-      {/* Strategic Partnerships */}
       <section className="mb-16 py-12 bg-secondary/50 rounded-2xl p-8 fade-in-up stagger-delay-2">
         <h2 className="text-3xl font-bold mb-8 text-center">Our Strategic Partnerships</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -167,7 +159,6 @@ const About = () => {
         </div>
       </section>
 
-      {/* Vision and Objectives */}
       <section className="mb-16 fade-in-up stagger-delay-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           <div className="glass-card p-8 rounded-xl shadow-lg hover-brightness">
@@ -218,7 +209,6 @@ const About = () => {
         </div>
       </section>
 
-      {/* Business Model */}
       <section className="mb-16 py-12 bg-primary/5 rounded-2xl p-8 fade-in-up stagger-delay-4">
         <h2 className="text-3xl font-bold mb-8 text-center">Our Business Model</h2>
         <div className="max-w-3xl mx-auto">
@@ -253,7 +243,6 @@ const About = () => {
         </div>
       </section>
 
-      {/* Conclusion / CTA */}
       <section className="fade-in-up stagger-delay-5">
         <div className="skinnect-gradient rounded-xl p-8 md:p-12 text-center">
           <h2 className="text-3xl font-bold mb-6">Join Our Growing Network</h2>
