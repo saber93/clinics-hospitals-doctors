@@ -50,8 +50,8 @@ const ClientDashboard = () => {
         if (reservationsData) {
           const upcoming = reservationsData.filter(r => 
             (r.status === 'confirmed' || r.status === 'pending') && 
-            new Date(r.date) >= new Date()
-          ).sort((a, b) => new Date(a.date) - new Date(b.date)).slice(0, 5);
+            new Date(r.date).getTime() >= new Date().getTime()
+          ).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).slice(0, 5);
           
           setUpcomingBookings(upcoming);
         }
