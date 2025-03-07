@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useEffect, useRef } from "react";
@@ -193,7 +192,7 @@ const Index = () => {
             <div className="skinnect-card fade-in-up stagger-delay-2 hover-scale card-with-image">
               <div className="card-image-hover h-48 -mx-6 -mt-6 mb-4">
                 <img 
-                  src="https://images.unsplash.com/photo-1508599589920-14cfa1c1fe4d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
                   alt="Easy Booking" 
                   className="w-full h-full object-cover"
                 />
