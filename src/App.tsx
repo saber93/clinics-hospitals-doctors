@@ -24,9 +24,16 @@ const App = () => {
   useEffect(() => {
     // Check for existing session
     const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      setSession(data.session);
-      setLoading(false);
+      try {
+        console.log("Checking for existing session...");
+        const { data } = await supabase.auth.getSession();
+        console.log("Session data:", data);
+        setSession(data.session);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error checking session:", error);
+        setLoading(false);
+      }
     };
     
     checkSession();
@@ -35,6 +42,7 @@ const App = () => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("Auth state changed:", _event, session ? "Has session" : "No session");
       setSession(session);
     });
 
@@ -55,32 +63,34 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/dashboard" />} />
-            <Route 
-              path="/dashboard" 
-              element={session ? <Dashboard /> : <Navigate to="/auth" />} 
-            />
-            <Route 
-              path="/reservations" 
-              element={session ? <Reservations /> : <Navigate to="/auth" />} 
-            />
-            <Route 
-              path="/all-bookings" 
-              element={session ? <AllBookings /> : <Navigate to="/auth" />} 
-            />
-            <Route 
-              path="/offers" 
-              element={session ? <Offers /> : <Navigate to="/auth" />} 
-            />
-            <Route 
-              path="/vouchers" 
-              element={session ? <Vouchers /> : <Navigate to="/auth" />} 
-            />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <div className="min-h-screen">
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/dashboard" />} />
+              <Route 
+                path="/dashboard" 
+                element={session ? <Dashboard /> : <Navigate to="/auth" />} 
+              />
+              <Route 
+                path="/reservations" 
+                element={session ? <Reservations /> : <Navigate to="/auth" />} 
+              />
+              <Route 
+                path="/all-bookings" 
+                element={session ? <AllBookings /> : <Navigate to="/auth" />} 
+              />
+              <Route 
+                path="/offers" 
+                element={session ? <Offers /> : <Navigate to="/auth" />} 
+              />
+              <Route 
+                path="/vouchers" 
+                element={session ? <Vouchers /> : <Navigate to="/auth" />} 
+              />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
