@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Star, Users, Clock, Shield, Heart, ArrowRight } from "lucide-react";
+import { Star, Users, Clock, Shield, Heart, ArrowRight, ArrowDown, CheckCircle, MapPin, Gift } from "lucide-react";
 
 const Index = () => {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -12,13 +12,36 @@ const Index = () => {
   const faqRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Animation for elements when they come into view
+    // Initial load animations
+    const animateInitialElements = () => {
+      const initialElements = document.querySelectorAll('.initial-animation');
+      initialElements.forEach((el, index) => {
+        setTimeout(() => {
+          el.classList.add('appear');
+        }, index * 100);
+      });
+    };
+
+    // Animation for elements when they come into view during scroll
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add("animate-fade-in");
-            entry.target.classList.remove("opacity-0");
+            // Add staggered animations to children
+            const children = entry.target.querySelectorAll('.fade-in-up, .fade-in-left, .fade-in-right');
+            children.forEach((child, index) => {
+              setTimeout(() => {
+                child.classList.add('appear');
+              }, index * 100);
+            });
+            
+            // For elements without children that need animation
+            if (entry.target.classList.contains('fade-in-up') || 
+                entry.target.classList.contains('fade-in-left') || 
+                entry.target.classList.contains('fade-in-right')) {
+              entry.target.classList.add('appear');
+            }
+            
             observer.unobserve(entry.target);
           }
         });
@@ -26,17 +49,23 @@ const Index = () => {
       { threshold: 0.1 }
     );
 
-    // Select all elements to be animated
-    const animatedElements = document.querySelectorAll(".animate-on-scroll");
-    animatedElements.forEach((el) => {
-      el.classList.add("opacity-0");
+    // Initial load animations
+    animateInitialElements();
+
+    // Select all container elements to observe for scroll animations
+    const animatedContainers = document.querySelectorAll('.scroll-animate-container');
+    animatedContainers.forEach((el) => {
       observer.observe(el);
     });
 
     return () => {
-      animatedElements.forEach((el) => observer.unobserve(el));
+      animatedContainers.forEach((el) => observer.unobserve(el));
     };
   }, []);
+
+  const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
+    ref.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <div className="min-h-screen">
@@ -48,25 +77,25 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-mint-50 to-skin-50 opacity-30 z-0"></div>
         <div className="max-w-7xl mx-auto z-10 w-full">
           <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div className="animate-on-scroll space-y-6">
-              <div className="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full text-sm font-medium">
+            <div>
+              <div className="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full text-sm font-medium initial-animation fade-in-up">
                 Revolutionizing Skin Care
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold skinnect-gradient bg-clip-text text-transparent leading-tight">
+              <h1 className="text-4xl md:text-6xl font-bold skinnect-gradient bg-clip-text text-transparent leading-tight mt-4 initial-animation fade-in-up stagger-delay-1">
                 Connect With Beauty Specialists
               </h1>
-              <p className="text-xl text-gray-600 max-w-lg">
+              <p className="text-xl text-gray-600 max-w-lg mt-4 initial-animation fade-in-up stagger-delay-2">
                 Discover, book, and experience top-rated skin and body care professionals in your area. Your path to radiant skin starts here.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild size="lg" className="skinnect-button-primary">
+              <div className="flex flex-col sm:flex-row gap-4 mt-8 initial-animation fade-in-up stagger-delay-3">
+                <Button asChild size="lg" className="skinnect-button-primary hover-glow">
                   <Link to="/auth?mode=login">Get Started <ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
-                <Button asChild size="lg" className="skinnect-button-outline">
+                <Button asChild size="lg" className="skinnect-button-outline hover-lift">
                   <Link to="/auth?mode=register">Create Account</Link>
                 </Button>
               </div>
-              <div className="flex items-center gap-4 text-sm text-gray-500 mt-6">
+              <div className="flex items-center gap-4 text-sm text-gray-500 mt-6 initial-animation fade-in-up stagger-delay-4">
                 <div className="flex items-center">
                   <Users className="h-4 w-4 mr-1 text-primary" />
                   <span>10K+ Users</span>
@@ -81,29 +110,35 @@ const Index = () => {
                 </div>
               </div>
             </div>
-            <div className="relative animate-on-scroll hidden md:block">
-              <div className="absolute -top-8 -left-8 w-full h-full bg-primary/10 rounded-2xl transform rotate-3"></div>
+            <div className="relative hidden md:block">
+              <div className="absolute -top-8 -left-8 w-full h-full bg-primary/10 rounded-2xl transform rotate-3 initial-animation fade-in-right"></div>
               <img 
                 src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" 
                 alt="Skin Care Professional" 
-                className="rounded-2xl shadow-xl object-cover w-full h-[500px]"
+                className="rounded-2xl shadow-xl object-cover w-full h-[500px] initial-animation fade-in-right stagger-delay-1"
               />
             </div>
           </div>
         </div>
+        
+        {/* Scroll indicator */}
+        <div className="scroll-indicator initial-animation fade-in-up stagger-delay-5" onClick={() => scrollToSection(featuresRef)}>
+          <span className="text-sm mb-2">Scroll to explore</span>
+          <ArrowDown className="h-6 w-6" />
+        </div>
       </section>
 
       {/* How it Works Section */}
-      <section className="py-20 px-4 md:px-8 bg-secondary">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 animate-on-scroll">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">How Skinnect Works</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+      <section className="py-20 px-4 md:px-8 bg-secondary" ref={featuresRef}>
+        <div className="max-w-7xl mx-auto scroll-animate-container">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 fade-in-up">How Skinnect Works</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto fade-in-up stagger-delay-1">
               Your journey to radiant skin and wellness is just three simple steps away
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-10">
-            <Card className="border-none shadow-lg animate-on-scroll">
+            <Card className="border-none shadow-lg fade-in-up stagger-delay-2 hover-lift">
               <CardContent className="pt-6 text-center">
                 <div className="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl font-bold">1</span>
@@ -112,7 +147,7 @@ const Index = () => {
                 <p className="text-gray-600">Browse through numerous specialists in your area with detailed profiles and reviews.</p>
               </CardContent>
             </Card>
-            <Card className="border-none shadow-lg animate-on-scroll">
+            <Card className="border-none shadow-lg fade-in-up stagger-delay-3 hover-lift">
               <CardContent className="pt-6 text-center">
                 <div className="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl font-bold">2</span>
@@ -121,7 +156,7 @@ const Index = () => {
                 <p className="text-gray-600">Select your preferred date and time with just a few clicks. Receive instant confirmation.</p>
               </CardContent>
             </Card>
-            <Card className="border-none shadow-lg animate-on-scroll">
+            <Card className="border-none shadow-lg fade-in-up stagger-delay-4 hover-lift">
               <CardContent className="pt-6 text-center">
                 <div className="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl font-bold">3</span>
@@ -135,16 +170,16 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section ref={featuresRef} className="py-20 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 animate-on-scroll">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Platform Features</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+      <section className="py-20 px-4 md:px-8">
+        <div className="max-w-7xl mx-auto scroll-animate-container">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 fade-in-up">Our Platform Features</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto fade-in-up stagger-delay-1">
               Experience the best in skin care booking with our user-friendly platform features
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="skinnect-card animate-on-scroll transform transition-all duration-300 hover:-translate-y-2">
+            <div className="skinnect-card fade-in-up stagger-delay-2 hover-scale">
               <div className="mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary w-12 h-12 mx-auto mb-4">
                   <rect width="18" height="18" x="3" y="3" rx="2" />
@@ -157,11 +192,11 @@ const Index = () => {
               </div>
               <h3 className="text-xl font-semibold mb-2 text-center">Easy Booking</h3>
               <p className="text-gray-600 mb-4 text-center">Book appointments with your favorite specialists with just a few clicks, anytime and anywhere.</p>
-              <Button asChild className="skinnect-button-outline w-full">
+              <Button asChild className="skinnect-button-outline w-full hover-glow">
                 <Link to="/reservations">Book Now</Link>
               </Button>
             </div>
-            <div className="skinnect-card animate-on-scroll transform transition-all duration-300 hover:-translate-y-2">
+            <div className="skinnect-card fade-in-up stagger-delay-3 hover-scale">
               <div className="mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary w-12 h-12 mx-auto mb-4">
                   <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
@@ -171,11 +206,11 @@ const Index = () => {
               </div>
               <h3 className="text-xl font-semibold mb-2 text-center">Special Offers</h3>
               <p className="text-gray-600 mb-4 text-center">Access exclusive deals and promotions from top clinics. Save on premium treatments and services.</p>
-              <Button asChild className="skinnect-button-outline w-full">
+              <Button asChild className="skinnect-button-outline w-full hover-glow">
                 <Link to="/offers">View Offers</Link>
               </Button>
             </div>
-            <div className="skinnect-card animate-on-scroll transform transition-all duration-300 hover:-translate-y-2">
+            <div className="skinnect-card fade-in-up stagger-delay-4 hover-scale">
               <div className="mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary w-12 h-12 mx-auto mb-4">
                   <rect width="20" height="14" x="2" y="5" rx="2" />
@@ -184,7 +219,7 @@ const Index = () => {
               </div>
               <h3 className="text-xl font-semibold mb-2 text-center">Digital Vouchers</h3>
               <p className="text-gray-600 mb-4 text-center">Easily redeem and manage your vouchers and promo codes. Gift treatments to friends and family.</p>
-              <Button asChild className="skinnect-button-outline w-full">
+              <Button asChild className="skinnect-button-outline w-full hover-glow">
                 <Link to="/vouchers">My Vouchers</Link>
               </Button>
             </div>
@@ -196,15 +231,15 @@ const Index = () => {
       <section ref={testimonialsRef} className="py-20 px-4 md:px-8 bg-secondary relative overflow-hidden">
         <div className="absolute top-0 left-0 w-40 h-40 bg-primary/5 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute bottom-0 right-0 w-60 h-60 bg-primary/5 rounded-full translate-x-1/3 translate-y-1/3"></div>
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center mb-16 animate-on-scroll">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">What Our Clients Say</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+        <div className="max-w-7xl mx-auto relative z-10 scroll-animate-container">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 fade-in-up">What Our Clients Say</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto fade-in-up stagger-delay-1">
               Don't just take our word for it - hear from some of our satisfied clients
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="border-none shadow-lg bg-white animate-on-scroll">
+            <Card className="border-none shadow-lg bg-white fade-in-left stagger-delay-2 hover-lift">
               <CardContent className="pt-6">
                 <div className="flex items-center mb-4">
                   <div className="mr-4">
@@ -226,7 +261,7 @@ const Index = () => {
                 <p className="text-gray-600 italic">"Skinnect made it so easy to find the perfect facial treatment. The booking process was smooth, and I could see all the reviews before making my choice."</p>
               </CardContent>
             </Card>
-            <Card className="border-none shadow-lg bg-white animate-on-scroll">
+            <Card className="border-none shadow-lg bg-white fade-in-up stagger-delay-3 hover-lift">
               <CardContent className="pt-6">
                 <div className="flex items-center mb-4">
                   <div className="mr-4">
@@ -248,7 +283,7 @@ const Index = () => {
                 <p className="text-gray-600 italic">"As someone who travels frequently, finding consistent quality skincare services was always a challenge until I discovered Skinnect. Now I can book appointments anywhere."</p>
               </CardContent>
             </Card>
-            <Card className="border-none shadow-lg bg-white animate-on-scroll">
+            <Card className="border-none shadow-lg bg-white fade-in-right stagger-delay-4 hover-lift">
               <CardContent className="pt-6">
                 <div className="flex items-center mb-4">
                   <div className="mr-4">
@@ -276,29 +311,38 @@ const Index = () => {
 
       {/* FAQ Section */}
       <section ref={faqRef} className="py-20 px-4 md:px-8">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-16 animate-on-scroll">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
-            <p className="text-xl text-gray-600">
+        <div className="max-w-3xl mx-auto scroll-animate-container">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 fade-in-up">Frequently Asked Questions</h2>
+            <p className="text-xl text-gray-600 fade-in-up stagger-delay-1">
               Find answers to the most common questions about Skinnect
             </p>
           </div>
           <div className="space-y-6">
-            <Card className="animate-on-scroll">
+            <Card className="fade-in-up stagger-delay-2 hover-glow">
               <CardContent className="pt-6">
-                <h3 className="text-xl font-semibold mb-2">How do I book an appointment?</h3>
+                <h3 className="text-xl font-semibold mb-2 flex items-center">
+                  <CheckCircle className="h-5 w-5 text-primary mr-2" />
+                  How do I book an appointment?
+                </h3>
                 <p className="text-gray-600">Simply create an account, search for specialists in your area, select your preferred service, and choose an available time slot. Confirmation is instant!</p>
               </CardContent>
             </Card>
-            <Card className="animate-on-scroll">
+            <Card className="fade-in-up stagger-delay-3 hover-glow">
               <CardContent className="pt-6">
-                <h3 className="text-xl font-semibold mb-2">Can I cancel or reschedule my appointment?</h3>
+                <h3 className="text-xl font-semibold mb-2 flex items-center">
+                  <CheckCircle className="h-5 w-5 text-primary mr-2" />
+                  Can I cancel or reschedule my appointment?
+                </h3>
                 <p className="text-gray-600">Yes, you can easily cancel or reschedule your appointment through your dashboard up to 24 hours before your scheduled time without any penalty.</p>
               </CardContent>
             </Card>
-            <Card className="animate-on-scroll">
+            <Card className="fade-in-up stagger-delay-4 hover-glow">
               <CardContent className="pt-6">
-                <h3 className="text-xl font-semibold mb-2">How do digital vouchers work?</h3>
+                <h3 className="text-xl font-semibold mb-2 flex items-center">
+                  <CheckCircle className="h-5 w-5 text-primary mr-2" />
+                  How do digital vouchers work?
+                </h3>
                 <p className="text-gray-600">Digital vouchers can be purchased on our platform and used as payment for services. They can also be gifted to friends and family via email.</p>
               </CardContent>
             </Card>
@@ -308,18 +352,32 @@ const Index = () => {
 
       {/* CTA Section */}
       <section className="py-20 px-4 md:px-8 bg-gradient-to-r from-mint-500 to-skin-500 text-white">
-        <div className="max-w-7xl mx-auto text-center animate-on-scroll">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to experience the best in skin care?</h2>
-          <p className="text-xl mb-8 max-w-3xl mx-auto">
+        <div className="max-w-7xl mx-auto text-center scroll-animate-container">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 fade-in-up">Ready to experience the best in skin care?</h2>
+          <p className="text-xl mb-8 max-w-3xl mx-auto fade-in-up stagger-delay-1">
             Join thousands of happy clients who have transformed their skin and body care routine. Your glowing skin journey starts here.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center fade-in-up stagger-delay-2">
+            <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 hover-scale">
               <Link to="/auth?mode=register">Get Started Today</Link>
             </Button>
-            <Button asChild size="lg" className="bg-transparent border border-white hover:bg-white/10">
+            <Button asChild size="lg" className="bg-transparent border border-white hover:bg-white/10 hover-scale">
               <Link to="/dashboard">View Dashboard</Link>
             </Button>
+          </div>
+          <div className="mt-12 flex justify-center gap-8 fade-in-up stagger-delay-3">
+            <div className="flex items-center">
+              <MapPin className="h-5 w-5 mr-2" />
+              <span>Available in 50+ cities</span>
+            </div>
+            <div className="flex items-center">
+              <Gift className="h-5 w-5 mr-2" />
+              <span>Gift cards available</span>
+            </div>
+            <div className="flex items-center">
+              <Clock className="h-5 w-5 mr-2" />
+              <span>24/7 Customer support</span>
+            </div>
           </div>
         </div>
       </section>
