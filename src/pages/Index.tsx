@@ -11,7 +11,6 @@ const Index = () => {
   const faqRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Initial load animations
     const animateInitialElements = () => {
       const initialElements = document.querySelectorAll('.initial-animation');
       initialElements.forEach((el, index) => {
@@ -21,12 +20,10 @@ const Index = () => {
       });
     };
 
-    // Animation for elements when they come into view during scroll
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // Add staggered animations to children
             const children = entry.target.querySelectorAll('.fade-in-up, .fade-in-left, .fade-in-right');
             children.forEach((child, index) => {
               setTimeout(() => {
@@ -34,7 +31,6 @@ const Index = () => {
               }, index * 100);
             });
             
-            // For elements without children that need animation
             if (entry.target.classList.contains('fade-in-up') || 
                 entry.target.classList.contains('fade-in-left') || 
                 entry.target.classList.contains('fade-in-right')) {
@@ -48,10 +44,8 @@ const Index = () => {
       { threshold: 0.1 }
     );
 
-    // Initial load animations
     animateInitialElements();
 
-    // Select all container elements to observe for scroll animations
     const animatedContainers = document.querySelectorAll('.scroll-animate-container');
     animatedContainers.forEach((el) => {
       observer.observe(el);
@@ -68,7 +62,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
       <section 
         ref={heroRef} 
         className="relative py-20 px-4 md:px-8 min-h-[90vh] flex items-center"
@@ -120,14 +113,12 @@ const Index = () => {
           </div>
         </div>
         
-        {/* Scroll indicator */}
         <div className="scroll-indicator initial-animation fade-in-up stagger-delay-5" onClick={() => scrollToSection(featuresRef)}>
           <span className="text-sm mb-2">Scroll to explore</span>
           <ArrowDown className="h-6 w-6" />
         </div>
       </section>
 
-      {/* How it Works Section */}
       <section className="py-20 px-4 md:px-8 bg-secondary" ref={featuresRef}>
         <div className="max-w-7xl mx-auto scroll-animate-container">
           <div className="text-center mb-16">
@@ -140,7 +131,7 @@ const Index = () => {
             <Card className="border-none shadow-lg fade-in-up stagger-delay-2 hover-lift card-with-image">
               <div className="card-image-hover h-48">
                 <img 
-                  src="https://images.unsplash.com/photo-1573461160327-b422e32d3918?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  src="https://images.unsplash.com/photo-1560750588-73207b1ef5b8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80" 
                   alt="Discover Professionals" 
                   className="w-full h-full object-cover"
                 />
@@ -189,7 +180,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="py-20 px-4 md:px-8">
         <div className="max-w-7xl mx-auto scroll-animate-container">
           <div className="text-center mb-16">
@@ -247,7 +237,7 @@ const Index = () => {
             <div className="skinnect-card fade-in-up stagger-delay-4 hover-scale card-with-image">
               <div className="card-image-hover h-48 -mx-6 -mt-6 mb-4">
                 <img 
-                  src="https://images.unsplash.com/photo-1629131484002-cea2cdaa99b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80" 
                   alt="Digital Vouchers" 
                   className="w-full h-full object-cover"
                 />
@@ -268,7 +258,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
       <section ref={testimonialsRef} className="py-20 px-4 md:px-8 bg-secondary relative overflow-hidden">
         <div className="absolute top-0 left-0 w-40 h-40 bg-primary/5 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute bottom-0 right-0 w-60 h-60 bg-primary/5 rounded-full translate-x-1/3 translate-y-1/3"></div>
@@ -350,7 +339,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* FAQ Section */}
       <section ref={faqRef} className="py-20 px-4 md:px-8">
         <div className="max-w-3xl mx-auto scroll-animate-container">
           <div className="text-center mb-16">
@@ -391,7 +379,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-20 px-4 md:px-8 bg-gradient-to-r from-mint-500 to-skin-500 text-white">
         <div className="max-w-7xl mx-auto text-center scroll-animate-container">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 fade-in-up">Ready to experience the best in skin care?</h2>
