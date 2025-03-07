@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -90,6 +91,31 @@ const About = () => {
         </div>
       </section>
 
+      {/* Add image section with hover animations */}
+      <section className="mb-16 fade-in-up stagger-delay-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <div className="card-image-hover rounded-xl overflow-hidden shadow-lg">
+            <img 
+              src="https://images.unsplash.com/photo-1560179707-f14e90ef3623?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80" 
+              alt="Corporate office building" 
+              className="w-full h-80 object-cover"
+            />
+          </div>
+          <div className="space-y-4">
+            <h3 className="text-2xl font-bold text-primary">Strategically Located in the UAE</h3>
+            <p className="text-lg">
+              Operating from the heart of the UAE, we leverage our strategic location to connect suppliers, service providers, 
+              and customers across the region. Our presence in this vibrant market allows us to stay attuned to the latest trends 
+              and consumer preferences.
+            </p>
+            <p className="text-lg">
+              We understand the unique dynamics of the UAE market and have built our business model to thrive in this 
+              fast-paced environment.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="mb-16 py-12 bg-secondary/50 rounded-2xl p-8 fade-in-up stagger-delay-2">
         <h2 className="text-3xl font-bold mb-8 text-center">Our Strategic Partnerships</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -159,6 +185,53 @@ const About = () => {
         </div>
       </section>
 
+      {/* Add partnerships visual section */}
+      <section className="mb-16 fade-in-up stagger-delay-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="card-with-image overflow-hidden rounded-xl shadow-lg">
+            <div className="card-image-hover h-48">
+              <img 
+                src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                alt="Medical equipment" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="p-6 bg-white">
+              <h3 className="text-lg font-semibold mb-2">Healthcare Equipment</h3>
+              <p>We provide the highest quality medical and healthcare equipment to our partner clinics and medical centers.</p>
+            </div>
+          </div>
+          
+          <div className="card-with-image overflow-hidden rounded-xl shadow-lg">
+            <div className="card-image-hover h-48">
+              <img 
+                src="https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2040&q=80" 
+                alt="Beauty products" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="p-6 bg-white">
+              <h3 className="text-lg font-semibold mb-2">Beauty & Cosmetics</h3>
+              <p>Our network includes premium beauty and cosmetic products that meet the highest standards of quality.</p>
+            </div>
+          </div>
+          
+          <div className="card-with-image overflow-hidden rounded-xl shadow-lg">
+            <div className="card-image-hover h-48">
+              <img 
+                src="https://images.unsplash.com/photo-1577401239170-897942555fb3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                alt="Nutritional supplements" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="p-6 bg-white">
+              <h3 className="text-lg font-semibold mb-2">Nutritional Products</h3>
+              <p>We partner with leading suppliers of nutritional supplements and health-focused products.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="mb-16 fade-in-up stagger-delay-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           <div className="glass-card p-8 rounded-xl shadow-lg hover-brightness">
@@ -205,6 +278,30 @@ const About = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Add business model visual section */}
+      <section className="mb-16 fade-in-up stagger-delay-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <div className="space-y-4">
+            <h3 className="text-2xl font-bold text-primary">Our Partnership Approach</h3>
+            <p className="text-lg">
+              Our partnerships are built on transparency, mutual benefit, and performance-based rewards.
+              We believe in creating sustainable relationships that grow stronger over time.
+            </p>
+            <p className="text-lg">
+              By aligning our success with our partners' achievements, we ensure that every stakeholder
+              in our ecosystem is motivated to deliver exceptional results.
+            </p>
+          </div>
+          <div className="card-image-hover rounded-xl overflow-hidden shadow-lg">
+            <img 
+              src="https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" 
+              alt="Business handshake" 
+              className="w-full h-80 object-cover"
+            />
           </div>
         </div>
       </section>
