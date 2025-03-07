@@ -63,8 +63,10 @@ const GlassyNavbar = () => {
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out',
-        scrolled ? 'py-3 backdrop-blur-lg bg-white/70 dark:bg-black/50 shadow-md' : 'py-5 bg-transparent'
+        'fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out border-b',
+        scrolled 
+          ? 'py-3 backdrop-blur-xl bg-white/30 dark:bg-black/30 shadow-lg border-white/10 dark:border-white/5' 
+          : 'py-5 backdrop-blur-md bg-white/10 dark:bg-black/10 border-transparent'
       )}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between">
@@ -79,7 +81,7 @@ const GlassyNavbar = () => {
               key={link.path}
               to={link.path}
               className={cn(
-                'text-foreground/80 hover:text-primary transition-colors duration-300',
+                'text-foreground/90 hover:text-primary transition-colors duration-300',
                 location.pathname === link.path && 'text-primary font-medium'
               )}
             >
@@ -89,10 +91,19 @@ const GlassyNavbar = () => {
           
           {!session ? (
             <div className="flex space-x-4">
-              <Button asChild variant="outline" size="sm">
+              <Button 
+                asChild 
+                variant="outline" 
+                size="sm"
+                className="backdrop-blur-sm bg-white/10 dark:bg-black/10 border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-black/20"
+              >
                 <Link to="/auth?mode=login">Log In</Link>
               </Button>
-              <Button asChild size="sm" className="skinnect-button-primary">
+              <Button 
+                asChild 
+                size="sm" 
+                className="skinnect-button-primary backdrop-blur-sm hover:shadow-md hover:shadow-primary/20 transition-all duration-300"
+              >
                 <Link to="/auth?mode=register">Sign Up</Link>
               </Button>
             </div>
@@ -100,6 +111,7 @@ const GlassyNavbar = () => {
             <Button
               variant="outline"
               size="sm"
+              className="backdrop-blur-sm bg-white/10 dark:bg-black/10 border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-black/20"
               onClick={async () => await supabase.auth.signOut()}
             >
               Log Out
@@ -120,7 +132,7 @@ const GlassyNavbar = () => {
       {/* Mobile Menu */}
       <div
         className={cn(
-          'md:hidden fixed inset-0 z-40 bg-white/90 dark:bg-black/90 backdrop-blur-lg transition-transform duration-300 ease-in-out',
+          'md:hidden fixed inset-0 z-40 backdrop-blur-xl bg-white/70 dark:bg-black/70 transition-transform duration-300 ease-in-out',
           isOpen ? 'translate-x-0' : 'translate-x-full'
         )}
       >
@@ -140,10 +152,19 @@ const GlassyNavbar = () => {
           
           {!session ? (
             <div className="flex flex-col space-y-4 w-full max-w-xs">
-              <Button asChild variant="outline" size="lg" className="w-full">
+              <Button 
+                asChild 
+                variant="outline" 
+                size="lg" 
+                className="w-full backdrop-blur-sm bg-white/10 dark:bg-black/10 border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-black/20"
+              >
                 <Link to="/auth?mode=login">Log In</Link>
               </Button>
-              <Button asChild size="lg" className="skinnect-button-primary w-full">
+              <Button 
+                asChild 
+                size="lg" 
+                className="skinnect-button-primary w-full backdrop-blur-sm hover:shadow-md hover:shadow-primary/20 transition-all duration-300"
+              >
                 <Link to="/auth?mode=register">Sign Up</Link>
               </Button>
             </div>
@@ -151,7 +172,7 @@ const GlassyNavbar = () => {
             <Button
               variant="outline"
               size="lg"
-              className="w-full max-w-xs"
+              className="w-full max-w-xs backdrop-blur-sm bg-white/10 dark:bg-black/10 border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-black/20"
               onClick={async () => await supabase.auth.signOut()}
             >
               Log Out
