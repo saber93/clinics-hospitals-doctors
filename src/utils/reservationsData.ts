@@ -25,39 +25,34 @@ export const getUserReservations = async (userId: string, userRole: string) => {
   try {
     console.log(`Getting reservations for user ${userId} with role ${userRole}`);
     
-    // Set up the base query for reservations
+    // Set up the basic query
     let query = supabase.from('reservations').select('*');
     
-    // Apply role-based filters only for non-admin users
+    // Apply filters based on user role
     if (userRole === 'client') {
       query = query.eq('client_id', userId);
     } else if (userRole === 'vendor') {
       query = query.eq('vendor_id', userId);
-    } else if (userRole === 'admin') {
-      // Admin can see all reservations - no filter needed
-      console.log("Admin role detected, fetching all reservations");
     }
+    // For admin role, don't apply any filter to get all reservations
     
-    // Execute the query
-    const { data: reservationsData, error } = await query;
+    const { data: reservations, error } = await query;
     
     if (error) {
       console.error("Error fetching reservations:", error);
       return [];
     }
     
-    console.log(`Found ${reservationsData?.length || 0} reservations:`, reservationsData);
+    console.log(`Found ${reservations?.length || 0} reservations for ${userRole} role:`, reservations);
     
-    if (!reservationsData || reservationsData.length === 0) {
+    if (!reservations || reservations.length === 0) {
       return [];
     }
     
     // Extract unique IDs for related data
-    const clientIds = [...new Set(reservationsData.map(r => r.client_id).filter(Boolean))];
-    const vendorIds = [...new Set(reservationsData.map(r => r.vendor_id).filter(Boolean))];
-    const serviceIds = [...new Set(reservationsData.map(r => r.service_id).filter(Boolean))];
-    
-    console.log(`Found ${clientIds.length} unique clients and ${vendorIds.length} unique vendors`);
+    const clientIds = [...new Set(reservations.map(r => r.client_id).filter(Boolean))];
+    const vendorIds = [...new Set(reservations.map(r => r.vendor_id).filter(Boolean))];
+    const serviceIds = [...new Set(reservations.map(r => r.service_id).filter(Boolean))];
     
     // Fetch client profiles
     let clientProfiles: Record<string, any> = {};
@@ -69,9 +64,7 @@ export const getUserReservations = async (userId: string, userRole: string) => {
         
       if (clientError) {
         console.error("Error fetching client profiles:", clientError);
-      }
-      
-      if (clientData) {
+      } else if (clientData) {
         clientProfiles = clientData.reduce((acc, profile) => {
           acc[profile.id] = profile;
           return acc;
@@ -90,9 +83,7 @@ export const getUserReservations = async (userId: string, userRole: string) => {
         
       if (vendorError) {
         console.error("Error fetching vendor profiles:", vendorError);
-      }
-      
-      if (vendorData) {
+      } else if (vendorData) {
         vendorProfiles = vendorData.reduce((acc, profile) => {
           acc[profile.id] = profile;
           return acc;
@@ -111,9 +102,7 @@ export const getUserReservations = async (userId: string, userRole: string) => {
         
       if (servicesError) {
         console.error("Error fetching services:", servicesError);
-      }
-      
-      if (servicesData) {
+      } else if (servicesData) {
         services = servicesData.reduce((acc, service) => {
           acc[service.id] = service;
           return acc;
@@ -123,17 +112,16 @@ export const getUserReservations = async (userId: string, userRole: string) => {
     }
     
     // Combine all data
-    const enrichedReservations = reservationsData.map(reservation => {
-      const enriched = {
+    const enrichedReservations = reservations.map(reservation => {
+      return {
         ...reservation,
         clients: clientProfiles[reservation.client_id] || { name: 'Unknown Client' },
         vendors: vendorProfiles[reservation.vendor_id] || { name: 'Unknown Provider' },
         services: services[reservation.service_id] || { name: 'Unknown Service' }
       };
-      console.log(`Enriched reservation: ${reservation.id}`, enriched);
-      return enriched;
     });
     
+    console.log("Enriched reservations:", enrichedReservations);
     return enrichedReservations;
   } catch (error) {
     console.error("Error in getUserReservations:", error);

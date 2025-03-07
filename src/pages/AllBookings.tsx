@@ -46,105 +46,19 @@ const AllBookings = () => {
           return;
         }
         
-        const userRole = profile?.role || 'client';
-        setUserRole(userRole);
-        console.log("User role:", userRole);
+        const role = profile?.role || 'client';
+        setUserRole(role);
+        console.log("User role:", role);
         
-        // Get reservations with direct query to ensure we get data
-        let query = supabase.from('reservations').select('*');
+        // Fetch reservations using getUserReservations utility
+        const reservationsData = await getUserReservations(currentUserId, role);
+        console.log("Fetched reservations data:", reservationsData);
         
-        // Apply role-based filters
-        if (userRole === 'client') {
-          query = query.eq('client_id', currentUserId);
-        } else if (userRole === 'vendor') {
-          query = query.eq('vendor_id', currentUserId);
-        }
-        
-        const { data: directReservations, error: resError } = await query;
-        
-        if (resError) {
-          console.error("Error fetching reservations directly:", resError);
-          toast.error("Failed to load booking data");
-          setLoading(false);
-          return;
-        }
-        
-        console.log("Direct reservations query result:", directReservations);
-        
-        if (directReservations && directReservations.length > 0) {
-          // Get unique user IDs from reservations
-          const clientIds = [...new Set(directReservations.map(r => r.client_id).filter(Boolean))];
-          const vendorIds = [...new Set(directReservations.map(r => r.vendor_id).filter(Boolean))];
-          const serviceIds = [...new Set(directReservations.map(r => r.service_id).filter(Boolean))];
-          
-          // Fetch client profiles
-          let clientProfiles: Record<string, any> = {};
-          if (clientIds.length > 0) {
-            const { data: clientData } = await supabase
-              .from('profiles')
-              .select('id, name')
-              .in('id', clientIds);
-              
-            if (clientData) {
-              clientProfiles = clientData.reduce((acc, profile) => {
-                acc[profile.id] = profile;
-                return acc;
-              }, {} as Record<string, any>);
-            }
-          }
-          
-          // Fetch vendor profiles
-          let vendorProfiles: Record<string, any> = {};
-          if (vendorIds.length > 0) {
-            const { data: vendorData } = await supabase
-              .from('profiles')
-              .select('id, name')
-              .in('id', vendorIds);
-              
-            if (vendorData) {
-              vendorProfiles = vendorData.reduce((acc, profile) => {
-                acc[profile.id] = profile;
-                return acc;
-              }, {} as Record<string, any>);
-            }
-          }
-          
-          // Fetch services
-          let services: Record<string, any> = {};
-          if (serviceIds.length > 0) {
-            const { data: servicesData } = await supabase
-              .from('services')
-              .select('id, name, duration, price')
-              .in('id', serviceIds);
-              
-            if (servicesData) {
-              services = servicesData.reduce((acc, service) => {
-                acc[service.id] = service;
-                return acc;
-              }, {} as Record<string, any>);
-            }
-          }
-          
-          // Combine all data
-          const enrichedReservations = directReservations.map(reservation => ({
-            ...reservation,
-            clients: clientProfiles[reservation.client_id] || { name: 'Unknown Client' },
-            vendors: vendorProfiles[reservation.vendor_id] || { name: 'Unknown Provider' },
-            services: services[reservation.service_id] || { name: 'Unknown Service' }
-          }));
-          
-          console.log("Enriched reservations:", enrichedReservations);
-          setReservations(enrichedReservations);
+        if (reservationsData && Array.isArray(reservationsData)) {
+          setReservations(reservationsData);
         } else {
-          console.log("No reservations found in direct query");
-          
-          // Try the utility function as fallback
-          const utilityReservations = await getUserReservations(currentUserId, userRole);
-          console.log("Utility function reservations:", utilityReservations);
-          
-          if (utilityReservations && utilityReservations.length > 0) {
-            setReservations(utilityReservations);
-          }
+          console.error("Invalid reservations data format:", reservationsData);
+          setReservations([]);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -187,6 +101,9 @@ const AllBookings = () => {
     );
   }
   
+  // Debug log to check reservations data
+  console.log("Rendering with reservations:", reservations);
+  
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -219,30 +136,20 @@ const AllBookings = () => {
             </div>
           </div>
           
-          {reservations.length > 0 ? (
+          {reservations && reservations.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    {userRole === 'vendor' && (
+                    {(userRole === 'vendor' || userRole === 'admin') && (
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Client
                       </th>
                     )}
-                    {userRole === 'client' && (
+                    {(userRole === 'client' || userRole === 'admin') && (
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Provider
                       </th>
-                    )}
-                    {userRole === 'admin' && (
-                      <>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Client
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Provider
-                        </th>
-                      </>
                     )}
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Service
@@ -264,25 +171,15 @@ const AllBookings = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {reservations.map((reservation) => (
                     <tr key={reservation.id}>
-                      {userRole === 'vendor' && (
+                      {(userRole === 'vendor' || userRole === 'admin') && (
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           {reservation.clients?.name || 'Unknown Client'}
                         </td>
                       )}
-                      {userRole === 'client' && (
+                      {(userRole === 'client' || userRole === 'admin') && (
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           {reservation.vendors?.name || 'Unknown Provider'}
                         </td>
-                      )}
-                      {userRole === 'admin' && (
-                        <>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {reservation.clients?.name || 'Unknown Client'}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {reservation.vendors?.name || 'Unknown Provider'}
-                          </td>
-                        </>
                       )}
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {reservation.services?.name || 'Unknown Service'}
