@@ -55,7 +55,7 @@ const VoucherCard = ({ voucher }: { voucher: typeof mockVouchers[0] }) => {
   };
   
   return (
-    <div className={`bg-white rounded-lg shadow-md p-6 border-l-4 ${
+    <div className={`bg-white rounded-lg shadow-md p-6 border-l-4 hover-lift ${
       voucher.isRedeemed ? 'border-gray-300' : isExpired ? 'border-red-500' : 'border-primary'
     }`}>
       <div className="flex justify-between items-start">
@@ -85,7 +85,7 @@ const VoucherCard = ({ voucher }: { voucher: typeof mockVouchers[0] }) => {
       {!voucher.isRedeemed && (
         <div className="mt-4">
           <button
-            className={`skinnect-button w-full ${isExpired ? 'bg-gray-300 text-gray-600' : 'skinnect-button-primary'}`}
+            className={`skinnect-button w-full ${isExpired ? 'bg-gray-300 text-gray-600' : 'skinnect-button-primary button-hover-slide'}`}
             onClick={handleRedeemVoucher}
             disabled={isExpired}
           >

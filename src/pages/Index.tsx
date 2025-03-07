@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useEffect, useRef } from "react";
@@ -138,7 +137,14 @@ const Index = () => {
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-10">
-            <Card className="border-none shadow-lg fade-in-up stagger-delay-2 hover-lift">
+            <Card className="border-none shadow-lg fade-in-up stagger-delay-2 hover-lift card-with-image">
+              <div className="card-image-hover h-48">
+                <img 
+                  src="https://images.unsplash.com/photo-1573461160327-b422e32d3918?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  alt="Discover Professionals" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <CardContent className="pt-6 text-center">
                 <div className="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl font-bold">1</span>
@@ -147,7 +153,14 @@ const Index = () => {
                 <p className="text-gray-600">Browse through numerous specialists in your area with detailed profiles and reviews.</p>
               </CardContent>
             </Card>
-            <Card className="border-none shadow-lg fade-in-up stagger-delay-3 hover-lift">
+            <Card className="border-none shadow-lg fade-in-up stagger-delay-3 hover-lift card-with-image">
+              <div className="card-image-hover h-48">
+                <img 
+                  src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  alt="Book Appointments" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <CardContent className="pt-6 text-center">
                 <div className="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl font-bold">2</span>
@@ -156,7 +169,14 @@ const Index = () => {
                 <p className="text-gray-600">Select your preferred date and time with just a few clicks. Receive instant confirmation.</p>
               </CardContent>
             </Card>
-            <Card className="border-none shadow-lg fade-in-up stagger-delay-4 hover-lift">
+            <Card className="border-none shadow-lg fade-in-up stagger-delay-4 hover-lift card-with-image">
+              <div className="card-image-hover h-48">
+                <img 
+                  src="https://images.unsplash.com/photo-1556760544-74068565f05c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  alt="Enjoy Your Service" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <CardContent className="pt-6 text-center">
                 <div className="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl font-bold">3</span>
@@ -179,7 +199,14 @@ const Index = () => {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="skinnect-card fade-in-up stagger-delay-2 hover-scale">
+            <div className="skinnect-card fade-in-up stagger-delay-2 hover-scale card-with-image">
+              <div className="card-image-hover h-48 -mx-6 -mt-6 mb-4">
+                <img 
+                  src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  alt="Easy Booking" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <div className="mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary w-12 h-12 mx-auto mb-4">
                   <rect width="18" height="18" x="3" y="3" rx="2" />
@@ -192,11 +219,18 @@ const Index = () => {
               </div>
               <h3 className="text-xl font-semibold mb-2 text-center">Easy Booking</h3>
               <p className="text-gray-600 mb-4 text-center">Book appointments with your favorite specialists with just a few clicks, anytime and anywhere.</p>
-              <Button asChild className="skinnect-button-outline w-full hover-glow">
+              <Button asChild className="skinnect-button-outline w-full hover-glow button-hover-slide">
                 <Link to="/reservations">Book Now</Link>
               </Button>
             </div>
-            <div className="skinnect-card fade-in-up stagger-delay-3 hover-scale">
+            <div className="skinnect-card fade-in-up stagger-delay-3 hover-scale card-with-image">
+              <div className="card-image-hover h-48 -mx-6 -mt-6 mb-4">
+                <img 
+                  src="https://images.unsplash.com/photo-1607083206968-13611e3d76db?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  alt="Special Offers" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <div className="mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary w-12 h-12 mx-auto mb-4">
                   <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
@@ -206,11 +240,18 @@ const Index = () => {
               </div>
               <h3 className="text-xl font-semibold mb-2 text-center">Special Offers</h3>
               <p className="text-gray-600 mb-4 text-center">Access exclusive deals and promotions from top clinics. Save on premium treatments and services.</p>
-              <Button asChild className="skinnect-button-outline w-full hover-glow">
+              <Button asChild className="skinnect-button-outline w-full hover-glow button-hover-slide">
                 <Link to="/offers">View Offers</Link>
               </Button>
             </div>
-            <div className="skinnect-card fade-in-up stagger-delay-4 hover-scale">
+            <div className="skinnect-card fade-in-up stagger-delay-4 hover-scale card-with-image">
+              <div className="card-image-hover h-48 -mx-6 -mt-6 mb-4">
+                <img 
+                  src="https://images.unsplash.com/photo-1629131484002-cea2cdaa99b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  alt="Digital Vouchers" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <div className="mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary w-12 h-12 mx-auto mb-4">
                   <rect width="20" height="14" x="2" y="5" rx="2" />
@@ -219,7 +260,7 @@ const Index = () => {
               </div>
               <h3 className="text-xl font-semibold mb-2 text-center">Digital Vouchers</h3>
               <p className="text-gray-600 mb-4 text-center">Easily redeem and manage your vouchers and promo codes. Gift treatments to friends and family.</p>
-              <Button asChild className="skinnect-button-outline w-full hover-glow">
+              <Button asChild className="skinnect-button-outline w-full hover-glow button-hover-slide">
                 <Link to="/vouchers">My Vouchers</Link>
               </Button>
             </div>
@@ -239,7 +280,7 @@ const Index = () => {
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="border-none shadow-lg bg-white fade-in-left stagger-delay-2 hover-lift">
+            <Card className="border-none shadow-lg bg-white fade-in-left stagger-delay-2 hover-lift hover-rotate">
               <CardContent className="pt-6">
                 <div className="flex items-center mb-4">
                   <div className="mr-4">
@@ -261,7 +302,7 @@ const Index = () => {
                 <p className="text-gray-600 italic">"Skinnect made it so easy to find the perfect facial treatment. The booking process was smooth, and I could see all the reviews before making my choice."</p>
               </CardContent>
             </Card>
-            <Card className="border-none shadow-lg bg-white fade-in-up stagger-delay-3 hover-lift">
+            <Card className="border-none shadow-lg bg-white fade-in-up stagger-delay-3 hover-lift hover-rotate">
               <CardContent className="pt-6">
                 <div className="flex items-center mb-4">
                   <div className="mr-4">
@@ -283,7 +324,7 @@ const Index = () => {
                 <p className="text-gray-600 italic">"As someone who travels frequently, finding consistent quality skincare services was always a challenge until I discovered Skinnect. Now I can book appointments anywhere."</p>
               </CardContent>
             </Card>
-            <Card className="border-none shadow-lg bg-white fade-in-right stagger-delay-4 hover-lift">
+            <Card className="border-none shadow-lg bg-white fade-in-right stagger-delay-4 hover-lift hover-rotate">
               <CardContent className="pt-6">
                 <div className="flex items-center mb-4">
                   <div className="mr-4">
@@ -319,7 +360,7 @@ const Index = () => {
             </p>
           </div>
           <div className="space-y-6">
-            <Card className="fade-in-up stagger-delay-2 hover-glow">
+            <Card className="fade-in-up stagger-delay-2 hover-glow hover-brightness">
               <CardContent className="pt-6">
                 <h3 className="text-xl font-semibold mb-2 flex items-center">
                   <CheckCircle className="h-5 w-5 text-primary mr-2" />
@@ -328,7 +369,7 @@ const Index = () => {
                 <p className="text-gray-600">Simply create an account, search for specialists in your area, select your preferred service, and choose an available time slot. Confirmation is instant!</p>
               </CardContent>
             </Card>
-            <Card className="fade-in-up stagger-delay-3 hover-glow">
+            <Card className="fade-in-up stagger-delay-3 hover-glow hover-brightness">
               <CardContent className="pt-6">
                 <h3 className="text-xl font-semibold mb-2 flex items-center">
                   <CheckCircle className="h-5 w-5 text-primary mr-2" />
@@ -337,7 +378,7 @@ const Index = () => {
                 <p className="text-gray-600">Yes, you can easily cancel or reschedule your appointment through your dashboard up to 24 hours before your scheduled time without any penalty.</p>
               </CardContent>
             </Card>
-            <Card className="fade-in-up stagger-delay-4 hover-glow">
+            <Card className="fade-in-up stagger-delay-4 hover-glow hover-brightness">
               <CardContent className="pt-6">
                 <h3 className="text-xl font-semibold mb-2 flex items-center">
                   <CheckCircle className="h-5 w-5 text-primary mr-2" />
@@ -358,10 +399,10 @@ const Index = () => {
             Join thousands of happy clients who have transformed their skin and body care routine. Your glowing skin journey starts here.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center fade-in-up stagger-delay-2">
-            <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 hover-scale">
+            <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 hover-scale button-hover-slide">
               <Link to="/auth?mode=register">Get Started Today</Link>
             </Button>
-            <Button asChild size="lg" className="bg-transparent border border-white hover:bg-white/10 hover-scale">
+            <Button asChild size="lg" className="bg-transparent border border-white hover:bg-white/10 hover-scale button-hover-slide">
               <Link to="/dashboard">View Dashboard</Link>
             </Button>
           </div>

@@ -40,8 +40,8 @@ const OfferCard = ({ offer }: { offer: typeof mockOffers[0] }) => {
   };
   
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <div className="h-48 overflow-hidden">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden hover-lift card-with-image">
+      <div className="card-image-hover h-48">
         <img 
           src={offer.imageUrl} 
           alt={offer.title} 
@@ -60,7 +60,7 @@ const OfferCard = ({ offer }: { offer: typeof mockOffers[0] }) => {
             <p className="text-sm text-gray-500">Provider: {offer.vendor}</p>
           </div>
           <button 
-            className="skinnect-button-primary"
+            className="skinnect-button-primary button-hover-slide"
             onClick={handleRedeemOffer}
           >
             Redeem
