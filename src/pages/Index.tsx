@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useEffect, useRef } from "react";
@@ -208,7 +209,7 @@ const Index = () => {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold mb-2 text-center">Easy Booking</h3>
-              <p className="text-gray-600 mb-4 text-center">Book appointments with your favorite specialists with just a few clicks, anytime and anywhere.</p>
+              <p className="text-gray-600 mb-4 text-center line-clamp-2 h-[3rem]">Book appointments with your favorite specialists with just a few clicks, anytime and anywhere.</p>
               <Button asChild className="skinnect-button-outline w-full hover-glow button-hover-slide">
                 <Link to="/reservations">Book Now</Link>
               </Button>
@@ -229,7 +230,7 @@ const Index = () => {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold mb-2 text-center">Special Offers</h3>
-              <p className="text-gray-600 mb-4 text-center">Access exclusive deals and promotions from top clinics. Save on premium treatments and services.</p>
+              <p className="text-gray-600 mb-4 text-center line-clamp-2 h-[3rem]">Access exclusive deals and promotions from top clinics. Save on premium treatments.</p>
               <Button asChild className="skinnect-button-outline w-full hover-glow button-hover-slide">
                 <Link to="/offers">View Offers</Link>
               </Button>
@@ -249,7 +250,7 @@ const Index = () => {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold mb-2 text-center">Digital Vouchers</h3>
-              <p className="text-gray-600 mb-4 text-center">Easily redeem and manage your vouchers and promo codes. Gift treatments to friends and family.</p>
+              <p className="text-gray-600 mb-4 text-center line-clamp-2 h-[3rem]">Easily redeem and manage your vouchers. Gift treatments to friends and family.</p>
               <Button asChild className="skinnect-button-outline w-full hover-glow button-hover-slide">
                 <Link to="/vouchers">My Vouchers</Link>
               </Button>
