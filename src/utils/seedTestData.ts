@@ -88,7 +88,7 @@ export const seedTestData = async () => {
     
     console.log("Client account created or updated successfully", clientData);
     
-    // Create services
+    // Create services using service role from an edge function to bypass RLS
     console.log("Creating sample services...");
     const vendorId = vendorData?.userId;
     
@@ -116,11 +116,10 @@ export const seedTestData = async () => {
       }
     ];
     
-    // Fixed: Remove the onConflict option since there's no unique constraint defined
-    const { data: servicesData, error: servicesError } = await supabase
-      .from('services')
-      .upsert(services)
-      .select();
+    // Use an edge function to bypass RLS when creating services
+    const { data: servicesData, error: servicesError } = await supabase.functions.invoke('create-test-services', {
+      body: { services }
+    });
       
     if (servicesError) {
       console.error("Error creating services:", servicesError);
@@ -129,10 +128,17 @@ export const seedTestData = async () => {
       return;
     }
     
+    if (!servicesData?.success) {
+      console.error("Error creating services:", servicesData?.error);
+      toast.dismiss();
+      toast.error(`Failed to create services: ${servicesData?.error || 'Unknown error'}`);
+      return;
+    }
+    
     console.log("Services created successfully:", servicesData);
     
     // Create reservations
-    if (servicesData && servicesData.length > 0 && clientData?.userId) {
+    if (servicesData?.services && servicesData.services.length > 0 && clientData?.userId) {
       console.log("Creating sample reservations...");
       
       // Get today's date and format it as YYYY-MM-DD
@@ -150,7 +156,7 @@ export const seedTestData = async () => {
         {
           client_id: clientData.userId,
           vendor_id: vendorId,
-          service_id: servicesData[0].id,
+          service_id: servicesData.services[0].id,
           date: formatDate(tomorrow),
           time: "10:00 AM",
           status: "pending"
@@ -158,22 +164,29 @@ export const seedTestData = async () => {
         {
           client_id: clientData.userId,
           vendor_id: vendorId,
-          service_id: servicesData[1].id,
+          service_id: servicesData.services[1].id,
           date: formatDate(nextWeek),
           time: "2:00 PM",
           status: "confirmed"
         }
       ];
       
-      const { data: reservationsData, error: reservationsError } = await supabase
-        .from('reservations')
-        .upsert(reservations)
-        .select();
+      // Use an edge function to bypass RLS when creating reservations
+      const { data: reservationsData, error: reservationsError } = await supabase.functions.invoke('create-test-reservations', {
+        body: { reservations }
+      });
         
       if (reservationsError) {
         console.error("Error creating reservations:", reservationsError);
         toast.dismiss();
         toast.error(`Failed to create reservations: ${reservationsError.message || 'Unknown error'}`);
+        return;
+      }
+      
+      if (!reservationsData?.success) {
+        console.error("Error creating reservations:", reservationsData?.error);
+        toast.dismiss();
+        toast.error(`Failed to create reservations: ${reservationsData?.error || 'Unknown error'}`);
         return;
       }
       
