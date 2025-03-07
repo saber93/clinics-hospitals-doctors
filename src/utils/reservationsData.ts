@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 
 export type Reservation = {
@@ -138,17 +139,11 @@ export const getUserReservations = async (userId: string, userRole: string) => {
 export const getAvailableServices = async () => {
   try {
     console.log("Fetching available services...");
+    
+    // Get services without trying to join with profiles
     const { data, error } = await supabase
       .from('services')
-      .select(`
-        id,
-        name,
-        description,
-        price,
-        duration,
-        vendor_id,
-        vendors:profiles(name)
-      `)
+      .select('id, name, description, price, duration, vendor_id')
       .order('name');
     
     if (error) {
@@ -156,8 +151,43 @@ export const getAvailableServices = async () => {
       throw error;
     }
     
-    console.log("Services fetched successfully:", data?.length || 0);
-    return data || [];
+    // If services exist, fetch vendor names separately
+    if (data && data.length > 0) {
+      // Get unique vendor IDs
+      const vendorIds = [...new Set(data.map(service => service.vendor_id).filter(Boolean))];
+      
+      let vendorProfiles: Record<string, any> = {};
+      if (vendorIds.length > 0) {
+        const { data: vendorData, error: vendorError } = await supabase
+          .from('profiles')
+          .select('id, name')
+          .in('id', vendorIds);
+          
+        if (vendorError) {
+          console.error("Error fetching vendor profiles:", vendorError);
+        } else if (vendorData) {
+          vendorProfiles = vendorData.reduce((acc, profile) => {
+            acc[profile.id] = profile;
+            return acc;
+          }, {} as Record<string, any>);
+        }
+      }
+      
+      // Enrich services with vendor information
+      const enrichedServices = data.map(service => {
+        const vendorProfile = service.vendor_id ? vendorProfiles[service.vendor_id] : null;
+        return {
+          ...service,
+          vendors: vendorProfile || { name: 'Unknown Provider' }
+        };
+      });
+      
+      console.log("Services fetched successfully:", enrichedServices.length);
+      return enrichedServices;
+    }
+    
+    console.log("No services found");
+    return [];
   } catch (error) {
     console.error("Error in getAvailableServices:", error);
     return [];
