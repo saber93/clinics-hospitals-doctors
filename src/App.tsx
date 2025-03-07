@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +9,9 @@ import GlassyNavbar from "./components/layout/GlassyNavbar";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import ClientDashboard from "./pages/ClientDashboard";
+import VendorDashboard from "./pages/VendorDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import Reservations from "./pages/Reservations";
 import Offers from "./pages/Offers";
 import Vouchers from "./pages/Vouchers";
@@ -72,10 +74,24 @@ const App = () => {
                 <Route path="/" element={<Index />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/dashboard" />} />
+                
                 <Route 
                   path="/dashboard" 
                   element={session ? <Dashboard /> : <Navigate to="/auth" />} 
                 />
+                <Route 
+                  path="/client-dashboard" 
+                  element={session ? <ClientDashboard /> : <Navigate to="/auth" />} 
+                />
+                <Route 
+                  path="/vendor-dashboard" 
+                  element={session ? <VendorDashboard /> : <Navigate to="/auth" />} 
+                />
+                <Route 
+                  path="/admin-dashboard" 
+                  element={session ? <AdminDashboard /> : <Navigate to="/auth" />} 
+                />
+                
                 <Route 
                   path="/reservations" 
                   element={session ? <Reservations /> : <Navigate to="/auth" />} 
@@ -92,7 +108,7 @@ const App = () => {
                   path="/vouchers" 
                   element={session ? <Vouchers /> : <Navigate to="/auth" />} 
                 />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </div>
