@@ -53,7 +53,7 @@ const OfferCard = ({ offer }: { offer: typeof mockOffers[0] }) => {
           <h3 className="text-xl font-semibold">{offer.title}</h3>
           <span className="bg-primary/20 text-primary px-2 py-1 rounded text-sm font-medium">{offer.discount}</span>
         </div>
-        <p className="text-gray-600 mb-4">{offer.description}</p>
+        <p className="text-gray-600 mb-4 line-clamp-3 h-[4.5rem]">{offer.description}</p>
         <div className="flex justify-between items-center">
           <div>
             <p className="text-sm text-gray-500">Valid until: {new Date(offer.validUntil).toLocaleDateString()}</p>
