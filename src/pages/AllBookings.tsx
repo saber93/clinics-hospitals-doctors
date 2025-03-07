@@ -1,17 +1,24 @@
-import { useState, useEffect } from "react";
-import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
-import { getUserReservations } from "@/utils/reservationsData";
-import { Button } from "@/components/ui/button";
-import { Calendar, List, CheckCircle, XCircle } from "lucide-react";
-import { format } from "date-fns";
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { getUserReservations } from '@/utils/reservationsData';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import { ArrowLeft } from 'lucide-react';
+import { format } from 'date-fns';
 
 const AllBookings = () => {
-  const [reservations, setReservations] = useState<any[]>([]);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [userId, setUserId] = useState<string | null>(null);
-  const [userRole, setUserRole] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState(null);
   
+  const searchParams = new URLSearchParams(location.search);
+  const source = searchParams.get('source');
+  const showBackButton = source === 'total' || source === 'pending' || 
+                        source === 'confirmed' || source === 'completed';
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -99,20 +106,18 @@ const AllBookings = () => {
   console.log("Rendering with reservations:", reservations);
   
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold">All Bookings</h1>
-          <div className="flex space-x-2">
-            <Button variant="outline" size="sm" className="flex items-center">
-              <Calendar className="mr-2 h-4 w-4" />
-              Calendar View
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold">All Bookings</h1>
+          {showBackButton && (
+            <Button 
+              variant="back" 
+              onClick={() => navigate('/dashboard')}
+            >
+              <ArrowLeft className="h-4 w-4 mr-1" /> Back to Dashboard
             </Button>
-            <Button variant="outline" size="sm" className="flex items-center bg-primary/10 text-primary">
-              <List className="mr-2 h-4 w-4" />
-              List View
-            </Button>
-          </div>
+          )}
         </div>
         
         <div className="bg-white rounded-lg shadow overflow-hidden">

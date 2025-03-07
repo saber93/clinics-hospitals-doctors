@@ -138,6 +138,25 @@ const VendorDashboard = () => {
     
     fetchVendorStats();
   }, []);
+
+  useEffect(() => {
+    const currentUrl = window.location.pathname;
+    
+    if (currentUrl === '/all-bookings') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const source = urlParams.get('source');
+      
+      if (source === 'total') {
+        setShowBackButtons({...showBackButtons, total: true});
+      } else if (source === 'pending') {
+        setShowBackButtons({...showBackButtons, pending: true});
+      } else if (source === 'confirmed') {
+        setShowBackButtons({...showBackButtons, confirmed: true});
+      } else if (source === 'completed') {
+        setShowBackButtons({...showBackButtons, completed: true});
+      }
+    }
+  }, []);
   
   const statusData = [
     { name: 'Pending', value: stats.pendingBookings },
@@ -166,7 +185,10 @@ const VendorDashboard = () => {
                 variant="back" 
                 size="sm" 
                 className="w-full" 
-                onClick={() => setShowBackButtons({...showBackButtons, total: false})}
+                onClick={() => {
+                  navigate("/dashboard");
+                  setShowBackButtons({...showBackButtons, total: false});
+                }}
               >
                 <ArrowLeft className="h-4 w-4 mr-1" /> Back to Dashboard
               </Button>
@@ -176,7 +198,7 @@ const VendorDashboard = () => {
                 size="sm" 
                 className="w-full" 
                 onClick={() => {
-                  navigate("/all-bookings");
+                  navigate("/all-bookings?source=total");
                   setShowBackButtons({...showBackButtons, total: true});
                 }}
               >
@@ -201,7 +223,10 @@ const VendorDashboard = () => {
                 variant="back" 
                 size="sm" 
                 className="w-full" 
-                onClick={() => setShowBackButtons({...showBackButtons, pending: false})}
+                onClick={() => {
+                  navigate("/dashboard");
+                  setShowBackButtons({...showBackButtons, pending: false});
+                }}
               >
                 <ArrowLeft className="h-4 w-4 mr-1" /> Back to Dashboard
               </Button>
@@ -211,7 +236,7 @@ const VendorDashboard = () => {
                 size="sm" 
                 className="w-full" 
                 onClick={() => {
-                  navigate("/all-bookings");
+                  navigate("/all-bookings?source=pending");
                   setShowBackButtons({...showBackButtons, pending: true});
                 }}
               >
@@ -236,7 +261,10 @@ const VendorDashboard = () => {
                 variant="back" 
                 size="sm" 
                 className="w-full" 
-                onClick={() => setShowBackButtons({...showBackButtons, confirmed: false})}
+                onClick={() => {
+                  navigate("/dashboard");
+                  setShowBackButtons({...showBackButtons, confirmed: false});
+                }}
               >
                 <ArrowLeft className="h-4 w-4 mr-1" /> Back to Dashboard
               </Button>
@@ -246,7 +274,7 @@ const VendorDashboard = () => {
                 size="sm" 
                 className="w-full" 
                 onClick={() => {
-                  navigate("/all-bookings");
+                  navigate("/all-bookings?source=confirmed");
                   setShowBackButtons({...showBackButtons, confirmed: true});
                 }}
               >
@@ -271,7 +299,10 @@ const VendorDashboard = () => {
                 variant="back" 
                 size="sm" 
                 className="w-full" 
-                onClick={() => setShowBackButtons({...showBackButtons, completed: false})}
+                onClick={() => {
+                  navigate("/dashboard");
+                  setShowBackButtons({...showBackButtons, completed: false});
+                }}
               >
                 <ArrowLeft className="h-4 w-4 mr-1" /> Back to Dashboard
               </Button>
@@ -281,7 +312,7 @@ const VendorDashboard = () => {
                 size="sm" 
                 className="w-full" 
                 onClick={() => {
-                  navigate("/all-bookings");
+                  navigate("/all-bookings?source=completed");
                   setShowBackButtons({...showBackButtons, completed: true});
                 }}
               >
