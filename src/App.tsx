@@ -14,6 +14,7 @@ import Reservations from "./pages/Reservations";
 import Offers from "./pages/Offers";
 import Vouchers from "./pages/Vouchers";
 import AllBookings from "./pages/AllBookings";
+import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -69,6 +70,7 @@ const App = () => {
             <div className="pt-24">
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/about" element={<About />} />
                 <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/dashboard" />} />
                 <Route 
                   path="/dashboard" 

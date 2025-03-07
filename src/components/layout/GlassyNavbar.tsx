@@ -51,6 +51,7 @@ const GlassyNavbar = () => {
 
   const navLinks = [
     { name: 'Home', path: '/' },
+    { name: 'About', path: '/about' },
     { name: 'Dashboard', path: '/dashboard', auth: true },
     { name: 'Reservations', path: '/reservations', auth: true },
     { name: 'Offers', path: '/offers', auth: true },
