@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -17,6 +18,7 @@ const Reservations = () => {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [reservations, setReservations] = useState<any[]>([]);
   
   const timeSlots = [
     "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", 
