@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams, Navigate, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -8,7 +7,7 @@ import { seedTestData } from "@/utils/seedTestData";
 import "../utils/auth";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { Users, Store, Calendar, TrendingUp, Activity, Package, BarChart as BarChartIcon } from "lucide-react";
+import { Users, Store, Calendar, TrendingUp, Activity, Package, BarChart as BarChartIcon, ArrowLeft } from "lucide-react";
 import { getUserReservations } from "@/utils/reservationsData";
 
 const vendorStats = [
@@ -68,6 +67,12 @@ const VendorDashboard = () => {
   });
   const [loading, setLoading] = useState(true);
   const [bookingsByMonth, setBookingsByMonth] = useState([]);
+  const [showBackButtons, setShowBackButtons] = useState({
+    total: false,
+    pending: false,
+    confirmed: false,
+    completed: false
+  });
   
   useEffect(() => {
     const fetchVendorStats = async () => {
@@ -80,11 +85,9 @@ const VendorDashboard = () => {
           return;
         }
         
-        // Fetch vendor's reservations
         const reservationsData = await getUserReservations(session.user.id, 'vendor');
         
         if (reservationsData) {
-          // Calculate statistics
           const totalBookings = reservationsData.length;
           const pendingBookings = reservationsData.filter(r => r.status === 'pending').length;
           const confirmedBookings = reservationsData.filter(r => r.status === 'confirmed').length;
@@ -99,7 +102,6 @@ const VendorDashboard = () => {
             cancelledBookings
           });
           
-          // Process bookings by month
           const monthlyData = [
             { name: 'Jan', bookings: 0 },
             { name: 'Feb', bookings: 0 },
@@ -158,10 +160,29 @@ const VendorDashboard = () => {
             <div className="text-2xl font-bold">{stats.totalBookings}</div>
             <p className="text-xs text-muted-foreground">All time bookings</p>
           </CardContent>
-          <CardFooter>
-            <Button variant="outline" size="sm" className="w-full" onClick={() => navigate("/all-bookings")}>
-              View all bookings
-            </Button>
+          <CardFooter className="flex flex-col gap-2 w-full">
+            {showBackButtons.total ? (
+              <Button 
+                variant="back" 
+                size="sm" 
+                className="w-full" 
+                onClick={() => setShowBackButtons({...showBackButtons, total: false})}
+              >
+                <ArrowLeft className="h-4 w-4 mr-1" /> Back to Dashboard
+              </Button>
+            ) : (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full" 
+                onClick={() => {
+                  navigate("/all-bookings");
+                  setShowBackButtons({...showBackButtons, total: true});
+                }}
+              >
+                View all bookings
+              </Button>
+            )}
           </CardFooter>
         </Card>
         
@@ -174,10 +195,29 @@ const VendorDashboard = () => {
             <div className="text-2xl font-bold">{stats.pendingBookings}</div>
             <p className="text-xs text-muted-foreground">Awaiting confirmation</p>
           </CardContent>
-          <CardFooter>
-            <Button variant="outline" size="sm" className="w-full" onClick={() => navigate("/all-bookings")}>
-              Manage pending
-            </Button>
+          <CardFooter className="flex flex-col gap-2 w-full">
+            {showBackButtons.pending ? (
+              <Button 
+                variant="back" 
+                size="sm" 
+                className="w-full" 
+                onClick={() => setShowBackButtons({...showBackButtons, pending: false})}
+              >
+                <ArrowLeft className="h-4 w-4 mr-1" /> Back to Dashboard
+              </Button>
+            ) : (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full" 
+                onClick={() => {
+                  navigate("/all-bookings");
+                  setShowBackButtons({...showBackButtons, pending: true});
+                }}
+              >
+                Manage pending
+              </Button>
+            )}
           </CardFooter>
         </Card>
         
@@ -190,10 +230,29 @@ const VendorDashboard = () => {
             <div className="text-2xl font-bold">{stats.confirmedBookings}</div>
             <p className="text-xs text-muted-foreground">Upcoming appointments</p>
           </CardContent>
-          <CardFooter>
-            <Button variant="outline" size="sm" className="w-full" onClick={() => navigate("/all-bookings")}>
-              View schedule
-            </Button>
+          <CardFooter className="flex flex-col gap-2 w-full">
+            {showBackButtons.confirmed ? (
+              <Button 
+                variant="back" 
+                size="sm" 
+                className="w-full" 
+                onClick={() => setShowBackButtons({...showBackButtons, confirmed: false})}
+              >
+                <ArrowLeft className="h-4 w-4 mr-1" /> Back to Dashboard
+              </Button>
+            ) : (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full" 
+                onClick={() => {
+                  navigate("/all-bookings");
+                  setShowBackButtons({...showBackButtons, confirmed: true});
+                }}
+              >
+                View schedule
+              </Button>
+            )}
           </CardFooter>
         </Card>
         
@@ -206,10 +265,29 @@ const VendorDashboard = () => {
             <div className="text-2xl font-bold">{stats.completedBookings}</div>
             <p className="text-xs text-muted-foreground">Finished appointments</p>
           </CardContent>
-          <CardFooter>
-            <Button variant="outline" size="sm" className="w-full" onClick={() => navigate("/all-bookings")}>
-              View history
-            </Button>
+          <CardFooter className="flex flex-col gap-2 w-full">
+            {showBackButtons.completed ? (
+              <Button 
+                variant="back" 
+                size="sm" 
+                className="w-full" 
+                onClick={() => setShowBackButtons({...showBackButtons, completed: false})}
+              >
+                <ArrowLeft className="h-4 w-4 mr-1" /> Back to Dashboard
+              </Button>
+            ) : (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full" 
+                onClick={() => {
+                  navigate("/all-bookings");
+                  setShowBackButtons({...showBackButtons, completed: true});
+                }}
+              >
+                View history
+              </Button>
+            )}
           </CardFooter>
         </Card>
       </div>
