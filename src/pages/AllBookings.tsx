@@ -17,6 +17,7 @@ const AllBookings = () => {
     const fetchUserData = async () => {
       try {
         setLoading(true);
+        console.log("Fetching user data and reservations...");
         
         // Get current user
         const { data: { session } } = await supabase.auth.getSession();
@@ -26,24 +27,36 @@ const AllBookings = () => {
           return;
         }
         
-        setUserId(session.user.id);
+        const currentUserId = session.user.id;
+        setUserId(currentUserId);
+        console.log("Current user ID:", currentUserId);
         
         // Get user role
-        const { data: profile } = await supabase
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('role')
-          .eq('id', session.user.id)
+          .eq('id', currentUserId)
           .single();
+        
+        if (profileError) {
+          console.error("Error fetching profile:", profileError);
+          toast.error("Error loading user profile");
+          return;
+        }
         
         if (profile) {
           setUserRole(profile.role);
+          console.log("User role:", profile.role);
         }
         
         // Get reservations
-        if (session.user.id) {
-          const role = profile?.role || 'client';
-          const reservationsData = await getUserReservations(session.user.id, role);
+        const reservationsData = await getUserReservations(currentUserId, profile?.role || 'client');
+        console.log("Fetched reservations:", reservationsData);
+        
+        if (reservationsData && reservationsData.length > 0) {
           setReservations(reservationsData);
+        } else {
+          console.log("No reservations found");
         }
       } catch (error) {
         console.error("Error fetching data:", error);
