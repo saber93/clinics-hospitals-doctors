@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -118,7 +119,7 @@
   }
 
   .skinnect-button {
-    @apply rounded-md px-4 py-2 font-medium transition-all duration-200 inline-flex items-center justify-center;
+    @apply rounded-md px-4 py-2 font-medium transition-all duration-300 inline-flex items-center justify-center;
   }
 
   .skinnect-button-primary {
@@ -139,23 +140,23 @@
 
   /* Enhanced hover effects */
   .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-lg;
+    @apply transition-all duration-500 ease-in-out hover:-translate-y-2 hover:shadow-lg;
   }
 
   .hover-glow {
-    @apply transition-all duration-300 hover:shadow-[0_0_15px_rgba(15,191,122,0.3)];
+    @apply transition-all duration-500 ease-in-out hover:shadow-[0_0_15px_rgba(15,191,122,0.3)];
   }
 
   .hover-scale {
-    @apply transition-all duration-300 hover:scale-105;
+    @apply transition-all duration-500 ease-in-out hover:scale-105;
   }
 
   .hover-rotate {
-    @apply transition-all duration-300 hover:rotate-3;
+    @apply transition-all duration-500 ease-in-out hover:rotate-3;
   }
   
   .hover-brightness {
-    @apply transition-all duration-300 hover:brightness-110;
+    @apply transition-all duration-500 ease-in-out hover:brightness-110;
   }
   
   .card-image-hover {
@@ -171,12 +172,12 @@
   }
 
   .button-hover-slide {
-    @apply relative overflow-hidden;
+    @apply relative overflow-hidden transition-all duration-500 ease-in-out;
   }
   
   .button-hover-slide:after {
     content: '';
-    @apply absolute bottom-0 left-0 w-0 h-full bg-white/10 transition-all duration-300;
+    @apply absolute bottom-0 left-0 w-0 h-full bg-white/10 transition-all duration-500 ease-in-out;
   }
   
   .button-hover-slide:hover:after {
