@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 
 export type Reservation = {
@@ -25,17 +26,19 @@ export const getUserReservations = async (userId: string, userRole: string) => {
   try {
     console.log(`Getting reservations for user ${userId} with role ${userRole}`);
     
-    // Set up the basic query
+    // Fetch all reservations for admins without any user ID filter
     let query = supabase.from('reservations').select('*');
     
-    // Apply filters based on user role
-    if (userRole === 'client') {
-      query = query.eq('client_id', userId);
-    } else if (userRole === 'vendor') {
-      query = query.eq('vendor_id', userId);
+    // Only apply user-specific filters for non-admin roles
+    if (userRole !== 'admin') {
+      if (userRole === 'client') {
+        query = query.eq('client_id', userId);
+      } else if (userRole === 'vendor') {
+        query = query.eq('vendor_id', userId);
+      }
     }
-    // For admin role, don't apply any filter to get all reservations
     
+    // Execute the query
     const { data: reservations, error } = await query;
     
     if (error) {
