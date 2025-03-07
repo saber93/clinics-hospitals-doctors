@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 
 export type Reservation = {
@@ -138,40 +137,27 @@ export const getUserReservations = async (userId: string, userRole: string) => {
 // Function to get available services
 export const getAvailableServices = async () => {
   try {
-    const { data: servicesData, error } = await supabase
+    console.log("Fetching available services...");
+    const { data, error } = await supabase
       .from('services')
-      .select('*');
+      .select(`
+        id,
+        name,
+        description,
+        price,
+        duration,
+        vendor_id,
+        vendors:profiles(name)
+      `)
+      .order('name');
     
     if (error) {
       console.error("Error fetching services:", error);
-      return [];
+      throw error;
     }
     
-    // Fetch vendor information for each service
-    if (servicesData && servicesData.length > 0) {
-      const vendorIds = [...new Set(servicesData.map(s => s.vendor_id).filter(Boolean))];
-      
-      if (vendorIds.length > 0) {
-        const { data: vendorData } = await supabase
-          .from('profiles')
-          .select('id, name')
-          .in('id', vendorIds);
-          
-        if (vendorData) {
-          const vendorProfiles = vendorData.reduce((acc, profile) => {
-            acc[profile.id] = profile;
-            return acc;
-          }, {} as Record<string, any>);
-          
-          return servicesData.map(service => ({
-            ...service,
-            vendors: vendorProfiles[service.vendor_id] || { name: 'Unknown Provider' }
-          }));
-        }
-      }
-    }
-    
-    return servicesData || [];
+    console.log("Services fetched successfully:", data?.length || 0);
+    return data || [];
   } catch (error) {
     console.error("Error in getAvailableServices:", error);
     return [];

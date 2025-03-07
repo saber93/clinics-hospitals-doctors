@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { getUserReservations, getAvailableServices, createReservation } from "@/utils/reservationsData";
 import { Button } from "@/components/ui/button";
-import { List, CalendarCheck } from "lucide-react";
+import { List, CalendarCheck, AlertCircle } from "lucide-react";
 
 const Reservations = () => {
   const navigate = useNavigate();
@@ -16,6 +16,7 @@ const Reservations = () => {
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [reservations, setReservations] = useState<any[]>([]);
@@ -29,7 +30,9 @@ const Reservations = () => {
     const fetchUserData = async () => {
       try {
         setLoading(true);
+        setError(null);
         
+        console.log("Fetching user data and services...");
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session) {
@@ -49,7 +52,10 @@ const Reservations = () => {
           setUserRole(profile.role);
         }
         
+        // Fetch available services
+        console.log("Getting available services...");
         const servicesData = await getAvailableServices();
+        console.log("Services data:", servicesData);
         setServices(servicesData);
         
         if (session.user.id) {
@@ -59,6 +65,7 @@ const Reservations = () => {
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+        setError("Failed to load services data");
         toast.error("Failed to load data");
       } finally {
         setLoading(false);
@@ -112,7 +119,8 @@ const Reservations = () => {
     return (
       <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-lg">Loading...</p>
+          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-2"></div>
+          <p className="text-lg">Loading services...</p>
         </div>
       </div>
     );
@@ -138,28 +146,54 @@ const Reservations = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <h2 className="text-xl font-semibold mb-4">Select a Service</h2>
-                <div className="space-y-4">
-                  {services.map((service) => (
-                    <div 
-                      key={service.id}
-                      className={`p-4 border rounded-lg cursor-pointer ${selectedService === service.id ? 'border-primary bg-primary/10' : 'border-gray-200 hover:border-primary/50'}`}
-                      onClick={() => setSelectedService(service.id)}
-                    >
-                      <div className="flex justify-between">
-                        <h3 className="font-medium">{service.name}</h3>
-                        <span className="text-primary font-medium">${service.price}</span>
+                {error ? (
+                  <div className="p-4 border rounded-lg bg-red-50 text-red-700 flex items-start">
+                    <AlertCircle className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium">Error loading services</p>
+                      <p className="text-sm">{error}</p>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="mt-2"
+                        onClick={() => window.location.reload()}
+                      >
+                        Retry
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {services.length > 0 ? (
+                      services.map((service) => (
+                        <div 
+                          key={service.id}
+                          className={`p-4 border rounded-lg cursor-pointer ${selectedService === service.id ? 'border-primary bg-primary/10' : 'border-gray-200 hover:border-primary/50'}`}
+                          onClick={() => setSelectedService(service.id)}
+                        >
+                          <div className="flex justify-between">
+                            <h3 className="font-medium">{service.name}</h3>
+                            <span className="text-primary font-medium">${service.price}</span>
+                          </div>
+                          <p className="text-gray-500 text-sm mt-1">{service.duration} minutes</p>
+                          <p className="text-gray-500 text-sm mt-1">Provider: {service.vendors?.name || 'Unknown'}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="p-4 border rounded-lg text-center">
+                        <p className="text-gray-500">No services available. Try seeding test data from the admin dashboard.</p>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="mt-2"
+                          onClick={() => navigate('/dashboard')}
+                        >
+                          Go to Dashboard
+                        </Button>
                       </div>
-                      <p className="text-gray-500 text-sm mt-1">{service.duration} minutes</p>
-                      <p className="text-gray-500 text-sm mt-1">Provider: {service.vendors?.name || 'Unknown'}</p>
-                    </div>
-                  ))}
-                  
-                  {services.length === 0 && (
-                    <div className="p-4 border rounded-lg text-center">
-                      <p className="text-gray-500">No services available. Try seeding test data from the admin dashboard.</p>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
+                )}
               </div>
               
               <div>
@@ -193,13 +227,13 @@ const Reservations = () => {
                 )}
                 
                 <div className="mt-8">
-                  <button 
-                    className="w-full bg-primary text-white py-2 px-4 rounded hover:bg-primary/90 transition"
+                  <Button
+                    className="w-full"
                     onClick={handleBookAppointment}
                     disabled={!selectedDate || !selectedTimeSlot || !selectedService}
                   >
                     Book Appointment
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
