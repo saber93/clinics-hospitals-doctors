@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,6 +13,8 @@ import Dashboard from "./pages/Dashboard";
 import ClientDashboard from "./pages/ClientDashboard";
 import VendorDashboard from "./pages/VendorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import TotalClients from "./pages/TotalClients";
+import TotalVendors from "./pages/TotalVendors";
 import Reservations from "./pages/Reservations";
 import Offers from "./pages/Offers";
 import Vouchers from "./pages/Vouchers";
@@ -90,6 +93,16 @@ const App = () => {
                 <Route 
                   path="/admin-dashboard" 
                   element={session ? <AdminDashboard /> : <Navigate to="/auth" />} 
+                />
+                
+                {/* Admin routes */}
+                <Route 
+                  path="/clients" 
+                  element={session ? <TotalClients /> : <Navigate to="/auth" />} 
+                />
+                <Route 
+                  path="/vendors" 
+                  element={session ? <TotalVendors /> : <Navigate to="/auth" />} 
                 />
                 
                 <Route 
