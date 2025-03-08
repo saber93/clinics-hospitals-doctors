@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, MessageSquare } from 'lucide-react';
@@ -129,7 +130,9 @@ const GlassyNavbar = () => {
 
       <div
         className={cn(
-          'md:hidden fixed inset-0 z-40 backdrop-blur-xl bg-white/70 dark:bg-black/70 transition-transform duration-300 ease-in-out',
+          'md:hidden fixed inset-0 z-40 transition-transform duration-300 ease-in-out',
+          'backdrop-blur-xl bg-gradient-to-b from-white/70 to-white/50 dark:from-black/70 dark:to-black/50',
+          'border-l border-t border-white/20 dark:border-white/10 shadow-2xl',
           isOpen ? 'translate-x-0' : 'translate-x-full'
         )}
       >
