@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,6 +19,7 @@ import Offers from "./pages/Offers";
 import Vouchers from "./pages/Vouchers";
 import AllBookings from "./pages/AllBookings";
 import About from "./pages/About";
+import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,7 +29,6 @@ const App = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing session
     const checkSession = async () => {
       try {
         console.log("Checking for existing session...");
@@ -45,7 +44,6 @@ const App = () => {
     
     checkSession();
 
-    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -76,6 +74,7 @@ const App = () => {
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
                 <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/dashboard" />} />
                 
                 <Route 
@@ -95,7 +94,6 @@ const App = () => {
                   element={session ? <AdminDashboard /> : <Navigate to="/auth" />} 
                 />
                 
-                {/* Admin routes */}
                 <Route 
                   path="/clients" 
                   element={session ? <TotalClients /> : <Navigate to="/auth" />} 
