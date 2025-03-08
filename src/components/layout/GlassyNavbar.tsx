@@ -60,6 +60,10 @@ const GlassyNavbar = () => {
 
   const filteredLinks = navLinks.filter(link => !link.auth || (link.auth && session));
 
+  const handleToggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
     <header
       className={cn(
@@ -120,7 +124,7 @@ const GlassyNavbar = () => {
         </nav>
 
         <button
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={handleToggleMenu}
           className="md:hidden text-foreground"
           aria-label="Toggle menu"
         >
@@ -132,12 +136,20 @@ const GlassyNavbar = () => {
       <div
         className={cn(
           'md:hidden fixed inset-0 top-0 left-0 w-full h-screen z-40 transition-transform duration-300 ease-in-out',
-          'backdrop-blur-xl bg-gradient-to-b from-white/70 to-white/50 dark:from-black/70 dark:to-black/50',
+          'backdrop-blur-xl bg-white/20 dark:bg-black/30',
           'border-l border-t border-white/20 dark:border-white/10 shadow-2xl',
           isOpen ? 'translate-x-0' : 'translate-x-full'
         )}
       >
         <div className="flex flex-col items-center justify-center h-full space-y-8 p-4">
+          <button
+            onClick={handleToggleMenu}
+            className="absolute top-6 right-6 text-foreground hover:text-primary transition-colors"
+            aria-label="Close menu"
+          >
+            <X size={28} />
+          </button>
+          
           {filteredLinks.map((link) => (
             <Link
               key={link.path}
