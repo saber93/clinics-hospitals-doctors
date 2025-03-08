@@ -132,11 +132,11 @@ const GlassyNavbar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu - Full Height */}
+      {/* Mobile Menu */}
       <div
         className={cn(
           'md:hidden fixed inset-0 top-0 left-0 w-full h-screen z-40 transition-transform duration-300 ease-in-out',
-          'py-3 backdrop-blur-xl bg-white/30 dark:bg-black/30 shadow-lg border-white/10 dark:border-white/5',
+          'backdrop-blur-xl bg-white/30 dark:bg-black/30 shadow-lg border border-white/10 dark:border-white/5',
           isOpen ? 'translate-x-0' : 'translate-x-full'
         )}
       >
