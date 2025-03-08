@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -22,6 +21,52 @@ const AllBookings = () => {
   const source = searchParams.get('source');
   const showBackButton = source === 'total' || source === 'pending' || 
                         source === 'confirmed' || source === 'completed';
+
+  // Generate demo bookings function (same as in ClientDashboard)
+  const generateDemoBookings = () => {
+    return [
+      {
+        id: '1',
+        services: { name: 'Facial Treatment', price: 89.99 },
+        vendors: { name: 'Beauty Spa Center' },
+        date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 2 days from now
+        time: '10:00 AM',
+        status: 'confirmed'
+      },
+      {
+        id: '2',
+        services: { name: 'Deep Tissue Massage', price: 129.99 },
+        vendors: { name: 'Wellness Retreat' },
+        date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 5 days from now
+        time: '2:30 PM',
+        status: 'pending'
+      },
+      {
+        id: '3',
+        services: { name: 'Hot Stone Therapy', price: 149.99 },
+        vendors: { name: 'Serenity Spa' },
+        date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 7 days from now
+        time: '11:15 AM',
+        status: 'confirmed'
+      },
+      {
+        id: '4',
+        services: { name: 'Hair Styling', price: 75.00 },
+        vendors: { name: 'Glamour Salon' },
+        date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 14 days from now
+        time: '3:00 PM',
+        status: 'completed'
+      },
+      {
+        id: '5',
+        services: { name: 'Manicure & Pedicure', price: 65.00 },
+        vendors: { name: 'Nail Studio' },
+        date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 3 days ago
+        time: '1:15 PM',
+        status: 'completed'
+      }
+    ];
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -61,15 +106,18 @@ const AllBookings = () => {
         const reservationsData = await getUserReservations(currentUserId, role);
         console.log("Fetched reservations data:", reservationsData);
         
-        if (reservationsData && Array.isArray(reservationsData)) {
+        if (reservationsData && Array.isArray(reservationsData) && reservationsData.length > 0) {
           setReservations(reservationsData);
         } else {
-          console.error("Invalid reservations data format:", reservationsData);
-          setReservations([]);
+          console.log("No real reservations found, using demo data");
+          // Use demo data if no real reservations
+          setReservations(generateDemoBookings());
         }
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Failed to load booking data");
+        // Use demo data on error
+        setReservations(generateDemoBookings());
       } finally {
         setLoading(false);
       }
