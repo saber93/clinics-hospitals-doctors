@@ -136,8 +136,8 @@ const GlassyNavbar = () => {
       <div
         className={cn(
           'md:hidden fixed inset-0 top-0 left-0 w-full h-screen z-40 transition-transform duration-300 ease-in-out',
-          'backdrop-blur-xl bg-white/5 dark:bg-black/10',
-          'border-l border-t border-white/20 dark:border-white/10 shadow-2xl',
+          'backdrop-blur-xl bg-white/30 dark:bg-black/30 shadow-lg border-white/10 dark:border-white/5',
+          'border-l border-t border-white/20 dark:border-white/10',
           isOpen ? 'translate-x-0' : 'translate-x-full'
         )}
       >
