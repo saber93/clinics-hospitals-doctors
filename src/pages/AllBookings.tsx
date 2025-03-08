@@ -1,11 +1,13 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { getUserReservations } from '@/utils/reservationsData';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { ArrowLeft, XCircle, CheckCircle, Calendar } from 'lucide-react';
+import { ArrowLeft, XCircle, CheckCircle, Calendar, Clock, Store, FileText } from 'lucide-react';
 import { format } from 'date-fns';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
 const AllBookings = () => {
   const navigate = useNavigate();
@@ -14,6 +16,7 @@ const AllBookings = () => {
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [activeFilter, setActiveFilter] = useState('all');
 
   const searchParams = new URLSearchParams(location.search);
   const source = searchParams.get('source');
@@ -95,6 +98,25 @@ const AllBookings = () => {
     }
   };
 
+  const filteredReservations = reservations.filter(reservation => {
+    if (activeFilter === 'all') return true;
+    return reservation.status === activeFilter;
+  });
+
+  const getStatusCount = (status) => {
+    return reservations.filter(res => res.status === status).length;
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    try {
+      return format(new Date(dateString), 'MMM dd, yyyy');
+    } catch (e) {
+      console.error("Date formatting error:", e);
+      return dateString;
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
@@ -104,53 +126,88 @@ const AllBookings = () => {
     );
   }
 
-  console.log("Rendering with reservations:", reservations);
-
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">All Bookings</h1>
-          {showBackButton && (
-            <Button 
-              variant="back" 
-              onClick={() => navigate('/dashboard')}
-            >
-              <ArrowLeft className="h-4 w-4 mr-1" /> Back to Dashboard
-            </Button>
-          )}
+          <h1 className="text-2xl font-bold">My Bookings</h1>
+          <Button 
+            variant="back" 
+            onClick={() => navigate('/client-dashboard')}
+          >
+            <ArrowLeft className="h-4 w-4 mr-1" /> Back to Dashboard
+          </Button>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <Card className={`cursor-pointer ${activeFilter === 'all' ? 'bg-primary/10 border-primary' : ''}`} onClick={() => setActiveFilter('all')}>
+            <CardContent className="p-4 text-center">
+              <Calendar className="h-6 w-6 mx-auto mb-2" />
+              <p className="font-semibold">All Bookings</p>
+              <p className="text-2xl font-bold">{reservations.length}</p>
+            </CardContent>
+          </Card>
+          
+          <Card className={`cursor-pointer ${activeFilter === 'pending' ? 'bg-yellow-50 border-yellow-400' : ''}`} onClick={() => setActiveFilter('pending')}>
+            <CardContent className="p-4 text-center">
+              <Clock className="h-6 w-6 mx-auto mb-2 text-yellow-500" />
+              <p className="font-semibold">Pending</p>
+              <p className="text-2xl font-bold">{getStatusCount('pending')}</p>
+            </CardContent>
+          </Card>
+          
+          <Card className={`cursor-pointer ${activeFilter === 'confirmed' ? 'bg-green-50 border-green-400' : ''}`} onClick={() => setActiveFilter('confirmed')}>
+            <CardContent className="p-4 text-center">
+              <CheckCircle className="h-6 w-6 mx-auto mb-2 text-green-500" />
+              <p className="font-semibold">Confirmed</p>
+              <p className="text-2xl font-bold">{getStatusCount('confirmed')}</p>
+            </CardContent>
+          </Card>
+          
+          <Card className={`cursor-pointer ${activeFilter === 'completed' ? 'bg-blue-50 border-blue-400' : ''}`} onClick={() => setActiveFilter('completed')}>
+            <CardContent className="p-4 text-center">
+              <FileText className="h-6 w-6 mx-auto mb-2 text-blue-500" />
+              <p className="font-semibold">Completed</p>
+              <p className="text-2xl font-bold">{getStatusCount('completed')}</p>
+            </CardContent>
+          </Card>
         </div>
         
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="p-6 border-b">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-semibold">Bookings</h2>
-                <p className="text-gray-500 text-sm">View and manage all your bookings</p>
+                <h2 className="text-xl font-semibold">
+                  {activeFilter === 'all' ? 'All Bookings' : 
+                   activeFilter === 'pending' ? 'Pending Bookings' :
+                   activeFilter === 'confirmed' ? 'Confirmed Bookings' :
+                   activeFilter === 'completed' ? 'Completed Bookings' : 'Bookings'}
+                </h2>
+                <p className="text-gray-500 text-sm">
+                  {activeFilter === 'all' ? 'View and manage all your bookings' :
+                   activeFilter === 'pending' ? 'Bookings awaiting confirmation' :
+                   activeFilter === 'confirmed' ? 'Your confirmed appointments' :
+                   activeFilter === 'completed' ? 'Your past appointments' : 'Your bookings'}
+                </p>
               </div>
-              {(userRole === 'vendor' || userRole === 'admin') && (
-                <Button variant="outline" size="sm">
-                  Export Bookings
-                </Button>
-              )}
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate('/reservations')}
+              >
+                Book New Appointment
+              </Button>
             </div>
           </div>
           
-          {reservations && reservations.length > 0 ? (
+          {filteredReservations && filteredReservations.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    {(userRole === 'vendor' || userRole === 'admin') && (
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Client
-                      </th>
-                    )}
-                    {(userRole === 'client' || userRole === 'admin') && (
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Provider
-                      </th>
-                    )}
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Provider
+                    </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Service
                     </th>
@@ -169,23 +226,19 @@ const AllBookings = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {reservations.map((reservation) => (
+                  {filteredReservations.map((reservation) => (
                     <tr key={reservation.id}>
-                      {(userRole === 'vendor' || userRole === 'admin') && (
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {reservation.clients?.name || 'Unknown Client'}
-                        </td>
-                      )}
-                      {(userRole === 'client' || userRole === 'admin') && (
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <div className="flex items-center">
+                          <Store className="h-4 w-4 text-gray-400 mr-2" />
                           {reservation.vendors?.name || 'Unknown Provider'}
-                        </td>
-                      )}
+                        </div>
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {reservation.services?.name || 'Unknown Service'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {reservation.date ? format(new Date(reservation.date), 'MMM dd, yyyy') : 'Unknown Date'}
+                        {formatDate(reservation.date)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {reservation.time}
@@ -212,40 +265,6 @@ const AllBookings = () => {
                               Cancel
                             </Button>
                           )}
-                          
-                          {(userRole === 'vendor' || userRole === 'admin') && reservation.status === 'pending' && (
-                            <>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="text-green-600 hover:bg-green-50"
-                                onClick={() => handleUpdateStatus(reservation.id, 'confirmed')}
-                              >
-                                <CheckCircle className="h-4 w-4 mr-1" />
-                                Confirm
-                              </Button>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="text-red-600 hover:bg-red-50"
-                                onClick={() => handleUpdateStatus(reservation.id, 'cancelled')}
-                              >
-                                <XCircle className="h-4 w-4 mr-1" />
-                                Decline
-                              </Button>
-                            </>
-                          )}
-                          
-                          {(userRole === 'vendor' || userRole === 'admin') && reservation.status === 'confirmed' && (
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="text-blue-600 hover:bg-blue-50"
-                              onClick={() => handleUpdateStatus(reservation.id, 'completed')}
-                            >
-                              Complete
-                            </Button>
-                          )}
                         </div>
                       </td>
                     </tr>
@@ -258,20 +277,22 @@ const AllBookings = () => {
               <div className="mx-auto h-12 w-12 text-gray-400 mb-4">
                 <Calendar className="h-12 w-12" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No bookings found</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No {activeFilter !== 'all' ? activeFilter : ''} bookings found</h3>
               <p className="text-gray-500 max-w-sm mx-auto mb-6">
-                {userRole === 'client' 
+                {activeFilter === 'all' 
                   ? "You don't have any bookings yet. Book an appointment to get started."
-                  : userRole === 'admin'
-                  ? "No bookings have been made in the system yet."
-                  : "No bookings have been made with your services yet."}
+                  : activeFilter === 'pending'
+                  ? "You don't have any pending bookings awaiting confirmation."
+                  : activeFilter === 'confirmed'
+                  ? "You don't have any confirmed upcoming appointments."
+                  : "You don't have any completed past appointments."}
               </p>
               <Button 
                 variant="default" 
                 className="mt-2"
-                onClick={() => window.location.href = '/reservations'}
+                onClick={() => navigate('/reservations')}
               >
-                {userRole === 'client' ? 'Book an Appointment' : 'Update Available Times'}
+                Book an Appointment
               </Button>
             </div>
           )}

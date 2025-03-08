@@ -5,44 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { getUserReservations } from "@/utils/reservationsData";
+import { Calendar, Clock, Store } from "lucide-react";
 
 const ClientDashboard = () => {
   const navigate = useNavigate();
-  const [upcomingBookings, setUpcomingBookings] = useState([
-    {
-      id: '1',
-      services: { name: 'Facial Treatment', price: 89.99 },
-      vendors: { name: 'Beauty Spa Center' },
-      date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 2 days from now
-      time: '10:00 AM',
-      status: 'confirmed'
-    },
-    {
-      id: '2',
-      services: { name: 'Deep Tissue Massage', price: 129.99 },
-      vendors: { name: 'Wellness Retreat' },
-      date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 5 days from now
-      time: '2:30 PM',
-      status: 'pending'
-    },
-    {
-      id: '3',
-      services: { name: 'Hot Stone Therapy', price: 149.99 },
-      vendors: { name: 'Serenity Spa' },
-      date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 7 days from now
-      time: '11:15 AM',
-      status: 'confirmed'
-    },
-    {
-      id: '4',
-      services: { name: 'Hair Styling', price: 75.00 },
-      vendors: { name: 'Glamour Salon' },
-      date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 14 days from now
-      time: '3:00 PM',
-      status: 'confirmed'
-    }
-  ]);
-  const [loading, setLoading] = useState(false);
+  const [upcomingBookings, setUpcomingBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
     const fetchClientBookings = async () => {
@@ -51,26 +19,41 @@ const ClientDashboard = () => {
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session) {
-          // If not logged in, we'll just use the demo data
+          // If not logged in, we'll use demo data
+          console.log("No session found, using demo data");
           setLoading(false);
           return;
         }
         
+        console.log("Fetching reservations for user:", session.user.id);
         const reservationsData = await getUserReservations(session.user.id, 'client');
         
         if (reservationsData && reservationsData.length > 0) {
-          const upcoming = reservationsData.filter(r => 
-            (r.status === 'confirmed' || r.status === 'pending') && 
-            new Date(r.date).getTime() >= new Date().getTime()
-          ).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).slice(0, 5);
+          const upcoming = reservationsData
+            .filter(r => 
+              (r.status === 'confirmed' || r.status === 'pending') && 
+              new Date(r.date).getTime() >= new Date().getTime()
+            )
+            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+            .slice(0, 5);
+          
+          console.log("Upcoming bookings:", upcoming);
           
           // Only override demo data if we actually have real data
           if (upcoming.length > 0) {
             setUpcomingBookings(upcoming);
+          } else {
+            // Use demo data if no upcoming bookings
+            setUpcomingBookings(generateDemoBookings());
           }
+        } else {
+          // If no reservations data, use demo data
+          setUpcomingBookings(generateDemoBookings());
         }
       } catch (error) {
         console.error("Error fetching client bookings:", error);
+        // On error, use demo data
+        setUpcomingBookings(generateDemoBookings());
       } finally {
         setLoading(false);
       }
@@ -78,6 +61,43 @@ const ClientDashboard = () => {
     
     fetchClientBookings();
   }, []);
+  
+  const generateDemoBookings = () => {
+    return [
+      {
+        id: '1',
+        services: { name: 'Facial Treatment', price: 89.99 },
+        vendors: { name: 'Beauty Spa Center' },
+        date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 2 days from now
+        time: '10:00 AM',
+        status: 'confirmed'
+      },
+      {
+        id: '2',
+        services: { name: 'Deep Tissue Massage', price: 129.99 },
+        vendors: { name: 'Wellness Retreat' },
+        date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 5 days from now
+        time: '2:30 PM',
+        status: 'pending'
+      },
+      {
+        id: '3',
+        services: { name: 'Hot Stone Therapy', price: 149.99 },
+        vendors: { name: 'Serenity Spa' },
+        date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 7 days from now
+        time: '11:15 AM',
+        status: 'confirmed'
+      },
+      {
+        id: '4',
+        services: { name: 'Hair Styling', price: 75.00 },
+        vendors: { name: 'Glamour Salon' },
+        date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 14 days from now
+        time: '3:00 PM',
+        status: 'confirmed'
+      }
+    ];
+  };
   
   const specialOffers = [
     { id: 1, title: "30% Off First Massage", provider: "Wellness Spa", validUntil: "2023-12-31" },
@@ -124,11 +144,20 @@ const ClientDashboard = () => {
                     <div className="flex justify-between items-start">
                       <div>
                         <p className="font-medium">{booking.services?.name || 'Unknown Service'}</p>
-                        <p className="text-sm text-gray-600">{booking.vendors?.name || 'Unknown Provider'}</p>
+                        <div className="flex items-center text-sm text-gray-600">
+                          <Store className="h-3.5 w-3.5 mr-1 text-gray-400" />
+                          {booking.vendors?.name || 'Unknown Provider'}
+                        </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm">{formatDate(booking.date)}</p>
-                        <p className="text-sm text-gray-600">{booking.time}</p>
+                        <div className="flex items-center text-sm">
+                          <Calendar className="h-3.5 w-3.5 mr-1 text-gray-400" />
+                          {formatDate(booking.date)}
+                        </div>
+                        <div className="flex items-center text-sm text-gray-600">
+                          <Clock className="h-3.5 w-3.5 mr-1 text-gray-400" />
+                          {booking.time}
+                        </div>
                       </div>
                     </div>
                     <div className="mt-2 flex justify-between items-center">
