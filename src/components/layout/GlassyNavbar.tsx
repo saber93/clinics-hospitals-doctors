@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
@@ -44,7 +43,6 @@ const GlassyNavbar = () => {
     };
   }, []);
 
-  // Close mobile menu when route changes
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
@@ -52,6 +50,7 @@ const GlassyNavbar = () => {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'About', path: '/about' },
+    { name: 'Contact', path: '/contact', icon: <MessageSquare className="h-4 w-4 mr-1" /> },
     { name: 'Dashboard', path: '/dashboard', auth: true },
     { name: 'Reservations', path: '/reservations', auth: true },
     { name: 'Offers', path: '/offers', auth: true },
@@ -74,17 +73,17 @@ const GlassyNavbar = () => {
           <span className="text-primary text-xl font-bold">Zams</span>
         </Link>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           {filteredLinks.map((link) => (
             <Link
               key={link.path}
               to={link.path}
               className={cn(
-                'text-foreground/90 hover:text-primary transition-colors duration-300',
+                'text-foreground/90 hover:text-primary transition-colors duration-300 flex items-center',
                 location.pathname === link.path && 'text-primary font-medium'
               )}
             >
+              {link.icon}
               {link.name}
             </Link>
           ))}
@@ -119,7 +118,6 @@ const GlassyNavbar = () => {
           )}
         </nav>
 
-        {/* Mobile Navigation Toggle */}
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="md:hidden text-foreground"
@@ -129,7 +127,6 @@ const GlassyNavbar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       <div
         className={cn(
           'md:hidden fixed inset-0 z-40 backdrop-blur-xl bg-white/70 dark:bg-black/70 transition-transform duration-300 ease-in-out',
@@ -142,10 +139,11 @@ const GlassyNavbar = () => {
               key={link.path}
               to={link.path}
               className={cn(
-                'text-lg font-medium hover:text-primary transition-colors duration-300',
+                'text-lg font-medium hover:text-primary transition-colors duration-300 flex items-center',
                 location.pathname === link.path && 'text-primary'
               )}
             >
+              {link.icon}
               {link.name}
             </Link>
           ))}
