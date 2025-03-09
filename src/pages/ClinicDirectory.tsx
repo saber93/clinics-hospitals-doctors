@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import CategoryFilter from "@/components/clinics/CategoryFilter";
@@ -118,7 +117,7 @@ const ClinicDirectory = () => {
             <p className="text-muted-foreground">Discover clinics and their special offers</p>
           </div>
           
-          <div className="md:w-3/4 pl-0">
+          <div className="md:w-3/4 px-0">
             {!isCategoriesLoading && !isClinicsLoading && <div className="relative w-full flex-shrink-0">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input 
