@@ -24,7 +24,7 @@ const Auth = () => {
           toast.error(`Authentication error: ${error.message}`);
         }
         setSession(data.session);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error checking session:", error);
         toast.error(`Authentication error: ${error.message}`);
       } finally {
@@ -46,8 +46,10 @@ const Auth = () => {
   }, []);
 
   const handleSeedTestData = async () => {
+    if (isCreatingTestAccounts) return;
+    
     setIsCreatingTestAccounts(true);
-    const loadingToast = toast.loading("Creating test accounts...");
+    const loadingToast = toast.loading("Creating test accounts...", { duration: 20000 });
     
     try {
       await seedTestData();

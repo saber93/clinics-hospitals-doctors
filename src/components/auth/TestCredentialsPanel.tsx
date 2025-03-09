@@ -42,105 +42,51 @@ const TestCredentialsPanel = ({ mode, onFillCredentials, isLoading }: TestCreden
     onFillCredentials(email, password);
   };
 
-  // Function to create test account directly
+  // Function to create test account directly using edge function
   const createTestAccount = async (role: string) => {
     if (isCreatingAccount || isLoading) return;
     
     setIsCreatingAccount(true);
+    const loadingToast = toast.loading(`Creating ${role} account...`);
     
     try {
-      let email, password, name;
-      
-      switch(role) {
-        case "doctor":
-          email = "doctor@skinnect.com";
-          password = "Doctor123!";
-          name = "Dr. Sarah Johnson";
-          break;
-        default:
-          throw new Error("Invalid role specified");
-      }
-      
-      const loadingToast = toast.loading(`Creating ${role} account...`);
-      
-      // First check if user already exists by trying to sign in
-      console.log(`Checking if user ${email} already exists...`);
-      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      
-      // If login succeeds, user exists - just use the credentials
-      if (signInData.session) {
-        console.log(`User ${email} already exists and can be logged in`);
-        toast.dismiss(loadingToast);
-        toast.success(`${role} account already exists. Credentials filled in for login.`);
-        // Sign out the user since we just wanted to check
-        await supabase.auth.signOut();
-        // Fill in credentials
-        fillTestCredentials(role);
-        return;
-      }
-      
-      // If login fails with a specific error that's not about invalid credentials,
-      // there may be another issue
-      if (signInError && 
-          !signInError.message.includes("Invalid login credentials") && 
-          !signInError.message.includes("Email not confirmed")) {
-        throw signInError;
-      }
-      
-      // Try creating directly with supabase.auth.signUp
-      console.log(`Creating ${role} account with email: ${email}`);
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            name,
-            role,
-          },
-        },
+      // Instead of trying to create the account directly with supabase.auth,
+      // we'll use the edge function which has proper error handling
+      const { data, error } = await supabase.functions.invoke('create-test-user', {
+        body: {
+          email: `${role}@skinnect.com`,
+          password: `${capitalizeFirstLetter(role)}123!`,
+          role: role,
+          name: role === 'doctor' ? 'Dr. Sarah Johnson' : `${capitalizeFirstLetter(role)} User`
+        }
       });
       
       if (error) {
-        // If the error indicates the user already exists but we couldn't log in,
-        // it might be a password issue
-        if (error.message.includes("already registered")) {
-          toast.dismiss(loadingToast);
-          toast.info(`User ${email} already exists but may have a different password. Filling in expected credentials.`);
-          fillTestCredentials(role);
-          return;
-        }
-        throw error;
+        throw new Error(error.message);
       }
       
-      if (data.user) {
-        console.log(`${role} account created successfully:`, data.user.id);
-        toast.dismiss(loadingToast);
-        toast.success(`${role} account created successfully! You can now log in.`);
-        
-        // Fill in the credentials for immediate login
-        fillTestCredentials(role);
-      } else {
-        throw new Error("No user data returned from signup");
+      if (!data.success) {
+        throw new Error(data.error || 'Unknown error creating account');
       }
       
+      console.log(`${role} account created or updated successfully:`, data);
+      toast.dismiss(loadingToast);
+      toast.success(`${role} account created successfully! You can now log in.`);
+      
+      // Fill in credentials for immediate login
+      fillTestCredentials(role);
     } catch (error: any) {
       console.error(`Error creating ${role} account:`, error);
-      toast.dismiss();
-      
-      // More user-friendly error message
-      if (error.message.includes("already registered")) {
-        toast.info(`An account with this email already exists. Try logging in instead.`);
-        // Still fill the credentials for convenience
-        fillTestCredentials(role);
-      } else {
-        toast.error(`Failed to create account: ${error.message}`);
-      }
+      toast.dismiss(loadingToast);
+      toast.error(`Failed to create account: ${error.message || 'Unknown error'}`);
     } finally {
       setIsCreatingAccount(false);
     }
+  };
+
+  // Helper function to capitalize first letter
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
   if (mode !== "login") return null;
@@ -209,7 +155,7 @@ const TestCredentialsPanel = ({ mode, onFillCredentials, isLoading }: TestCreden
           className="text-xs"
           disabled={isLoading || isCreatingAccount}
         >
-          {isCreatingAccount ? "Creating Account..." : "Create Doctor Account Directly"}
+          {isCreatingAccount ? "Creating Account..." : "Create Doctor Account"}
         </Button>
       </div>
     </>

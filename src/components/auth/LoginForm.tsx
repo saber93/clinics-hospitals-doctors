@@ -107,7 +107,7 @@ const LoginForm = () => {
         // Redirect to dashboard after a short delay
         setTimeout(() => {
           navigate("/dashboard");
-        }, 500);
+        }, 1000);
       } else {
         // Register with Supabase
         const { data, error } = await supabase.auth.signUp({
