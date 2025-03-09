@@ -46,9 +46,9 @@ serve(async (req) => {
     
     console.log(`Processing user creation for ${email} with role ${role}`)
     
-    // Force delete any user that might have the same email (to ensure clean setup)
+    // Try to delete existing user first to ensure a clean setup
     try {
-      console.log(`Attempting to delete existing user with email: ${email}`)
+      console.log(`Checking for existing user with email: ${email}`)
       const { data: userData, error: listError } = await supabaseAdmin.auth.admin.listUsers({
         perPage: 1000 // Large value to ensure getting all users
       });
@@ -61,9 +61,12 @@ serve(async (req) => {
       const existingUser = userData?.users?.find(user => user.email === email);
       
       if (existingUser) {
-        console.log(`Found existing user with email ${email}, deleting...`);
+        console.log(`Found existing user with email ${email}, ID ${existingUser.id}, cleaning up related data...`);
         
-        // First delete any related rows in other tables
+        // DELETE ALL RELATED DATA IN PROPER ORDER TO AVOID CONSTRAINT ERRORS
+        
+        // 1. First delete any related data in other tables
+        console.log(`Deleting related services for user ${existingUser.id}`);
         const { error: deleteServicesError } = await supabaseAdmin
           .from('services')
           .delete()
@@ -71,9 +74,9 @@ serve(async (req) => {
           
         if (deleteServicesError) {
           console.log(`Note: Error deleting services: ${JSON.stringify(deleteServicesError)}`);
-          // Continue execution - this is not fatal
         }
         
+        console.log(`Deleting related reservations for user ${existingUser.id}`);
         const { error: deleteReservationsError } = await supabaseAdmin
           .from('reservations')
           .delete()
@@ -81,10 +84,9 @@ serve(async (req) => {
           
         if (deleteReservationsError) {
           console.log(`Note: Error deleting reservations: ${JSON.stringify(deleteReservationsError)}`);
-          // Continue execution - this is not fatal
         }
         
-        // Delete any doctor chat settings
+        console.log(`Deleting related doctor chat settings for user ${existingUser.id}`);
         const { error: deleteDoctorSettingsError } = await supabaseAdmin
           .from('doctor_chat_settings')
           .delete()
@@ -92,10 +94,9 @@ serve(async (req) => {
           
         if (deleteDoctorSettingsError) {
           console.log(`Note: Error deleting doctor chat settings: ${JSON.stringify(deleteDoctorSettingsError)}`);
-          // Continue execution - this is not fatal
         }
         
-        // Delete any chat messages
+        console.log(`Deleting related chat messages for user ${existingUser.id}`);
         const { error: deleteMessagesError } = await supabaseAdmin
           .from('chat_messages')
           .delete()
@@ -103,10 +104,9 @@ serve(async (req) => {
           
         if (deleteMessagesError) {
           console.log(`Note: Error deleting chat messages: ${JSON.stringify(deleteMessagesError)}`);
-          // Continue execution - this is not fatal
         }
         
-        // Delete any chat payments
+        console.log(`Deleting related chat payments for user ${existingUser.id}`);
         const { error: deletePaymentsError } = await supabaseAdmin
           .from('chat_payments')
           .delete()
@@ -114,10 +114,9 @@ serve(async (req) => {
           
         if (deletePaymentsError) {
           console.log(`Note: Error deleting chat payments: ${JSON.stringify(deletePaymentsError)}`);
-          // Continue execution - this is not fatal
         }
         
-        // Delete any chat sessions
+        console.log(`Deleting related chat sessions for user ${existingUser.id}`);
         const { error: deleteSessionsError } = await supabaseAdmin
           .from('chat_sessions')
           .delete()
@@ -125,10 +124,10 @@ serve(async (req) => {
           
         if (deleteSessionsError) {
           console.log(`Note: Error deleting chat sessions: ${JSON.stringify(deleteSessionsError)}`);
-          // Continue execution - this is not fatal
         }
         
-        // Delete profile before deleting user
+        // 2. Delete profile record BEFORE deleting the user
+        console.log(`Deleting profile for user ${existingUser.id}`);
         const { error: deleteProfileError } = await supabaseAdmin
           .from('profiles')
           .delete()
@@ -136,24 +135,31 @@ serve(async (req) => {
           
         if (deleteProfileError) {
           console.log(`Note: Error deleting profile: ${JSON.stringify(deleteProfileError)}`);
-          // Continue execution - this is not fatal
         }
         
-        // Now delete the user
+        // 3. Wait a bit to ensure all database operations have completed
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // 4. Now delete the auth user
+        console.log(`Deleting user ${existingUser.id} from auth.users`);
         const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(existingUser.id);
         
         if (deleteError) {
           console.error(`Error deleting user: ${JSON.stringify(deleteError)}`);
           throw new Error(`Failed to delete user: ${deleteError.message}`);
         } else {
-          console.log(`Successfully deleted user with email: ${email}`);
+          console.log(`Successfully deleted user with email: ${email} and ID: ${existingUser.id}`);
+          
+          // Wait after user deletion to ensure it's fully processed
+          await new Promise(resolve => setTimeout(resolve, 1000));
         }
       } else {
         console.log(`No existing user found with email: ${email}`);
       }
     } catch (err) {
       console.error(`Error checking/deleting existing user: ${err.message}`);
-      throw new Error(`Failed to check/delete existing user: ${err.message}`);
+      // Don't throw here, we'll try to create the user anyway
+      console.log(`Continuing with user creation despite deletion error`);
     }
     
     // Create new user
@@ -173,108 +179,51 @@ serve(async (req) => {
     const userId = data.user.id;
     console.log(`Created user ${email} with ID ${userId} successfully`);
     
-    // Wait a moment for the user creation trigger to fire
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Wait for the user creation to propagate
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
-    // Manually create or update profile if needed
-    console.log(`Ensuring profile exists for user ${userId} with role ${role}`);
+    // Manually create or update profile since we can't rely on the trigger
+    console.log(`Creating profile for user ${userId} with role ${role}`);
     
-    // First check if profile already exists
-    const { data: existingProfile, error: profileFetchError } = await supabaseAdmin
+    // Create the profile record
+    const { error: profileInsertError } = await supabaseAdmin
       .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .maybeSingle();
+      .upsert({ 
+        id: userId, 
+        role,
+        name,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      });
       
-    if (profileFetchError) {
-      console.error(`Error checking existing profile: ${JSON.stringify(profileFetchError)}`);
-      // Don't throw here, we'll try to create it anyway
-    }
-      
-    if (existingProfile) {
-      console.log(`Updating existing profile for ${email}`);
-      const { error: profileUpdateError } = await supabaseAdmin
-        .from('profiles')
-        .update({ 
-          role,
-          name,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', userId);
-        
-      if (profileUpdateError) {
-        console.error(`Error updating profile: ${JSON.stringify(profileUpdateError)}`);
-        throw new Error(`Failed to update profile: ${profileUpdateError.message}`);
-      }
-      console.log(`Profile updated successfully for ${email}`);
+    if (profileInsertError) {
+      console.error(`Error creating profile: ${JSON.stringify(profileInsertError)}`);
+      console.log(`Will continue despite profile creation error`);
+      // Don't throw here, continue with the rest
     } else {
-      console.log(`Creating new profile for ${email}`);
-      const { error: profileInsertError } = await supabaseAdmin
-        .from('profiles')
-        .insert({ 
-          id: userId, 
-          role,
-          name,
+      console.log(`Profile created/updated successfully for ${email}`);
+    }
+    
+    // If the user is a doctor or vendor, set up doctor chat settings
+    if (role === 'doctor' || role === 'vendor') {
+      console.log(`Setting up doctor chat settings for ${email}`);
+      
+      const { error: settingsUpsertError } = await supabaseAdmin
+        .from('doctor_chat_settings')
+        .upsert({
+          doctor_id: userId,
+          offers_free_consultation: true,
+          session_price: role === 'doctor' ? 85 : 75,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         });
         
-      if (profileInsertError) {
-        console.error(`Error creating profile: ${JSON.stringify(profileInsertError)}`);
-        throw new Error(`Failed to create profile: ${profileInsertError.message}`);
-      }
-      console.log(`Profile created successfully for ${email}`);
-    }
-    
-    // If the user is a doctor, set up doctor chat settings
-    if (role === 'doctor' || role === 'vendor') {
-      console.log(`Setting up doctor chat settings for ${email}`);
-      
-      // Check if chat settings already exist
-      const { data: existingSettings, error: settingsFetchError } = await supabaseAdmin
-        .from('doctor_chat_settings')
-        .select('*')
-        .eq('doctor_id', userId)
-        .maybeSingle();
-        
-      if (settingsFetchError) {
-        console.error(`Error checking existing doctor settings: ${JSON.stringify(settingsFetchError)}`);
-        // Don't throw here, we'll try to create it anyway
-      }
-      
-      if (existingSettings) {
-        console.log(`Updating existing doctor chat settings for ${email}`);
-        const { error: settingsUpdateError } = await supabaseAdmin
-          .from('doctor_chat_settings')
-          .update({
-            offers_free_consultation: true,
-            session_price: role === 'doctor' ? 85 : 75,
-            updated_at: new Date().toISOString()
-          })
-          .eq('doctor_id', userId);
-          
-        if (settingsUpdateError) {
-          console.error(`Error updating doctor settings: ${JSON.stringify(settingsUpdateError)}`);
-          throw new Error(`Failed to update doctor settings: ${settingsUpdateError.message}`);
-        }
-        console.log(`Doctor chat settings updated successfully for ${email}`);
+      if (settingsUpsertError) {
+        console.error(`Error creating doctor settings: ${JSON.stringify(settingsUpsertError)}`);
+        console.log(`Will continue despite doctor settings error`);
+        // Don't throw, continue with the response
       } else {
-        console.log(`Creating new doctor chat settings for ${email}`);
-        const { error: settingsInsertError } = await supabaseAdmin
-          .from('doctor_chat_settings')
-          .insert({
-            doctor_id: userId,
-            offers_free_consultation: true,
-            session_price: role === 'doctor' ? 85 : 75,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          });
-          
-        if (settingsInsertError) {
-          console.error(`Error creating doctor settings: ${JSON.stringify(settingsInsertError)}`);
-          throw new Error(`Failed to create doctor settings: ${settingsInsertError.message}`);
-        }
-        console.log(`Doctor chat settings created successfully for ${email}`);
+        console.log(`Doctor chat settings created/updated successfully for ${email}`);
       }
     }
     

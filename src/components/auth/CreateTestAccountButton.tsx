@@ -12,13 +12,15 @@ interface CreateTestAccountButtonProps {
 
 const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAccountButtonProps) => {
   const [isCreatingAccount, setIsCreatingAccount] = useState(false);
+  const [currentRole, setCurrentRole] = useState<string | null>(null);
   
   // Function to create test account directly using edge function
   const createTestAccount = async (role: string) => {
     if (isCreatingAccount || isLoading) return;
     
     setIsCreatingAccount(true);
-    const loadingToast = toast.loading(`Creating ${role} account...`);
+    setCurrentRole(role);
+    const loadingToast = toast.loading(`Creating ${role} account...`, { duration: 30000 });
     
     try {
       console.log(`Attempting to create ${role} account...`);
@@ -57,6 +59,7 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
       toast.error(`Failed to create account: ${error.message || 'Unknown error'}`);
     } finally {
       setIsCreatingAccount(false);
+      setCurrentRole(null);
     }
   };
 
@@ -70,7 +73,7 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
         className="text-xs"
         disabled={isLoading || isCreatingAccount}
       >
-        {isCreatingAccount ? "Creating Account..." : "Create Doctor Account"}
+        {isCreatingAccount && currentRole === "doctor" ? "Creating Doctor Account..." : "Create Doctor Account"}
       </Button>
       
       <Button 
@@ -81,7 +84,7 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
         className="text-xs"
         disabled={isLoading || isCreatingAccount}
       >
-        {isCreatingAccount ? "Creating Account..." : "Create Client Account"}
+        {isCreatingAccount && currentRole === "client" ? "Creating Client Account..." : "Create Client Account"}
       </Button>
     </div>
   );
