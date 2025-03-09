@@ -91,7 +91,9 @@ export const createChatSession = async (patientId: string, doctorId: string, isF
         patient_id: patientId,
         doctor_id: doctorId,
         is_free: isFree,
-        status: 'active'
+        status: 'active',
+        started_at: new Date().toISOString(),
+        last_activity: new Date().toISOString()
       })
       .select()
       .single();

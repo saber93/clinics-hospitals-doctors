@@ -62,7 +62,7 @@ export interface DoctorChatSettings {
 export interface User {
   id: string;
   name: string | null;
-  role: 'admin' | 'vendor' | 'client' | null;
+  role: 'admin' | 'doctor' | 'vendor' | 'client' | null;
 }
 
 export interface PaymentMethod {

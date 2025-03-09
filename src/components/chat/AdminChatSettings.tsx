@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
@@ -6,8 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ChatSettings, ChatPayment } from '@/types/chat';
-import { getChatSettings } from '@/services/chatService';
+import { ChatSettings, ChatPayment, User } from '@/types/chat';
+import { getChatSettings, createChatSession } from '@/services/chatService';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { PlusCircle, RefreshCw } from 'lucide-react';
 
 const AdminChatSettings: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -20,6 +23,14 @@ const AdminChatSettings: React.FC = () => {
   const [sessionDuration, setSessionDuration] = useState<number>(7);
   const [transactions, setTransactions] = useState<ChatPayment[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  
+  // New state for creating chat sessions
+  const [doctors, setDoctors] = useState<User[]>([]);
+  const [patients, setPatients] = useState<User[]>([]);
+  const [selectedDoctor, setSelectedDoctor] = useState<string>('');
+  const [selectedPatient, setSelectedPatient] = useState<string>('');
+  const [creatingSession, setCreatingSession] = useState(false);
+  const [loadingUsers, setLoadingUsers] = useState(false);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -54,6 +65,7 @@ const AdminChatSettings: React.FC = () => {
         }
         
         await loadTransactions();
+        await loadUsers();
       } catch (error) {
         console.error('Error loading admin settings:', error);
         toast.error('Failed to load settings');
@@ -98,6 +110,35 @@ const AdminChatSettings: React.FC = () => {
     }
   };
 
+  const loadUsers = async () => {
+    setLoadingUsers(true);
+    try {
+      // Fetch doctors (both 'doctor' and 'vendor' roles)
+      const { data: doctorsData, error: doctorsError } = await supabase
+        .from('profiles')
+        .select('id, name, role')
+        .or('role.eq.doctor,role.eq.vendor');
+        
+      if (doctorsError) throw doctorsError;
+      
+      // Fetch patients (client role)
+      const { data: patientsData, error: patientsError } = await supabase
+        .from('profiles')
+        .select('id, name, role')
+        .eq('role', 'client');
+        
+      if (patientsError) throw patientsError;
+      
+      setDoctors(doctorsData as User[]);
+      setPatients(patientsData as User[]);
+    } catch (error) {
+      console.error('Error loading users:', error);
+      toast.error('Failed to load users');
+    } finally {
+      setLoadingUsers(false);
+    }
+  };
+
   const handleSaveSettings = async () => {
     if (!currentUser || saving || !isAdmin) return;
     
@@ -124,6 +165,30 @@ const AdminChatSettings: React.FC = () => {
       toast.error('Failed to save settings');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleCreateChatSession = async () => {
+    if (!selectedDoctor || !selectedPatient) {
+      toast.error('Please select both a doctor and a patient');
+      return;
+    }
+    
+    setCreatingSession(true);
+    try {
+      const result = await createChatSession(selectedPatient, selectedDoctor);
+      if (result) {
+        toast.success('Chat session created successfully');
+        setSelectedDoctor('');
+        setSelectedPatient('');
+      } else {
+        toast.error('Failed to create chat session');
+      }
+    } catch (error) {
+      console.error('Error creating chat session:', error);
+      toast.error('Failed to create chat session');
+    } finally {
+      setCreatingSession(false);
     }
   };
 
@@ -232,6 +297,88 @@ const AdminChatSettings: React.FC = () => {
             ) : 'Save Settings'}
           </Button>
         </CardFooter>
+      </Card>
+      
+      {/* New Card for Creating Chat Sessions */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Create Chat Session</CardTitle>
+          <CardDescription>
+            Assign doctors to patients to start new chat sessions
+          </CardDescription>
+        </CardHeader>
+        
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="doctor-select">Doctor</Label>
+              <Select
+                value={selectedDoctor}
+                onValueChange={setSelectedDoctor}
+              >
+                <SelectTrigger id="doctor-select" className="w-full">
+                  <SelectValue placeholder="Select a doctor" />
+                </SelectTrigger>
+                <SelectContent>
+                  {doctors.map((doctor) => (
+                    <SelectItem key={doctor.id} value={doctor.id}>
+                      {doctor.name || 'Unnamed doctor'} ({doctor.role})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="patient-select">Patient</Label>
+              <Select
+                value={selectedPatient}
+                onValueChange={setSelectedPatient}
+              >
+                <SelectTrigger id="patient-select" className="w-full">
+                  <SelectValue placeholder="Select a patient" />
+                </SelectTrigger>
+                <SelectContent>
+                  {patients.map((patient) => (
+                    <SelectItem key={patient.id} value={patient.id}>
+                      {patient.name || 'Unnamed patient'}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          
+          <div className="flex justify-end">
+            <Button
+              onClick={loadUsers}
+              variant="outline"
+              size="icon"
+              className="mr-2"
+              title="Refresh user lists"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+            
+            <Button
+              onClick={handleCreateChatSession}
+              disabled={creatingSession || !selectedDoctor || !selectedPatient}
+              className="flex items-center"
+            >
+              {creatingSession ? (
+                <div className="flex items-center">
+                  <div className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full"></div>
+                  Creating...
+                </div>
+              ) : (
+                <>
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Create Chat Session
+                </>
+              )}
+            </Button>
+          </div>
+        </CardContent>
       </Card>
       
       <Card>
