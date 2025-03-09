@@ -9,6 +9,63 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      categories: {
+        Row: {
+          id: string
+          image_url: string
+          name: string
+        }
+        Insert: {
+          id: string
+          image_url: string
+          name: string
+        }
+        Update: {
+          id?: string
+          image_url?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      clinics: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string
+          id: string
+          image_url: string | null
+          location: string
+          name: string
+          offer_percentage: number
+          sub_category: string
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description: string
+          id?: string
+          image_url?: string | null
+          location: string
+          name: string
+          offer_percentage?: number
+          sub_category: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          image_url?: string | null
+          location?: string
+          name?: string
+          offer_percentage?: number
+          sub_category?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
@@ -109,6 +166,32 @@ export type Database = {
           vendor_id?: string | null
         }
         Relationships: []
+      }
+      sub_categories: {
+        Row: {
+          category_id: string
+          id: string
+          name: string
+        }
+        Insert: {
+          category_id: string
+          id: string
+          name: string
+        }
+        Update: {
+          category_id?: string
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sub_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

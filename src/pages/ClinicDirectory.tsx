@@ -4,22 +4,95 @@ import { Button } from "@/components/ui/button";
 import CategoryFilter from "@/components/clinics/CategoryFilter";
 import ClinicCard from "@/components/clinics/ClinicCard";
 import SearchFilter from "@/components/clinics/SearchFilter";
-import { categories, clinics } from "@/data/clinicData";
 import { X } from "lucide-react";
-import { Clinic } from "@/types/clinic";
+import { Clinic, Category } from "@/types/clinic";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const ClinicDirectory = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
   const [offerFilter, setOfferFilter] = useState("all");
-  const [filteredClinics, setFilteredClinics] = useState<Clinic[]>(clinics);
+  const [filteredClinics, setFilteredClinics] = useState<Clinic[]>([]);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
+  // Fetch categories from Supabase
+  const { data: categories = [], isLoading: isCategoriesLoading, error: categoriesError } = useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('categories')
+        .select(`
+          id,
+          name,
+          image_url,
+          sub_categories(id, name)
+        `);
+        
+      if (error) {
+        throw error;
+      }
+      
+      // Transform data to match our Category type
+      return data.map((category): Category => ({
+        id: category.id,
+        name: category.name,
+        imageUrl: category.image_url,
+        subCategories: category.sub_categories.map(sub => ({
+          id: sub.id,
+          name: sub.name
+        }))
+      }));
+    }
+  });
+
+  // Fetch clinics from Supabase
+  const { data: clinics = [], isLoading: isClinicsLoading, error: clinicsError } = useQuery({
+    queryKey: ['clinics'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('clinics')
+        .select('*');
+        
+      if (error) {
+        throw error;
+      }
+      
+      // Transform data to match our Clinic type
+      return data.map((clinic): Clinic => ({
+        id: clinic.id,
+        name: clinic.name,
+        description: clinic.description,
+        location: clinic.location,
+        category: clinic.category,
+        subCategory: clinic.sub_category,
+        offerPercentage: clinic.offer_percentage,
+        imageUrl: clinic.image_url
+      }));
+    }
+  });
+
+  // Show errors if any
+  useEffect(() => {
+    if (categoriesError) {
+      toast.error("Failed to load categories");
+      console.error(categoriesError);
+    }
+    
+    if (clinicsError) {
+      toast.error("Failed to load clinics");
+      console.error(clinicsError);
+    }
+  }, [categoriesError, clinicsError]);
 
   // Filter clinics based on search, category, and offer filters
   useEffect(() => {
+    if (clinics.length === 0) return;
+    
     const filtered = clinics.filter((clinic) => {
       // Search filter
       const matchesSearch =
@@ -47,7 +120,7 @@ const ClinicDirectory = () => {
     });
 
     setFilteredClinics(filtered);
-  }, [searchQuery, selectedCategory, selectedSubCategory, offerFilter]);
+  }, [searchQuery, selectedCategory, selectedSubCategory, offerFilter, clinics]);
 
   // Clear all filters
   const clearFilters = () => {
@@ -65,120 +138,130 @@ const ClinicDirectory = () => {
           <p className="text-muted-foreground">Browse and discover clinics and their special offers</p>
         </div>
 
-        <div className="flex md:hidden justify-between items-center">
-          <Button 
-            variant="outline" 
-            onClick={() => setIsMobileFilterOpen(true)}
-            className="w-full"
-          >
-            Filter Options
-          </Button>
-        </div>
+        {(isCategoriesLoading || isClinicsLoading) && (
+          <div className="flex justify-center py-12">
+            <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+          </div>
+        )}
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Mobile Filter Sidebar */}
-          {isMobileFilterOpen && (
-            <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
-              <div className="fixed inset-y-0 right-0 w-full max-w-xs bg-background p-6 shadow-lg animate-in slide-in-right flex flex-col h-full">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold">Filters</h2>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    onClick={() => setIsMobileFilterOpen(false)}
-                  >
-                    <X className="h-5 w-5" />
-                  </Button>
-                </div>
-                
-                <ScrollArea className="flex-1 -mx-6 px-6">
-                  <div className="space-y-6 pb-8">
-                    <SearchFilter
-                      searchQuery={searchQuery}
-                      onSearchChange={setSearchQuery}
-                      offerFilter={offerFilter}
-                      onOfferFilterChange={setOfferFilter}
-                    />
+        {!isCategoriesLoading && !isClinicsLoading && (
+          <>
+            <div className="flex md:hidden justify-between items-center">
+              <Button 
+                variant="outline" 
+                onClick={() => setIsMobileFilterOpen(true)}
+                className="w-full"
+              >
+                Filter Options
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+              {/* Mobile Filter Sidebar */}
+              {isMobileFilterOpen && (
+                <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
+                  <div className="fixed inset-y-0 right-0 w-full max-w-xs bg-background p-6 shadow-lg animate-in slide-in-right flex flex-col h-full">
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-lg font-semibold">Filters</h2>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={() => setIsMobileFilterOpen(false)}
+                      >
+                        <X className="h-5 w-5" />
+                      </Button>
+                    </div>
                     
-                    <Separator />
+                    <ScrollArea className="flex-1 -mx-6 px-6">
+                      <div className="space-y-6 pb-8">
+                        <SearchFilter
+                          searchQuery={searchQuery}
+                          onSearchChange={setSearchQuery}
+                          offerFilter={offerFilter}
+                          onOfferFilterChange={setOfferFilter}
+                        />
+                        
+                        <Separator />
+                        
+                        <CategoryFilter
+                          categories={categories}
+                          selectedCategory={selectedCategory}
+                          selectedSubCategory={selectedSubCategory}
+                          onSelectCategory={setSelectedCategory}
+                          onSelectSubCategory={setSelectedSubCategory}
+                        />
+                      </div>
+                    </ScrollArea>
                     
-                    <CategoryFilter
-                      categories={categories}
-                      selectedCategory={selectedCategory}
-                      selectedSubCategory={selectedSubCategory}
-                      onSelectCategory={setSelectedCategory}
-                      onSelectSubCategory={setSelectedSubCategory}
-                    />
+                    <div className="pt-4 mt-auto border-t">
+                      <Button 
+                        variant="outline" 
+                        onClick={clearFilters}
+                        className="w-full"
+                      >
+                        Clear Filters
+                      </Button>
+                    </div>
                   </div>
-                </ScrollArea>
-                
-                <div className="pt-4 mt-auto border-t">
-                  <Button 
-                    variant="outline" 
-                    onClick={clearFilters}
-                    className="w-full"
-                  >
-                    Clear Filters
-                  </Button>
                 </div>
+              )}
+
+              {/* Desktop Sidebar */}
+              <div className="hidden md:block md:col-span-3 space-y-6">
+                <SearchFilter
+                  searchQuery={searchQuery}
+                  onSearchChange={setSearchQuery}
+                  offerFilter={offerFilter}
+                  onOfferFilterChange={setOfferFilter}
+                />
+                
+                <Separator />
+                
+                <CategoryFilter
+                  categories={categories}
+                  selectedCategory={selectedCategory}
+                  selectedSubCategory={selectedSubCategory}
+                  onSelectCategory={setSelectedCategory}
+                  onSelectSubCategory={setSelectedSubCategory}
+                />
+                
+                {(searchQuery || selectedCategory || selectedSubCategory || offerFilter !== "all") && (
+                  <>
+                    <Separator />
+                    <Button 
+                      variant="outline" 
+                      onClick={clearFilters}
+                      className="w-full"
+                    >
+                      Clear Filters
+                    </Button>
+                  </>
+                )}
+              </div>
+
+              {/* Clinics Grid */}
+              <div className="md:col-span-9">
+                {filteredClinics.length === 0 ? (
+                  <div className="text-center py-12">
+                    <h3 className="text-lg font-medium mb-2">No clinics found</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Try adjusting your filters to find what you're looking for.
+                    </p>
+                    <Button onClick={clearFilters}>Clear All Filters</Button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredClinics.map((clinic) => (
+                      <div key={clinic.id} className="fade-in-up appear">
+                        <ClinicCard clinic={clinic} />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
-          )}
-
-          {/* Desktop Sidebar */}
-          <div className="hidden md:block md:col-span-3 space-y-6">
-            <SearchFilter
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-              offerFilter={offerFilter}
-              onOfferFilterChange={setOfferFilter}
-            />
-            
-            <Separator />
-            
-            <CategoryFilter
-              categories={categories}
-              selectedCategory={selectedCategory}
-              selectedSubCategory={selectedSubCategory}
-              onSelectCategory={setSelectedCategory}
-              onSelectSubCategory={setSelectedSubCategory}
-            />
-            
-            {(searchQuery || selectedCategory || selectedSubCategory || offerFilter !== "all") && (
-              <>
-                <Separator />
-                <Button 
-                  variant="outline" 
-                  onClick={clearFilters}
-                  className="w-full"
-                >
-                  Clear Filters
-                </Button>
-              </>
-            )}
-          </div>
-
-          {/* Clinics Grid */}
-          <div className="md:col-span-9">
-            {filteredClinics.length === 0 ? (
-              <div className="text-center py-12">
-                <h3 className="text-lg font-medium mb-2">No clinics found</h3>
-                <p className="text-muted-foreground mb-4">
-                  Try adjusting your filters to find what you're looking for.
-                </p>
-                <Button onClick={clearFilters}>Clear All Filters</Button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredClinics.map((clinic) => (
-                  <div key={clinic.id} className="fade-in-up appear">
-                    <ClinicCard clinic={clinic} />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );
