@@ -11,41 +11,50 @@ export const seedTestData = async () => {
   try {
     toast.loading("Creating test accounts and sample data...");
     
-    // Create test accounts
-    const adminData = await createTestUser('admin@skinnect.com', 'Admin123!', 'admin', 'Admin User');
-    const vendorData = await createTestUser('vendor@skinnect.com', 'Vendor123!', 'vendor', 'Vendor User');
-    const doctorData = await createTestUser('doctor@skinnect.com', 'Doctor123!', 'doctor', 'Dr. Sarah Johnson');
-    const clientData = await createTestUser('client@skinnect.com', 'Client123!', 'client', 'Client User');
+    // Create test accounts with proper error handling
+    const adminData = await createUserSafely('admin@skinnect.com', 'Admin123!', 'admin', 'Admin User');
+    const vendorData = await createUserSafely('vendor@skinnect.com', 'Vendor123!', 'vendor', 'Vendor User');
+    const doctorData = await createUserSafely('doctor@skinnect.com', 'Doctor123!', 'doctor', 'Dr. Sarah Johnson');
+    const clientData = await createUserSafely('client@skinnect.com', 'Client123!', 'client', 'Client User');
     
     // Create chat settings
     await createChatSettings();
     
-    // Create doctor-specific settings
+    // Only create doctor-specific settings if doctor account was successfully created
     if (doctorData?.userId) {
       await createDoctorChatSettings(doctorData.userId);
+    } else {
+      console.log("Skipping doctor chat settings creation as doctor account was not created");
     }
     
-    // Create vendor doctor settings
+    // Only create vendor doctor settings if vendor account was successfully created
     if (vendorData?.userId) {
       await createVendorDoctorSettings(vendorData.userId);
+    } else {
+      console.log("Skipping vendor doctor settings creation as vendor account was not created");
     }
     
-    // Create a free chat session between doctor and client
+    // Only create chat sessions if both required accounts exist
     if (doctorData?.userId && clientData?.userId) {
       await createFreeChatSession(doctorData.userId, clientData.userId);
+    } else {
+      console.log("Skipping free chat session creation as either doctor or client account was not created");
     }
     
-    // Create a paid chat session between vendor and client
     if (vendorData?.userId && clientData?.userId) {
       await createPaidChatSession(vendorData.userId, clientData.userId);
+    } else {
+      console.log("Skipping paid chat session creation as either vendor or client account was not created");
     }
     
-    // Create services and reservations
+    // Only create services and reservations if both required accounts exist
     if (vendorData?.userId && clientData?.userId) {
       const services = await createServices(vendorData.userId);
       if (services && services.length > 0) {
         await createReservations(clientData.userId, vendorData.userId, services);
       }
+    } else {
+      console.log("Skipping services and reservations creation as either vendor or client account was not created");
     }
     
     toast.dismiss();
@@ -55,5 +64,18 @@ export const seedTestData = async () => {
     toast.dismiss();
     console.error("Error seeding test data:", error);
     toast.error(`Failed to seed test data: ${error.message || 'Unknown error'}`);
+  }
+};
+
+/**
+ * Helper function to safely create a user with proper error handling
+ */
+const createUserSafely = async (email: string, password: string, role: string, name: string) => {
+  try {
+    return await createTestUser(email, password, role, name);
+  } catch (error) {
+    console.error(`Error creating ${role} account:`, error);
+    // Return null instead of throwing to allow other operations to continue
+    return null;
   }
 };
