@@ -26,6 +26,7 @@ export const createTestUser = async (email: string, password: string, role: stri
     }
     
     // Create the user if they don't exist
+    console.log(`Calling edge function to create ${role} account with email: ${email}`);
     const { data, error } = await supabase.functions.invoke('create-test-user', {
       body: { email, password, role, name }
     });
@@ -36,12 +37,12 @@ export const createTestUser = async (email: string, password: string, role: stri
     } 
     
     if (!data?.success) {
-      console.error(`Error creating ${role} account:`, data?.error);
+      console.error(`Error creating ${role} account:`, data?.error || 'Unknown error');
       throw new Error(data?.error || `Unknown error creating ${role}`);
     }
     
-    console.log(`${role} account created or updated successfully`, data);
-    return data;
+    console.log(`${role} account created successfully with ID: ${data.userId}`);
+    return { userId: data.userId, email, role, name };
   } catch (error) {
     console.error(`Error in createTestUser for ${role}:`, error);
     throw error;
