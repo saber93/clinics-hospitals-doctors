@@ -155,24 +155,8 @@ const ClinicDirectory = () => {
                 
               </div>
               
-              <div className="md:col-span-9 mb-4">
-                <div className="relative w-full flex-shrink-0">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input 
-                    placeholder="Search clinics..." 
-                    value={searchQuery} 
-                    onChange={e => setSearchQuery(e.target.value)} 
-                    className="pl-10" 
-                  />
-                  {searchQuery && <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8" 
-                    onClick={() => setSearchQuery("")}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>}
-                </div>
+              <div className="md:col-span-9">
+                {/* Removing the duplicate search field that was here */}
               </div>
 
               {isMobileFilterOpen && <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
