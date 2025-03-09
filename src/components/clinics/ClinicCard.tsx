@@ -10,6 +10,12 @@ interface ClinicCardProps {
 }
 
 const ClinicCard: React.FC<ClinicCardProps> = ({ clinic }) => {
+  // Handle image error by falling back to placeholder
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    console.log(`Image failed to load: ${clinic.imageUrl}`);
+    e.currentTarget.src = "/placeholder.svg";
+  };
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 h-full">
       <div className="relative card-image-container">
@@ -18,6 +24,7 @@ const ClinicCard: React.FC<ClinicCardProps> = ({ clinic }) => {
           alt={clinic.name}
           className="h-48 w-full object-cover transition-transform duration-300 hover:scale-105"
           loading="lazy"
+          onError={handleImageError}
         />
         {clinic.offerPercentage > 0 && (
           <div className="absolute top-0 right-0 m-3">

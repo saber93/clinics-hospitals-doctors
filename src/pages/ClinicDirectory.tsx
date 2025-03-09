@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import CategoryFilter from "@/components/clinics/CategoryFilter";
@@ -50,7 +49,7 @@ const ClinicDirectory = () => {
     }
   });
 
-  // Fetch clinics from Supabase
+  // Fetch clinics from Supabase with better error handling for images
   const { data: clinics = [], isLoading: isClinicsLoading, error: clinicsError } = useQuery({
     queryKey: ['clinics'],
     queryFn: async () => {
@@ -62,17 +61,23 @@ const ClinicDirectory = () => {
         throw error;
       }
       
-      // Transform data to match our Clinic type
-      return data.map((clinic): Clinic => ({
-        id: clinic.id,
-        name: clinic.name,
-        description: clinic.description,
-        location: clinic.location,
-        category: clinic.category,
-        subCategory: clinic.sub_category,
-        offerPercentage: clinic.offer_percentage,
-        imageUrl: clinic.image_url
-      }));
+      // Transform data to match our Clinic type with image fallback
+      return data.map((clinic): Clinic => {
+        // Log image URL for debugging
+        console.log(`Clinic: ${clinic.name}, Image URL: ${clinic.image_url}`);
+        
+        return {
+          id: clinic.id,
+          name: clinic.name,
+          description: clinic.description,
+          location: clinic.location,
+          category: clinic.category,
+          subCategory: clinic.sub_category,
+          offerPercentage: clinic.offer_percentage,
+          // Use a placeholder if image_url is null or undefined
+          imageUrl: clinic.image_url || "/placeholder.svg"
+        };
+      });
     }
   });
 
