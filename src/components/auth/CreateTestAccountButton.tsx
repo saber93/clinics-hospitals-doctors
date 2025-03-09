@@ -27,23 +27,66 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
       
       const email = `${role}@skinnect.com`;
       const password = `${capitalizeFirstLetter(role)}123!`;
-      // Add a suffix to doctor name to avoid conflicts
-      const name = role === 'doctor' ? 'Dr. Sarah Johnson (Demo)' : `${capitalizeFirstLetter(role)} User`;
+      
+      // Generate a unique name with timestamp to avoid any conflicts
+      let name;
+      if (role === 'doctor') {
+        // Using timestamp to ensure uniqueness
+        const timestamp = new Date().getTime();
+        name = `Dr. Sarah Johnson (Demo-${timestamp})`;
+      } else {
+        name = `${capitalizeFirstLetter(role)} User`;
+      }
       
       // Show detailed logs
       console.log(`Creating account with email: ${email}, role: ${role}, name: ${name}`);
       
-      const { data, error } = await supabase.functions.invoke('create-test-user', {
-        body: {
-          email,
-          password,
-          role,
-          name
+      // Implement retries for edge function call
+      let retries = 0;
+      const maxRetries = 2;
+      let data = null;
+      let error = null;
+      
+      while (retries <= maxRetries) {
+        try {
+          console.log(`Calling edge function (attempt ${retries + 1})`);
+          const response = await supabase.functions.invoke('create-test-user', {
+            body: {
+              email,
+              password,
+              role,
+              name
+            }
+          });
+          
+          data = response.data;
+          error = response.error;
+          
+          if (!error) {
+            break;  // Success, exit retry loop
+          }
+          
+          console.error(`Error response from edge function (attempt ${retries + 1}):`, error);
+          retries++;
+          
+          if (retries <= maxRetries) {
+            console.log(`Retrying in 1 second...`);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+        } catch (callError) {
+          console.error(`Exception calling edge function (attempt ${retries + 1}):`, callError);
+          error = callError;
+          retries++;
+          
+          if (retries <= maxRetries) {
+            console.log(`Retrying in 1 second...`);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
         }
-      });
+      }
       
       if (error) {
-        console.error(`Error response from edge function:`, error);
+        console.error(`All edge function attempts failed:`, error);
         throw new Error(error.message || 'Unknown error calling edge function');
       }
       

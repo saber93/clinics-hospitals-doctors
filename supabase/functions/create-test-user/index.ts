@@ -72,6 +72,32 @@ async function findExistingUserByEmail(supabase, email: string) {
   }
 }
 
+// Check if a profile with the given name and role exists to prevent conflicts
+async function checkExistingProfile(supabase, name: string, role: string) {
+  console.log(`Checking for existing profile with name: ${name} and role: ${role}`);
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('name', name)
+      .eq('role', role)
+      .maybeSingle();
+    
+    if (error) {
+      console.error(`Error checking for existing profile: ${JSON.stringify(error)}`);
+      // Don't throw here, just continue - this is just a check
+      return null;
+    }
+    
+    console.log(`Profile search result: ${data ? 'Found profile with ID ' + data.id : 'No profile found'}`);
+    return data;
+  } catch (err) {
+    console.error(`Error in checkExistingProfile: ${err.message}`);
+    // Don't throw here, just continue - this is just a check
+    return null;
+  }
+}
+
 // Delete profile data first to avoid foreign key constraints
 async function deleteUserProfileData(supabase, userId: string) {
   console.log(`Starting cleanup for user ID: ${userId}`);
@@ -262,13 +288,24 @@ async function setupSpecializedSettings(supabase, userId: string, role: string) 
 async function processAccountCreation(email: string, password: string, role: string, name: string) {
   const supabase = createSupabaseAdmin();
   
-  console.log(`=== Starting account creation process for ${email} with role ${role} ===`);
+  console.log(`=== Starting account creation process for ${email} with role ${role} and name ${name} ===`);
   
   try {
     // 1. Verify parameters
     validateRequestParams(email, password, role, name);
     
-    // 2. Check for & delete existing user
+    // Check if there's an existing profile with the same name and role (to avoid conflicts)
+    const existingProfileWithName = await checkExistingProfile(supabase, name, role);
+    if (existingProfileWithName) {
+      console.log(`Found existing profile with name ${name} and role ${role}, will use this ID: ${existingProfileWithName.id}`);
+      return {
+        success: true,
+        message: `User with name ${name} and role ${role} already exists`,
+        userId: existingProfileWithName.id
+      };
+    }
+    
+    // 2. Check for & delete existing user with the same email
     const existingUser = await findExistingUserByEmail(supabase, email);
     if (existingUser) {
       console.log(`Found existing user with email ${email}, will delete first`);
@@ -310,8 +347,49 @@ serve(async (req) => {
 
   try {
     console.log("Received request to create test user");
-    const { email, password, role, name } = await req.json();
     
+    // Parse JSON body with better error handling
+    let requestBody;
+    try {
+      requestBody = await req.json();
+    } catch (e) {
+      console.error("Failed to parse request body:", e);
+      return new Response(
+        JSON.stringify({ 
+          success: false,
+          error: "Invalid JSON in request body"
+        }),
+        { 
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json' 
+          }, 
+          status: 400
+        }
+      );
+    }
+    
+    const { email, password, role, name } = requestBody;
+    
+    // Validate required fields
+    if (!email || !password || !role || !name) {
+      console.error("Missing required parameters");
+      return new Response(
+        JSON.stringify({ 
+          success: false,
+          error: "Missing required parameters: email, password, role, and name are all required"
+        }),
+        { 
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json' 
+          }, 
+          status: 400
+        }
+      );
+    }
+    
+    console.log(`Processing request for email: ${email}, role: ${role}, name: ${name}`);
     const result = await processAccountCreation(email, password, role, name);
     
     return new Response(
