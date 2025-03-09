@@ -58,7 +58,7 @@ export const clinics: Clinic[] = [
     category: "Medical Specialties",
     subCategory: "Cardiology",
     offerPercentage: 15,
-    imageUrl: "/placeholder.svg"
+    imageUrl: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=500&auto=format&fit=crop"
   },
   {
     id: "2",
@@ -68,7 +68,7 @@ export const clinics: Clinic[] = [
     category: "Aesthetic Services",
     subCategory: "Facial Treatments",
     offerPercentage: 20,
-    imageUrl: "/placeholder.svg"
+    imageUrl: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=500&auto=format&fit=crop"
   },
   {
     id: "3",
@@ -78,7 +78,7 @@ export const clinics: Clinic[] = [
     category: "Dental Care",
     subCategory: "General Dentistry",
     offerPercentage: 10,
-    imageUrl: "/placeholder.svg"
+    imageUrl: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?q=80&w=500&auto=format&fit=crop"
   },
   {
     id: "4",
@@ -88,7 +88,7 @@ export const clinics: Clinic[] = [
     category: "Wellness & Prevention",
     subCategory: "Holistic Medicine",
     offerPercentage: 25,
-    imageUrl: "/placeholder.svg"
+    imageUrl: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=500&auto=format&fit=crop"
   },
   {
     id: "5",
@@ -98,7 +98,7 @@ export const clinics: Clinic[] = [
     category: "Medical Specialties",
     subCategory: "Dermatology",
     offerPercentage: 15,
-    imageUrl: "/placeholder.svg"
+    imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=500&auto=format&fit=crop"
   },
   {
     id: "6",
@@ -108,7 +108,7 @@ export const clinics: Clinic[] = [
     category: "Aesthetic Services",
     subCategory: "Body Contouring",
     offerPercentage: 30,
-    imageUrl: "/placeholder.svg"
+    imageUrl: "https://images.unsplash.com/photo-1607361188341-3be8656648fc?q=80&w=500&auto=format&fit=crop"
   },
   {
     id: "7",
@@ -118,7 +118,7 @@ export const clinics: Clinic[] = [
     category: "Dental Care",
     subCategory: "Orthodontics",
     offerPercentage: 0,
-    imageUrl: "/placeholder.svg"
+    imageUrl: "https://images.unsplash.com/photo-1606265752439-1f18756aa8ab?q=80&w=500&auto=format&fit=crop"
   },
   {
     id: "8",
@@ -128,7 +128,7 @@ export const clinics: Clinic[] = [
     category: "Wellness & Prevention",
     subCategory: "Mental Health",
     offerPercentage: 5,
-    imageUrl: "/placeholder.svg"
+    imageUrl: "https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=500&auto=format&fit=crop"
   },
   {
     id: "9",
@@ -138,7 +138,7 @@ export const clinics: Clinic[] = [
     category: "Medical Specialties",
     subCategory: "Cardiology",
     offerPercentage: 0,
-    imageUrl: "/placeholder.svg"
+    imageUrl: "https://images.unsplash.com/photo-1585435557343-3b348586bc2f?q=80&w=500&auto=format&fit=crop"
   },
   {
     id: "10",
@@ -148,7 +148,7 @@ export const clinics: Clinic[] = [
     category: "Aesthetic Services",
     subCategory: "Skin Rejuvenation",
     offerPercentage: 10,
-    imageUrl: "/placeholder.svg"
+    imageUrl: "https://images.unsplash.com/photo-1599940824399-b87987ceb72a?q=80&w=500&auto=format&fit=crop"
   },
   {
     id: "11",
@@ -158,7 +158,7 @@ export const clinics: Clinic[] = [
     category: "Dental Care",
     subCategory: "Pediatric Dentistry",
     offerPercentage: 15,
-    imageUrl: "/placeholder.svg"
+    imageUrl: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?q=80&w=500&auto=format&fit=crop"
   },
   {
     id: "12",
@@ -168,6 +168,6 @@ export const clinics: Clinic[] = [
     category: "Wellness & Prevention",
     subCategory: "Nutrition Counseling",
     offerPercentage: 20,
-    imageUrl: "/placeholder.svg"
+    imageUrl: "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?q=80&w=500&auto=format&fit=crop"
   }
 ];

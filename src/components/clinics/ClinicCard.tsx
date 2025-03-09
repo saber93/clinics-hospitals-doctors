@@ -11,12 +11,13 @@ interface ClinicCardProps {
 
 const ClinicCard: React.FC<ClinicCardProps> = ({ clinic }) => {
   return (
-    <Card className="overflow-hidden hover-lift transition-all duration-300 h-full">
-      <div className="relative card-image-hover">
+    <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 h-full">
+      <div className="relative card-image-container">
         <img
           src={clinic.imageUrl || "/placeholder.svg"}
           alt={clinic.name}
-          className="h-48 w-full object-cover"
+          className="h-48 w-full object-cover transition-transform duration-300 hover:scale-105"
+          loading="lazy"
         />
         {clinic.offerPercentage > 0 && (
           <div className="absolute top-0 right-0 m-3">
