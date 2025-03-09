@@ -20,17 +20,24 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
     
     setIsCreatingAccount(true);
     setCurrentRole(role);
-    const loadingToast = toast.loading(`Creating ${role} account...`, { duration: 30000 });
+    const loadingToast = toast.loading(`Creating ${role} account...`, { duration: 60000 });
     
     try {
       console.log(`Attempting to create ${role} account...`);
       
+      const email = `${role}@skinnect.com`;
+      const password = `${capitalizeFirstLetter(role)}123!`;
+      const name = role === 'doctor' ? 'Dr. Sarah Johnson' : `${capitalizeFirstLetter(role)} User`;
+      
+      // Show detailed logs
+      console.log(`Creating account with email: ${email}, role: ${role}, name: ${name}`);
+      
       const { data, error } = await supabase.functions.invoke('create-test-user', {
         body: {
-          email: `${role}@skinnect.com`,
-          password: `${capitalizeFirstLetter(role)}123!`,
-          role: role,
-          name: role === 'doctor' ? 'Dr. Sarah Johnson' : `${capitalizeFirstLetter(role)} User`
+          email,
+          password,
+          role,
+          name
         }
       });
       
@@ -52,7 +59,7 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
       toast.success(`${role} account created successfully! You can now log in.`);
       
       // Fill in credentials for immediate login
-      onAccountCreated(`${role}@skinnect.com`, `${capitalizeFirstLetter(role)}123!`);
+      onAccountCreated(email, password);
     } catch (error: any) {
       console.error(`Error creating ${role} account:`, error);
       toast.dismiss(loadingToast);
