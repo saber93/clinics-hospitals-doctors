@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
@@ -32,7 +31,6 @@ const AdminChatSettings: React.FC = () => {
           return;
         }
         
-        // Check if user is an admin
         const { data: profile } = await supabase
           .from('profiles')
           .select('role')
@@ -46,7 +44,6 @@ const AdminChatSettings: React.FC = () => {
           return;
         }
         
-        // Load settings
         const chatSettings = await getChatSettings();
         setSettings(chatSettings);
         
@@ -56,7 +53,6 @@ const AdminChatSettings: React.FC = () => {
           setSessionDuration(chatSettings.session_duration_days);
         }
         
-        // Load recent transactions
         await loadTransactions();
       } catch (error) {
         console.error('Error loading admin settings:', error);
@@ -84,11 +80,15 @@ const AdminChatSettings: React.FC = () => {
       
       if (error) throw error;
       
-      // Transform the data to match our ChatPayment type
-      const typedData = data.map(payment => ({
-        ...payment,
-        payment_status: payment.payment_status as "pending" | "completed" | "failed"
-      })) as ChatPayment[];
+      const typedData = data.map(payment => {
+        const safePayment: ChatPayment = {
+          ...payment,
+          payment_status: payment.payment_status as "pending" | "completed" | "failed",
+          patient: payment.patient && !('error' in payment.patient) ? payment.patient : null,
+          doctor: payment.doctor && !('error' in payment.doctor) ? payment.doctor : null
+        };
+        return safePayment;
+      });
       
       setTransactions(typedData);
     } catch (error) {

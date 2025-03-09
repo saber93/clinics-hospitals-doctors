@@ -8,9 +8,9 @@ export interface ChatSession {
   status: "active" | "expired" | "completed";
   last_activity: string;
   created_at: string;
-  // Add these optional properties for the joined data
-  patient?: { name: string | null };
-  doctor?: { name: string | null };
+  // Update the optional properties for joined data to accept null or error objects
+  patient?: { name: string | null } | null;
+  doctor?: { name: string | null } | null;
 }
 
 export interface ChatMessage {
@@ -36,9 +36,9 @@ export interface ChatPayment {
   transaction_id?: string;
   payment_provider: string;
   created_at: string;
-  // Add these optional properties for the joined data
-  patient?: { name: string | null };
-  doctor?: { name: string | null };
+  // Update the optional properties for joined data to accept null or error objects
+  patient?: { name: string | null } | null;
+  doctor?: { name: string | null } | null;
 }
 
 export interface ChatSettings {

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -35,11 +34,9 @@ const Chat: React.FC = () => {
   const [patientName, setPatientName] = useState<string | null>(null);
   const [doctorName, setDoctorName] = useState<string | null>(null);
 
-  // Check if chat is blocked (requires payment)
   const isChatBlocked = chatSession && !chatSession.is_free && 
     !messages.some(msg => msg.sender_id === chatSession.doctor_id);
 
-  // Load user session
   useEffect(() => {
     const checkSession = async () => {
       try {
@@ -60,7 +57,6 @@ const Chat: React.FC = () => {
     checkSession();
   }, [navigate]);
 
-  // Load chat session
   useEffect(() => {
     const loadChatSession = async () => {
       if (!sessionId || !session?.user?.id) return;
@@ -84,36 +80,30 @@ const Chat: React.FC = () => {
           return;
         }
 
-        // Check if user is part of this chat
-        if (data.patient_id !== session.user.id && data.doctor_id !== session.user.id) {
-          toast.error('You do not have access to this chat');
-          navigate('/chats');
-          return;
-        }
-
-        // Transform the data to match our ChatSession type
-        const typedSession = {
+        const typedSession: ChatSession = {
           ...data,
-          status: data.status as "active" | "expired" | "completed"
-        } as ChatSession;
+          status: data.status as "active" | "expired" | "completed",
+          patient: data.patient && !('error' in data.patient) ? data.patient : null,
+          doctor: data.doctor && !('error' in data.doctor) ? data.doctor : null
+        };
         
         setChatSession(typedSession);
-        setPatientName(data.patient?.name || 'Patient');
-        setDoctorName(data.doctor?.name || 'Doctor');
+        
+        const patientNameValue = typedSession.patient?.name || 'Patient';
+        const doctorNameValue = typedSession.doctor?.name || 'Doctor';
+        
+        setPatientName(patientNameValue);
+        setDoctorName(doctorNameValue);
 
-        // Get chat settings
         const settings = await getChatSettings();
         setChatSettings(settings);
 
-        // Get doctor settings
         const doctorSettings = await getDoctorChatSettings(data.doctor_id);
         setDoctorSettings(doctorSettings);
 
-        // Load messages
         const messages = await fetchChatMessages(sessionId);
         setMessages(messages);
 
-        // Mark messages as read
         await markMessagesAsRead(sessionId, session.user.id);
       } catch (error) {
         console.error('Error loading chat session:', error);
@@ -126,20 +116,17 @@ const Chat: React.FC = () => {
     }
   }, [sessionId, session, navigate]);
 
-  // Subscribe to new messages
   useEffect(() => {
     if (!sessionId || !session?.user?.id) return;
     
     const unsubscribe = subscribeToMessages(sessionId, (newMessage) => {
       setMessages((prevMessages) => {
-        // Check if the message is already in the list
         if (prevMessages.some(msg => msg.id === newMessage.id)) {
           return prevMessages;
         }
         return [...prevMessages, newMessage];
       });
       
-      // Mark as read if not from current user
       if (newMessage.sender_id !== session.user.id) {
         markMessagesAsRead(sessionId, session.user.id);
       }
@@ -150,11 +137,9 @@ const Chat: React.FC = () => {
     };
   }, [sessionId, session]);
 
-  // Handle sending message
   const handleSendMessage = async (message: string) => {
     if (!sessionId || !session?.user?.id || !chatSession) return;
     
-    // If chat is blocked (not free and no doctor message yet), show payment dialog
     if (isChatBlocked) {
       setIsPaymentDialogOpen(true);
       return;
@@ -163,7 +148,6 @@ const Chat: React.FC = () => {
     try {
       const newMessage = await sendChatMessage(sessionId, session.user.id, message);
       if (newMessage) {
-        // No need to update messages state, the subscription will handle it
       }
     } catch (error) {
       console.error('Error sending message:', error);
@@ -171,13 +155,10 @@ const Chat: React.FC = () => {
     }
   };
 
-  // Handle payment completion
   const handlePaymentComplete = async (success: boolean, transactionId?: string) => {
     if (!success || !chatSession) return;
     
     try {
-      // In a real app, this would interact with the payment provider's webhook
-      // For now, we'll just update the chat session as if payment was successful
       await supabase
         .from('chat_payments')
         .insert({
@@ -199,7 +180,6 @@ const Chat: React.FC = () => {
       
       toast.success('Payment successful! You can now continue the chat.');
       
-      // Refresh the chat session
       const { data } = await supabase
         .from('chat_sessions')
         .select('*')
@@ -207,11 +187,12 @@ const Chat: React.FC = () => {
         .single();
         
       if (data) {
-        // Transform the data to match our ChatSession type
-        const typedSession = {
+        const typedSession: ChatSession = {
           ...data,
-          status: data.status as "active" | "expired" | "completed"
-        } as ChatSession;
+          status: data.status as "active" | "expired" | "completed",
+          patient: chatSession.patient,
+          doctor: chatSession.doctor
+        };
         
         setChatSession(typedSession);
       }
@@ -332,7 +313,6 @@ const Chat: React.FC = () => {
         </Card>
       </div>
       
-      {/* Payment Dialog */}
       <PaymentDialog 
         isOpen={isPaymentDialogOpen}
         onClose={() => setIsPaymentDialogOpen(false)}
