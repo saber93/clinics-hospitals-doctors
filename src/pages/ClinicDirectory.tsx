@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import CategoryFilter from "@/components/clinics/CategoryFilter";
@@ -21,7 +20,6 @@ const ClinicDirectory = () => {
   const [filteredClinics, setFilteredClinics] = useState<Clinic[]>([]);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
-  // Fetch categories from Supabase
   const { data: categories = [], isLoading: isCategoriesLoading, error: categoriesError } = useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
@@ -38,7 +36,6 @@ const ClinicDirectory = () => {
         throw error;
       }
       
-      // Transform data to match our Category type
       return data.map((category): Category => ({
         id: category.id,
         name: category.name,
@@ -51,7 +48,6 @@ const ClinicDirectory = () => {
     }
   });
 
-  // Fetch clinics from Supabase with better error handling for images
   const { data: clinics = [], isLoading: isClinicsLoading, error: clinicsError } = useQuery({
     queryKey: ['clinics'],
     queryFn: async () => {
@@ -63,9 +59,7 @@ const ClinicDirectory = () => {
         throw error;
       }
       
-      // Transform data to match our Clinic type with image fallback
       return data.map((clinic): Clinic => {
-        // Log image URL for debugging
         console.log(`Clinic: ${clinic.name}, Image URL: ${clinic.image_url}`);
         
         return {
@@ -76,14 +70,12 @@ const ClinicDirectory = () => {
           category: clinic.category,
           subCategory: clinic.sub_category,
           offerPercentage: clinic.offer_percentage,
-          // Use a placeholder if image_url is null or undefined
           imageUrl: clinic.image_url || "/placeholder.svg"
         };
       });
     }
   });
 
-  // Show errors if any
   useEffect(() => {
     if (categoriesError) {
       toast.error("Failed to load categories");
@@ -96,12 +88,10 @@ const ClinicDirectory = () => {
     }
   }, [categoriesError, clinicsError]);
 
-  // Filter clinics based on search, category, and offer filters
   useEffect(() => {
     if (clinics.length === 0) return;
     
     const filtered = clinics.filter((clinic) => {
-      // Search filter
       const matchesSearch =
         searchQuery === "" ||
         clinic.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -109,15 +99,12 @@ const ClinicDirectory = () => {
         clinic.subCategory.toLowerCase().includes(searchQuery.toLowerCase()) ||
         clinic.description.toLowerCase().includes(searchQuery.toLowerCase());
 
-      // Category filter
       const matchesCategory =
         !selectedCategory || clinic.category === selectedCategory;
 
-      // Sub-category filter
       const matchesSubCategory =
         !selectedSubCategory || clinic.subCategory === selectedSubCategory;
 
-      // Offer filter
       const matchesOffer =
         offerFilter === "all" ||
         (offerFilter === "offers" && clinic.offerPercentage > 0) ||
@@ -129,7 +116,6 @@ const ClinicDirectory = () => {
     setFilteredClinics(filtered);
   }, [searchQuery, selectedCategory, selectedSubCategory, offerFilter, clinics]);
 
-  // Clear all filters
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedCategory(null);
@@ -140,34 +126,35 @@ const ClinicDirectory = () => {
   return (
     <div className="container py-8 px-4 md:px-6">
       <div className="space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
+        <div className="flex flex-col md:flex-row md:items-start gap-4">
+          <div className="md:flex-1">
             <h1 className="text-3xl font-bold tracking-tight">Clinic Directory</h1>
-            <p className="text-muted-foreground">Browse and discover clinics and their special offers</p>
-          </div>
-
-          {/* Search input inline with the title - visible on all devices */}
-          {!isCategoriesLoading && !isClinicsLoading && (
-            <div className="relative w-full md:w-auto md:min-w-[320px] md:max-w-[400px] flex-shrink-0">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input
-                placeholder="Search clinics..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-              {searchQuery && (
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8"
-                  onClick={() => setSearchQuery("")}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+            <div className="flex flex-col md:flex-row md:items-center gap-4">
+              <p className="text-muted-foreground">Browse and discover clinics and their special offers</p>
+              
+              {!isCategoriesLoading && !isClinicsLoading && (
+                <div className="relative w-full md:flex-1 md:max-w-[400px] md:ml-4 flex-shrink-0">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    placeholder="Search clinics..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10"
+                  />
+                  {searchQuery && (
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8"
+                      onClick={() => setSearchQuery("")}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
               )}
             </div>
-          )}
+          </div>
         </div>
 
         {(isCategoriesLoading || isClinicsLoading) && (
@@ -189,7 +176,6 @@ const ClinicDirectory = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-              {/* Mobile Filter Sidebar */}
               {isMobileFilterOpen && (
                 <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
                   <div className="fixed inset-y-0 right-0 w-full max-w-xs bg-background p-6 shadow-lg animate-in slide-in-right flex flex-col h-full">
@@ -238,9 +224,7 @@ const ClinicDirectory = () => {
                 </div>
               )}
 
-              {/* Desktop Sidebar */}
               <div className="hidden md:block md:col-span-3 space-y-6">
-                {/* Keep the SearchFilter component in the sidebar for advanced options */}
                 <SearchFilter
                   searchQuery={searchQuery}
                   onSearchChange={setSearchQuery}
@@ -272,7 +256,6 @@ const ClinicDirectory = () => {
                 )}
               </div>
 
-              {/* Clinics Grid */}
               <div className="md:col-span-9">
                 {filteredClinics.length === 0 ? (
                   <div className="text-center py-12">
