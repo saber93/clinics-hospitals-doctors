@@ -68,12 +68,15 @@ const LoginForm = () => {
 
     try {
       if (mode === "login") {
-        console.log(`Attempting to log in with email: ${formData.email} and password length: ${formData.password.length}`);
+        const email = formData.email.trim();
+        const password = formData.password;
+        
+        console.log(`Attempting to log in with email: ${email} and password length: ${password.length}`);
         
         // Sign in with Supabase
         const { data, error } = await supabase.auth.signInWithPassword({
-          email: formData.email.trim(),
-          password: formData.password,
+          email,
+          password,
         });
 
         if (error) {
