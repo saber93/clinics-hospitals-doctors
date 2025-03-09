@@ -47,6 +47,14 @@ const ClinicDetails = () => {
     e.currentTarget.src = "/placeholder.svg";
   };
 
+  // Use placeholder for Body Sculpt Studio which has a problematic image
+  const getImageUrl = () => {
+    if (clinic?.name === "Body Sculpt Studio") {
+      return "https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=500&auto=format&fit=crop";
+    }
+    return clinic?.imageUrl || "/placeholder.svg";
+  };
+
   const handleReservation = () => {
     // For now just show a toast; in a real app, this would navigate to a reservation form
     toast.success("Reservation feature coming soon!");
@@ -89,7 +97,7 @@ const ClinicDetails = () => {
         <div className="lg:col-span-2">
           <div className="relative rounded-lg overflow-hidden h-64 md:h-96 mb-6">
             <img
-              src={clinic.imageUrl}
+              src={getImageUrl()}
               alt={clinic.name}
               className="w-full h-full object-cover"
               onError={handleImageError}

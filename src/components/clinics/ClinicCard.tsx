@@ -23,6 +23,11 @@ const ClinicCard: React.FC<ClinicCardProps> = ({ clinic }) => {
     navigate(`/clinics/${clinic.id}`);
   };
 
+  // Use placeholder for Body Sculpt Studio which has a problematic image
+  const imageUrl = clinic.name === "Body Sculpt Studio" 
+    ? "https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=500&auto=format&fit=crop" 
+    : (clinic.imageUrl || "/placeholder.svg");
+
   return (
     <Card 
       className="overflow-hidden hover:shadow-lg transition-all duration-300 h-full cursor-pointer"
@@ -30,7 +35,7 @@ const ClinicCard: React.FC<ClinicCardProps> = ({ clinic }) => {
     >
       <div className="relative card-image-container">
         <img
-          src={clinic.imageUrl || "/placeholder.svg"}
+          src={imageUrl}
           alt={clinic.name}
           className="h-48 w-full object-cover transition-transform duration-300 hover:scale-105"
           loading="lazy"
