@@ -24,6 +24,9 @@ import ClinicDetails from "./pages/ClinicDetails";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import ChatSessions from "./pages/ChatSessions";
+import ChatPage from "./pages/ChatPage";
+import ChatSettings from "./pages/ChatSettings";
 
 const queryClient = new QueryClient();
 
@@ -123,6 +126,20 @@ const App = () => {
                 <Route 
                   path="/vouchers" 
                   element={session ? <Vouchers /> : <Navigate to="/auth" />} 
+                />
+                
+                {/* Chat Routes */}
+                <Route 
+                  path="/chats" 
+                  element={session ? <ChatSessions /> : <Navigate to="/auth" />} 
+                />
+                <Route 
+                  path="/chats/:sessionId" 
+                  element={session ? <ChatPage /> : <Navigate to="/auth" />} 
+                />
+                <Route 
+                  path="/chat-settings" 
+                  element={session ? <ChatSettings /> : <Navigate to="/auth" />} 
                 />
                 
                 <Route path="*" element={<NotFound />} />

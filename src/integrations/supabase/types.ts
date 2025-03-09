@@ -27,6 +27,157 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_messages: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          sender_id: string
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          sender_id: string
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          sender_id?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_payments: {
+        Row: {
+          amount: number
+          commission_amount: number
+          commission_percentage: number
+          created_at: string
+          doctor_amount: number
+          doctor_id: string
+          id: string
+          patient_id: string
+          payment_method: string
+          payment_provider: string
+          payment_status: string
+          session_id: string
+          transaction_id: string | null
+        }
+        Insert: {
+          amount: number
+          commission_amount: number
+          commission_percentage: number
+          created_at?: string
+          doctor_amount: number
+          doctor_id: string
+          id?: string
+          patient_id: string
+          payment_method: string
+          payment_provider: string
+          payment_status?: string
+          session_id: string
+          transaction_id?: string | null
+        }
+        Update: {
+          amount?: number
+          commission_amount?: number
+          commission_percentage?: number
+          created_at?: string
+          doctor_amount?: number
+          doctor_id?: string
+          id?: string
+          patient_id?: string
+          payment_method?: string
+          payment_provider?: string
+          payment_status?: string
+          session_id?: string
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_payments_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_sessions: {
+        Row: {
+          created_at: string
+          doctor_id: string
+          id: string
+          is_free: boolean
+          last_activity: string
+          patient_id: string
+          started_at: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          doctor_id: string
+          id?: string
+          is_free?: boolean
+          last_activity?: string
+          patient_id: string
+          started_at?: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          doctor_id?: string
+          id?: string
+          is_free?: boolean
+          last_activity?: string
+          patient_id?: string
+          started_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      chat_settings: {
+        Row: {
+          created_at: string
+          default_commission_percentage: number
+          default_session_price: number
+          id: string
+          session_duration_days: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          default_commission_percentage: number
+          default_session_price: number
+          id?: string
+          session_duration_days?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          default_commission_percentage?: number
+          default_session_price?: number
+          id?: string
+          session_duration_days?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       clinics: {
         Row: {
           category: string
@@ -63,6 +214,33 @@ export type Database = {
           offer_percentage?: number
           sub_category?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      doctor_chat_settings: {
+        Row: {
+          created_at: string
+          doctor_id: string
+          id: string
+          offers_free_consultation: boolean
+          session_price: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          doctor_id: string
+          id?: string
+          offers_free_consultation?: boolean
+          session_price?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          doctor_id?: string
+          id?: string
+          offers_free_consultation?: boolean
+          session_price?: number | null
+          updated_at?: string
         }
         Relationships: []
       }
