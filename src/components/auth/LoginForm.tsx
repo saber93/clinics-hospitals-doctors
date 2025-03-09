@@ -68,11 +68,11 @@ const LoginForm = () => {
 
     try {
       if (mode === "login") {
-        console.log(`Attempting to log in with email: ${formData.email}`);
+        console.log(`Attempting to log in with email: ${formData.email} and password length: ${formData.password.length}`);
         
         // Sign in with Supabase
         const { data, error } = await supabase.auth.signInWithPassword({
-          email: formData.email,
+          email: formData.email.trim(),
           password: formData.password,
         });
 
@@ -87,7 +87,7 @@ const LoginForm = () => {
       } else {
         // Register with Supabase
         const { data, error } = await supabase.auth.signUp({
-          email: formData.email,
+          email: formData.email.trim(),
           password: formData.password,
           options: {
             data: {
@@ -111,12 +111,47 @@ const LoginForm = () => {
       // Provide more specific error messages
       if (error.message.includes("Invalid login credentials")) {
         toast.error("Invalid email or password. Please check your credentials and try again.");
+      } else if (error.message.includes("Email not confirmed")) {
+        toast.error("Please confirm your email before logging in.");
       } else {
         toast.error(error.message || "Authentication failed. Please try again.");
       }
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Helper function to fill in test credentials
+  const fillTestCredentials = (role: string) => {
+    let email = "";
+    let password = "";
+    
+    switch(role) {
+      case "admin":
+        email = "admin@skinnect.com";
+        password = "Admin123!";
+        break;
+      case "vendor":
+        email = "vendor@skinnect.com";
+        password = "Vendor123!";
+        break;
+      case "doctor":
+        email = "doctor@skinnect.com";
+        password = "Doctor123!";
+        break;
+      case "client":
+        email = "client@skinnect.com";
+        password = "Client123!";
+        break;
+      default:
+        return;
+    }
+    
+    setFormData(prev => ({
+      ...prev,
+      email,
+      password
+    }));
   };
 
   // Make logout function globally available
@@ -186,6 +221,47 @@ const LoginForm = () => {
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? "Loading..." : mode === "login" ? "Sign In" : "Create Account"}
       </Button>
+      
+      {mode === "login" && (
+        <div className="grid grid-cols-2 gap-2 mt-2">
+          <Button 
+            type="button" 
+            variant="outline" 
+            size="sm" 
+            onClick={() => fillTestCredentials("admin")}
+            className="text-xs"
+          >
+            Use Admin
+          </Button>
+          <Button 
+            type="button" 
+            variant="outline" 
+            size="sm" 
+            onClick={() => fillTestCredentials("vendor")}
+            className="text-xs"
+          >
+            Use Vendor
+          </Button>
+          <Button 
+            type="button" 
+            variant="outline" 
+            size="sm" 
+            onClick={() => fillTestCredentials("doctor")}
+            className="text-xs"
+          >
+            Use Doctor
+          </Button>
+          <Button 
+            type="button" 
+            variant="outline" 
+            size="sm" 
+            onClick={() => fillTestCredentials("client")}
+            className="text-xs"
+          >
+            Use Client
+          </Button>
+        </div>
+      )}
       
       <div className="text-center text-sm">
         {mode === "login" ? (

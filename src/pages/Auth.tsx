@@ -49,6 +49,10 @@ const Auth = () => {
     setIsCreatingTestAccounts(true);
     try {
       await seedTestData();
+      toast.success("Test accounts created successfully! You can now log in with any of the test credentials.");
+    } catch (error: any) {
+      console.error("Error creating test accounts:", error);
+      toast.error(`Failed to create test accounts: ${error.message}`);
     } finally {
       setIsCreatingTestAccounts(false);
     }
