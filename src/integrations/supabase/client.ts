@@ -6,4 +6,31 @@ import type { Database } from './types';
 const SUPABASE_URL = "https://rghakqvaawoopcoeowir.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnaGFrcXZhYXdvb3Bjb2Vvd2lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEyODM1MTUsImV4cCI6MjA1Njg1OTUxNX0.qJctyimvaBcSy3QJ0bWMSaDom1EK6g39wz-7i6Ris0w";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+// Create a custom error handler
+const handleSupabaseError = (error: any) => {
+  // Check for the problematic UUID
+  if (error?.message?.includes('00000000-0000-0000-0000-000000000099')) {
+    console.error('Detected problematic UUID in error:', error);
+    // You could add specific handling here
+  }
+  return error;
+};
+
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+  },
+  global: {
+    // Add error handling
+    fetch: (url, options) => {
+      return fetch(url, options).then(async (response) => {
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({}));
+          return Promise.reject(handleSupabaseError(error));
+        }
+        return response;
+      });
+    },
+  },
+});

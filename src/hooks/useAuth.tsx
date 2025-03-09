@@ -30,6 +30,26 @@ export const useAuth = () => {
       }
 
       console.log("Login successful:", data);
+      
+      // Check if this user has a profile record
+      if (data.user) {
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', data.user.id)
+          .maybeSingle();
+        
+        if (profileError) {
+          console.error("Error checking profile:", profileError);
+        }
+        
+        // If user ID is the problematic one or profile doesn't exist
+        if (data.user.id === '00000000-0000-0000-0000-000000000099' || (!profileData && !profileError)) {
+          console.error("Found problematic account or missing profile:", data.user.id);
+          throw new Error("Account is corrupted. Please contact support or create a new account.");
+        }
+      }
+
       toast.dismiss(loadingToast);
       toast.success("Logged in successfully!");
       
@@ -48,6 +68,9 @@ export const useAuth = () => {
       } else if (error.message.includes("Email not confirmed")) {
         setLoginError("Please confirm your email before logging in.");
         toast.error("Please confirm your email before logging in.");
+      } else if (error.message.includes("corrupted")) {
+        setLoginError("This account is corrupted. Please create a new account or contact support.");
+        toast.error("This account is corrupted. Please create a new account or contact support.");
       } else {
         setLoginError(error.message || "Authentication failed. Please try again.");
         toast.error(error.message || "Authentication failed. Please try again.");
