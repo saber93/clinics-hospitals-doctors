@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+
 const ClinicDirectory = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -77,6 +78,7 @@ const ClinicDirectory = () => {
       });
     }
   });
+
   useEffect(() => {
     if (categoriesError) {
       toast.error("Failed to load categories");
@@ -87,6 +89,7 @@ const ClinicDirectory = () => {
       console.error(clinicsError);
     }
   }, [categoriesError, clinicsError]);
+
   useEffect(() => {
     if (clinics.length === 0) return;
     const filtered = clinics.filter(clinic => {
@@ -98,28 +101,20 @@ const ClinicDirectory = () => {
     });
     setFilteredClinics(filtered);
   }, [searchQuery, selectedCategory, selectedSubCategory, offerFilter, clinics]);
+
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedCategory(null);
     setSelectedSubCategory(null);
     setOfferFilter("all");
   };
+
   return <div className="container py-8 px-4 md:px-6">
       <div className="space-y-4">
         <div className="flex flex-col md:flex-row md:items-start gap-4">
           <div className="md:w-1/4">
             <h1 className="text-3xl font-bold tracking-tight">Clinic Directory</h1>
             <p className="text-muted-foreground">Discover clinics and their special offers</p>
-          </div>
-          
-          <div className="md:w-3/4 md:pl-4">
-            {!isCategoriesLoading && !isClinicsLoading && <div className="relative w-full flex-shrink-0">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input placeholder="Search clinics..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-10" />
-                {searchQuery && <Button variant="ghost" size="icon" className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8" onClick={() => setSearchQuery("")}>
-                    <X className="h-4 w-4" />
-                  </Button>}
-              </div>}
           </div>
         </div>
 
@@ -135,6 +130,31 @@ const ClinicDirectory = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+              
+              <div className="md:col-span-3">
+                
+              </div>
+              
+              <div className="md:col-span-9 mb-4">
+                <div className="relative w-full flex-shrink-0">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input 
+                    placeholder="Search clinics..." 
+                    value={searchQuery} 
+                    onChange={e => setSearchQuery(e.target.value)} 
+                    className="pl-10" 
+                  />
+                  {searchQuery && <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8" 
+                    onClick={() => setSearchQuery("")}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>}
+                </div>
+              </div>
+
               {isMobileFilterOpen && <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
                   <div className="fixed inset-y-0 right-0 w-full max-w-xs bg-background p-6 shadow-lg animate-in slide-in-right flex flex-col h-full">
                     <div className="flex items-center justify-between mb-4">
