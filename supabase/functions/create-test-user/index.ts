@@ -54,6 +54,7 @@ function validateRequestParams(email: string, password: string, role: string, na
 async function findExistingUserByEmail(supabase, email: string) {
   console.log(`Checking for existing user with email: ${email}`);
   try {
+    // Use the admin listUsers API to find existing users
     const { data: userData, error: listError } = await supabase.auth.admin.listUsers({
       perPage: 1000 // Large value to ensure getting all users
     });
@@ -63,8 +64,17 @@ async function findExistingUserByEmail(supabase, email: string) {
       throw new Error(`Failed to list users: ${listError.message}`);
     }
     
+    // Find user by email
     const existingUser = userData?.users?.find(user => user.email === email);
     console.log(`User search result for ${email}: ${existingUser ? 'Found' : 'Not found'}`);
+    
+    // Extra check: Ensure this is not the problematic user ID
+    if (existingUser && existingUser.id === '00000000-0000-0000-0000-000000000099') {
+      console.error(`Found corrupted user ID: ${existingUser.id}`);
+      // Return a special flag that indicates we need to force recreation
+      return { ...existingUser, forceRecreate: true };
+    }
+    
     return existingUser;
   } catch (err) {
     console.error(`Error searching for existing user: ${err.message}`);
@@ -89,6 +99,12 @@ async function checkExistingProfile(supabase, name: string, role: string) {
       return null;
     }
     
+    // Extra validation for the problematic UUID
+    if (data && data.id === '00000000-0000-0000-0000-000000000099') {
+      console.error(`Found problematic profile with invalid UUID: ${data.id}`);
+      return null; // Treat as if no profile was found
+    }
+    
     console.log(`Profile search result: ${data ? 'Found profile with ID ' + data.id : 'No profile found'}`);
     return data;
   } catch (err) {
@@ -103,6 +119,12 @@ async function deleteUserProfileData(supabase, userId: string) {
   console.log(`Starting cleanup for user ID: ${userId}`);
   
   try {
+    // Skip deletion if it's the problematic UUID - we can't modify this anyway
+    if (userId === '00000000-0000-0000-0000-000000000099') {
+      console.log(`Skipping deletion of problematic UUID: ${userId}`);
+      return true;
+    }
+    
     // 1. Delete services associated with this user
     console.log(`Deleting services for user ${userId}`);
     await supabase.from('services').delete().eq('vendor_id', userId);
@@ -152,6 +174,13 @@ async function deleteExistingUser(supabase, existingUser) {
   if (!existingUser || !existingUser.id) {
     console.log("No existing user to delete");
     return;
+  }
+  
+  // Special handling for the problematic UUID
+  if (existingUser.id === '00000000-0000-0000-0000-000000000099' || existingUser.forceRecreate) {
+    console.log(`Found problematic UUID ${existingUser.id}. Cannot delete via normal API.`);
+    console.log(`Will attempt to create a new user with the same email and update the profile.`);
+    return true;
   }
   
   try {
@@ -206,6 +235,11 @@ async function createNewUser(supabase, email: string, password: string, role: st
       throw new Error("User created but no user ID returned");
     }
     
+    // Extra validation to ensure we don't have the problematic UUID
+    if (data.user.id === '00000000-0000-0000-0000-000000000099') {
+      throw new Error("User created with invalid UUID: 00000000-0000-0000-0000-000000000099. This account cannot be used.");
+    }
+    
     const userId = data.user.id;
     console.log(`User created successfully with ID: ${userId}`);
     
@@ -223,6 +257,12 @@ async function createNewUser(supabase, email: string, password: string, role: st
 async function createUserProfile(supabase, userId: string, role: string, name: string) {
   try {
     console.log(`Creating profile for user ${userId} with role ${role}`);
+    
+    // Special case for problematic UUID - we can't create or update this profile
+    if (userId === '00000000-0000-0000-0000-000000000099') {
+      console.error(`Cannot create profile for invalid UUID: ${userId}`);
+      throw new Error("Unable to create profile for invalid UUID: 00000000-0000-0000-0000-000000000099");
+    }
     
     const profileData = {
       id: userId,
@@ -254,6 +294,12 @@ async function createUserProfile(supabase, userId: string, role: string, name: s
 async function setupSpecializedSettings(supabase, userId: string, role: string) {
   if (role !== 'doctor' && role !== 'vendor') {
     return true;
+  }
+  
+  // Skip for problematic UUID
+  if (userId === '00000000-0000-0000-0000-000000000099') {
+    console.error(`Cannot set up doctor settings for invalid UUID: ${userId}`);
+    return false;
   }
   
   try {
@@ -297,24 +343,54 @@ async function processAccountCreation(email: string, password: string, role: str
     // Check if there's an existing profile with the same name and role (to avoid conflicts)
     const existingProfileWithName = await checkExistingProfile(supabase, name, role);
     if (existingProfileWithName) {
-      console.log(`Found existing profile with name ${name} and role ${role}, will use this ID: ${existingProfileWithName.id}`);
-      return {
-        success: true,
-        message: `User with name ${name} and role ${role} already exists`,
-        userId: existingProfileWithName.id
-      };
+      // Skip if the profile has the problematic UUID
+      if (existingProfileWithName.id === '00000000-0000-0000-0000-000000000099') {
+        console.log(`Found existing profile with problematic UUID: ${existingProfileWithName.id}`);
+        // Continue to recreate this user properly
+      } else {
+        console.log(`Found existing profile with name ${name} and role ${role}, will use this ID: ${existingProfileWithName.id}`);
+        return {
+          success: true,
+          message: `User with name ${name} and role ${role} already exists`,
+          userId: existingProfileWithName.id
+        };
+      }
     }
     
     // 2. Check for & delete existing user with the same email
     const existingUser = await findExistingUserByEmail(supabase, email);
     if (existingUser) {
-      console.log(`Found existing user with email ${email}, will delete first`);
-      await deleteExistingUser(supabase, existingUser);
-      await delay(2000);
+      // Special handling for the problematic UUID
+      if (existingUser.id === '00000000-0000-0000-0000-000000000099' || existingUser.forceRecreate) {
+        console.log(`Found existing user with email ${email} and problematic UUID ${existingUser.id}`);
+        console.log(`Will attempt to force delete and recreate this user.`);
+        
+        // For the problematic user, we need to try to clean up as much as possible
+        await deleteUserProfileData(supabase, existingUser.id);
+        
+        // Note: We can't actually delete the auth user with this UUID, so we'll
+        // just try to create a new user with the same email which will likely fail
+        // unless we delete and recreate via the Supabase dashboard
+        console.log(`Warning: Cannot delete user with ID ${existingUser.id} via API.`);
+        console.log(`Manual intervention may be required in the Supabase dashboard.`);
+      } else {
+        console.log(`Found existing user with email ${email}, will delete first`);
+        await deleteExistingUser(supabase, existingUser);
+        await delay(2000);
+      }
     }
     
     // 3. Create new user
-    const userId = await createNewUser(supabase, email, password, role, name);
+    let userId;
+    try {
+      userId = await createNewUser(supabase, email, password, role, name);
+    } catch (error) {
+      if (error.message && error.message.includes("duplicate key value")) {
+        console.error(`User already exists with email ${email}. Cannot create duplicate.`);
+        throw new Error(`Cannot create duplicate user with email ${email}. Manual cleanup may be required.`);
+      }
+      throw error;
+    }
     
     // 4. Wait a bit after user creation
     await delay(1500);
