@@ -116,6 +116,26 @@ const ClinicDirectory = () => {
             <h1 className="text-3xl font-bold tracking-tight">Clinic Directory</h1>
             <p className="text-muted-foreground">Discover clinics and their special offers</p>
           </div>
+          
+          <div className="md:w-3/4">
+            {!isCategoriesLoading && !isClinicsLoading && <div className="relative w-full flex-shrink-0">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input 
+                  placeholder="Search clinics..." 
+                  value={searchQuery} 
+                  onChange={e => setSearchQuery(e.target.value)} 
+                  className="pl-10" 
+                />
+                {searchQuery && <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8" 
+                  onClick={() => setSearchQuery("")}
+                >
+                  <X className="h-4 w-4" />
+                </Button>}
+              </div>}
+          </div>
         </div>
 
         {(isCategoriesLoading || isClinicsLoading) && <div className="flex justify-center py-12">
@@ -215,4 +235,5 @@ const ClinicDirectory = () => {
       </div>
     </div>;
 };
+
 export default ClinicDirectory;
