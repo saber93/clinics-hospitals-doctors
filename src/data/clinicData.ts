@@ -108,7 +108,7 @@ export const clinics: Clinic[] = [
     category: "Aesthetic Services",
     subCategory: "Body Contouring",
     offerPercentage: 30,
-    imageUrl: "https://images.unsplash.com/photo-1607361188341-3be8656648fc?q=80&w=500&auto=format&fit=crop"
+    imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=500&auto=format&fit=crop"
   },
   {
     id: "7",
@@ -118,7 +118,7 @@ export const clinics: Clinic[] = [
     category: "Dental Care",
     subCategory: "Orthodontics",
     offerPercentage: 0,
-    imageUrl: "https://images.unsplash.com/photo-1606265752439-1f18756aa8ab?q=80&w=500&auto=format&fit=crop"
+    imageUrl: "https://images.unsplash.com/photo-1606811971618-4486d14f3f99?q=80&w=500&auto=format&fit=crop"
   },
   {
     id: "8",
@@ -138,7 +138,7 @@ export const clinics: Clinic[] = [
     category: "Medical Specialties",
     subCategory: "Cardiology",
     offerPercentage: 0,
-    imageUrl: "https://images.unsplash.com/photo-1585435557343-3b348586bc2f?q=80&w=500&auto=format&fit=crop"
+    imageUrl: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=500&auto=format&fit=crop"
   },
   {
     id: "10",
