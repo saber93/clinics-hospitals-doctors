@@ -80,6 +80,7 @@ const LoginForm = () => {
     }
     
     setIsLoading(true);
+    const loadingToast = toast.loading(mode === "login" ? "Signing in..." : "Creating account...");
 
     try {
       if (mode === "login") {
@@ -100,6 +101,7 @@ const LoginForm = () => {
         }
 
         console.log("Login successful:", data);
+        toast.dismiss(loadingToast);
         toast.success("Logged in successfully!");
         
         // Redirect to dashboard after a short delay
@@ -123,12 +125,14 @@ const LoginForm = () => {
           throw error;
         }
 
+        toast.dismiss(loadingToast);
         toast.success("Account created successfully! Please check your email for verification.");
         // Redirect to login page after successful registration
         navigate("/auth?mode=login");
       }
     } catch (error: any) {
       console.error("Authentication error:", error);
+      toast.dismiss(loadingToast);
       
       // Provide more specific error messages
       if (error.message.includes("Invalid login credentials")) {
@@ -151,7 +155,7 @@ const LoginForm = () => {
 
   // Make logout function globally available
   if (typeof window !== 'undefined') {
-    window.logoutUser = handleLogout;
+    (window as any).logoutUser = handleLogout;
   }
 
   return (
@@ -165,7 +169,7 @@ const LoginForm = () => {
       />
       
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? "Loading..." : mode === "login" ? "Sign In" : "Create Account"}
+        {isLoading ? "Processing..." : mode === "login" ? "Sign In" : "Create Account"}
       </Button>
       
       <TestCredentialsPanel 

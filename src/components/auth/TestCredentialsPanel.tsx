@@ -44,6 +44,8 @@ const TestCredentialsPanel = ({ mode, onFillCredentials, isLoading }: TestCreden
 
   // Function to create test account directly
   const createTestAccount = async (role: string) => {
+    if (isCreatingAccount || isLoading) return;
+    
     setIsCreatingAccount(true);
     
     try {
@@ -59,19 +61,18 @@ const TestCredentialsPanel = ({ mode, onFillCredentials, isLoading }: TestCreden
           throw new Error("Invalid role specified");
       }
       
-      const loadingToast = toast.loading(`Creating ${role} account directly...`);
+      const loadingToast = toast.loading(`Creating ${role} account...`);
       
-      // Instead of using the admin.listUsers (which requires higher permissions),
-      // first check if we can log in with these credentials
-      console.log(`Trying to sign in with ${email} to check if user exists...`);
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      // First check if user already exists by trying to sign in
+      console.log(`Checking if user ${email} already exists...`);
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       
-      if (!signInError) {
-        // User exists and credentials are valid
-        console.log(`User ${email} already exists and credentials are valid`);
+      // If login succeeds, user exists - just use the credentials
+      if (signInData.session) {
+        console.log(`User ${email} already exists and can be logged in`);
         toast.dismiss(loadingToast);
         toast.success(`${role} account already exists. Credentials filled in for login.`);
         // Sign out the user since we just wanted to check
@@ -81,7 +82,15 @@ const TestCredentialsPanel = ({ mode, onFillCredentials, isLoading }: TestCreden
         return;
       }
       
-      // Create the user account directly
+      // If login fails with a specific error that's not about invalid credentials,
+      // there may be another issue
+      if (signInError && 
+          !signInError.message.includes("Invalid login credentials") && 
+          !signInError.message.includes("Email not confirmed")) {
+        throw signInError;
+      }
+      
+      // Try creating directly with supabase.auth.signUp
       console.log(`Creating ${role} account with email: ${email}`);
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -95,15 +104,27 @@ const TestCredentialsPanel = ({ mode, onFillCredentials, isLoading }: TestCreden
       });
       
       if (error) {
+        // If the error indicates the user already exists but we couldn't log in,
+        // it might be a password issue
+        if (error.message.includes("already registered")) {
+          toast.dismiss(loadingToast);
+          toast.info(`User ${email} already exists but may have a different password. Filling in expected credentials.`);
+          fillTestCredentials(role);
+          return;
+        }
         throw error;
       }
       
-      console.log(`${role} account created successfully:`, data);
-      toast.dismiss(loadingToast);
-      toast.success(`${role} account created successfully! You can now log in.`);
-      
-      // Fill in the credentials for immediate login
-      fillTestCredentials(role);
+      if (data.user) {
+        console.log(`${role} account created successfully:`, data.user.id);
+        toast.dismiss(loadingToast);
+        toast.success(`${role} account created successfully! You can now log in.`);
+        
+        // Fill in the credentials for immediate login
+        fillTestCredentials(role);
+      } else {
+        throw new Error("No user data returned from signup");
+      }
       
     } catch (error: any) {
       console.error(`Error creating ${role} account:`, error);
@@ -111,7 +132,7 @@ const TestCredentialsPanel = ({ mode, onFillCredentials, isLoading }: TestCreden
       
       // More user-friendly error message
       if (error.message.includes("already registered")) {
-        toast.error(`An account with this email already exists. Try logging in instead.`);
+        toast.info(`An account with this email already exists. Try logging in instead.`);
         // Still fill the credentials for convenience
         fillTestCredentials(role);
       } else {
@@ -126,14 +147,24 @@ const TestCredentialsPanel = ({ mode, onFillCredentials, isLoading }: TestCreden
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-2 mt-2">
+      <div className="mt-4 text-center text-sm">
+        <p className="text-gray-600">Test Credentials:</p>
+        <div className="mt-2 p-3 bg-gray-50 rounded text-left space-y-1">
+          <p><strong>Admin:</strong> admin@skinnect.com / Admin123!</p>
+          <p><strong>Vendor:</strong> vendor@skinnect.com / Vendor123!</p>
+          <p><strong>Doctor:</strong> doctor@skinnect.com / Doctor123!</p>
+          <p><strong>Client:</strong> client@skinnect.com / Client123!</p>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-2 gap-2 mt-4">
         <Button 
           type="button" 
           variant="outline" 
           size="sm" 
           onClick={() => fillTestCredentials("admin")}
           className="text-xs"
-          disabled={isLoading}
+          disabled={isLoading || isCreatingAccount}
         >
           Use Admin
         </Button>
@@ -143,7 +174,7 @@ const TestCredentialsPanel = ({ mode, onFillCredentials, isLoading }: TestCreden
           size="sm" 
           onClick={() => fillTestCredentials("vendor")}
           className="text-xs"
-          disabled={isLoading}
+          disabled={isLoading || isCreatingAccount}
         >
           Use Vendor
         </Button>
@@ -153,7 +184,7 @@ const TestCredentialsPanel = ({ mode, onFillCredentials, isLoading }: TestCreden
           size="sm" 
           onClick={() => fillTestCredentials("doctor")}
           className="text-xs"
-          disabled={isLoading}
+          disabled={isLoading || isCreatingAccount}
         >
           Use Doctor
         </Button>
@@ -163,7 +194,7 @@ const TestCredentialsPanel = ({ mode, onFillCredentials, isLoading }: TestCreden
           size="sm" 
           onClick={() => fillTestCredentials("client")}
           className="text-xs"
-          disabled={isLoading}
+          disabled={isLoading || isCreatingAccount}
         >
           Use Client
         </Button>
