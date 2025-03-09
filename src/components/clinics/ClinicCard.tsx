@@ -48,8 +48,8 @@ const ClinicCard: React.FC<ClinicCardProps> = ({ clinic }) => {
         <div className="flex justify-between items-start gap-2">
           <CardTitle className="text-lg line-clamp-1">{clinic.name}</CardTitle>
         </div>
-        <div className="flex items-center text-muted-foreground text-xs gap-1 mt-1">
-          <MapPin className="h-3 w-3" />
+        <div className="flex items-center text-muted-foreground text-xs gap-1.5 mt-1.5 bg-muted bg-opacity-50 px-2 py-1 rounded-full w-fit">
+          <MapPin className="h-3 w-3 text-primary" />
           <span className="line-clamp-1">{clinic.location}</span>
         </div>
       </CardHeader>
