@@ -210,6 +210,58 @@ serve(async (req) => {
       console.log(`Profile created successfully for ${email}`);
     }
     
+    // If the user is a doctor, set up doctor chat settings
+    if (role === 'doctor' || role === 'vendor') {
+      console.log(`Setting up doctor chat settings for ${email}`);
+      
+      // Check if chat settings already exist
+      const { data: existingSettings, error: settingsFetchError } = await supabaseAdmin
+        .from('doctor_chat_settings')
+        .select('*')
+        .eq('doctor_id', userId)
+        .maybeSingle();
+        
+      if (settingsFetchError) {
+        console.error(`Error checking existing doctor settings: ${JSON.stringify(settingsFetchError)}`);
+        throw new Error(`Failed to check existing doctor settings: ${settingsFetchError.message}`);
+      }
+      
+      if (existingSettings) {
+        console.log(`Updating existing doctor chat settings for ${email}`);
+        const { error: settingsUpdateError } = await supabaseAdmin
+          .from('doctor_chat_settings')
+          .update({
+            offers_free_consultation: true,
+            session_price: role === 'doctor' ? 85 : 75,
+            updated_at: new Date().toISOString()
+          })
+          .eq('doctor_id', userId);
+          
+        if (settingsUpdateError) {
+          console.error(`Error updating doctor settings: ${JSON.stringify(settingsUpdateError)}`);
+          throw new Error(`Failed to update doctor settings: ${settingsUpdateError.message}`);
+        }
+        console.log(`Doctor chat settings updated successfully for ${email}`);
+      } else {
+        console.log(`Creating new doctor chat settings for ${email}`);
+        const { error: settingsInsertError } = await supabaseAdmin
+          .from('doctor_chat_settings')
+          .insert({
+            doctor_id: userId,
+            offers_free_consultation: true,
+            session_price: role === 'doctor' ? 85 : 75,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          });
+          
+        if (settingsInsertError) {
+          console.error(`Error creating doctor settings: ${JSON.stringify(settingsInsertError)}`);
+          throw new Error(`Failed to create doctor settings: ${settingsInsertError.message}`);
+        }
+        console.log(`Doctor chat settings created successfully for ${email}`);
+      }
+    }
+    
     // Return success response
     console.log(`Test account created successfully for ${email} with role ${role}`);
     return new Response(
