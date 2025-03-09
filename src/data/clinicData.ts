@@ -5,7 +5,7 @@ export const categories: Category[] = [
   {
     id: "med-specialties",
     name: "Medical Specialties",
-    imageUrl: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=500&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=500&auto=format&fit=crop",
     subCategories: [
       { id: "cardiology", name: "Cardiology" },
       { id: "dermatology", name: "Dermatology" },
