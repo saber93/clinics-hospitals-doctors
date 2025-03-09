@@ -29,10 +29,9 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
       const password = `${capitalizeFirstLetter(role)}123!`;
       
       // Generate a unique name with timestamp to avoid any conflicts
+      const timestamp = new Date().getTime();
       let name;
       if (role === 'doctor') {
-        // Using timestamp to ensure uniqueness
-        const timestamp = new Date().getTime();
         name = `Dr. Sarah Johnson (Demo-${timestamp})`;
       } else {
         name = `${capitalizeFirstLetter(role)} User`;
@@ -62,11 +61,13 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
           data = response.data;
           error = response.error;
           
-          if (!error) {
+          if (data && !error) {
+            console.log(`Edge function response successful:`, data);
             break;  // Success, exit retry loop
           }
           
-          console.error(`Error response from edge function (attempt ${retries + 1}):`, error);
+          console.error(`Error response from edge function (attempt ${retries + 1}):`, error || 'No error object, but response failed');
+          console.error(`Response data:`, data);
           retries++;
           
           if (retries <= maxRetries) {
@@ -85,15 +86,14 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
         }
       }
       
-      if (error) {
+      if (error || !data) {
         console.error(`All edge function attempts failed:`, error);
-        throw new Error(error.message || 'Unknown error calling edge function');
+        const errorMessage = error?.message || (data?.error || 'Unknown error calling edge function');
+        throw new Error(errorMessage);
       }
       
-      console.log(`Edge function response:`, data);
-      
-      if (!data || !data.success) {
-        const errorMsg = data?.error || 'Unknown error creating account';
+      if (!data.success) {
+        const errorMsg = data.error || 'Unknown error creating account';
         console.error(`Account creation failed:`, errorMsg);
         throw new Error(errorMsg);
       }
@@ -107,7 +107,13 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
     } catch (error: any) {
       console.error(`Error creating ${role} account:`, error);
       toast.dismiss(loadingToast);
-      toast.error(`Failed to create account: ${error.message || 'Unknown error'}`);
+      
+      // Special case for the invalid UUID
+      if (error.message && error.message.includes('00000000-0000-0000-0000-000000000099')) {
+        toast.error(`Failed to create account: User ID conflict. Please contact support.`);
+      } else {
+        toast.error(`Failed to create account: ${error.message || 'Unknown error'}`);
+      }
     } finally {
       setIsCreatingAccount(false);
       setCurrentRole(null);
