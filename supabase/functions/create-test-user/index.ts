@@ -49,7 +49,9 @@ serve(async (req) => {
     // Force delete any user that might have the same email (to ensure clean setup)
     try {
       console.log(`Attempting to delete existing user with email: ${email}`)
-      const { data: userData, error: listError } = await supabaseAdmin.auth.admin.listUsers();
+      const { data: userData, error: listError } = await supabaseAdmin.auth.admin.listUsers({
+        perPage: 1000 // Large value to ensure getting all users
+      });
       
       if (listError) {
         console.error(`Error listing users: ${JSON.stringify(listError)}`);
@@ -126,6 +128,17 @@ serve(async (req) => {
           // Continue execution - this is not fatal
         }
         
+        // Delete profile before deleting user
+        const { error: deleteProfileError } = await supabaseAdmin
+          .from('profiles')
+          .delete()
+          .eq('id', existingUser.id);
+          
+        if (deleteProfileError) {
+          console.log(`Note: Error deleting profile: ${JSON.stringify(deleteProfileError)}`);
+          // Continue execution - this is not fatal
+        }
+        
         // Now delete the user
         const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(existingUser.id);
         
@@ -160,7 +173,10 @@ serve(async (req) => {
     const userId = data.user.id;
     console.log(`Created user ${email} with ID ${userId} successfully`);
     
-    // Create or update profile
+    // Wait a moment for the user creation trigger to fire
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Manually create or update profile if needed
     console.log(`Ensuring profile exists for user ${userId} with role ${role}`);
     
     // First check if profile already exists
@@ -172,7 +188,7 @@ serve(async (req) => {
       
     if (profileFetchError) {
       console.error(`Error checking existing profile: ${JSON.stringify(profileFetchError)}`);
-      throw new Error(`Failed to check existing profile: ${profileFetchError.message}`);
+      // Don't throw here, we'll try to create it anyway
     }
       
     if (existingProfile) {
@@ -223,7 +239,7 @@ serve(async (req) => {
         
       if (settingsFetchError) {
         console.error(`Error checking existing doctor settings: ${JSON.stringify(settingsFetchError)}`);
-        throw new Error(`Failed to check existing doctor settings: ${settingsFetchError.message}`);
+        // Don't throw here, we'll try to create it anyway
       }
       
       if (existingSettings) {

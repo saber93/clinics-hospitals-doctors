@@ -72,6 +72,17 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
       >
         {isCreatingAccount ? "Creating Account..." : "Create Doctor Account"}
       </Button>
+      
+      <Button 
+        type="button" 
+        variant="secondary" 
+        size="sm" 
+        onClick={() => createTestAccount("client")}
+        className="text-xs"
+        disabled={isLoading || isCreatingAccount}
+      >
+        {isCreatingAccount ? "Creating Account..." : "Create Client Account"}
+      </Button>
     </div>
   );
 };
