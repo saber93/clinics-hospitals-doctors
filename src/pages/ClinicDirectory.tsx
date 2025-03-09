@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import CategoryFilter from "@/components/clinics/CategoryFilter";
@@ -139,33 +140,35 @@ const ClinicDirectory = () => {
   return (
     <div className="container py-8 px-4 md:px-6">
       <div className="space-y-4">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">Clinic Directory</h1>
-          <p className="text-muted-foreground">Browse and discover clinics and their special offers</p>
-        </div>
-
-        {/* Main search input at the top - visible on all devices */}
-        {!isCategoriesLoading && !isClinicsLoading && (
-          <div className="relative w-full max-w-3xl mx-auto mb-6">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input
-              placeholder="Search clinics by name, category, or description..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 py-6 text-base"
-            />
-            {searchQuery && (
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8"
-                onClick={() => setSearchQuery("")}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Clinic Directory</h1>
+            <p className="text-muted-foreground">Browse and discover clinics and their special offers</p>
           </div>
-        )}
+
+          {/* Search input inline with the title - visible on all devices */}
+          {!isCategoriesLoading && !isClinicsLoading && (
+            <div className="relative w-full md:w-auto md:min-w-[320px] md:max-w-[400px] flex-shrink-0">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                placeholder="Search clinics..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+              {searchQuery && (
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8"
+                  onClick={() => setSearchQuery("")}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
 
         {(isCategoriesLoading || isClinicsLoading) && (
           <div className="flex justify-center py-12">
