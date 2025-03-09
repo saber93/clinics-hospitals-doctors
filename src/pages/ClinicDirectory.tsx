@@ -8,6 +8,7 @@ import { categories, clinics } from "@/data/clinicData";
 import { X } from "lucide-react";
 import { Clinic } from "@/types/clinic";
 import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ClinicDirectory = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -78,8 +79,8 @@ const ClinicDirectory = () => {
           {/* Mobile Filter Sidebar */}
           {isMobileFilterOpen && (
             <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
-              <div className="fixed inset-y-0 right-0 w-full max-w-xs bg-background p-6 shadow-lg animate-in slide-in-right">
-                <div className="flex items-center justify-between mb-6">
+              <div className="fixed inset-y-0 right-0 w-full max-w-xs bg-background p-6 shadow-lg animate-in slide-in-right flex flex-col h-full">
+                <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-semibold">Filters</h2>
                   <Button 
                     variant="ghost" 
@@ -90,26 +91,28 @@ const ClinicDirectory = () => {
                   </Button>
                 </div>
                 
-                <div className="space-y-6">
-                  <SearchFilter
-                    searchQuery={searchQuery}
-                    onSearchChange={setSearchQuery}
-                    offerFilter={offerFilter}
-                    onOfferFilterChange={setOfferFilter}
-                  />
-                  
-                  <Separator />
-                  
-                  <CategoryFilter
-                    categories={categories}
-                    selectedCategory={selectedCategory}
-                    selectedSubCategory={selectedSubCategory}
-                    onSelectCategory={setSelectedCategory}
-                    onSelectSubCategory={setSelectedSubCategory}
-                  />
-                  
-                  <Separator />
-                  
+                <ScrollArea className="flex-1 -mx-6 px-6">
+                  <div className="space-y-6 pb-8">
+                    <SearchFilter
+                      searchQuery={searchQuery}
+                      onSearchChange={setSearchQuery}
+                      offerFilter={offerFilter}
+                      onOfferFilterChange={setOfferFilter}
+                    />
+                    
+                    <Separator />
+                    
+                    <CategoryFilter
+                      categories={categories}
+                      selectedCategory={selectedCategory}
+                      selectedSubCategory={selectedSubCategory}
+                      onSelectCategory={setSelectedCategory}
+                      onSelectSubCategory={setSelectedSubCategory}
+                    />
+                  </div>
+                </ScrollArea>
+                
+                <div className="pt-4 mt-auto border-t">
                   <Button 
                     variant="outline" 
                     onClick={clearFilters}
