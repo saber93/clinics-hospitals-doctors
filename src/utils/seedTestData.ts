@@ -19,7 +19,8 @@ export const seedTestData = async () => {
     const vendorData = await createUserSafely('vendor@skinnect.com', 'Vendor123!', 'vendor', 'Vendor User');
     console.log("Vendor account created:", vendorData?.userId || 'Failed');
     
-    const doctorData = await createUserSafely('doctor@skinnect.com', 'Doctor123!', 'doctor', 'Dr. Sarah Johnson');
+    // Use a unique name for the doctor to avoid conflicts
+    const doctorData = await createUserSafely('doctor@skinnect.com', 'Doctor123!', 'doctor', 'Dr. Sarah Johnson (Demo)');
     console.log("Doctor account created:", doctorData?.userId || 'Failed');
     
     const clientData = await createUserSafely('client@skinnect.com', 'Client123!', 'client', 'Client User');

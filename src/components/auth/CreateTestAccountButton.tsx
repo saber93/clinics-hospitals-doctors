@@ -27,7 +27,8 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
       
       const email = `${role}@skinnect.com`;
       const password = `${capitalizeFirstLetter(role)}123!`;
-      const name = role === 'doctor' ? 'Dr. Sarah Johnson' : `${capitalizeFirstLetter(role)} User`;
+      // Add a suffix to doctor name to avoid conflicts
+      const name = role === 'doctor' ? 'Dr. Sarah Johnson (Demo)' : `${capitalizeFirstLetter(role)} User`;
       
       // Show detailed logs
       console.log(`Creating account with email: ${email}, role: ${role}, name: ${name}`);
