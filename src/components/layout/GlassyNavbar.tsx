@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, MessageSquare } from 'lucide-react';
+import { Menu, X, MessageSquare, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
@@ -50,6 +50,7 @@ const GlassyNavbar = () => {
 
   const navLinks = [
     { name: 'Home', path: '/' },
+    { name: 'Clinics', path: '/clinics', icon: <Search className="h-4 w-4 mr-1" /> },
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact', icon: <MessageSquare className="h-4 w-4 mr-1" /> },
     { name: 'Dashboard', path: '/dashboard', auth: true },
@@ -136,7 +137,7 @@ const GlassyNavbar = () => {
       <div
         className={cn(
           'md:hidden fixed inset-0 top-0 left-0 w-full h-screen z-40 transition-transform duration-300 ease-in-out',
-          'backdrop-blur-xl bg-white/30 dark:bg-black/30 shadow-lg border border-white/10 dark:border-white/5',
+          'backdrop-blur-xl bg-white/95 dark:bg-black/95 shadow-lg border border-white/10 dark:border-white/5',
           isOpen ? 'translate-x-0' : 'translate-x-full'
         )}
       >

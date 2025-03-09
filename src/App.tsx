@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,6 +19,7 @@ import Reservations from "./pages/Reservations";
 import Offers from "./pages/Offers";
 import Vouchers from "./pages/Vouchers";
 import AllBookings from "./pages/AllBookings";
+import ClinicDirectory from "./pages/ClinicDirectory";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
@@ -76,6 +78,7 @@ const App = () => {
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/dashboard" />} />
+                <Route path="/clinics" element={<ClinicDirectory />} />
                 
                 <Route 
                   path="/dashboard" 
