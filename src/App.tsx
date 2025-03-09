@@ -20,6 +20,7 @@ import Offers from "./pages/Offers";
 import Vouchers from "./pages/Vouchers";
 import AllBookings from "./pages/AllBookings";
 import ClinicDirectory from "./pages/ClinicDirectory";
+import ClinicDetails from "./pages/ClinicDetails";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
@@ -79,6 +80,7 @@ const App = () => {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/dashboard" />} />
                 <Route path="/clinics" element={<ClinicDirectory />} />
+                <Route path="/clinics/:id" element={<ClinicDetails />} />
                 
                 <Route 
                   path="/dashboard" 

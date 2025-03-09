@@ -1,5 +1,6 @@
 
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Clinic } from "@/types/clinic";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,14 +11,23 @@ interface ClinicCardProps {
 }
 
 const ClinicCard: React.FC<ClinicCardProps> = ({ clinic }) => {
+  const navigate = useNavigate();
+  
   // Handle image error by falling back to placeholder
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     console.log(`Image failed to load: ${clinic.imageUrl}`);
     e.currentTarget.src = "/placeholder.svg";
   };
 
+  const handleCardClick = () => {
+    navigate(`/clinics/${clinic.id}`);
+  };
+
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 h-full">
+    <Card 
+      className="overflow-hidden hover:shadow-lg transition-all duration-300 h-full cursor-pointer"
+      onClick={handleCardClick}
+    >
       <div className="relative card-image-container">
         <img
           src={clinic.imageUrl || "/placeholder.svg"}
