@@ -91,7 +91,13 @@ const Chat: React.FC = () => {
           return;
         }
 
-        setChatSession(data);
+        // Transform the data to match our ChatSession type
+        const typedSession = {
+          ...data,
+          status: data.status as "active" | "expired" | "completed"
+        } as ChatSession;
+        
+        setChatSession(typedSession);
         setPatientName(data.patient?.name || 'Patient');
         setDoctorName(data.doctor?.name || 'Doctor');
 
@@ -201,7 +207,13 @@ const Chat: React.FC = () => {
         .single();
         
       if (data) {
-        setChatSession(data);
+        // Transform the data to match our ChatSession type
+        const typedSession = {
+          ...data,
+          status: data.status as "active" | "expired" | "completed"
+        } as ChatSession;
+        
+        setChatSession(typedSession);
       }
     } catch (error) {
       console.error('Error handling payment completion:', error);

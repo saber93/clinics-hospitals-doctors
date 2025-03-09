@@ -83,7 +83,14 @@ const AdminChatSettings: React.FC = () => {
         .limit(10);
       
       if (error) throw error;
-      setTransactions(data);
+      
+      // Transform the data to match our ChatPayment type
+      const typedData = data.map(payment => ({
+        ...payment,
+        payment_status: payment.payment_status as "pending" | "completed" | "failed"
+      })) as ChatPayment[];
+      
+      setTransactions(typedData);
     } catch (error) {
       console.error('Error loading transactions:', error);
     } finally {
@@ -110,7 +117,7 @@ const AdminChatSettings: React.FC = () => {
       
       if (error) throw error;
       
-      setSettings(data);
+      setSettings(data as ChatSettings);
       toast.success('Settings saved successfully');
     } catch (error) {
       console.error('Error saving settings:', error);

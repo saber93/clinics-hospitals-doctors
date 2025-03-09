@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Send, PaperclipIcon } from 'lucide-react';
+import { Send } from 'lucide-react';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => Promise<void>;
@@ -53,7 +53,6 @@ const ChatInput: React.FC<ChatInputProps> = ({
             placeholder="Type your message..."
             className="flex-1 resize-none focus-visible:ring-1"
             rows={1}
-            maxRows={5}
             disabled={isDisabled || isSending}
           />
           <Button 

@@ -18,7 +18,16 @@ export const fetchUserChatSessions = async (userId: string, isDoctor: boolean = 
       .order('last_activity', { ascending: false });
 
     if (error) throw error;
-    return data;
+    
+    // Transform the data to match our ChatSession type
+    const typedData = data.map(session => ({
+      ...session,
+      status: session.status as "active" | "expired" | "completed",
+      patient: session.profiles,
+      doctor: session.doctor
+    })) as unknown as ChatSession[];
+    
+    return typedData;
   } catch (error) {
     console.error('Error fetching chat sessions:', error);
     toast.error('Failed to load chat sessions');
@@ -36,7 +45,7 @@ export const fetchChatMessages = async (sessionId: string) => {
       .order('created_at', { ascending: true });
 
     if (error) throw error;
-    return data;
+    return data as ChatMessage[];
   } catch (error) {
     console.error('Error fetching chat messages:', error);
     toast.error('Failed to load chat messages');
@@ -65,7 +74,7 @@ export const sendChatMessage = async (sessionId: string, senderId: string, messa
       .update({ last_activity: new Date().toISOString() })
       .eq('id', sessionId);
 
-    return data;
+    return data as ChatMessage;
   } catch (error) {
     console.error('Error sending message:', error);
     toast.error('Failed to send message');
@@ -88,7 +97,7 @@ export const createChatSession = async (patientId: string, doctorId: string, isF
       .single();
 
     if (error) throw error;
-    return data;
+    return data as ChatSession;
   } catch (error) {
     console.error('Error creating chat session:', error);
     toast.error('Failed to create chat session');
