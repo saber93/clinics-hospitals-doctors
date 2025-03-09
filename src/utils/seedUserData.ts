@@ -27,22 +27,61 @@ export const createTestUser = async (email: string, password: string, role: stri
     
     // Create the user if they don't exist
     console.log(`Calling edge function to create ${role} account with email: ${email}`);
-    const { data, error } = await supabase.functions.invoke('create-test-user', {
-      body: { email, password, role, name }
-    });
     
-    if (error) {
-      console.error(`Error calling create-test-user function for ${role}:`, error);
-      throw new Error(error.message || `Unknown error creating ${role}`);
-    } 
+    // Add retry logic for edge function calls
+    let attempts = 0;
+    const maxAttempts = 3;
+    let lastError = null;
     
-    if (!data?.success) {
-      console.error(`Error creating ${role} account:`, data?.error || 'Unknown error');
-      throw new Error(data?.error || `Unknown error creating ${role}`);
+    while (attempts < maxAttempts) {
+      try {
+        const { data, error } = await supabase.functions.invoke('create-test-user', {
+          body: { email, password, role, name }
+        });
+        
+        if (error) {
+          console.error(`Error calling create-test-user function for ${role} (attempt ${attempts + 1}):`, error);
+          lastError = error;
+          attempts++;
+          
+          if (attempts < maxAttempts) {
+            console.log(`Retrying in ${attempts * 500}ms...`);
+            await new Promise(resolve => setTimeout(resolve, attempts * 500));
+            continue;
+          }
+          break;
+        } 
+        
+        if (!data?.success) {
+          console.error(`Error creating ${role} account (attempt ${attempts + 1}):`, data?.error || 'Unknown error');
+          lastError = new Error(data?.error || `Unknown error creating ${role}`);
+          attempts++;
+          
+          if (attempts < maxAttempts) {
+            console.log(`Retrying in ${attempts * 500}ms...`);
+            await new Promise(resolve => setTimeout(resolve, attempts * 500));
+            continue;
+          }
+          break;
+        }
+        
+        console.log(`${role} account created successfully with ID: ${data.userId}`);
+        return { userId: data.userId, email, role, name };
+      } catch (attemptError) {
+        console.error(`Exception in createTestUser for ${role} (attempt ${attempts + 1}):`, attemptError);
+        lastError = attemptError;
+        attempts++;
+        
+        if (attempts < maxAttempts) {
+          console.log(`Retrying in ${attempts * 500}ms...`);
+          await new Promise(resolve => setTimeout(resolve, attempts * 500));
+        }
+      }
     }
     
-    console.log(`${role} account created successfully with ID: ${data.userId}`);
-    return { userId: data.userId, email, role, name };
+    // If we reach here, all attempts failed
+    console.error(`All ${maxAttempts} attempts to create ${role} account failed`);
+    throw lastError || new Error(`Failed to create ${role} account after ${maxAttempts} attempts`);
   } catch (error) {
     console.error(`Error in createTestUser for ${role}:`, error);
     throw error;

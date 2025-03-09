@@ -40,9 +40,9 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
       // Show detailed logs
       console.log(`Creating account with email: ${email}, role: ${role}, name: ${name}`);
       
-      // Implement retries for edge function call
+      // Implement retries for edge function call with increasing timeouts
       let retries = 0;
-      const maxRetries = 2;
+      const maxRetries = 3;
       let data = null;
       let error = null;
       
@@ -55,24 +55,40 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
               password,
               role,
               name
+            },
+            // Add longer timeout for doctor account creation which seems more complex
+            options: {
+              timeout: 20000 // 20 seconds timeout
             }
           });
           
           data = response.data;
           error = response.error;
           
-          if (data && !error) {
+          // Check both for error object and data.success
+          if (!error && data && data.success) {
             console.log(`Edge function response successful:`, data);
             break;  // Success, exit retry loop
           }
           
-          console.error(`Error response from edge function (attempt ${retries + 1}):`, error || 'No error object, but response failed');
+          // Log detailed information about the failure
+          if (error) {
+            console.error(`Error response from edge function (attempt ${retries + 1}):`, error);
+          } else if (data && !data.success) {
+            console.error(`Function returned error (attempt ${retries + 1}):`, data.error);
+            error = new Error(data.error);
+          } else {
+            console.error(`Unexpected response format (attempt ${retries + 1})`, data);
+            error = new Error("Invalid response from server");
+          }
+          
           console.error(`Response data:`, data);
           retries++;
           
           if (retries <= maxRetries) {
-            console.log(`Retrying in 1 second...`);
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            const delay = 1000 * retries; // Increasing delay with each retry
+            console.log(`Retrying in ${delay}ms...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
           }
         } catch (callError) {
           console.error(`Exception calling edge function (attempt ${retries + 1}):`, callError);
@@ -80,22 +96,17 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
           retries++;
           
           if (retries <= maxRetries) {
-            console.log(`Retrying in 1 second...`);
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            const delay = 1000 * retries; // Increasing delay with each retry
+            console.log(`Retrying in ${delay}ms...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
           }
         }
       }
       
-      if (error || !data) {
+      if (error || !data || !data.success) {
         console.error(`All edge function attempts failed:`, error);
         const errorMessage = error?.message || (data?.error || 'Unknown error calling edge function');
         throw new Error(errorMessage);
-      }
-      
-      if (!data.success) {
-        const errorMsg = data.error || 'Unknown error creating account';
-        console.error(`Account creation failed:`, errorMsg);
-        throw new Error(errorMsg);
       }
       
       console.log(`${role} account created or updated successfully:`, data);
@@ -108,12 +119,21 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
       console.error(`Error creating ${role} account:`, error);
       toast.dismiss(loadingToast);
       
+      // Create a more user-friendly error message
+      let errorMessage = "Failed to create account";
+      
       // Special case for the invalid UUID
       if (error.message && error.message.includes('00000000-0000-0000-0000-000000000099')) {
-        toast.error(`Failed to create account: User ID conflict. Please contact support.`);
-      } else {
-        toast.error(`Failed to create account: ${error.message || 'Unknown error'}`);
+        errorMessage = `Account ID conflict detected. Please try again or contact support.`;
+      } else if (error.message && error.message.includes('Network')) {
+        errorMessage = `Network error. Please check your connection and try again.`;
+      } else if (error.message && error.message.includes('timeout')) {
+        errorMessage = `Request timed out. The server might be busy, please try again later.`;
+      } else if (error.message) {
+        errorMessage = `${errorMessage}: ${error.message}`;
       }
+      
+      toast.error(errorMessage);
     } finally {
       setIsCreatingAccount(false);
       setCurrentRole(null);
