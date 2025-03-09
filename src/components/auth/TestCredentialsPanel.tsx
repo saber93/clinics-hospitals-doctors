@@ -59,17 +59,26 @@ const TestCredentialsPanel = ({ mode, onFillCredentials, isLoading }: TestCreden
           throw new Error("Invalid role specified");
       }
       
-      toast.loading(`Creating ${role} account directly...`);
+      const loadingToast = toast.loading(`Creating ${role} account directly...`);
       
-      // Check if user exists first
-      console.log(`Checking if user ${email} exists...`);
-      const { data: userData, error: userCheckError } = await supabase.auth.admin
-        .listUsers();
-        
-      if (userCheckError) {
-        console.error("User check error:", userCheckError);
-      } else {
-        console.log("All users:", userData);
+      // Instead of using the admin.listUsers (which requires higher permissions),
+      // first check if we can log in with these credentials
+      console.log(`Trying to sign in with ${email} to check if user exists...`);
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      if (!signInError) {
+        // User exists and credentials are valid
+        console.log(`User ${email} already exists and credentials are valid`);
+        toast.dismiss(loadingToast);
+        toast.success(`${role} account already exists. Credentials filled in for login.`);
+        // Sign out the user since we just wanted to check
+        await supabase.auth.signOut();
+        // Fill in credentials
+        fillTestCredentials(role);
+        return;
       }
       
       // Create the user account directly
@@ -90,7 +99,7 @@ const TestCredentialsPanel = ({ mode, onFillCredentials, isLoading }: TestCreden
       }
       
       console.log(`${role} account created successfully:`, data);
-      toast.dismiss();
+      toast.dismiss(loadingToast);
       toast.success(`${role} account created successfully! You can now log in.`);
       
       // Fill in the credentials for immediate login
@@ -99,7 +108,15 @@ const TestCredentialsPanel = ({ mode, onFillCredentials, isLoading }: TestCreden
     } catch (error: any) {
       console.error(`Error creating ${role} account:`, error);
       toast.dismiss();
-      toast.error(`Failed to create ${role} account: ${error.message}`);
+      
+      // More user-friendly error message
+      if (error.message.includes("already registered")) {
+        toast.error(`An account with this email already exists. Try logging in instead.`);
+        // Still fill the credentials for convenience
+        fillTestCredentials(role);
+      } else {
+        toast.error(`Failed to create account: ${error.message}`);
+      }
     } finally {
       setIsCreatingAccount(false);
     }
@@ -116,6 +133,7 @@ const TestCredentialsPanel = ({ mode, onFillCredentials, isLoading }: TestCreden
           size="sm" 
           onClick={() => fillTestCredentials("admin")}
           className="text-xs"
+          disabled={isLoading}
         >
           Use Admin
         </Button>
@@ -125,6 +143,7 @@ const TestCredentialsPanel = ({ mode, onFillCredentials, isLoading }: TestCreden
           size="sm" 
           onClick={() => fillTestCredentials("vendor")}
           className="text-xs"
+          disabled={isLoading}
         >
           Use Vendor
         </Button>
@@ -134,6 +153,7 @@ const TestCredentialsPanel = ({ mode, onFillCredentials, isLoading }: TestCreden
           size="sm" 
           onClick={() => fillTestCredentials("doctor")}
           className="text-xs"
+          disabled={isLoading}
         >
           Use Doctor
         </Button>
@@ -143,6 +163,7 @@ const TestCredentialsPanel = ({ mode, onFillCredentials, isLoading }: TestCreden
           size="sm" 
           onClick={() => fillTestCredentials("client")}
           className="text-xs"
+          disabled={isLoading}
         >
           Use Client
         </Button>

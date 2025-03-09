@@ -73,6 +73,7 @@ const LoginForm = () => {
       }
       
       if (formData.password !== formData.confirmPassword) {
+        setLoginError("Passwords do not match");
         toast.error("Passwords do not match");
         return;
       }
@@ -85,7 +86,7 @@ const LoginForm = () => {
         const email = formData.email.trim();
         const password = formData.password;
         
-        console.log(`Attempting to log in with email: ${email} and password length: ${password.length}`);
+        console.log(`Attempting to log in with email: ${email}`);
         
         // Sign in with Supabase
         const { data, error } = await supabase.auth.signInWithPassword({
@@ -95,13 +96,16 @@ const LoginForm = () => {
 
         if (error) {
           console.error("Login error:", error);
-          setLoginError(error.message);
           throw error;
         }
 
         console.log("Login successful:", data);
         toast.success("Logged in successfully!");
-        navigate("/dashboard");
+        
+        // Redirect to dashboard after a short delay
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 500);
       } else {
         // Register with Supabase
         const { data, error } = await supabase.auth.signUp({
@@ -116,7 +120,6 @@ const LoginForm = () => {
         });
 
         if (error) {
-          setLoginError(error.message);
           throw error;
         }
 
@@ -134,6 +137,9 @@ const LoginForm = () => {
       } else if (error.message.includes("Email not confirmed")) {
         setLoginError("Please confirm your email before logging in.");
         toast.error("Please confirm your email before logging in.");
+      } else if (error.message.includes("already registered")) {
+        setLoginError("An account with this email already exists. Please try logging in instead.");
+        toast.error("An account with this email already exists. Please try logging in instead.");
       } else {
         setLoginError(error.message || "Authentication failed. Please try again.");
         toast.error(error.message || "Authentication failed. Please try again.");
@@ -144,7 +150,9 @@ const LoginForm = () => {
   };
 
   // Make logout function globally available
-  window.logoutUser = handleLogout;
+  if (typeof window !== 'undefined') {
+    window.logoutUser = handleLogout;
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
