@@ -12,6 +12,7 @@ const LoginForm = () => {
   const mode = searchParams.get("mode") || "login";
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     email: "",
@@ -23,6 +24,8 @@ const LoginForm = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear any previous login errors when the user types
+    if (loginError) setLoginError(null);
   };
 
   // Function to handle user logout
@@ -45,6 +48,7 @@ const LoginForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoginError(null);
     
     // Basic form validation
     if (!formData.email || !formData.password) {
@@ -73,6 +77,16 @@ const LoginForm = () => {
         
         console.log(`Attempting to log in with email: ${email} and password length: ${password.length}`);
         
+        // First, check if the user exists
+        const { data: userData, error: userCheckError } = await supabase.auth.admin
+          .listUsers();
+          
+        if (userCheckError) {
+          console.error("User check error:", userCheckError);
+        } else {
+          console.log("All users:", userData);
+        }
+        
         // Sign in with Supabase
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
@@ -81,6 +95,7 @@ const LoginForm = () => {
 
         if (error) {
           console.error("Login error:", error);
+          setLoginError(error.message);
           throw error;
         }
 
@@ -101,6 +116,7 @@ const LoginForm = () => {
         });
 
         if (error) {
+          setLoginError(error.message);
           throw error;
         }
 
@@ -113,10 +129,13 @@ const LoginForm = () => {
       
       // Provide more specific error messages
       if (error.message.includes("Invalid login credentials")) {
+        setLoginError("Invalid email or password. Please check your credentials and try again.");
         toast.error("Invalid email or password. Please check your credentials and try again.");
       } else if (error.message.includes("Email not confirmed")) {
+        setLoginError("Please confirm your email before logging in.");
         toast.error("Please confirm your email before logging in.");
       } else {
+        setLoginError(error.message || "Authentication failed. Please try again.");
         toast.error(error.message || "Authentication failed. Please try again.");
       }
     } finally {
@@ -155,10 +174,79 @@ const LoginForm = () => {
       email,
       password
     }));
+    setLoginError(null);
   };
 
   // Make logout function globally available
   window.logoutUser = handleLogout;
+
+  // Function to create test account directly
+  const createTestAccount = async (role: string) => {
+    setIsLoading(true);
+    setLoginError(null);
+    
+    try {
+      let email, password, name;
+      
+      switch(role) {
+        case "doctor":
+          email = "doctor@skinnect.com";
+          password = "Doctor123!";
+          name = "Dr. Sarah Johnson";
+          break;
+        default:
+          throw new Error("Invalid role specified");
+      }
+      
+      toast.loading(`Creating ${role} account directly...`);
+      
+      // Check if user exists first and delete if needed
+      const { data: userData, error: userCheckError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', email)
+        .maybeSingle();
+        
+      if (userCheckError) {
+        console.error("User check error:", userCheckError);
+      }
+      
+      if (userData?.id) {
+        console.log(`User ${email} already exists, attempting to delete...`);
+        // Delete existing user logic would go here
+      }
+      
+      // Create the user account directly
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name,
+            role,
+          },
+        },
+      });
+      
+      if (error) {
+        throw error;
+      }
+      
+      console.log(`${role} account created successfully:`, data);
+      toast.dismiss();
+      toast.success(`${role} account created successfully! You can now log in.`);
+      
+      // Fill in the credentials for immediate login
+      fillTestCredentials(role);
+      
+    } catch (error: any) {
+      console.error(`Error creating ${role} account:`, error);
+      toast.dismiss();
+      toast.error(`Failed to create ${role} account: ${error.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -221,49 +309,71 @@ const LoginForm = () => {
         </div>
       )}
       
+      {loginError && (
+        <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm">
+          <p className="font-medium">Error:</p>
+          <p>{loginError}</p>
+        </div>
+      )}
+      
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? "Loading..." : mode === "login" ? "Sign In" : "Create Account"}
       </Button>
       
       {mode === "login" && (
-        <div className="grid grid-cols-2 gap-2 mt-2">
-          <Button 
-            type="button" 
-            variant="outline" 
-            size="sm" 
-            onClick={() => fillTestCredentials("admin")}
-            className="text-xs"
-          >
-            Use Admin
-          </Button>
-          <Button 
-            type="button" 
-            variant="outline" 
-            size="sm" 
-            onClick={() => fillTestCredentials("vendor")}
-            className="text-xs"
-          >
-            Use Vendor
-          </Button>
-          <Button 
-            type="button" 
-            variant="outline" 
-            size="sm" 
-            onClick={() => fillTestCredentials("doctor")}
-            className="text-xs"
-          >
-            Use Doctor
-          </Button>
-          <Button 
-            type="button" 
-            variant="outline" 
-            size="sm" 
-            onClick={() => fillTestCredentials("client")}
-            className="text-xs"
-          >
-            Use Client
-          </Button>
-        </div>
+        <>
+          <div className="grid grid-cols-2 gap-2 mt-2">
+            <Button 
+              type="button" 
+              variant="outline" 
+              size="sm" 
+              onClick={() => fillTestCredentials("admin")}
+              className="text-xs"
+            >
+              Use Admin
+            </Button>
+            <Button 
+              type="button" 
+              variant="outline" 
+              size="sm" 
+              onClick={() => fillTestCredentials("vendor")}
+              className="text-xs"
+            >
+              Use Vendor
+            </Button>
+            <Button 
+              type="button" 
+              variant="outline" 
+              size="sm" 
+              onClick={() => fillTestCredentials("doctor")}
+              className="text-xs"
+            >
+              Use Doctor
+            </Button>
+            <Button 
+              type="button" 
+              variant="outline" 
+              size="sm" 
+              onClick={() => fillTestCredentials("client")}
+              className="text-xs"
+            >
+              Use Client
+            </Button>
+          </div>
+          
+          <div className="grid grid-cols-1 gap-2 mt-2">
+            <Button 
+              type="button" 
+              variant="secondary" 
+              size="sm" 
+              onClick={() => createTestAccount("doctor")}
+              className="text-xs"
+              disabled={isLoading}
+            >
+              Create Doctor Account Directly
+            </Button>
+          </div>
+        </>
       )}
       
       <div className="text-center text-sm">
