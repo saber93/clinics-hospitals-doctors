@@ -14,6 +14,7 @@ export interface Category {
   id: string;
   name: string;
   subCategories: SubCategory[];
+  imageUrl: string; // Added image URL for each category
 }
 
 export interface SubCategory {

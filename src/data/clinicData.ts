@@ -5,6 +5,7 @@ export const categories: Category[] = [
   {
     id: "med-specialties",
     name: "Medical Specialties",
+    imageUrl: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=500&auto=format&fit=crop",
     subCategories: [
       { id: "cardiology", name: "Cardiology" },
       { id: "dermatology", name: "Dermatology" },
@@ -16,6 +17,7 @@ export const categories: Category[] = [
   {
     id: "aesthetic-services",
     name: "Aesthetic Services",
+    imageUrl: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=500&auto=format&fit=crop",
     subCategories: [
       { id: "facial", name: "Facial Treatments" },
       { id: "hair", name: "Hair Removal" },
@@ -26,6 +28,7 @@ export const categories: Category[] = [
   {
     id: "dental-care",
     name: "Dental Care",
+    imageUrl: "https://images.unsplash.com/photo-1606811971618-4486d14f3f99?q=80&w=500&auto=format&fit=crop",
     subCategories: [
       { id: "general-dentistry", name: "General Dentistry" },
       { id: "orthodontics", name: "Orthodontics" },
@@ -36,6 +39,7 @@ export const categories: Category[] = [
   {
     id: "wellness",
     name: "Wellness & Prevention",
+    imageUrl: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=500&auto=format&fit=crop",
     subCategories: [
       { id: "nutrition", name: "Nutrition Counseling" },
       { id: "fitness", name: "Fitness Programs" },
