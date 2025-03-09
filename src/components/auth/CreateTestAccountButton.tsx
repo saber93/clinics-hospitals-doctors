@@ -21,6 +21,8 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
     const loadingToast = toast.loading(`Creating ${role} account...`);
     
     try {
+      console.log(`Attempting to create ${role} account...`);
+      
       const { data, error } = await supabase.functions.invoke('create-test-user', {
         body: {
           email: `${role}@skinnect.com`,
@@ -31,11 +33,16 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
       });
       
       if (error) {
-        throw new Error(error.message);
+        console.error(`Error response from edge function:`, error);
+        throw new Error(error.message || 'Unknown error calling edge function');
       }
       
-      if (!data.success) {
-        throw new Error(data.error || 'Unknown error creating account');
+      console.log(`Edge function response:`, data);
+      
+      if (!data || !data.success) {
+        const errorMsg = data?.error || 'Unknown error creating account';
+        console.error(`Account creation failed:`, errorMsg);
+        throw new Error(errorMsg);
       }
       
       console.log(`${role} account created or updated successfully:`, data);
