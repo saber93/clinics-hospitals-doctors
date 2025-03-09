@@ -1,8 +1,7 @@
 
 import React from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Search, Filter } from "lucide-react";
+import { Filter } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -26,16 +25,8 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
 }) => {
   return (
     <div className="w-full space-y-4">
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Search clinics..."
-          value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-10"
-        />
-      </div>
-
+      {/* Removed the search field from here since it's now at the top of the page */}
+      
       <div className="flex items-center gap-2">
         <Filter className="h-4 w-4 text-muted-foreground" />
         <span className="text-sm">Offers:</span>

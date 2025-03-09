@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import CategoryFilter from "@/components/clinics/CategoryFilter";
 import ClinicCard from "@/components/clinics/ClinicCard";
 import SearchFilter from "@/components/clinics/SearchFilter";
-import { X } from "lucide-react";
+import { X, Search } from "lucide-react";
 import { Clinic, Category } from "@/types/clinic";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -143,6 +144,29 @@ const ClinicDirectory = () => {
           <p className="text-muted-foreground">Browse and discover clinics and their special offers</p>
         </div>
 
+        {/* Main search input at the top - visible on all devices */}
+        {!isCategoriesLoading && !isClinicsLoading && (
+          <div className="relative w-full max-w-3xl mx-auto mb-6">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+              placeholder="Search clinics by name, category, or description..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 py-6 text-base"
+            />
+            {searchQuery && (
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8"
+                onClick={() => setSearchQuery("")}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+        )}
+
         {(isCategoriesLoading || isClinicsLoading) && (
           <div className="flex justify-center py-12">
             <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
@@ -213,6 +237,7 @@ const ClinicDirectory = () => {
 
               {/* Desktop Sidebar */}
               <div className="hidden md:block md:col-span-3 space-y-6">
+                {/* Keep the SearchFilter component in the sidebar for advanced options */}
                 <SearchFilter
                   searchQuery={searchQuery}
                   onSearchChange={setSearchQuery}
