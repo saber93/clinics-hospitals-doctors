@@ -37,6 +37,13 @@ serve(async (req) => {
   // Now we can use supabase_admin to create users, etc
   try {
     const { email, password, role, name } = await req.json()
+    
+    // Validate role
+    const validRoles = ['admin', 'vendor', 'client', 'doctor'];
+    if (role && !validRoles.includes(role)) {
+      throw new Error(`Invalid role: ${role}. Must be one of: ${validRoles.join(', ')}`);
+    }
+    
     console.log(`Processing user creation for ${email} with role ${role}`)
     
     // Force delete any user that might have the same email (to ensure clean setup)
@@ -72,6 +79,50 @@ serve(async (req) => {
           
         if (deleteReservationsError) {
           console.log(`Note: Error deleting reservations: ${JSON.stringify(deleteReservationsError)}`);
+          // Continue execution - this is not fatal
+        }
+        
+        // Delete any doctor chat settings
+        const { error: deleteDoctorSettingsError } = await supabaseAdmin
+          .from('doctor_chat_settings')
+          .delete()
+          .eq('doctor_id', existingUser.id);
+          
+        if (deleteDoctorSettingsError) {
+          console.log(`Note: Error deleting doctor chat settings: ${JSON.stringify(deleteDoctorSettingsError)}`);
+          // Continue execution - this is not fatal
+        }
+        
+        // Delete any chat messages
+        const { error: deleteMessagesError } = await supabaseAdmin
+          .from('chat_messages')
+          .delete()
+          .eq('sender_id', existingUser.id);
+          
+        if (deleteMessagesError) {
+          console.log(`Note: Error deleting chat messages: ${JSON.stringify(deleteMessagesError)}`);
+          // Continue execution - this is not fatal
+        }
+        
+        // Delete any chat payments
+        const { error: deletePaymentsError } = await supabaseAdmin
+          .from('chat_payments')
+          .delete()
+          .or(`patient_id.eq.${existingUser.id},doctor_id.eq.${existingUser.id}`);
+          
+        if (deletePaymentsError) {
+          console.log(`Note: Error deleting chat payments: ${JSON.stringify(deletePaymentsError)}`);
+          // Continue execution - this is not fatal
+        }
+        
+        // Delete any chat sessions
+        const { error: deleteSessionsError } = await supabaseAdmin
+          .from('chat_sessions')
+          .delete()
+          .or(`patient_id.eq.${existingUser.id},doctor_id.eq.${existingUser.id}`);
+          
+        if (deleteSessionsError) {
+          console.log(`Note: Error deleting chat sessions: ${JSON.stringify(deleteSessionsError)}`);
           // Continue execution - this is not fatal
         }
         
