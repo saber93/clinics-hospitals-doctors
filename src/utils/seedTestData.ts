@@ -68,7 +68,7 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
   }
 };
 
-// Simplified helper function with explicit types
+// Use a simplified approach with minimal type inference
 const createUserSafely = async (
   email: string, 
   password: string, 
@@ -76,20 +76,21 @@ const createUserSafely = async (
   name: string
 ): Promise<UserCreationResult> => {
   try {
-    // Use specific type annotation for the response to avoid deep inference
-    const response = await supabase.functions.invoke('create-test-user', {
+    // Avoid deep type inference by using any for the intermediate response
+    const response: any = await supabase.functions.invoke('create-test-user', {
       body: { email, password, role, name }
     });
     
-    if (!response.data || response.error) {
+    // Simple validation of response
+    if (!response.data) {
       throw new Error(response.error?.message || 'Failed to create user');
     }
     
-    // Use simple literal object to avoid complex type inference
+    // Return a new object with explicit types instead of passing through response data
     return { 
-      userId: response.data.userId as string | undefined,
+      userId: typeof response.data.userId === 'string' ? response.data.userId : undefined,
       success: Boolean(response.data.success),
-      error: response.data.error as string | undefined
+      error: typeof response.data.error === 'string' ? response.data.error : undefined
     };
   } catch (error: any) {
     console.error(`Error creating ${role} account:`, error);
