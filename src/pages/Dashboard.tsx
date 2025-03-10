@@ -14,40 +14,36 @@ const Dashboard = () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
+          console.log("No session found, redirecting to auth");
           navigate("/auth");
           return;
         }
 
+        console.log("Checking user profile for ID:", session.user.id);
         const { data: profile, error } = await supabase
           .from('profiles')
           .select('role')
           .eq('id', session.user.id)
-          .single();
+          .maybeSingle();
 
         if (error) {
           console.error("Error fetching user profile:", error);
           return;
         }
 
-        setUserRole(profile?.role || null);
+        console.log("User profile data:", profile);
+        const role = profile?.role || session.user.user_metadata?.role;
+        setUserRole(role);
 
         // Auto-redirect based on role
-        if (profile?.role === 'admin') {
+        if (role === 'admin') {
           navigate("/admin-dashboard");
-        } else if (profile?.role === 'vendor') {
-          // Check if they're specifically a doctor by checking for doctor_chat_settings
-          const { data: doctorSettings } = await supabase
-            .from('doctor_chat_settings')
-            .select('*')
-            .eq('doctor_id', session.user.id)
-            .maybeSingle();
-            
-          if (doctorSettings) {
-            navigate("/doctor-dashboard");
-          } else {
-            navigate("/vendor-dashboard");
-          }
-        } else if (profile?.role === 'client') {
+        } else if (role === 'doctor' || (role === 'vendor' && session.user.email?.includes('dr-'))) {
+          console.log("Doctor role detected, navigating to doctor dashboard");
+          navigate("/doctor-dashboard");
+        } else if (role === 'vendor') {
+          navigate("/vendor-dashboard");
+        } else if (role === 'client') {
           navigate("/client-dashboard");
         }
       } catch (error) {
@@ -79,11 +75,13 @@ const Dashboard = () => {
           </Button>
         )}
         
-        {userRole === 'vendor' && (
+        {(userRole === 'doctor' || userRole === 'vendor') && (
           <div className="space-y-2">
-            <Button onClick={() => navigate("/vendor-dashboard")} className="w-full md:w-auto">
-              Go to Vendor Dashboard
-            </Button>
+            {userRole === 'vendor' && (
+              <Button onClick={() => navigate("/vendor-dashboard")} className="w-full md:w-auto">
+                Go to Vendor Dashboard
+              </Button>
+            )}
             <Button onClick={() => navigate("/doctor-dashboard")} className="w-full md:w-auto">
               Go to Doctor Dashboard
             </Button>
