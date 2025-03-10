@@ -1,3 +1,4 @@
+
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createComprehensiveDoctorData } from "./seedServiceData";
@@ -8,14 +9,6 @@ interface SeedDataResult {
   success: boolean;
   doctorId?: string;
   clientId?: string;
-}
-
-// Define the edge function response data structure explicitly
-interface EdgeFunctionResponseData {
-  userId?: string;
-  success: boolean;
-  error?: string;
-  message?: string;
 }
 
 // Define the user creation result type
@@ -93,12 +86,13 @@ const createUserSafely = async (
       throw new Error(response.error?.message || 'Failed to create user');
     }
     
-    const data = response.data as EdgeFunctionResponseData;
+    // Safely type-cast the response data
+    const responseData = response.data as any;
     
     return {
-      userId: data.userId,
-      success: data.success,
-      error: data.error
+      userId: responseData.userId,
+      success: responseData.success === true,
+      error: responseData.error
     };
   } catch (error: any) {
     console.error(`Error creating ${role} account:`, error);

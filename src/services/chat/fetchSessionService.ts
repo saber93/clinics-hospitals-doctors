@@ -8,12 +8,14 @@ import { formatSessionData, handleSessionError } from "./utils/sessionHelpers";
 export const fetchUserChatSessions = async (userId: string, isDoctor: boolean = false) => {
   try {
     const field = isDoctor ? 'doctor_id' : 'patient_id';
+    
+    // Modified query to avoid relationship issues
     const { data, error } = await supabase
       .from('chat_sessions')
       .select(`
         *,
-        profiles!chat_sessions_patient_id_fkey(name),
-        doctor:profiles!chat_sessions_doctor_id_fkey(name)
+        patient:patient_id(id, name),
+        doctor:doctor_id(id, name)
       `)
       .eq(field, userId)
       .order('last_activity', { ascending: false });
@@ -34,12 +36,13 @@ export const fetchUserChatSessions = async (userId: string, isDoctor: boolean = 
 // Get a chat session by ID
 export const getChatSessionById = async (sessionId: string) => {
   try {
+    // Modified query to avoid relationship issues
     const { data, error } = await supabase
       .from('chat_sessions')
       .select(`
         *,
-        profiles!chat_sessions_patient_id_fkey(name),
-        doctor:profiles!chat_sessions_doctor_id_fkey(name)
+        patient:patient_id(id, name),
+        doctor:doctor_id(id, name)
       `)
       .eq('id', sessionId)
       .maybeSingle();

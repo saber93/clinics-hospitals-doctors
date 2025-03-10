@@ -9,21 +9,19 @@ export const extractName = (
   if (
     typeof profileObject === "object" &&
     profileObject !== null &&
-    !("error" in profileObject) &&
-    "name" in profileObject &&
-    profileObject.name !== null
+    "name" in profileObject
   ) {
-    return profileObject.name as string;
+    return (profileObject as any).name as string;
   }
   return null;
 };
 
 // Helper to format session data from Supabase
 export const formatSessionData = (session: any): ChatSession => {
-  // Handle profiles property which might be null
+  // Handle patient property which might be null
   let patientName = null;
-  if (session.profiles) {
-    patientName = extractName(session.profiles);
+  if (session.patient) {
+    patientName = extractName(session.patient);
   }
   
   // Handle doctor property which might be null
