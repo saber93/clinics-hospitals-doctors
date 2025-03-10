@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { NavLinkType } from './types';
-import { MessageSquare, Search } from 'lucide-react';
 
 export const useNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,9 +48,9 @@ export const useNavbar = () => {
 
   const navLinks: NavLinkType[] = [
     { name: 'Home', path: '/' },
-    { name: 'Clinics', path: '/clinics', icon: <Search className="h-4 w-4 mr-1" /> },
+    { name: 'Clinics', path: '/clinics', icon: 'search' },
     { name: 'About', path: '/about' },
-    { name: 'Contact', path: '/contact', icon: <MessageSquare className="h-4 w-4 mr-1" /> },
+    { name: 'Contact', path: '/contact', icon: 'message-square' },
     { name: 'Dashboard', path: '/dashboard', auth: true },
     { name: 'Reservations', path: '/reservations', auth: true },
     { name: 'Offers', path: '/offers', auth: true },
