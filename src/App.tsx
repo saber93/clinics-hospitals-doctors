@@ -12,6 +12,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import ClientDashboard from "./pages/ClientDashboard";
 import VendorDashboard from "./pages/VendorDashboard";
+import DoctorDashboard from "./pages/DoctorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import TotalClients from "./pages/TotalClients";
 import TotalVendors from "./pages/TotalVendors";
@@ -96,6 +97,10 @@ const App = () => {
                 <Route 
                   path="/vendor-dashboard" 
                   element={session ? <VendorDashboard /> : <Navigate to="/auth" />} 
+                />
+                <Route 
+                  path="/doctor-dashboard" 
+                  element={session ? <DoctorDashboard /> : <Navigate to="/auth" />} 
                 />
                 <Route 
                   path="/admin-dashboard" 

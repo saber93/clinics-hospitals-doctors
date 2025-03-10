@@ -1,79 +1,108 @@
 
 import { useState, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import "../utils/auth";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  
+  const [loading, setLoading] = useState<boolean>(true);
+
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkUserRole = async () => {
       try {
-        const { data } = await supabase.auth.getSession();
-        
-        if (data.session) {
-          setIsAuthenticated(true);
-          
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('role')
-            .eq('id', data.session.user.id)
-            .single();
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          navigate("/auth");
+          return;
+        }
+
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single();
+
+        if (error) {
+          console.error("Error fetching user profile:", error);
+          return;
+        }
+
+        setUserRole(profile?.role || null);
+
+        // Auto-redirect based on role
+        if (profile?.role === 'admin') {
+          navigate("/admin-dashboard");
+        } else if (profile?.role === 'vendor') {
+          // Check if they're specifically a doctor by checking for doctor_chat_settings
+          const { data: doctorSettings } = await supabase
+            .from('doctor_chat_settings')
+            .select('*')
+            .eq('doctor_id', session.user.id)
+            .maybeSingle();
             
-          if (profile) {
-            setUserRole(profile.role);
-            
-            // Redirect based on user role
-            if (profile.role === 'admin') {
-              navigate('/admin-dashboard');
-            } else if (profile.role === 'vendor') {
-              navigate('/vendor-dashboard');
-            } else {
-              navigate('/client-dashboard');
-            }
+          if (doctorSettings) {
+            navigate("/doctor-dashboard");
           } else {
-            // Default to client if no profile found
-            navigate('/client-dashboard');
+            navigate("/vendor-dashboard");
           }
-        } else {
-          setIsAuthenticated(false);
+        } else if (profile?.role === 'client') {
+          navigate("/client-dashboard");
         }
       } catch (error) {
-        console.error("Error checking auth:", error);
-        setIsAuthenticated(false);
+        console.error("Error in checking user role:", error);
       } finally {
         setLoading(false);
       }
     };
-    
-    checkAuth();
+
+    checkUserRole();
   }, [navigate]);
-  
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex items-center justify-center h-[70vh]">
         <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
-        <p className="ml-2 text-gray-600">Loading dashboard...</p>
       </div>
     );
   }
-  
-  if (isAuthenticated === false) {
-    toast.error("Please login to access the dashboard");
-    return <Navigate to="/auth" />;
-  }
-  
-  // This component just redirects, so we don't need to return anything substantial
+
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
-      <p className="ml-2 text-gray-600">Redirecting to your dashboard...</p>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-6">Welcome to Your Dashboard</h1>
+
+      <div className="space-y-4">
+        {userRole === 'admin' && (
+          <Button onClick={() => navigate("/admin-dashboard")} className="w-full md:w-auto">
+            Go to Admin Dashboard
+          </Button>
+        )}
+        
+        {userRole === 'vendor' && (
+          <div className="space-y-2">
+            <Button onClick={() => navigate("/vendor-dashboard")} className="w-full md:w-auto">
+              Go to Vendor Dashboard
+            </Button>
+            <Button onClick={() => navigate("/doctor-dashboard")} className="w-full md:w-auto">
+              Go to Doctor Dashboard
+            </Button>
+          </div>
+        )}
+        
+        {userRole === 'client' && (
+          <Button onClick={() => navigate("/client-dashboard")} className="w-full md:w-auto">
+            Go to Client Dashboard
+          </Button>
+        )}
+
+        {!userRole && (
+          <div className="text-center">
+            <p className="text-muted-foreground mb-4">Your user role is not set. Please contact an administrator.</p>
+            <Button onClick={() => navigate("/")}>Return to Home</Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
