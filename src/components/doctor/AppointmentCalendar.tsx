@@ -41,34 +41,71 @@ const AppointmentCalendar = ({ doctorId }: AppointmentCalendarProps) => {
       try {
         setLoading(true);
         
-        const { data, error } = await supabase
+        // Fetch reservations
+        const { data: reservationsData, error: reservationsError } = await supabase
           .from('reservations')
           .select(`
             id,
             date,
             time,
             status,
-            profiles:client_id (
-              id,
-              name
-            ),
-            services (
-              name
-            )
+            client_id,
+            service_id
           `)
           .eq('vendor_id', doctorId)
           .order('date', { ascending: true });
           
-        if (error) throw error;
+        if (reservationsError) throw reservationsError;
         
-        const formattedAppointments = (data || []).map(item => ({
+        // Get client profiles in a separate query
+        const clientIds = reservationsData
+          .map(item => item.client_id)
+          .filter(Boolean) as string[];
+          
+        const { data: clientsData, error: clientsError } = await supabase
+          .from('profiles')
+          .select('id, name')
+          .in('id', clientIds.length > 0 ? clientIds : ['00000000-0000-0000-0000-000000000099']);
+        
+        if (clientsError) throw clientsError;
+        
+        // Create a lookup map for clients
+        const clientsMap = (clientsData || []).reduce((acc, client) => {
+          acc[client.id] = client;
+          return acc;
+        }, {} as Record<string, any>);
+        
+        // Get services in a separate query
+        const serviceIds = reservationsData
+          .map(item => item.service_id)
+          .filter(Boolean) as string[];
+          
+        const { data: servicesData, error: servicesError } = await supabase
+          .from('services')
+          .select('id, name')
+          .in('id', serviceIds.length > 0 ? serviceIds : ['00000000-0000-0000-0000-000000000099']);
+        
+        if (servicesError) throw servicesError;
+        
+        // Create a lookup map for services
+        const servicesMap = (servicesData || []).reduce((acc, service) => {
+          acc[service.id] = service;
+          return acc;
+        }, {} as Record<string, any>);
+        
+        // Map the data to our expected structure
+        const formattedAppointments = (reservationsData || []).map(item => ({
           id: item.id,
           client: {
-            id: item.profiles?.id || 'unknown',
-            name: item.profiles?.name || 'Unknown Client'
+            id: item.client_id || 'unknown',
+            name: item.client_id && clientsMap[item.client_id] 
+              ? clientsMap[item.client_id].name 
+              : 'Unknown Client'
           },
           service: {
-            name: item.services?.name || 'Unknown Service'
+            name: item.service_id && servicesMap[item.service_id] 
+              ? servicesMap[item.service_id].name 
+              : 'Unknown Service'
           },
           date: item.date,
           time: item.time,

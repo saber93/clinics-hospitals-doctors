@@ -39,16 +39,34 @@ const PatientList = ({ doctorId }: PatientListProps) => {
           .select(`
             id,
             patient_id,
-            last_activity,
-            profiles:patient_id (
-              id,
-              name
-            )
+            last_activity
           `)
           .eq('doctor_id', doctorId)
           .order('last_activity', { ascending: false });
           
         if (sessionsError) throw sessionsError;
+        
+        // Get patient profiles separately
+        const patientIds = sessions?.map(session => session.patient_id) || [];
+        
+        if (patientIds.length === 0) {
+          setPatients([]);
+          setLoading(false);
+          return;
+        }
+        
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, name')
+          .in('id', patientIds);
+          
+        if (profilesError) throw profilesError;
+        
+        // Create a map of patient profiles
+        const profilesMap = (profilesData || []).reduce((acc, profile) => {
+          acc[profile.id] = profile;
+          return acc;
+        }, {} as Record<string, any>);
         
         // Get patients with upcoming appointments
         const { data: appointments, error: appointmentsError } = await supabase
@@ -74,10 +92,11 @@ const PatientList = ({ doctorId }: PatientListProps) => {
         const uniquePatients = new Map();
         
         sessions?.forEach(session => {
-          if (session.profiles && !uniquePatients.has(session.patient_id)) {
+          if (!uniquePatients.has(session.patient_id)) {
+            const patientProfile = profilesMap[session.patient_id];
             uniquePatients.set(session.patient_id, {
               id: session.patient_id,
-              name: session.profiles.name || 'Unknown Patient',
+              name: patientProfile ? patientProfile.name : 'Unknown Patient',
               last_activity: session.last_activity,
               has_upcoming_appointment: patientsWithAppointments.has(session.patient_id),
               session_id: session.id
