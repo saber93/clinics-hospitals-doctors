@@ -10,14 +10,7 @@ interface SeedDataResult {
   clientId?: string;
 }
 
-// Define the user creation result type
-interface UserCreationResult {
-  userId?: string;
-  success: boolean;
-  error?: string;
-}
-
-// Define the edge function response data structure
+// Define the edge function response data structure explicitly
 interface EdgeFunctionResponseData {
   userId?: string;
   success: boolean;
@@ -25,10 +18,11 @@ interface EdgeFunctionResponseData {
   message?: string;
 }
 
-// Define the edge function response wrapper
-interface EdgeFunctionResponse {
-  data: EdgeFunctionResponseData | null;
-  error: Error | null;
+// Define the user creation result type
+interface UserCreationResult {
+  userId?: string;
+  success: boolean;
+  error?: string;
 }
 
 // Export function with explicit return type
@@ -82,7 +76,7 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
   }
 };
 
-// Helper function with fully explicit types
+// Helper function with explicit types
 const createUserSafely = async (
   email: string, 
   password: string, 
@@ -91,18 +85,20 @@ const createUserSafely = async (
 ): Promise<UserCreationResult> => {
   try {
     // Call edge function to create user with service role
-    const response: EdgeFunctionResponse = await supabase.functions.invoke('create-test-user', {
+    const response = await supabase.functions.invoke('create-test-user', {
       body: { email, password, role, name }
-    }) as EdgeFunctionResponse;
+    });
     
-    if (response.error || !response.data?.success) {
-      throw new Error(response.error?.message || response.data?.error || 'Failed to create user');
+    if (!response.data || (response.error)) {
+      throw new Error(response.error?.message || 'Failed to create user');
     }
     
+    const data = response.data as EdgeFunctionResponseData;
+    
     return {
-      userId: response.data.userId,
-      success: response.data.success,
-      error: response.data.error
+      userId: data.userId,
+      success: data.success,
+      error: data.error
     };
   } catch (error: any) {
     console.error(`Error creating ${role} account:`, error);
