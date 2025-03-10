@@ -3,7 +3,12 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createComprehensiveDoctorData } from "./seedServiceData";
 
-export const seedTestData = async () => {
+// Define explicit return type for the function to prevent recursive type inference
+export const seedTestData = async (): Promise<{
+  success: boolean;
+  doctorId?: string;
+  clientId?: string;
+}> => {
   try {
     toast.loading("Creating test accounts and sample data...");
     
