@@ -23,9 +23,9 @@ export const fetchUserChatSessions = async (userId: string, isDoctor: boolean = 
     const typedData = data.map(session => ({
       ...session,
       status: session.status as "active" | "expired" | "completed",
-      patient: session.profiles,
-      doctor: session.doctor
-    })) as unknown as ChatSession[];
+      patient: session.profiles ? { name: session.profiles.name } : null,
+      doctor: session.doctor ? { name: session.doctor.name } : null
+    })) as ChatSession[];
     
     return typedData;
   } catch (error) {
@@ -71,16 +71,23 @@ export const getChatSessionById = async (sessionId: string) => {
         doctor:profiles!chat_sessions_doctor_id_fkey(name)
       `)
       .eq('id', sessionId)
-      .single();
+      .maybeSingle();
 
     if (error) throw error;
     
-    return {
+    if (!data) {
+      return null;
+    }
+    
+    // Properly handle potentially missing relations
+    const formattedSession: ChatSession = {
       ...data,
       status: data.status as "active" | "expired" | "completed",
-      patient: data.profiles,
-      doctor: data.doctor
-    } as ChatSession;
+      patient: data.profiles ? { name: data.profiles.name } : null,
+      doctor: data.doctor ? { name: data.doctor.name } : null
+    };
+    
+    return formattedSession;
   } catch (error) {
     console.error('Error fetching chat session:', error);
     toast.error('Failed to load chat session');
