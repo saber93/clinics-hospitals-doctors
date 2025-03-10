@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, MessageSquare, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
+import { logoutUser } from '@/utils/auth';
 
 const GlassyNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -65,6 +65,11 @@ const GlassyNavbar = () => {
     setIsOpen(!isOpen);
   };
 
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    await logoutUser();
+  };
+
   return (
     <header
       className={cn(
@@ -117,7 +122,7 @@ const GlassyNavbar = () => {
               variant="outline"
               size="sm"
               className="backdrop-blur-sm bg-white/10 dark:bg-black/10 border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-black/20"
-              onClick={async () => await supabase.auth.signOut()}
+              onClick={handleLogout}
             >
               Log Out
             </Button>
@@ -187,7 +192,7 @@ const GlassyNavbar = () => {
               variant="outline"
               size="lg"
               className="w-full max-w-xs backdrop-blur-sm bg-white/10 dark:bg-black/10 border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-black/20"
-              onClick={async () => await supabase.auth.signOut()}
+              onClick={handleLogout}
             >
               Log Out
             </Button>

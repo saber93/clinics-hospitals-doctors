@@ -123,19 +123,71 @@ export const useAuth = () => {
     }
   };
 
-  // Function to handle user logout
+  // Function to handle user logout - IMPROVED with better error handling
   const handleLogout = async () => {
     setIsLoading(true);
+    const loadingToast = toast.loading("Logging out...");
+    
     try {
+      // Get the current session first to check validity
+      const { data: sessionData } = await supabase.auth.getSession();
+      
+      // If there's an issue with the session, just clear it locally
+      if (!sessionData.session || sessionData.session.user.id === '00000000-0000-0000-0000-000000000099') {
+        console.log("Invalid session detected, performing local logout only");
+        // Force clear session locally
+        await supabase.auth.signOut({ scope: 'local' });
+        localStorage.removeItem('supabase.auth.token');
+        
+        toast.dismiss(loadingToast);
+        toast.success("Logged out successfully");
+        setTimeout(() => {
+          window.location.href = "/auth"; // Use full page refresh to ensure clean state
+        }, 500);
+        return;
+      }
+      
+      // Regular logout flow
       const { error } = await supabase.auth.signOut();
       if (error) {
+        console.error("Logout API error:", error);
+        
+        if (error.message.includes("User from sub claim in JWT does not exist")) {
+          console.log("User not found in auth system, performing local logout");
+          // Force clear session locally
+          await supabase.auth.signOut({ scope: 'local' });
+          localStorage.removeItem('supabase.auth.token');
+          sessionStorage.clear();
+          
+          toast.dismiss(loadingToast);
+          toast.success("Logged out successfully");
+          setTimeout(() => {
+            window.location.href = "/auth";
+          }, 500);
+          return;
+        }
+        
         throw error;
       }
+      
+      toast.dismiss(loadingToast);
       toast.success("Logged out successfully");
       navigate("/auth");
     } catch (error: any) {
-      toast.error(error.message || "Error logging out");
       console.error("Logout error:", error);
+      toast.dismiss(loadingToast);
+      toast.error(error.message || "Error logging out");
+      
+      // As a last resort, try to clear local storage and reload
+      try {
+        localStorage.removeItem('supabase.auth.token');
+        sessionStorage.clear();
+        setTimeout(() => {
+          window.location.href = "/auth";
+        }, 1000);
+      } catch (e) {
+        console.error("Failed to clear local storage:", e);
+      }
     } finally {
       setIsLoading(false);
     }

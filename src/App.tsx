@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -41,7 +40,15 @@ const App = () => {
         console.log("Checking for existing session...");
         const { data } = await supabase.auth.getSession();
         console.log("Session data:", data);
-        setSession(data.session);
+        
+        if (data.session && data.session.user?.id !== '00000000-0000-0000-0000-000000000099') {
+          setSession(data.session);
+        } else if (data.session) {
+          console.error("Found problematic user ID, clearing session");
+          await supabase.auth.signOut({ scope: 'local' });
+          localStorage.removeItem('supabase.auth.token');
+        }
+        
         setLoading(false);
       } catch (error) {
         console.error("Error checking session:", error);
@@ -55,7 +62,17 @@ const App = () => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log("Auth state changed:", _event, session ? "Has session" : "No session");
-      setSession(session);
+      
+      if (session && session.user?.id !== '00000000-0000-0000-0000-000000000099') {
+        setSession(session);
+      } else if (session) {
+        console.error("Auth state change detected problematic user ID");
+        supabase.auth.signOut({ scope: 'local' });
+        localStorage.removeItem('supabase.auth.token');
+        setSession(null);
+      } else {
+        setSession(null);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -133,7 +150,6 @@ const App = () => {
                   element={session ? <Vouchers /> : <Navigate to="/auth" />} 
                 />
                 
-                {/* Chat Routes */}
                 <Route 
                   path="/chats" 
                   element={session ? <ChatSessions /> : <Navigate to="/auth" />} 
