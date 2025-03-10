@@ -13,6 +13,7 @@ interface AppointmentCalendarProps {
 const AppointmentCalendar = ({ doctorId }: AppointmentCalendarProps) => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const { allAppointments, loading, appointmentDates, setAppointments } = useAppointments(doctorId);
+  const [filteredAppointments, setFilteredAppointments] = useState<any[]>([]);
   
   useEffect(() => {
     console.log("AppointmentCalendar - doctorId:", doctorId);
@@ -20,6 +21,7 @@ const AppointmentCalendar = ({ doctorId }: AppointmentCalendarProps) => {
     
     // Filter appointments based on selected date
     const filtered = filterAppointmentsByDate(allAppointments, date);
+    setFilteredAppointments(filtered);
     setAppointments(filtered);
   }, [date, allAppointments, setAppointments]);
   
@@ -45,12 +47,12 @@ const AppointmentCalendar = ({ doctorId }: AppointmentCalendarProps) => {
             ) : 'All Appointments'}
           </CardTitle>
           <CardDescription>
-            {filterAppointmentsByDate(allAppointments, date).length} appointments scheduled
+            {filteredAppointments.length} appointments scheduled
           </CardDescription>
         </CardHeader>
         <CardContent>
           <AppointmentList 
-            appointments={filterAppointmentsByDate(allAppointments, date)}
+            appointments={filteredAppointments}
             loading={loading}
           />
         </CardContent>

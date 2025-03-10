@@ -14,15 +14,22 @@ export const getStatusColor = (status: string) => {
   }
 };
 
-export const filterAppointmentsByDate = (allAppointments: any[], date: Date | undefined) => {
-  if (!date) return [];
+export const filterAppointmentsByDate = (allAppointments: any[] | undefined, date: Date | undefined) => {
+  if (!date || !allAppointments || allAppointments.length === 0) {
+    console.log('No appointments to filter or no date provided:', { 
+      dateProvided: !!date, 
+      appointmentsProvided: !!allAppointments,
+      appointmentsCount: allAppointments?.length || 0
+    });
+    return [];
+  }
   
   const selectedDateStr = date.toISOString().split('T')[0];
   console.log('Filtering appointments for date:', selectedDateStr);
-  console.log('All appointments:', allAppointments);
+  console.log('All appointments count:', allAppointments.length);
   
   const filtered = allAppointments.filter(a => a.date === selectedDateStr);
-  console.log('Filtered appointments:', filtered);
+  console.log('Filtered appointments count:', filtered.length);
   
   return filtered;
 };

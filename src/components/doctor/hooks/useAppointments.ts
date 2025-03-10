@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export interface Appointment {
   id: string;
@@ -26,6 +27,7 @@ export const useAppointments = (doctorId: string) => {
     const loadAppointments = async () => {
       if (!doctorId) {
         console.log("No doctorId provided to useAppointments");
+        setLoading(false);
         return;
       }
       
@@ -50,7 +52,9 @@ export const useAppointments = (doctorId: string) => {
           
         if (reservationsError) {
           console.error("Error fetching reservations:", reservationsError);
-          throw reservationsError;
+          toast.error("Failed to load appointments");
+          setLoading(false);
+          return;
         }
         
         console.log(`Found ${reservationsData?.length || 0} reservations for doctor ${doctorId}`);
@@ -79,11 +83,12 @@ export const useAppointments = (doctorId: string) => {
           
           if (clientsError) {
             console.error("Error fetching client profiles:", clientsError);
-            throw clientsError;
+            toast.error("Failed to load client information");
+            clientsData = [];
+          } else {
+            clientsData = data || [];
+            console.log(`Found ${clientsData.length} client profiles`);
           }
-          
-          clientsData = data || [];
-          console.log(`Found ${clientsData.length} client profiles`);
         }
         
         // Create a lookup map for clients
@@ -109,11 +114,12 @@ export const useAppointments = (doctorId: string) => {
           
           if (servicesError) {
             console.error("Error fetching services:", servicesError);
-            throw servicesError;
+            toast.error("Failed to load service information");
+            servicesData = [];
+          } else {
+            servicesData = data || [];
+            console.log(`Found ${servicesData.length} services`);
           }
-          
-          servicesData = data || [];
-          console.log(`Found ${servicesData.length} services`);
         }
         
         // Create a lookup map for services
@@ -152,6 +158,7 @@ export const useAppointments = (doctorId: string) => {
         
       } catch (error) {
         console.error("Error loading appointments:", error);
+        toast.error("Failed to load appointments data");
       } finally {
         setLoading(false);
       }
