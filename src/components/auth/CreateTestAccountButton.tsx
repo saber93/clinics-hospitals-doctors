@@ -25,14 +25,21 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
     try {
       console.log(`Attempting to create ${role} account...`);
       
-      const email = `${role}@skinnect.com`;
+      // Use a different email format for doctor
+      let email;
+      if (role === 'doctor') {
+        email = `dr-mix@skinnect.com`; // Changed to use dr-mix as requested
+      } else {
+        email = `${role}@skinnect.com`;
+      }
+      
       const password = `${capitalizeFirstLetter(role)}123!`;
       
       // Generate a unique name with timestamp to avoid any conflicts
       const timestamp = new Date().getTime();
       let name;
       if (role === 'doctor') {
-        name = `Dr. Sarah Johnson (Demo-${timestamp})`;
+        name = `Dr. Mix (Demo-${timestamp})`;  // Updated name for consistency
       } else {
         name = `${capitalizeFirstLetter(role)} User`;
       }

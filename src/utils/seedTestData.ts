@@ -19,8 +19,8 @@ export const seedTestData = async () => {
     const vendorData = await createUserSafely('vendor@skinnect.com', 'Vendor123!', 'vendor', 'Vendor User');
     console.log("Vendor account created:", vendorData?.userId || 'Failed');
     
-    // Use a unique name for the doctor to avoid conflicts
-    const doctorData = await createUserSafely('doctor@skinnect.com', 'Doctor123!', 'doctor', 'Dr. Sarah Johnson (Demo)');
+    // Use the new doctor email format
+    const doctorData = await createUserSafely('dr-mix@skinnect.com', 'Doctor123!', 'doctor', 'Dr. Mix (Demo)');
     console.log("Doctor account created:", doctorData?.userId || 'Failed');
     
     const clientData = await createUserSafely('client@skinnect.com', 'Client123!', 'client', 'Client User');
@@ -73,7 +73,7 @@ export const seedTestData = async () => {
     }
     
     toast.dismiss();
-    toast.success("Test accounts and sample data created successfully!\n\nAdmin: admin@skinnect.com / Admin123!\nVendor: vendor@skinnect.com / Vendor123!\nDoctor: doctor@skinnect.com / Doctor123!\nClient: client@skinnect.com / Client123!");
+    toast.success("Test accounts and sample data created successfully!\n\nAdmin: admin@skinnect.com / Admin123!\nVendor: vendor@skinnect.com / Vendor123!\nDoctor: dr-mix@skinnect.com / Doctor123!\nClient: client@skinnect.com / Client123!");
     
   } catch (error) {
     toast.dismiss();
