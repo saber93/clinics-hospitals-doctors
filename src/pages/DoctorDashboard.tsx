@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useDoctorDashboard } from "@/components/doctor/hooks/useDoctorDashboard";
 import DoctorStats from "@/components/doctor/DoctorStats";
@@ -6,8 +5,8 @@ import DashboardHeader from "@/components/doctor/DashboardHeader";
 import DoctorDashboardTabs from "@/components/doctor/DoctorDashboardTabs";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { seedTestData } from "@/utils/seedTestData";
 import { AlertCircle } from "lucide-react";
+import { seedTestData } from "@/utils/seedTestData";
 
 const DoctorDashboard = () => {
   const { 
@@ -17,8 +16,21 @@ const DoctorDashboard = () => {
     user, 
     doctorProfile, 
     services, 
-    recentPayments 
+    recentPayments,
+    refetchDashboardData
   } = useDoctorDashboard();
+
+  const handleSeedTestData = async () => {
+    try {
+      const result = await seedTestData();
+      if (result.success) {
+        await refetchDashboardData();
+      }
+    } catch (error) {
+      console.error("Error seeding test data:", error);
+      toast.error("Failed to refresh demo data");
+    }
+  };
 
   console.log("Doctor Dashboard - loading:", loading);
   console.log("Doctor Dashboard - stats:", stats);
@@ -26,17 +38,6 @@ const DoctorDashboard = () => {
   console.log("Doctor Dashboard - doctorProfile:", doctorProfile);
   console.log("Doctor Dashboard - services:", services);
   console.log("Doctor Dashboard - recentPayments:", recentPayments);
-
-  const handleSeedTestData = async () => {
-    try {
-      await seedTestData();
-      // Refresh the page to reload the dashboard with the new data
-      window.location.reload();
-    } catch (error) {
-      console.error("Error seeding test data:", error);
-      toast.error("Failed to seed test data");
-    }
-  };
 
   if (!user && !loading) {
     return (
@@ -75,18 +76,11 @@ const DoctorDashboard = () => {
     );
   }
 
-  // Check if there is no data to display
-  const hasNoData = 
-    stats.totalPatients === 0 && 
-    stats.pendingAppointments === 0 && 
-    services.length === 0 && 
-    recentPayments.length === 0;
-
   return (
     <div className="p-6">
       <DashboardHeader />
       
-      {hasNoData && (
+      {stats.totalPatients === 0 && stats.pendingAppointments === 0 && (
         <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg mb-6 flex items-start gap-3">
           <AlertCircle className="h-5 w-5 text-amber-500 mt-0.5" />
           <div>
@@ -107,7 +101,7 @@ const DoctorDashboard = () => {
       
       <DoctorStats stats={stats} />
       
-      {!hasNoData && (
+      {stats.totalPatients > 0 && (
         <div className="mt-6 mb-4 flex justify-end">
           <Button onClick={handleSeedTestData} variant="outline" size="sm">
             Refresh Demo Data

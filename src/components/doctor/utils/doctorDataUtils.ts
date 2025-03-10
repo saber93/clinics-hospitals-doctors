@@ -1,40 +1,36 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const loadDoctorStats = async (doctorId: string) => {
   try {
-    // Get total patients (unique patients from chat sessions)
+    // Get total patients from reservations instead of chat sessions
+    const { data: reservations, error: reservationsError } = await supabase
+      .from('reservations')
+      .select('client_id')
+      .eq('vendor_id', doctorId);
+      
+    if (reservationsError) {
+      console.error("Error fetching reservations:", reservationsError);
+      throw reservationsError;
+    }
+    
+    // Count unique patients from reservations
+    const uniquePatients = new Set(reservations?.map(res => res.client_id) || []);
+    
+    // Get appointment counts
+    const pendingAppointments = reservations?.filter(a => a.status === 'pending' || a.status === 'confirmed').length || 0;
+    const completedAppointments = reservations?.filter(a => a.status === 'completed').length || 0;
+    
+    // Get chat sessions count
     const { data: chatSessions, error: chatError } = await supabase
       .from('chat_sessions')
-      .select('patient_id')
+      .select('id')
       .eq('doctor_id', doctorId);
       
     if (chatError) {
       console.error("Error fetching chat sessions:", chatError);
-      throw chatError;
+      // Don't throw, just continue with 0 chat sessions
     }
-    
-    console.log("Chat sessions loaded:", chatSessions?.length || 0);
-    
-    // Count unique patients
-    const uniquePatients = new Set(chatSessions?.map(session => session.patient_id) || []);
-    
-    // Get appointment counts
-    const { data: appointments, error: appointmentsError } = await supabase
-      .from('reservations')
-      .select('status')
-      .eq('vendor_id', doctorId);
-      
-    if (appointmentsError) {
-      console.error("Error fetching appointments:", appointmentsError);
-      throw appointmentsError;
-    }
-    
-    console.log("Appointments loaded:", appointments?.length || 0);
-    
-    const pendingAppointments = appointments?.filter(a => a.status === 'pending' || a.status === 'confirmed').length || 0;
-    const completedAppointments = appointments?.filter(a => a.status === 'completed').length || 0;
     
     return {
       totalPatients: uniquePatients.size,
@@ -44,7 +40,12 @@ export const loadDoctorStats = async (doctorId: string) => {
     };
   } catch (error) {
     console.error("Error loading doctor stats:", error);
-    throw error;
+    return {
+      totalPatients: 0,
+      pendingAppointments: 0,
+      completedAppointments: 0,
+      chatSessions: 0
+    };
   }
 };
 

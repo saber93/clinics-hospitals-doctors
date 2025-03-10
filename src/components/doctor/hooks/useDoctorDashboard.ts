@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -21,12 +20,38 @@ export const useDoctorDashboard = () => {
   const [services, setServices] = useState([]);
   const [recentPayments, setRecentPayments] = useState([]);
 
+  const loadDashboardData = async (userId: string) => {
+    try {
+      const [statsData, chatSettingsData, servicesData, paymentsData] = await Promise.all([
+        loadDoctorStats(userId),
+        getDoctorChatSettings(userId),
+        loadDoctorServices(userId),
+        loadRecentPayments(userId)
+      ]);
+      
+      setStats(statsData);
+      setChatSettings(chatSettingsData);
+      setServices(servicesData);
+      setRecentPayments(paymentsData);
+    } catch (error) {
+      console.error("Error loading dashboard data:", error);
+      toast.error("Some dashboard data could not be loaded");
+    }
+  };
+
+  const refetchDashboardData = async () => {
+    if (user?.id) {
+      setLoading(true);
+      await loadDashboardData(user.id);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const checkUserAndLoadData = async () => {
       try {
         setLoading(true);
         
-        // Check for authenticated user
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session) {
@@ -38,52 +63,29 @@ export const useDoctorDashboard = () => {
         
         console.log("Session found:", session.user.id);
         
-        // Check if user is a doctor/vendor
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', session.user.id)
           .single();
           
-        if (profileError) {
+        if (profileError || !profile) {
           console.error("Error fetching profile:", profileError);
           toast.error("Failed to load profile data");
           return;
         }
         
-        if (!profile || (profile?.role !== 'vendor' && profile?.role !== 'doctor')) {
+        if (profile?.role !== 'vendor' && profile?.role !== 'doctor') {
           console.log("User role is not vendor/doctor:", profile?.role);
           toast.error("This dashboard is only for doctors");
           navigate("/dashboard");
           return;
         }
         
-        console.log("Doctor profile loaded:", profile);
         setUser(session.user);
         setDoctorProfile(profile);
         
-        // Load all data in parallel
-        try {
-          const [statsData, chatSettingsData, servicesData, paymentsData] = await Promise.all([
-            loadDoctorStats(session.user.id),
-            getDoctorChatSettings(session.user.id),
-            loadDoctorServices(session.user.id),
-            loadRecentPayments(session.user.id)
-          ]);
-          
-          console.log("Stats loaded:", statsData);
-          console.log("Chat settings loaded:", chatSettingsData);
-          console.log("Services loaded:", servicesData);
-          console.log("Payments loaded:", paymentsData);
-          
-          setStats(statsData);
-          setChatSettings(chatSettingsData);
-          setServices(servicesData);
-          setRecentPayments(paymentsData);
-        } catch (error) {
-          console.error("Error loading dashboard data:", error);
-          toast.error("Some dashboard data could not be loaded");
-        }
+        await loadDashboardData(session.user.id);
         
       } catch (error) {
         console.error("Error loading doctor dashboard:", error);
@@ -103,6 +105,7 @@ export const useDoctorDashboard = () => {
     user, 
     doctorProfile, 
     services, 
-    recentPayments 
+    recentPayments,
+    refetchDashboardData 
   };
 };
