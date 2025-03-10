@@ -1,6 +1,12 @@
 
 import { toast } from "sonner";
-import { createChatSettings, createDoctorChatSettings, createVendorDoctorSettings, createFreeChatSession, createPaidChatSession } from "./seedChatData";
+import { 
+  createChatSettings, 
+  createDoctorChatSettings, 
+  createVendorDoctorSettings, 
+  createFreeChatSession, 
+  createPaidChatSession 
+} from "./chat";
 import { createServices, createReservations } from "./seedServiceData";
 import { createTestUser } from "./seedUserData";
 
