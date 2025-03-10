@@ -30,6 +30,7 @@ export const useDoctorDashboard = () => {
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session) {
+          console.log("No session found");
           toast.error("Please login to access your dashboard");
           navigate("/auth");
           return;
@@ -47,7 +48,6 @@ export const useDoctorDashboard = () => {
         if (profileError) {
           console.error("Error fetching profile:", profileError);
           toast.error("Failed to load profile data");
-          navigate("/dashboard");
           return;
         }
         
@@ -59,31 +59,27 @@ export const useDoctorDashboard = () => {
         }
         
         console.log("Doctor profile loaded:", profile);
-        setUser(profile);
+        setUser(session.user);
         setDoctorProfile(profile);
         
-        // Load doctor's chat settings
+        // Load all data in parallel
         try {
-          const settings = await getDoctorChatSettings(session.user.id);
-          console.log("Doctor chat settings:", settings);
-          setChatSettings(settings);
-        } catch (settingsError) {
-          console.error("Error loading chat settings:", settingsError);
-        }
-        
-        // Load stats, services, and payments in parallel
-        try {
-          const [statsData, servicesData, paymentsData] = await Promise.all([
+          const [statsData, chatSettingsData, servicesData, paymentsData] = await Promise.all([
             loadDoctorStats(session.user.id),
+            getDoctorChatSettings(session.user.id),
             loadDoctorServices(session.user.id),
             loadRecentPayments(session.user.id)
           ]);
           
+          console.log("Stats loaded:", statsData);
+          console.log("Chat settings loaded:", chatSettingsData);
+          console.log("Services loaded:", servicesData);
+          console.log("Payments loaded:", paymentsData);
+          
           setStats(statsData);
+          setChatSettings(chatSettingsData);
           setServices(servicesData);
           setRecentPayments(paymentsData);
-          
-          console.log("Stats updated:", statsData);
         } catch (error) {
           console.error("Error loading dashboard data:", error);
           toast.error("Some dashboard data could not be loaded");
