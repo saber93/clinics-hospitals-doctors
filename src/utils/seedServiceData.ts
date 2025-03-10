@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { createDemoPatients } from "./seed/patients";
 import { createDoctorServices } from "./seed/services";
@@ -13,11 +12,16 @@ export const createComprehensiveDoctorData = async (doctorId: string, primaryCli
   try {
     console.log("Creating comprehensive doctor demo data...");
     
+    // First delete any existing demo data for this doctor
+    await cleanupExistingDemoData(doctorId);
+    
     // Create additional test patients
     const patientIds = await createDemoPatients(doctorId);
+    console.log("Created demo patients:", patientIds.length);
     
     // Create services
     const services = await createDoctorServices(doctorId);
+    console.log("Created demo services:", services.length);
     
     // Create appointments for all patients including the primary client
     await createAppointments([...patientIds, primaryClientId], doctorId, services);
@@ -28,6 +32,53 @@ export const createComprehensiveDoctorData = async (doctorId: string, primaryCli
     return true;
   } catch (error) {
     console.error("Error creating comprehensive doctor data:", error);
+    throw error;
+  }
+};
+
+/**
+ * Clean up existing demo data before creating new ones
+ */
+const cleanupExistingDemoData = async (doctorId: string) => {
+  try {
+    console.log("Cleaning up existing demo data...");
+    
+    // Delete existing services
+    const { error: servicesError } = await supabase
+      .from('services')
+      .delete()
+      .eq('vendor_id', doctorId);
+      
+    if (servicesError) {
+      console.error("Error deleting services:", servicesError);
+    }
+    
+    // Delete existing appointments/reservations
+    const { error: reservationsError } = await supabase
+      .from('reservations')
+      .delete()
+      .eq('vendor_id', doctorId);
+      
+    if (reservationsError) {
+      console.error("Error deleting reservations:", reservationsError);
+    }
+    
+    // Delete existing chat payments
+    const { error: paymentsError } = await supabase
+      .from('chat_payments')
+      .delete()
+      .eq('doctor_id', doctorId);
+      
+    if (paymentsError) {
+      console.error("Error deleting payments:", paymentsError);
+    }
+    
+    // Add a small delay to ensure deletions are processed
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    console.log("Cleanup completed");
+  } catch (error) {
+    console.error("Error cleaning up demo data:", error);
     throw error;
   }
 };
