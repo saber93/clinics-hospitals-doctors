@@ -3,11 +3,22 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createComprehensiveDoctorData } from "./seedServiceData";
 
-// Define a fully explicit interface for the return type
+// Define all possible return types explicitly
 interface SeedDataResult {
   success: boolean;
   doctorId?: string;
   clientId?: string;
+}
+
+interface UserCreationResult {
+  userId?: string;
+  success?: boolean;
+  error?: string;
+}
+
+interface EdgeFunctionResponse {
+  data: UserCreationResult;
+  error: Error | null;
 }
 
 // Define explicit return type for the function to prevent recursive type inference
@@ -61,13 +72,6 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
   }
 };
 
-// Fully defined interface for user creation result
-interface UserCreationResult {
-  userId?: string;
-  success?: boolean;
-  error?: string;
-}
-
 // Helper function with fully explicit types to prevent type recursion
 const createUserSafely = async (
   email: string, 
@@ -77,7 +81,7 @@ const createUserSafely = async (
 ): Promise<UserCreationResult> => {
   try {
     // Call edge function to create user with service role
-    const { data, error } = await supabase.functions.invoke('create-test-user', {
+    const { data, error } = await supabase.functions.invoke<EdgeFunctionResponse>('create-test-user', {
       body: { email, password, role, name }
     });
     
@@ -85,7 +89,11 @@ const createUserSafely = async (
       throw new Error(error?.message || data?.error || 'Failed to create user');
     }
     
-    return data as UserCreationResult;
+    return {
+      userId: data.userId,
+      success: data.success,
+      error: data.error
+    };
   } catch (error) {
     console.error(`Error creating ${role} account:`, error);
     throw error;
