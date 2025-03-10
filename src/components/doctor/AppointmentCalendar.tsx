@@ -5,6 +5,7 @@ import { useAppointments } from "./hooks/useAppointments";
 import { filterAppointmentsByDate } from "./utils/appointmentUtils";
 import CalendarPanel from "./CalendarPanel";
 import AppointmentList from "./AppointmentList";
+import { toast } from "sonner";
 
 interface AppointmentCalendarProps {
   doctorId: string;
@@ -16,14 +17,21 @@ const AppointmentCalendar = ({ doctorId }: AppointmentCalendarProps) => {
   const [filteredAppointments, setFilteredAppointments] = useState<any[]>([]);
   
   useEffect(() => {
+    if (!doctorId) {
+      console.error("No doctor ID provided to AppointmentCalendar");
+      toast.error("Missing doctor information");
+      return;
+    }
+    
     console.log("AppointmentCalendar - doctorId:", doctorId);
     console.log("AppointmentCalendar - date changed or appointments loaded:", date?.toISOString(), "total appointments:", allAppointments?.length || 0);
     
     // Filter appointments based on selected date
     const filtered = filterAppointmentsByDate(allAppointments, date);
+    console.log("Setting filtered appointments:", filtered.length);
     setFilteredAppointments(filtered);
     setAppointments(filtered);
-  }, [date, allAppointments, setAppointments]);
+  }, [date, allAppointments, doctorId, setAppointments]);
   
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

@@ -28,7 +28,11 @@ export const filterAppointmentsByDate = (allAppointments: any[] | undefined, dat
   console.log('Filtering appointments for date:', selectedDateStr);
   console.log('All appointments count:', allAppointments.length);
   
-  const filtered = allAppointments.filter(a => a.date === selectedDateStr);
+  const filtered = allAppointments.filter(a => {
+    console.log(`Appointment date: ${a.date}, comparing with ${selectedDateStr}`);
+    return a.date === selectedDateStr;
+  });
+  
   console.log('Filtered appointments count:', filtered.length);
   
   return filtered;

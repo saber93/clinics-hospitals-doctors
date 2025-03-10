@@ -22,12 +22,14 @@ export const useAppointments = (doctorId: string) => {
   const [allAppointments, setAllAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [appointmentDates, setAppointmentDates] = useState<Date[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadAppointments = async () => {
       if (!doctorId) {
         console.log("No doctorId provided to useAppointments");
         setLoading(false);
+        setError("Missing doctor ID");
         return;
       }
       
@@ -35,6 +37,7 @@ export const useAppointments = (doctorId: string) => {
       
       try {
         setLoading(true);
+        setError(null);
         
         // Fetch reservations
         const { data: reservationsData, error: reservationsError } = await supabase
@@ -53,6 +56,7 @@ export const useAppointments = (doctorId: string) => {
         if (reservationsError) {
           console.error("Error fetching reservations:", reservationsError);
           toast.error("Failed to load appointments");
+          setError("Failed to fetch reservations");
           setLoading(false);
           return;
         }
@@ -147,18 +151,21 @@ export const useAppointments = (doctorId: string) => {
           status: item.status
         }));
         
-        console.log("Formatted appointments:", formattedAppointments);
+        console.log("Formatted appointments:", formattedAppointments.length);
+        console.log("Sample appointment:", formattedAppointments[0] || "No appointments");
         setAllAppointments(formattedAppointments);
         
         // Create a list of dates with appointments for calendar highlighting
-        const dates = formattedAppointments.map(appointment => 
-          new Date(appointment.date)
-        );
+        const dates = formattedAppointments.map(appointment => {
+          console.log("Creating date from:", appointment.date);
+          return new Date(appointment.date);
+        });
         setAppointmentDates(dates);
         
       } catch (error) {
         console.error("Error loading appointments:", error);
         toast.error("Failed to load appointments data");
+        setError("Error loading appointment data");
       } finally {
         setLoading(false);
       }
@@ -172,6 +179,7 @@ export const useAppointments = (doctorId: string) => {
     setAppointments,
     allAppointments, 
     loading, 
-    appointmentDates 
+    appointmentDates,
+    error
   };
 };
