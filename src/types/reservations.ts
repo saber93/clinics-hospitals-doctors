@@ -8,6 +8,7 @@ export type Reservation = {
   time: string;
   status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
   created_at: string;
+  updated_at: string;
 };
 
 export type Service = {
@@ -19,7 +20,16 @@ export type Service = {
   price: number;
 };
 
-export type EnrichedReservation = Reservation & {
+export type EnrichedReservation = {
+  id: string;
+  client_id: string;
+  vendor_id: string;
+  service_id: string;
+  date: string;
+  time: string;
+  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+  created_at: string;
+  updated_at: string;
   clients: { name: string };
   vendors: { name: string };
   services: { name: string; price?: number };

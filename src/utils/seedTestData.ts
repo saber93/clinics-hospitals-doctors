@@ -1,3 +1,4 @@
+
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createComprehensiveDoctorData } from "./seedServiceData";
@@ -9,20 +10,25 @@ interface SeedDataResult {
   clientId?: string;
 }
 
+// Define the user creation result type
 interface UserCreationResult {
   userId?: string;
   success: boolean;
   error?: string;
 }
 
+// Define the edge function response structure
+interface EdgeFunctionResponseData {
+  userId?: string;
+  success: boolean;
+  error?: string;
+  message?: string;
+}
+
+// Define the edge function response wrapper
 interface EdgeFunctionResponse {
-  data: {
-    userId?: string;
-    success: boolean;
-    error?: string;
-    message?: string;
-  };
-  error: string | null;
+  data: EdgeFunctionResponseData | null;
+  error: Error | null;
 }
 
 // Define explicit return type for the function to prevent recursive type inference
@@ -68,7 +74,7 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
       doctorId: doctorData?.userId,
       clientId: clientData?.userId
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error seeding test data:", error);
     toast.dismiss();
     toast.error(`Failed to seed test data: ${error.message || 'Unknown error'}`);
@@ -85,12 +91,15 @@ const createUserSafely = async (
 ): Promise<UserCreationResult> => {
   try {
     // Call edge function to create user with service role
-    const { data, error } = await supabase.functions.invoke<EdgeFunctionResponse>('create-test-user', {
+    const response = await supabase.functions.invoke('create-test-user', {
       body: { email, password, role, name }
     });
     
+    // Fixed to ensure correct typing
+    const { data, error } = response as EdgeFunctionResponse;
+    
     if (error || !data?.success) {
-      throw new Error(error?.toString() || data?.error || 'Failed to create user');
+      throw new Error(error?.message || data?.error || 'Failed to create user');
     }
     
     return {
@@ -98,7 +107,7 @@ const createUserSafely = async (
       success: data.success,
       error: data.error
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Error creating ${role} account:`, error);
     throw error;
   }
