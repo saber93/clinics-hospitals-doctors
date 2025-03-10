@@ -35,6 +35,35 @@ const App = () => {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  // Clean up any invalid auth state
+  useEffect(() => {
+    const cleanupInvalidAuth = async () => {
+      try {
+        // Check for any problematic auth state
+        const problematicAuthTokenKey = 'sb-rghakqvaawoopcoeowir-auth-token';
+        const authToken = localStorage.getItem(problematicAuthTokenKey);
+        
+        if (authToken) {
+          try {
+            const parsed = JSON.parse(authToken);
+            if (parsed?.user?.id === '00000000-0000-0000-0000-000000000099') {
+              console.log("Found problematic auth token, clearing it");
+              localStorage.removeItem(problematicAuthTokenKey);
+              sessionStorage.clear();
+              await supabase.auth.signOut({ scope: 'local' });
+            }
+          } catch (e) {
+            console.error("Error parsing auth token:", e);
+          }
+        }
+      } catch (e) {
+        console.error("Error in auth cleanup:", e);
+      }
+    };
+    
+    cleanupInvalidAuth();
+  }, []);
+
   useEffect(() => {
     const checkSession = async () => {
       try {
@@ -46,7 +75,7 @@ const App = () => {
         if (error) {
           console.error("Error checking session:", error);
           // Clear session if there's an error
-          localStorage.removeItem('supabase.auth.token');
+          localStorage.removeItem('sb-rghakqvaawoopcoeowir-auth-token');
           sessionStorage.clear();
           setSession(null);
           setLoading(false);
@@ -58,7 +87,7 @@ const App = () => {
           if (data.session) {
             console.error("Found problematic user ID, clearing session");
             await supabase.auth.signOut({ scope: 'local' });
-            localStorage.removeItem('supabase.auth.token');
+            localStorage.removeItem('sb-rghakqvaawoopcoeowir-auth-token');
             sessionStorage.clear();
           }
           
@@ -85,6 +114,9 @@ const App = () => {
       
       if (event === 'SIGNED_OUT') {
         setSession(null);
+        // Ensure local storage is cleaned
+        localStorage.removeItem('sb-rghakqvaawoopcoeowir-auth-token');
+        sessionStorage.clear();
         return;
       }
       
@@ -95,7 +127,7 @@ const App = () => {
         // Problematic user ID
         console.error("Auth state change detected problematic user ID");
         await supabase.auth.signOut({ scope: 'local' });
-        localStorage.removeItem('supabase.auth.token');
+        localStorage.removeItem('sb-rghakqvaawoopcoeowir-auth-token');
         sessionStorage.clear();
         setSession(null);
       } else {

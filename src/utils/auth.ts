@@ -12,20 +12,20 @@ export const logoutUser = async () => {
     
     if (error) {
       console.error("Error in supabase logout:", error);
-      
-      // If there's any error, fall back to local signout
-      await supabase.auth.signOut({ scope: 'local' });
-      
-      // Clear any stored tokens manually
-      localStorage.removeItem('supabase.auth.token');
-      sessionStorage.clear();
     }
+    
+    // Clear any stored tokens manually to ensure a clean logout
+    localStorage.removeItem('supabase.auth.token');
+    localStorage.removeItem('sb-rghakqvaawoopcoeowir-auth-token');
+    sessionStorage.clear();
     
     toast.dismiss(loadingToast);
     toast.success("Logged out successfully");
     
     // Force a full page reload to clear any React state
-    window.location.href = "/auth";
+    setTimeout(() => {
+      window.location.href = "/auth";
+    }, 500);
   } catch (error) {
     console.error("Error logging out:", error);
     toast.error("Failed to log out. Please try again.");
@@ -33,10 +33,11 @@ export const logoutUser = async () => {
     // Emergency fallback - try to clear everything
     try {
       localStorage.removeItem('supabase.auth.token');
+      localStorage.removeItem('sb-rghakqvaawoopcoeowir-auth-token');
       sessionStorage.clear();
       setTimeout(() => {
         window.location.href = "/auth";
-      }, 1000);
+      }, 500);
     } catch (e) {
       console.error("Failed to clear local storage:", e);
     }

@@ -12,8 +12,18 @@ export const useNavbar = () => {
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      setSession(data.session);
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Error checking session:", error);
+          setSession(null);
+          return;
+        }
+        setSession(data.session);
+      } catch (error) {
+        console.error("Error in session check:", error);
+        setSession(null);
+      }
     };
     
     checkSession();
@@ -21,6 +31,7 @@ export const useNavbar = () => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("Auth state changed:", _event);
       setSession(session);
     });
 
