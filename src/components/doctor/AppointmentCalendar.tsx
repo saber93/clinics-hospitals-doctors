@@ -15,6 +15,9 @@ const AppointmentCalendar = ({ doctorId }: AppointmentCalendarProps) => {
   const { allAppointments, loading, appointmentDates, setAppointments } = useAppointments(doctorId);
   
   useEffect(() => {
+    console.log("AppointmentCalendar - doctorId:", doctorId);
+    console.log("AppointmentCalendar - date changed or appointments loaded:", date?.toISOString(), "total appointments:", allAppointments?.length || 0);
+    
     // Filter appointments based on selected date
     const filtered = filterAppointmentsByDate(allAppointments, date);
     setAppointments(filtered);

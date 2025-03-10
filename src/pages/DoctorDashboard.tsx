@@ -43,25 +43,41 @@ const DoctorDashboard = () => {
           return;
         }
         
+        console.log("Session found:", session.user.id);
+        
         // Check if user is a doctor/vendor
-        const { data: profile } = await supabase
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', session.user.id)
           .single();
           
-        if (profile?.role !== 'vendor') {
+        if (profileError) {
+          console.error("Error fetching profile:", profileError);
+          toast.error("Failed to load profile data");
+          navigate("/dashboard");
+          return;
+        }
+        
+        if (!profile || (profile?.role !== 'vendor' && profile?.role !== 'doctor')) {
+          console.log("User role is not vendor/doctor:", profile?.role);
           toast.error("This dashboard is only for doctors");
           navigate("/dashboard");
           return;
         }
         
+        console.log("Doctor profile loaded:", profile);
         setUser(profile);
         setDoctorProfile(profile);
         
         // Load doctor's chat settings
-        const settings = await getDoctorChatSettings(session.user.id);
-        setChatSettings(settings);
+        try {
+          const settings = await getDoctorChatSettings(session.user.id);
+          console.log("Doctor chat settings:", settings);
+          setChatSettings(settings);
+        } catch (settingsError) {
+          console.error("Error loading chat settings:", settingsError);
+        }
         
         // Load stats
         await loadDoctorStats(session.user.id);
@@ -90,7 +106,12 @@ const DoctorDashboard = () => {
         .select('patient_id')
         .eq('doctor_id', doctorId);
         
-      if (chatError) throw chatError;
+      if (chatError) {
+        console.error("Error fetching chat sessions:", chatError);
+        throw chatError;
+      }
+      
+      console.log("Chat sessions loaded:", chatSessions?.length || 0);
       
       // Count unique patients
       const uniquePatients = new Set(chatSessions?.map(session => session.patient_id) || []);
@@ -101,12 +122,24 @@ const DoctorDashboard = () => {
         .select('status')
         .eq('vendor_id', doctorId);
         
-      if (appointmentsError) throw appointmentsError;
+      if (appointmentsError) {
+        console.error("Error fetching appointments:", appointmentsError);
+        throw appointmentsError;
+      }
+      
+      console.log("Appointments loaded:", appointments?.length || 0);
       
       const pendingAppointments = appointments?.filter(a => a.status === 'pending' || a.status === 'confirmed').length || 0;
       const completedAppointments = appointments?.filter(a => a.status === 'completed').length || 0;
       
       setStats({
+        totalPatients: uniquePatients.size,
+        pendingAppointments,
+        completedAppointments,
+        chatSessions: chatSessions?.length || 0
+      });
+      
+      console.log("Stats updated:", {
         totalPatients: uniquePatients.size,
         pendingAppointments,
         completedAppointments,
@@ -125,8 +158,12 @@ const DoctorDashboard = () => {
         .eq('vendor_id', doctorId)
         .order('name');
         
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching services:", error);
+        throw error;
+      }
       
+      console.log("Services loaded:", data?.length || 0);
       setServices(data || []);
     } catch (error) {
       console.error("Error loading doctor services:", error);
@@ -149,7 +186,12 @@ const DoctorDashboard = () => {
         .order('created_at', { ascending: false })
         .limit(5);
         
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching payments:", error);
+        throw error;
+      }
+      
+      console.log("Payments loaded:", data?.length || 0);
       
       // Get patient profiles in a separate query
       if (data && data.length > 0) {
@@ -160,7 +202,10 @@ const DoctorDashboard = () => {
           .select('id, name')
           .in('id', patientIds);
           
-        if (patientsError) throw patientsError;
+        if (patientsError) {
+          console.error("Error fetching patient profiles:", patientsError);
+          throw patientsError;
+        }
         
         // Create a lookup map for patients
         const patientsMap = (patients || []).reduce((acc, patient) => {

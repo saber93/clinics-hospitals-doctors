@@ -24,7 +24,12 @@ export const useAppointments = (doctorId: string) => {
 
   useEffect(() => {
     const loadAppointments = async () => {
-      if (!doctorId) return;
+      if (!doctorId) {
+        console.log("No doctorId provided to useAppointments");
+        return;
+      }
+      
+      console.log("Loading appointments for doctor:", doctorId);
       
       try {
         setLoading(true);
@@ -43,22 +48,46 @@ export const useAppointments = (doctorId: string) => {
           .eq('vendor_id', doctorId)
           .order('date', { ascending: true });
           
-        if (reservationsError) throw reservationsError;
+        if (reservationsError) {
+          console.error("Error fetching reservations:", reservationsError);
+          throw reservationsError;
+        }
+        
+        console.log(`Found ${reservationsData?.length || 0} reservations for doctor ${doctorId}`);
+        
+        if (!reservationsData || reservationsData.length === 0) {
+          setAllAppointments([]);
+          setAppointmentDates([]);
+          setLoading(false);
+          return;
+        }
         
         // Get client profiles in a separate query
         const clientIds = reservationsData
           .map(item => item.client_id)
           .filter(Boolean) as string[];
           
-        const { data: clientsData, error: clientsError } = await supabase
-          .from('profiles')
-          .select('id, name')
-          .in('id', clientIds.length > 0 ? clientIds : ['00000000-0000-0000-0000-000000000099']);
+        console.log("Fetching client profiles for IDs:", clientIds);
         
-        if (clientsError) throw clientsError;
+        let clientsData = [];
+        
+        if (clientIds.length > 0) {
+          const { data, error: clientsError } = await supabase
+            .from('profiles')
+            .select('id, name')
+            .in('id', clientIds);
+          
+          if (clientsError) {
+            console.error("Error fetching client profiles:", clientsError);
+            throw clientsError;
+          }
+          
+          clientsData = data || [];
+          console.log(`Found ${clientsData.length} client profiles`);
+        }
         
         // Create a lookup map for clients
-        const clientsMap = (clientsData || []).reduce((acc, client) => {
+        const clientsMap = clientsData.reduce((acc, client) => {
           acc[client.id] = client;
           return acc;
         }, {} as Record<string, any>);
@@ -68,21 +97,33 @@ export const useAppointments = (doctorId: string) => {
           .map(item => item.service_id)
           .filter(Boolean) as string[];
           
-        const { data: servicesData, error: servicesError } = await supabase
-          .from('services')
-          .select('id, name')
-          .in('id', serviceIds.length > 0 ? serviceIds : ['00000000-0000-0000-0000-000000000099']);
+        console.log("Fetching services for IDs:", serviceIds);
         
-        if (servicesError) throw servicesError;
+        let servicesData = [];
+        
+        if (serviceIds.length > 0) {
+          const { data, error: servicesError } = await supabase
+            .from('services')
+            .select('id, name')
+            .in('id', serviceIds);
+          
+          if (servicesError) {
+            console.error("Error fetching services:", servicesError);
+            throw servicesError;
+          }
+          
+          servicesData = data || [];
+          console.log(`Found ${servicesData.length} services`);
+        }
         
         // Create a lookup map for services
-        const servicesMap = (servicesData || []).reduce((acc, service) => {
+        const servicesMap = servicesData.reduce((acc, service) => {
           acc[service.id] = service;
           return acc;
         }, {} as Record<string, any>);
         
         // Map the data to our expected structure
-        const formattedAppointments = (reservationsData || []).map(item => ({
+        const formattedAppointments = reservationsData.map(item => ({
           id: item.id,
           client: {
             id: item.client_id || 'unknown',
@@ -100,6 +141,7 @@ export const useAppointments = (doctorId: string) => {
           status: item.status
         }));
         
+        console.log("Formatted appointments:", formattedAppointments);
         setAllAppointments(formattedAppointments);
         
         // Create a list of dates with appointments for calendar highlighting

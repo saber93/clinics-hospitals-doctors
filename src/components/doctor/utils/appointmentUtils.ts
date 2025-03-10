@@ -18,5 +18,11 @@ export const filterAppointmentsByDate = (allAppointments: any[], date: Date | un
   if (!date) return [];
   
   const selectedDateStr = date.toISOString().split('T')[0];
-  return allAppointments.filter(a => a.date === selectedDateStr);
+  console.log('Filtering appointments for date:', selectedDateStr);
+  console.log('All appointments:', allAppointments);
+  
+  const filtered = allAppointments.filter(a => a.date === selectedDateStr);
+  console.log('Filtered appointments:', filtered);
+  
+  return filtered;
 };
