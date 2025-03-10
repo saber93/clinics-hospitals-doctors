@@ -3,17 +3,17 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { getUserReservations } from '@/utils/reservations';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
+import { generateDemoBookings } from '@/utils/bookings/demoBookings';
+import { updateBookingStatus } from '@/utils/bookings/statusUpdater';
+import { 
+  filterBookingsByStatus, 
+  getStatusCount as getStatusCountUtil,
+  formatBookingDate 
+} from '@/utils/bookings/filterUtils';
+import { Booking } from './types/bookingTypes';
 
-// Types
-export type Booking = {
-  id: string;
-  services: { name: string; price?: number };
-  vendors: { name: string };
-  date: string;
-  time: string;
-  status: string;
-};
+// Re-export for backward compatibility
+export type { Booking } from './types/bookingTypes';
 
 export const useBookings = () => {
   const [reservations, setReservations] = useState<Booking[]>([]);
@@ -22,70 +22,9 @@ export const useBookings = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState('all');
 
-  // Generate demo bookings function (same as in ClientDashboard)
-  const generateDemoBookings = () => {
-    return [
-      {
-        id: '1',
-        services: { name: 'Facial Treatment', price: 89.99 },
-        vendors: { name: 'Beauty Spa Center' },
-        date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 2 days from now
-        time: '10:00 AM',
-        status: 'confirmed'
-      },
-      {
-        id: '2',
-        services: { name: 'Deep Tissue Massage', price: 129.99 },
-        vendors: { name: 'Wellness Retreat' },
-        date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 5 days from now
-        time: '2:30 PM',
-        status: 'pending'
-      },
-      {
-        id: '3',
-        services: { name: 'Hot Stone Therapy', price: 149.99 },
-        vendors: { name: 'Serenity Spa' },
-        date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 7 days from now
-        time: '11:15 AM',
-        status: 'confirmed'
-      },
-      {
-        id: '4',
-        services: { name: 'Hair Styling', price: 75.00 },
-        vendors: { name: 'Glamour Salon' },
-        date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 14 days from now
-        time: '3:00 PM',
-        status: 'completed'
-      },
-      {
-        id: '5',
-        services: { name: 'Manicure & Pedicure', price: 65.00 },
-        vendors: { name: 'Nail Studio' },
-        date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 3 days ago
-        time: '1:15 PM',
-        status: 'completed'
-      }
-    ];
-  };
-
+  // Handle status updates
   const handleUpdateStatus = async (reservationId: string, newStatus: string) => {
-    try {
-      const { error } = await supabase
-        .from('reservations')
-        .update({ status: newStatus })
-        .eq('id', reservationId);
-      
-      if (error) throw error;
-      
-      setReservations(reservations.map(res => 
-        res.id === reservationId ? { ...res, status: newStatus } : res
-      ));
-      
-      toast.success(`Booking ${newStatus} successfully`);
-    } catch (error) {
-      console.error("Error updating booking status:", error);
-      toast.error("Failed to update booking status");
-    }
+    return updateBookingStatus(reservationId, newStatus, reservations, setReservations);
   };
 
   useEffect(() => {
@@ -146,23 +85,14 @@ export const useBookings = () => {
     fetchUserData();
   }, []);
 
-  const filteredReservations = reservations.filter(reservation => {
-    if (activeFilter === 'all') return true;
-    return reservation.status === activeFilter;
-  });
-
+  const filteredReservations = filterBookingsByStatus(reservations, activeFilter);
+  
   const getStatusCount = (status: string) => {
-    return reservations.filter(res => res.status === status).length;
+    return getStatusCountUtil(reservations, status);
   };
 
   const formatDate = (dateString: string) => {
-    if (!dateString) return "N/A";
-    try {
-      return format(new Date(dateString), 'MMM dd, yyyy');
-    } catch (e) {
-      console.error("Date formatting error:", e);
-      return dateString;
-    }
+    return formatBookingDate(dateString);
   };
 
   return {

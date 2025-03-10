@@ -1,4 +1,3 @@
-
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createComprehensiveDoctorData } from "./seedServiceData";
@@ -112,3 +111,6 @@ const createUserSafely = async (
     throw error;
   }
 };
+
+import { getUserReservations } from '@/utils/reservations';
+import { EnrichedReservation } from '@/types/reservations';

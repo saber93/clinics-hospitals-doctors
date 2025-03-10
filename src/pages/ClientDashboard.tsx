@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { getUserReservations } from "@/utils/reservationsData";
+import { getUserReservations } from "@/utils/reservations";
 import { Calendar, Clock, Store } from "lucide-react";
 
 const ClientDashboard = () => {
@@ -19,7 +18,6 @@ const ClientDashboard = () => {
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session) {
-          // If not logged in, we'll use demo data
           console.log("No session found, using demo data");
           setLoading(false);
           return;
@@ -39,20 +37,16 @@ const ClientDashboard = () => {
           
           console.log("Upcoming bookings:", upcoming);
           
-          // Only override demo data if we actually have real data
           if (upcoming.length > 0) {
             setUpcomingBookings(upcoming);
           } else {
-            // Use demo data if no upcoming bookings
             setUpcomingBookings(generateDemoBookings());
           }
         } else {
-          // If no reservations data, use demo data
           setUpcomingBookings(generateDemoBookings());
         }
       } catch (error) {
         console.error("Error fetching client bookings:", error);
-        // On error, use demo data
         setUpcomingBookings(generateDemoBookings());
       } finally {
         setLoading(false);

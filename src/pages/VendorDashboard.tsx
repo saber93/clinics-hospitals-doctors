@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -7,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Calendar, TrendingUp, Package, Activity, ArrowLeft } from "lucide-react";
-import { getUserReservations } from "@/utils/reservationsData";
+import { getUserReservations } from "@/utils/reservations";
 
 const VendorDashboard = () => {
   const navigate = useNavigate();

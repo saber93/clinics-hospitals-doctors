@@ -32,5 +32,8 @@ export type EnrichedReservation = {
   updated_at: string;
   clients: { name: string };
   vendors: { name: string };
-  services: { name: string; price?: number };
+  services: { 
+    name: string; 
+    price?: number 
+  };
 };

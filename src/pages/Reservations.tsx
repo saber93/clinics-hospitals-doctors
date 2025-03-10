@@ -1,9 +1,8 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { getUserReservations, getAvailableServices, createReservation } from "@/utils/reservationsData";
+import { getUserReservations, getAvailableServices, createReservation } from "@/utils/reservations";
 import { Button } from "@/components/ui/button";
 import { List, CalendarCheck, AlertCircle } from "lucide-react";
 

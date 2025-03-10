@@ -36,13 +36,15 @@ export const getUserReservations = async (
       service_id: item.service_id || '',
       date: item.date,
       time: item.time,
-      // Cast to the proper enum of status values
       status: (item.status as 'pending' | 'confirmed' | 'cancelled' | 'completed') || 'pending',
       created_at: item.created_at || '',
       updated_at: item.updated_at || '',
-      clients: item.clients || { name: 'Unknown Client' },
-      vendors: item.vendors || { name: 'Unknown Vendor' },
-      services: item.services || { name: 'Unknown Service' }
+      clients: { name: item.clients?.name || 'Unknown Client' },
+      vendors: { name: item.vendors?.name || 'Unknown Vendor' },
+      services: { 
+        name: item.services?.name || 'Unknown Service',
+        price: item.services?.price
+      }
     }));
     
     console.log(`Found ${typedReservations.length} reservations for user ${userId}`);
