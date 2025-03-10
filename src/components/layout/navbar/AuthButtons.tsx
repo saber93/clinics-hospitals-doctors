@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { logoutUser } from '@/utils/auth';
+import { cn } from '@/lib/utils';
 
 interface AuthButtonsProps {
   session: any;
@@ -57,8 +58,5 @@ const AuthButtons = ({ session, isMobile = false }: AuthButtonsProps) => {
     </Button>
   );
 };
-
-// Import cn from utils
-import { cn } from '@/lib/utils';
 
 export default AuthButtons;

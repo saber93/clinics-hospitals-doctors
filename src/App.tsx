@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -38,21 +39,40 @@ const App = () => {
     const checkSession = async () => {
       try {
         console.log("Checking for existing session...");
-        const { data } = await supabase.auth.getSession();
-        console.log("Session data:", data);
         
-        if (data.session && data.session.user?.id !== '00000000-0000-0000-0000-000000000099') {
-          setSession(data.session);
-        } else if (data.session) {
-          console.error("Found problematic user ID, clearing session");
-          await supabase.auth.signOut({ scope: 'local' });
+        // Try to get the session
+        const { data, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error("Error checking session:", error);
+          // Clear session if there's an error
           localStorage.removeItem('supabase.auth.token');
+          sessionStorage.clear();
+          setSession(null);
+          setLoading(false);
+          return;
+        }
+        
+        // If no session or problematic user ID, ensure session state is null
+        if (!data.session || data.session.user?.id === '00000000-0000-0000-0000-000000000099') {
+          if (data.session) {
+            console.error("Found problematic user ID, clearing session");
+            await supabase.auth.signOut({ scope: 'local' });
+            localStorage.removeItem('supabase.auth.token');
+            sessionStorage.clear();
+          }
+          
+          setSession(null);
+        } else {
+          // Valid session found
+          setSession(data.session);
         }
         
         setLoading(false);
       } catch (error) {
         console.error("Error checking session:", error);
         setLoading(false);
+        setSession(null);
       }
     };
     
@@ -60,17 +80,26 @@ const App = () => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log("Auth state changed:", _event, session ? "Has session" : "No session");
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth state changed:", event, session ? "Has session" : "No session");
+      
+      if (event === 'SIGNED_OUT') {
+        setSession(null);
+        return;
+      }
       
       if (session && session.user?.id !== '00000000-0000-0000-0000-000000000099') {
+        // Valid session
         setSession(session);
       } else if (session) {
+        // Problematic user ID
         console.error("Auth state change detected problematic user ID");
-        supabase.auth.signOut({ scope: 'local' });
+        await supabase.auth.signOut({ scope: 'local' });
         localStorage.removeItem('supabase.auth.token');
+        sessionStorage.clear();
         setSession(null);
       } else {
+        // No session
         setSession(null);
       }
     });
