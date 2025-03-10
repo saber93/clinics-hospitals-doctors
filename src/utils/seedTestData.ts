@@ -2,7 +2,6 @@
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createComprehensiveDoctorData } from "./seedServiceData";
-import type { EnrichedReservation } from '@/types/reservations';
 
 // Define all possible return types explicitly
 interface SeedDataResult {
@@ -11,7 +10,7 @@ interface SeedDataResult {
   clientId?: string;
 }
 
-// Define the user creation result type
+// Define the user creation result type with simple types
 interface UserCreationResult {
   userId?: string;
   success: boolean;
@@ -69,7 +68,7 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
   }
 };
 
-// Helper function with explicit types
+// Helper function with explicit types and simplified response handling
 const createUserSafely = async (
   email: string, 
   password: string, 
@@ -78,20 +77,22 @@ const createUserSafely = async (
 ): Promise<UserCreationResult> => {
   try {
     // Call edge function to create user with service role
-    const response = await supabase.functions.invoke('create-test-user', {
+    const { data, error } = await supabase.functions.invoke('create-test-user', {
       body: { email, password, role, name }
     });
     
-    if (!response.data || response.error) {
-      throw new Error(response.error?.message || 'Failed to create user');
+    if (!data || error) {
+      throw new Error(error?.message || 'Failed to create user');
     }
     
-    // Type assertion for response data with a simpler approach
-    const userId = (response.data as any).userId;
-    const success = (response.data as any).success === true;
-    const error = (response.data as any).error;
+    // Use explicit casting without complex type inference
+    const userData = data as Record<string, any>;
     
-    return { userId, success, error };
+    return { 
+      userId: userData.userId as string | undefined,
+      success: !!userData.success,
+      error: userData.error as string | undefined
+    };
   } catch (error: any) {
     console.error(`Error creating ${role} account:`, error);
     throw error;
