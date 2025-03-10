@@ -6,7 +6,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Users, MessageSquare, Clock, Settings, PieChart } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, Users, MessageSquare, Clock, Settings, PieChart, DollarSign, Stethoscope, BookOpen } from "lucide-react";
 import { getDoctorChatSettings } from "@/services/chat/settingsService";
 import DoctorStats from "@/components/doctor/DoctorStats";
 import PatientList from "@/components/doctor/PatientList";
@@ -23,6 +24,9 @@ const DoctorDashboard = () => {
   });
   const [chatSettings, setChatSettings] = useState(null);
   const [user, setUser] = useState(null);
+  const [doctorProfile, setDoctorProfile] = useState(null);
+  const [services, setServices] = useState([]);
+  const [recentPayments, setRecentPayments] = useState([]);
 
   useEffect(() => {
     const checkUserAndLoadData = async () => {
@@ -52,6 +56,7 @@ const DoctorDashboard = () => {
         }
         
         setUser(profile);
+        setDoctorProfile(profile);
         
         // Load doctor's chat settings
         const settings = await getDoctorChatSettings(session.user.id);
@@ -59,6 +64,12 @@ const DoctorDashboard = () => {
         
         // Load stats
         await loadDoctorStats(session.user.id);
+        
+        // Load doctor's services
+        await loadDoctorServices(session.user.id);
+        
+        // Load recent payments
+        await loadRecentPayments(session.user.id);
       } catch (error) {
         console.error("Error loading doctor dashboard:", error);
         toast.error("Failed to load dashboard data");
@@ -104,6 +115,72 @@ const DoctorDashboard = () => {
       console.error("Error loading doctor stats:", error);
     }
   };
+  
+  const loadDoctorServices = async (doctorId) => {
+    try {
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .eq('vendor_id', doctorId)
+        .order('name');
+        
+      if (error) throw error;
+      
+      setServices(data || []);
+    } catch (error) {
+      console.error("Error loading doctor services:", error);
+    }
+  };
+  
+  const loadRecentPayments = async (doctorId) => {
+    try {
+      const { data, error } = await supabase
+        .from('chat_payments')
+        .select(`
+          id,
+          amount,
+          doctor_amount,
+          payment_status,
+          created_at,
+          patient_id
+        `)
+        .eq('doctor_id', doctorId)
+        .order('created_at', { ascending: false })
+        .limit(5);
+        
+      if (error) throw error;
+      
+      // Get patient profiles in a separate query
+      if (data && data.length > 0) {
+        const patientIds = data.map(payment => payment.patient_id);
+        
+        const { data: patients, error: patientsError } = await supabase
+          .from('profiles')
+          .select('id, name')
+          .in('id', patientIds);
+          
+        if (patientsError) throw patientsError;
+        
+        // Create a lookup map for patients
+        const patientsMap = (patients || []).reduce((acc, patient) => {
+          acc[patient.id] = patient.name;
+          return acc;
+        }, {});
+        
+        // Add patient names to payments
+        const paymentsWithPatients = data.map(payment => ({
+          ...payment,
+          patientName: patientsMap[payment.patient_id] || 'Unknown Patient'
+        }));
+        
+        setRecentPayments(paymentsWithPatients);
+      } else {
+        setRecentPayments([]);
+      }
+    } catch (error) {
+      console.error("Error loading recent payments:", error);
+    }
+  };
 
   if (loading) {
     return (
@@ -137,6 +214,9 @@ const DoctorDashboard = () => {
           <TabsTrigger value="patients">My Patients</TabsTrigger>
           <TabsTrigger value="appointments">Appointments</TabsTrigger>
           <TabsTrigger value="consultations">Consultations</TabsTrigger>
+          <TabsTrigger value="services">My Services</TabsTrigger>
+          <TabsTrigger value="payments">Recent Payments</TabsTrigger>
+          <TabsTrigger value="profile">My Profile</TabsTrigger>
         </TabsList>
         
         <TabsContent value="patients">
@@ -208,6 +288,175 @@ const DoctorDashboard = () => {
                 onClick={() => navigate('/chats')}
               >
                 Manage Consultations
+              </Button>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="services">
+          <Card>
+            <CardHeader>
+              <CardTitle>My Services</CardTitle>
+              <CardDescription>
+                Services you offer to your patients
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {services.length > 0 ? (
+                <div className="space-y-4">
+                  {services.map(service => (
+                    <div key={service.id} className="border rounded-lg p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="font-medium">{service.name}</h3>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {service.description || 'No description provided'}
+                          </p>
+                        </div>
+                        <div className="flex flex-col items-end">
+                          <span className="font-bold text-lg">${service.price}</span>
+                          <span className="text-sm text-muted-foreground">{service.duration} min</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Stethoscope className="mx-auto h-12 w-12 text-muted-foreground/50" />
+                  <h3 className="mt-4 text-lg font-medium">No services found</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    You haven't created any services yet.
+                  </p>
+                </div>
+              )}
+            </CardContent>
+            <CardFooter>
+              <Button 
+                variant="default" 
+                className="w-full"
+                onClick={() => navigate('/reservations')}
+              >
+                Manage Services
+              </Button>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="payments">
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Payments</CardTitle>
+              <CardDescription>
+                Latest payments received for your consultations
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {recentPayments.length > 0 ? (
+                <div className="space-y-4">
+                  {recentPayments.map(payment => (
+                    <div key={payment.id} className="border rounded-lg p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="flex items-center">
+                            <p className="font-medium">{payment.patientName}</p>
+                            <Badge className="ml-2" variant={payment.payment_status === 'completed' ? 'default' : 'outline'}>
+                              {payment.payment_status}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {new Date(payment.created_at).toLocaleDateString('en-US', { 
+                              year: 'numeric', 
+                              month: 'short', 
+                              day: 'numeric' 
+                            })}
+                          </p>
+                        </div>
+                        <div className="flex flex-col items-end">
+                          <span className="font-bold text-lg text-green-600">${payment.doctor_amount}</span>
+                          <span className="text-xs text-muted-foreground">Total: ${payment.amount}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <DollarSign className="mx-auto h-12 w-12 text-muted-foreground/50" />
+                  <h3 className="mt-4 text-lg font-medium">No payments yet</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    You haven't received any payments yet.
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="profile">
+          <Card>
+            <CardHeader>
+              <CardTitle>Doctor Profile</CardTitle>
+              <CardDescription>
+                Your professional information
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 border rounded-lg">
+                  <div className="bg-primary/10 h-20 w-20 rounded-full flex items-center justify-center">
+                    <Stethoscope className="h-10 w-10 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold">{doctorProfile?.name}</h3>
+                    <p className="text-sm text-muted-foreground">Joined on {new Date(doctorProfile?.created_at).toLocaleDateString()}</p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="border rounded-lg p-4">
+                    <h3 className="font-medium text-lg mb-3">Consultation Pricing</h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">First consultation:</span>
+                        <span className="font-medium">
+                          {chatSettings?.offers_free_consultation ? 'Free' : `$${chatSettings?.session_price || 'Not set'}`}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Follow-up sessions:</span>
+                        <span className="font-medium">${chatSettings?.session_price || 'Default pricing'}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="border rounded-lg p-4">
+                    <h3 className="font-medium text-lg mb-3">Activity Summary</h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Total patients:</span>
+                        <span className="font-medium">{stats.totalPatients}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Completed appointments:</span>
+                        <span className="font-medium">{stats.completedAppointments}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Active chats:</span>
+                        <span className="font-medium">{stats.chatSessions}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => navigate('/chat-settings')}
+              >
+                Edit Settings
               </Button>
             </CardFooter>
           </Card>
