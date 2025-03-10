@@ -1,21 +1,50 @@
+
+// Utility functions for date formatting and manipulation
+
 /**
- * Formats a date object into YYYY-MM-DD string format
- * @param date The date to format
- * @returns Formatted date string
+ * Format a date object to YYYY-MM-DD string format
  */
 export const formatDateString = (date: Date): string => {
-  return date.toISOString().split('T')[0];
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 };
 
-export const getRelativeTime = (timestamp: string) => {
-  const date = new Date(timestamp);
+/**
+ * Format a date to a readable string
+ */
+export const formatReadableDate = (dateString: string | Date): string => {
+  const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+};
+
+/**
+ * Get relative time (e.g., "2 days ago")
+ */
+export const getRelativeTime = (timestamp: string | Date): string => {
+  const date = typeof timestamp === 'string' ? new Date(timestamp) : timestamp;
   const now = new Date();
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
   
-  if (diffInSeconds < 60) return 'just now';
-  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
-  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
-  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
+  const diffMs = now.getTime() - date.getTime();
+  const diffSec = Math.round(diffMs / 1000);
+  const diffMin = Math.round(diffSec / 60);
+  const diffHour = Math.round(diffMin / 60);
+  const diffDay = Math.round(diffHour / 24);
   
-  return date.toLocaleDateString();
+  if (diffSec < 60) {
+    return 'just now';
+  } else if (diffMin < 60) {
+    return `${diffMin} minute${diffMin === 1 ? '' : 's'} ago`;
+  } else if (diffHour < 24) {
+    return `${diffHour} hour${diffHour === 1 ? '' : 's'} ago`;
+  } else if (diffDay < 30) {
+    return `${diffDay} day${diffDay === 1 ? '' : 's'} ago`;
+  } else {
+    return formatReadableDate(date);
+  }
 };

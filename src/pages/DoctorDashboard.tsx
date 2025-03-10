@@ -5,6 +5,8 @@ import DoctorStats from "@/components/doctor/DoctorStats";
 import DashboardHeader from "@/components/doctor/DashboardHeader";
 import DoctorDashboardTabs from "@/components/doctor/DoctorDashboardTabs";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { seedTestData } from "@/utils/seedTestData";
 
 const DoctorDashboard = () => {
   const { 
@@ -24,12 +26,27 @@ const DoctorDashboard = () => {
   console.log("Doctor Dashboard - services:", services);
   console.log("Doctor Dashboard - recentPayments:", recentPayments);
 
+  const handleSeedTestData = async () => {
+    try {
+      await seedTestData();
+      // Refresh the page to reload the dashboard with the new data
+      window.location.reload();
+    } catch (error) {
+      console.error("Error seeding test data:", error);
+      toast.error("Failed to seed test data");
+    }
+  };
+
   if (!user && !loading) {
-    toast.error("Please login as a doctor to view this dashboard");
     return (
       <div className="p-6 text-center">
         <h2 className="text-xl font-semibold text-red-600">Access Denied</h2>
         <p className="mt-2 text-muted-foreground">You must be logged in as a doctor to view this dashboard.</p>
+        <div className="mt-6">
+          <Button onClick={handleSeedTestData} variant="default">
+            Create Demo Doctor Account
+          </Button>
+        </div>
       </div>
     );
   }
@@ -48,6 +65,11 @@ const DoctorDashboard = () => {
       <div className="p-6 text-center">
         <h2 className="text-xl font-semibold text-red-600">Profile Not Found</h2>
         <p className="mt-2 text-muted-foreground">Unable to load doctor profile. Please try again later.</p>
+        <div className="mt-6">
+          <Button onClick={handleSeedTestData} variant="default">
+            Create Demo Data
+          </Button>
+        </div>
       </div>
     );
   }
@@ -57,6 +79,12 @@ const DoctorDashboard = () => {
       <DashboardHeader />
       
       <DoctorStats stats={stats} />
+      
+      <div className="mt-6 mb-4 flex justify-end">
+        <Button onClick={handleSeedTestData} variant="outline" size="sm">
+          Refresh Demo Data
+        </Button>
+      </div>
       
       <DoctorDashboardTabs
         userId={user?.id}
