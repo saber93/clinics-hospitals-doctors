@@ -1,12 +1,11 @@
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 
 export const loadDoctorStats = async (doctorId: string) => {
   try {
-    // Get total patients from reservations instead of chat sessions
+    // Get total patients from reservations
     const { data: reservations, error: reservationsError } = await supabase
       .from('reservations')
-      .select('client_id')
+      .select('client_id, status')
       .eq('vendor_id', doctorId);
       
     if (reservationsError) {
