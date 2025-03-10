@@ -50,19 +50,18 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
         try {
           console.log(`Calling edge function (attempt ${retries + 1})`);
           
-          // Fix: Remove the invalid 'options' property and use 'abortSignal' instead
-          // Create an AbortController with the appropriate timeout
+          // Set up a timeout without using the signal property directly
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 seconds timeout
           
+          // Use the fetch API's standard approach with AbortController
           const response = await supabase.functions.invoke('create-test-user', {
             body: {
               email,
               password,
               role,
               name
-            },
-            signal: controller.signal // Use the correct signal property instead of options
+            }
           });
           
           // Clear the timeout
