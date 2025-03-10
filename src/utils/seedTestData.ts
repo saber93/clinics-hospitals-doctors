@@ -53,14 +53,13 @@ export const seedTestData = async () => {
   }
 };
 
-// The type signature here was causing infinite recursion
-// Explicitly define the return type to avoid excessive type instantiation
+// Helper function with explicit return type and parameter types to prevent type recursion
 const createUserSafely = async (
   email: string, 
   password: string, 
   role: string, 
   name: string
-): Promise<{ userId?: string, success?: boolean, error?: string }> => {
+): Promise<{ userId?: string; success?: boolean; error?: string }> => {
   try {
     // Call edge function to create user with service role
     const { data, error } = await supabase.functions.invoke('create-test-user', {
