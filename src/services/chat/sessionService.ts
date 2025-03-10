@@ -24,24 +24,28 @@ export const fetchUserChatSessions = async (userId: string, isDoctor: boolean = 
       // Handle profiles property which might be null
       let patientName = null;
       if (session.profiles) {
+        const profiles = session.profiles;
         if (
-          typeof session.profiles === 'object' && 
-          !('error' in session.profiles) && 
-          'name' in session.profiles
+          typeof profiles === 'object' && 
+          profiles !== null &&
+          !('error' in profiles) && 
+          'name' in profiles
         ) {
-          patientName = session.profiles.name;
+          patientName = profiles.name;
         }
       }
       
       // Handle doctor property which might be null
       let doctorName = null;
       if (session.doctor) {
+        const doctor = session.doctor;
         if (
-          typeof session.doctor === 'object' &&
-          !('error' in session.doctor) &&
-          'name' in session.doctor
+          typeof doctor === 'object' &&
+          doctor !== null &&
+          !('error' in doctor) &&
+          'name' in doctor
         ) {
-          doctorName = session.doctor.name;
+          doctorName = doctor.name;
         }
       }
         
@@ -108,24 +112,28 @@ export const getChatSessionById = async (sessionId: string) => {
     // Handle profiles property which might be null
     let patientName = null;
     if (data.profiles) {
+      const profiles = data.profiles;
       if (
-        typeof data.profiles === 'object' && 
-        !('error' in data.profiles) && 
-        'name' in data.profiles
+        typeof profiles === 'object' && 
+        profiles !== null &&
+        !('error' in profiles) && 
+        'name' in profiles
       ) {
-        patientName = data.profiles.name;
+        patientName = profiles.name;
       }
     }
     
     // Handle doctor property which might be null
     let doctorName = null;
     if (data.doctor) {
+      const doctor = data.doctor;
       if (
-        typeof data.doctor === 'object' &&
-        !('error' in data.doctor) &&
-        'name' in data.doctor
+        typeof doctor === 'object' &&
+        doctor !== null &&
+        !('error' in doctor) &&
+        'name' in doctor
       ) {
-        doctorName = data.doctor.name;
+        doctorName = doctor.name;
       }
     }
     
