@@ -33,6 +33,20 @@ export const seedTestData = async () => {
     if (doctorData?.userId) {
       console.log(`Creating doctor chat settings for doctor ID: ${doctorData.userId}`);
       await createDoctorChatSettings(doctorData.userId);
+      
+      // Create multiple chat sessions between doctor and client if client account was created
+      if (clientData?.userId) {
+        console.log(`Creating chat sessions between doctor ${doctorData.userId} and client ${clientData.userId}`);
+        
+        // Create a free consultation chat session
+        await createFreeChatSession(doctorData.userId, clientData.userId, 2, 6, "consultation");
+        
+        // Create a skin condition discussion chat session
+        await createFreeChatSession(doctorData.userId, clientData.userId, 5, 12, "skin-condition");
+        
+        // Create a treatment follow-up chat session
+        await createFreeChatSession(doctorData.userId, clientData.userId, 1, 2, "follow-up");
+      }
     } else {
       console.log("Skipping doctor chat settings creation as doctor account was not created");
     }
@@ -41,23 +55,19 @@ export const seedTestData = async () => {
     if (vendorData?.userId) {
       console.log(`Creating vendor doctor settings for vendor ID: ${vendorData.userId}`);
       await createVendorDoctorSettings(vendorData.userId);
+      
+      // Create multiple chat sessions between vendor and client if client account was created
+      if (clientData?.userId) {
+        console.log(`Creating chat sessions between vendor ${vendorData.userId} and client ${clientData.userId}`);
+        
+        // Create a paid product recommendation chat session
+        await createPaidChatSession(vendorData.userId, clientData.userId, 5, 24, "products");
+        
+        // Create a paid treatment plan chat session
+        await createPaidChatSession(vendorData.userId, clientData.userId, 3, 8, "treatment-plan");
+      }
     } else {
       console.log("Skipping vendor doctor settings creation as vendor account was not created");
-    }
-    
-    // Only create chat sessions if both required accounts exist
-    if (doctorData?.userId && clientData?.userId) {
-      console.log(`Creating free chat session between doctor ${doctorData.userId} and client ${clientData.userId}`);
-      await createFreeChatSession(doctorData.userId, clientData.userId);
-    } else {
-      console.log("Skipping free chat session creation as either doctor or client account was not created");
-    }
-    
-    if (vendorData?.userId && clientData?.userId) {
-      console.log(`Creating paid chat session between vendor ${vendorData.userId} and client ${clientData.userId}`);
-      await createPaidChatSession(vendorData.userId, clientData.userId);
-    } else {
-      console.log("Skipping paid chat session creation as either vendor or client account was not created");
     }
     
     // Only create services and reservations if both required accounts exist
