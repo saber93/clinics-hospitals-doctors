@@ -1,328 +1,188 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
+import { ArrowLeft, Clock } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { toast } from 'sonner';
-import { AlertCircle, ChevronLeft, DollarSign, Clock } from 'lucide-react';
 import ChatMessageList from './ChatMessageList';
 import ChatInput from './ChatInput';
 import PaymentDialog from './PaymentDialog';
-import { 
-  fetchChatMessages, 
-  sendChatMessage, 
-  subscribeToMessages, 
-  markMessagesAsRead,
-  getChatSettings,
-  getDoctorChatSettings,
-  updatePaymentStatus
-} from '@/services/chatService';
-import { ChatMessage, ChatSession, ChatSettings, DoctorChatSettings } from '@/types/chat';
+import { supabase } from '@/integrations/supabase/client';
+import { getChatSessionById, updateSessionActivity, markAllMessagesAsRead } from '@/services/chat/sessionService';
+import { ChatSession } from '@/types/chat';
+
+interface Params {
+  chatId?: string;
+}
 
 const Chat: React.FC = () => {
-  const { sessionId } = useParams<{ sessionId: string }>();
+  const { chatId } = useParams<Params>();
   const navigate = useNavigate();
-  const [session, setSession] = useState<any>(null);
+  const { toast } = useToast();
+  const [session, setSession] = useState<ChatSession | null>(null);
   const [loading, setLoading] = useState(true);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [chatSession, setChatSession] = useState<ChatSession | null>(null);
-  const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
-  const [chatSettings, setChatSettings] = useState<ChatSettings | null>(null);
-  const [doctorSettings, setDoctorSettings] = useState<DoctorChatSettings | null>(null);
-  const [patientName, setPatientName] = useState<string | null>(null);
-  const [doctorName, setDoctorName] = useState<string | null>(null);
-
-  const isChatBlocked = chatSession && !chatSession.is_free && 
-    !messages.some(msg => msg.sender_id === chatSession.doctor_id);
+  const [isDoctor, setIsDoctor] = useState(false);
+  const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const checkSession = async () => {
       try {
         const { data } = await supabase.auth.getSession();
-        setSession(data.session);
-        if (!data.session) {
-          toast.error('Please log in to access the chat');
-          navigate('/auth');
-        }
+        setUser(data.session?.user || null);
       } catch (error) {
         console.error('Error checking session:', error);
-        toast.error('Authentication error');
-      } finally {
-        setLoading(false);
       }
     };
     
     checkSession();
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     const loadChatSession = async () => {
-      if (!sessionId || !session?.user?.id) return;
-      
+      if (!chatId) {
+        toast({
+          title: "Error",
+          description: "Chat ID is missing.",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
       try {
-        const { data, error } = await supabase
-          .from('chat_sessions')
-          .select(`
-            *,
-            patient:profiles!chat_sessions_patient_id_fkey(name),
-            doctor:profiles!chat_sessions_doctor_id_fkey(name)
-          `)
-          .eq('id', sessionId)
-          .single();
-
-        if (error) throw error;
-        
-        if (!data) {
-          toast.error('Chat session not found');
-          navigate('/chats');
-          return;
+        const chatSession = await getChatSessionById(chatId);
+        if (chatSession) {
+          setSession(chatSession);
+        } else {
+          toast({
+            title: "Error",
+            description: "Chat session not found.",
+            variant: "destructive",
+          });
         }
-
-        const typedSession: ChatSession = {
-          ...data,
-          status: data.status as "active" | "expired" | "completed",
-          patient: data.patient && !('error' in data.patient) ? data.patient : null,
-          doctor: data.doctor && !('error' in data.doctor) ? data.doctor : null
-        };
-        
-        setChatSession(typedSession);
-        
-        const patientNameValue = typedSession.patient?.name || 'Patient';
-        const doctorNameValue = typedSession.doctor?.name || 'Doctor';
-        
-        setPatientName(patientNameValue);
-        setDoctorName(doctorNameValue);
-
-        const settings = await getChatSettings();
-        setChatSettings(settings);
-
-        const doctorSettings = await getDoctorChatSettings(data.doctor_id);
-        setDoctorSettings(doctorSettings);
-
-        const messages = await fetchChatMessages(sessionId);
-        setMessages(messages);
-
-        await markMessagesAsRead(sessionId, session.user.id);
       } catch (error) {
-        console.error('Error loading chat session:', error);
-        toast.error('Failed to load chat session');
+        console.error("Error loading chat session:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load chat session.",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (sessionId && session) {
-      loadChatSession();
-    }
-  }, [sessionId, session, navigate]);
+    loadChatSession();
+  }, [chatId, toast]);
 
   useEffect(() => {
-    if (!sessionId || !session?.user?.id) return;
-    
-    const unsubscribe = subscribeToMessages(sessionId, (newMessage) => {
-      setMessages((prevMessages) => {
-        if (prevMessages.some(msg => msg.id === newMessage.id)) {
-          return prevMessages;
+    if (user && session) {
+      setIsDoctor(user.id === session.doctor_id);
+    }
+  }, [user, session]);
+
+  useEffect(() => {
+    const updateLastActivity = async () => {
+      if (chatId) {
+        try {
+          await updateSessionActivity(chatId);
+        } catch (error) {
+          console.error("Error updating last activity:", error);
         }
-        return [...prevMessages, newMessage];
-      });
-      
-      if (newMessage.sender_id !== session.user.id) {
-        markMessagesAsRead(sessionId, session.user.id);
       }
-    });
-    
-    return () => {
-      unsubscribe();
     };
-  }, [sessionId, session]);
 
-  const handleSendMessage = async (message: string) => {
-    if (!sessionId || !session?.user?.id || !chatSession) return;
-    
-    if (isChatBlocked) {
-      setIsPaymentDialogOpen(true);
-      return;
-    }
-    
-    try {
-      const newMessage = await sendChatMessage(sessionId, session.user.id, message);
-      if (newMessage) {
-      }
-    } catch (error) {
-      console.error('Error sending message:', error);
-      toast.error('Failed to send message');
-    }
-  };
+    updateLastActivity();
 
-  const handlePaymentComplete = async (success: boolean, transactionId?: string) => {
-    if (!success || !chatSession) return;
-    
-    try {
-      await supabase
-        .from('chat_payments')
-        .insert({
-          session_id: chatSession.id,
-          patient_id: chatSession.patient_id,
-          doctor_id: chatSession.doctor_id,
-          amount: doctorSettings?.session_price || chatSettings?.default_session_price || 50,
-          commission_percentage: chatSettings?.default_commission_percentage || 10,
-          commission_amount: ((doctorSettings?.session_price || chatSettings?.default_session_price || 50) * 
-            (chatSettings?.default_commission_percentage || 10)) / 100,
-          doctor_amount: ((doctorSettings?.session_price || chatSettings?.default_session_price || 50) - 
-            ((doctorSettings?.session_price || chatSettings?.default_session_price || 50) * 
-            (chatSettings?.default_commission_percentage || 10)) / 100),
-          payment_method: 'credit_card',
-          payment_status: 'completed',
-          transaction_id: transactionId,
-          payment_provider: 'credit_card'
-        });
-      
-      toast.success('Payment successful! You can now continue the chat.');
-      
-      const { data } = await supabase
-        .from('chat_sessions')
-        .select('*')
-        .eq('id', chatSession.id)
-        .single();
-        
-      if (data) {
-        const typedSession: ChatSession = {
-          ...data,
-          status: data.status as "active" | "expired" | "completed",
-          patient: chatSession.patient,
-          doctor: chatSession.doctor
-        };
-        
-        setChatSession(typedSession);
+    const intervalId = setInterval(updateLastActivity, 60000); // Update every minute
+
+    return () => clearInterval(intervalId);
+  }, [chatId]);
+
+  useEffect(() => {
+    const markMessagesAsRead = async () => {
+      if (chatId && user) {
+        try {
+          await markAllMessagesAsRead(chatId, user.id);
+        } catch (error) {
+          console.error("Error marking messages as read:", error);
+        }
       }
-    } catch (error) {
-      console.error('Error handling payment completion:', error);
-      toast.error('Failed to process payment completion');
-    }
-  };
+    };
+
+    markMessagesAsRead();
+  }, [chatId, user]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
-      </div>
-    );
+    return <div className="flex justify-center items-center h-full">Loading...</div>;
   }
 
+  if (!session) {
+    return <div className="flex justify-center items-center h-full">Chat session not found.</div>;
+  }
+
+  const otherPartyName = isDoctor
+    ? (session.patient?.name || 'Patient')
+    : (session.doctor?.name || 'Doctor');
+
+  const handlePaymentDialogOpen = () => {
+    setPaymentDialogOpen(true);
+  };
+
+  const handlePaymentDialogClose = () => {
+    setPaymentDialogOpen(false);
+  };
+
   return (
-    <div className="container py-8">
-      <div className="flex flex-col space-y-4">
-        <Button 
-          variant="ghost" 
-          className="w-fit flex items-center" 
-          onClick={() => navigate('/chats')}
-        >
-          <ChevronLeft className="h-4 w-4 mr-2" />
-          Back to All Chats
-        </Button>
-        
-        <Card className="w-full max-w-4xl mx-auto">
-          <CardHeader className="flex flex-row items-center justify-between">
+    <div className="container h-screen flex flex-col">
+      {paymentDialogOpen && (
+        <PaymentDialog
+          isOpen={paymentDialogOpen}
+          onClose={handlePaymentDialogClose}
+          chatId={chatId!}
+          patientId={session.patient_id}
+          doctorId={session.doctor_id}
+        />
+      )}
+      <div className="border-b py-2 px-4 bg-white">
+        <div className="flex items-center justify-between">
+          <Button variant="ghost" size="sm" onClick={() => navigate('/chat-sessions')}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back
+          </Button>
+          <div className="flex items-center gap-2">
+            <Avatar>
+              <AvatarImage alt={otherPartyName} />
+              <AvatarFallback>{otherPartyName?.substring(0, 2).toUpperCase()}</AvatarFallback>
+            </Avatar>
             <div>
-              <CardTitle className="text-xl">
-                Chat with {session?.user?.id === chatSession?.patient_id ? doctorName : patientName}
-              </CardTitle>
-              <CardDescription>
-                {new Date(chatSession?.started_at || '').toLocaleDateString()}
-              </CardDescription>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              {chatSession?.is_free && (
-                <Badge variant="outline" className="bg-green-50 text-green-600 hover:bg-green-50">
-                  Free Consultation
-                </Badge>
-              )}
-              
-              {chatSession?.status === 'active' && (
-                <Badge variant="outline" className="bg-blue-50 text-blue-600 hover:bg-blue-50">
-                  Active
-                </Badge>
-              )}
-              
-              {chatSession?.status === 'expired' && (
-                <Badge variant="outline" className="bg-amber-50 text-amber-600 hover:bg-amber-50">
-                  Expired
-                </Badge>
-              )}
-              
-              {chatSession?.status === 'completed' && (
-                <Badge variant="outline" className="bg-gray-50 text-gray-600 hover:bg-gray-50">
-                  Completed
-                </Badge>
-              )}
-            </div>
-          </CardHeader>
-          
-          <Separator />
-          
-          <CardContent className="p-0 flex flex-col h-[400px]">
-            {isChatBlocked ? (
-              <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-                <div className="rounded-full bg-amber-100 p-3 mb-4">
-                  <DollarSign className="h-6 w-6 text-amber-600" />
-                </div>
-                <h3 className="text-lg font-semibold mb-1">Payment Required</h3>
-                <p className="text-sm text-gray-500 mb-4 max-w-md">
-                  To continue this chat, a payment of ${doctorSettings?.session_price || chatSettings?.default_session_price || 50} is required.
-                  This helps ensure quality consultations.
-                </p>
-                <Button onClick={() => setIsPaymentDialogOpen(true)}>
-                  Pay to Continue
-                </Button>
+              <div className="font-semibold">{otherPartyName}</div>
+              <div className="text-xs text-gray-500">
+                Last active: {new Date(session.last_activity).toLocaleTimeString()}
               </div>
-            ) : chatSession?.status === 'expired' ? (
-              <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-                <div className="rounded-full bg-amber-100 p-3 mb-4">
-                  <Clock className="h-6 w-6 text-amber-600" />
-                </div>
-                <h3 className="text-lg font-semibold mb-1">Chat Session Expired</h3>
-                <p className="text-sm text-gray-500 mb-4 max-w-md">
-                  This chat session has expired. You can start a new session if needed.
-                </p>
-                <Button onClick={() => navigate('/chats')}>
-                  Go to All Chats
-                </Button>
-              </div>
-            ) : (
-              <ChatMessageList 
-                messages={messages} 
-                currentUserId={session?.user?.id || ''} 
-                patientId={chatSession?.patient_id || ''}
-                doctorId={chatSession?.doctor_id || ''}
-              />
+            </div>
+            {!session.is_free && (
+              <Badge variant="secondary" className="ml-2 cursor-pointer" onClick={handlePaymentDialogOpen}>
+                <Clock className="mr-1 h-3 w-3" /> Pay
+              </Badge>
             )}
-          </CardContent>
-          
-          <ChatInput 
-            onSendMessage={handleSendMessage} 
-            isDisabled={chatSession?.status !== 'active' || isChatBlocked} 
-            disabledReason={
-              isChatBlocked ? 'Payment required to continue' :
-              chatSession?.status === 'expired' ? 'Chat session has expired' :
-              chatSession?.status === 'completed' ? 'Chat session is completed' :
-              'Chat is not available'
-            } 
-          />
-        </Card>
+          </div>
+        </div>
       </div>
-      
-      <PaymentDialog 
-        isOpen={isPaymentDialogOpen}
-        onClose={() => setIsPaymentDialogOpen(false)}
-        onPaymentComplete={handlePaymentComplete}
-        chatSettings={chatSettings}
-        doctorSettings={doctorSettings}
-        sessionId={chatSession?.id || ''}
-        patientId={chatSession?.patient_id || ''}
-        doctorId={chatSession?.doctor_id || ''}
-      />
+      <div className="flex-grow overflow-hidden">
+        <ScrollArea className="h-full">
+          <div className="flex flex-col h-full py-4 px-6 justify-end" ref={scrollRef}>
+            <ChatMessageList chatId={chatId!} userId={user?.id} isDoctor={isDoctor} />
+          </div>
+        </ScrollArea>
+      </div>
+      <div className="border-t py-2 px-4 bg-white">
+        <ChatInput chatId={chatId!} userId={user?.id} />
+      </div>
     </div>
   );
 };

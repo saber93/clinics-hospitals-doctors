@@ -1,14 +1,14 @@
-
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { toast } from 'sonner';
-import { DoctorChatSettings, ChatSettings } from '@/types/chat';
-import { getDoctorChatSettings, updateDoctorChatSettings, getChatSettings } from '@/services/chatService';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
+import { useToast } from '@/hooks/use-toast';
+import { SaveIcon } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { getDoctorChatSettings, updateDoctorChatSettings, getGlobalChatSettings } from '@/services/chat/settingsService';
 
 const DoctorChatSettingsComponent: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -18,6 +18,7 @@ const DoctorChatSettingsComponent: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [offersFreeConsultation, setOffersFreeConsultation] = useState(false);
   const [sessionPrice, setSessionPrice] = useState<number | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const checkSession = async () => {
@@ -44,7 +45,7 @@ const DoctorChatSettingsComponent: React.FC = () => {
         
         // Load settings
         const doctorSettings = await getDoctorChatSettings(data.session.user.id);
-        const chatSettings = await getChatSettings();
+        const chatSettings = await getGlobalChatSettings();
         
         setSettings(doctorSettings);
         setGlobalSettings(chatSettings);

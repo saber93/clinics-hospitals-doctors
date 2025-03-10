@@ -1,451 +1,127 @@
-
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { toast } from 'sonner';
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ChatSettings, ChatPayment, User } from '@/types/chat';
-import { getChatSettings, createChatSession } from '@/services/chatService';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { PlusCircle, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { useToast } from '@/hooks/use-toast';
+import { SaveIcon } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { getGlobalChatSettings, updateGlobalChatSettings } from '@/services/chat/settingsService';
 
-const AdminChatSettings: React.FC = () => {
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [loadingTransactions, setLoadingTransactions] = useState(true);
-  const [settings, setSettings] = useState<ChatSettings | null>(null);
-  const [currentUser, setCurrentUser] = useState<any>(null);
-  const [defaultPrice, setDefaultPrice] = useState<number>(50);
-  const [commissionRate, setCommissionRate] = useState<number>(10);
-  const [sessionDuration, setSessionDuration] = useState<number>(7);
-  const [transactions, setTransactions] = useState<ChatPayment[]>([]);
-  const [isAdmin, setIsAdmin] = useState(false);
-  
-  // New state for creating chat sessions
-  const [doctors, setDoctors] = useState<User[]>([]);
-  const [patients, setPatients] = useState<User[]>([]);
-  const [selectedDoctor, setSelectedDoctor] = useState<string>('');
-  const [selectedPatient, setSelectedPatient] = useState<string>('');
-  const [creatingSession, setCreatingSession] = useState(false);
-  const [loadingUsers, setLoadingUsers] = useState(false);
+const AdminChatSettings = () => {
+  const [defaultSessionPrice, setDefaultSessionPrice] = useState<number>(0);
+  const [defaultCommissionPercentage, setDefaultCommissionPercentage] = useState<number>(0);
+  const [sessionDurationDays, setSessionDurationDays] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const { toast } = useToast();
 
   useEffect(() => {
-    const checkSession = async () => {
+    const loadSettings = async () => {
+      setLoading(true);
       try {
-        const { data } = await supabase.auth.getSession();
-        setCurrentUser(data.session?.user || null);
-        
-        if (!data.session?.user) {
-          return;
+        const settings = await getGlobalChatSettings();
+        if (settings) {
+          setDefaultSessionPrice(settings.default_session_price);
+          setDefaultCommissionPercentage(settings.default_commission_percentage);
+          setSessionDurationDays(settings.session_duration_days);
         }
-        
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', data.session.user.id)
-          .single();
-        
-        const isUserAdmin = profile?.role === 'admin';
-        setIsAdmin(isUserAdmin);
-        
-        if (!isUserAdmin) {
-          return;
-        }
-        
-        const chatSettings = await getChatSettings();
-        setSettings(chatSettings);
-        
-        if (chatSettings) {
-          setDefaultPrice(chatSettings.default_session_price);
-          setCommissionRate(chatSettings.default_commission_percentage);
-          setSessionDuration(chatSettings.session_duration_days);
-        }
-        
-        await loadTransactions();
-        await loadUsers();
       } catch (error) {
-        console.error('Error loading admin settings:', error);
-        toast.error('Failed to load settings');
+        console.error("Error loading global chat settings:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load global chat settings.",
+          variant: "destructive",
+        });
       } finally {
         setLoading(false);
       }
     };
-    
-    checkSession();
-  }, []);
 
-  const loadTransactions = async () => {
-    setLoadingTransactions(true);
-    try {
-      const { data, error } = await supabase
-        .from('chat_payments')
-        .select(`
-          *,
-          patient:profiles!chat_payments_patient_id_fkey(name),
-          doctor:profiles!chat_payments_doctor_id_fkey(name)
-        `)
-        .order('created_at', { ascending: false })
-        .limit(10);
-      
-      if (error) throw error;
-      
-      const typedData = data.map(payment => {
-        const safePayment: ChatPayment = {
-          ...payment,
-          payment_status: payment.payment_status as "pending" | "completed" | "failed",
-          patient: payment.patient && !('error' in payment.patient) ? payment.patient : null,
-          doctor: payment.doctor && !('error' in payment.doctor) ? payment.doctor : null
-        };
-        return safePayment;
-      });
-      
-      setTransactions(typedData);
-    } catch (error) {
-      console.error('Error loading transactions:', error);
-    } finally {
-      setLoadingTransactions(false);
-    }
-  };
-
-  const loadUsers = async () => {
-    setLoadingUsers(true);
-    try {
-      // Fetch doctors (both 'doctor' and 'vendor' roles)
-      const { data: doctorsData, error: doctorsError } = await supabase
-        .from('profiles')
-        .select('id, name, role')
-        .or('role.eq.doctor,role.eq.vendor');
-        
-      if (doctorsError) throw doctorsError;
-      
-      // Fetch patients (client role)
-      const { data: patientsData, error: patientsError } = await supabase
-        .from('profiles')
-        .select('id, name, role')
-        .eq('role', 'client');
-        
-      if (patientsError) throw patientsError;
-      
-      setDoctors(doctorsData as User[]);
-      setPatients(patientsData as User[]);
-    } catch (error) {
-      console.error('Error loading users:', error);
-      toast.error('Failed to load users');
-    } finally {
-      setLoadingUsers(false);
-    }
-  };
+    loadSettings();
+  }, [toast]);
 
   const handleSaveSettings = async () => {
-    if (!currentUser || saving || !isAdmin) return;
-    
-    setSaving(true);
     try {
-      const { data, error } = await supabase
-        .from('chat_settings')
-        .update({
-          default_session_price: defaultPrice,
-          default_commission_percentage: commissionRate,
-          session_duration_days: sessionDuration,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', settings?.id)
-        .select()
-        .single();
-      
-      if (error) throw error;
-      
-      setSettings(data as ChatSettings);
-      toast.success('Settings saved successfully');
+      setLoading(true);
+      await updateGlobalChatSettings({
+        default_session_price: defaultSessionPrice,
+        default_commission_percentage: defaultCommissionPercentage,
+        session_duration_days: sessionDurationDays,
+      });
+
+      toast({
+        title: "Success",
+        description: "Global chat settings updated successfully.",
+      });
     } catch (error) {
-      console.error('Error saving settings:', error);
-      toast.error('Failed to save settings');
+      console.error("Error updating global chat settings:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update global chat settings.",
+        variant: "destructive",
+      });
     } finally {
-      setSaving(false);
+      setLoading(false);
     }
   };
-
-  const handleCreateChatSession = async () => {
-    if (!selectedDoctor || !selectedPatient) {
-      toast.error('Please select both a doctor and a patient');
-      return;
-    }
-    
-    setCreatingSession(true);
-    try {
-      const result = await createChatSession(selectedPatient, selectedDoctor);
-      if (result) {
-        toast.success('Chat session created successfully');
-        setSelectedDoctor('');
-        setSelectedPatient('');
-      } else {
-        toast.error('Failed to create chat session');
-      }
-    } catch (error) {
-      console.error('Error creating chat session:', error);
-      toast.error('Failed to create chat session');
-    } finally {
-      setCreatingSession(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center py-8">
-        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="text-center py-8">
-        <p>You don't have permission to access admin settings</p>
-      </div>
-    );
-  }
 
   return (
-    <div className="space-y-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>Global Chat Settings</CardTitle>
-          <CardDescription>
-            Configure system-wide settings for the chat feature
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="default-price" className="text-base font-medium">
-              Default Session Price
-            </Label>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                $
-              </span>
+    <div className="container py-8">
+      <div className="max-w-3xl mx-auto">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold">Admin Chat Settings</CardTitle>
+            <CardDescription>
+              Configure global settings for chat sessions.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="sessionPrice">Default Session Price</Label>
               <Input
-                id="default-price"
                 type="number"
-                min="0"
-                step="0.01"
-                className="pl-7"
-                value={defaultPrice}
-                onChange={(e) => setDefaultPrice(parseFloat(e.target.value) || 0)}
+                id="sessionPrice"
+                value={defaultSessionPrice}
+                onChange={(e) => setDefaultSessionPrice(Number(e.target.value))}
+                placeholder="Enter default session price"
               />
             </div>
-            <p className="text-sm text-gray-500">
-              Default price for chat sessions if a doctor doesn't set their own price
-            </p>
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="commission-rate" className="text-base font-medium">
-              Commission Rate (%)
-            </Label>
-            <div className="relative">
+            <div className="grid gap-2">
+              <Label htmlFor="commissionPercentage">Default Commission Percentage</Label>
               <Input
-                id="commission-rate"
                 type="number"
-                min="0"
-                max="100"
-                step="0.1"
-                value={commissionRate}
-                onChange={(e) => setCommissionRate(parseFloat(e.target.value) || 0)}
+                id="commissionPercentage"
+                value={defaultCommissionPercentage}
+                onChange={(e) => setDefaultCommissionPercentage(Number(e.target.value))}
+                placeholder="Enter default commission percentage"
               />
-              <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500">
-                %
-              </span>
             </div>
-            <p className="text-sm text-gray-500">
-              Percentage of each payment that will be taken as commission
-            </p>
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="session-duration" className="text-base font-medium">
-              Session Duration (Days)
-            </Label>
-            <Input
-              id="session-duration"
-              type="number"
-              min="1"
-              step="1"
-              value={sessionDuration}
-              onChange={(e) => setSessionDuration(parseInt(e.target.value) || 1)}
-            />
-            <p className="text-sm text-gray-500">
-              Number of days a chat session remains active before expiring
-            </p>
-          </div>
-        </CardContent>
-        
-        <CardFooter>
-          <Button 
-            className="w-full" 
-            onClick={handleSaveSettings}
-            disabled={saving}
-          >
-            {saving ? (
-              <div className="flex items-center">
-                <div className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full"></div>
-                Saving...
-              </div>
-            ) : 'Save Settings'}
-          </Button>
-        </CardFooter>
-      </Card>
-      
-      {/* New Card for Creating Chat Sessions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Create Chat Session</CardTitle>
-          <CardDescription>
-            Assign doctors to patients to start new chat sessions
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="doctor-select">Doctor</Label>
-              <Select
-                value={selectedDoctor}
-                onValueChange={setSelectedDoctor}
-              >
-                <SelectTrigger id="doctor-select" className="w-full">
-                  <SelectValue placeholder="Select a doctor" />
-                </SelectTrigger>
-                <SelectContent>
-                  {doctors.map((doctor) => (
-                    <SelectItem key={doctor.id} value={doctor.id}>
-                      {doctor.name || 'Unnamed doctor'} ({doctor.role})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="grid gap-2">
+              <Label htmlFor="sessionDuration">Session Duration (Days)</Label>
+              <Input
+                type="number"
+                id="sessionDuration"
+                value={sessionDurationDays}
+                onChange={(e) => setSessionDurationDays(Number(e.target.value))}
+                placeholder="Enter session duration in days"
+              />
             </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="patient-select">Patient</Label>
-              <Select
-                value={selectedPatient}
-                onValueChange={setSelectedPatient}
-              >
-                <SelectTrigger id="patient-select" className="w-full">
-                  <SelectValue placeholder="Select a patient" />
-                </SelectTrigger>
-                <SelectContent>
-                  {patients.map((patient) => (
-                    <SelectItem key={patient.id} value={patient.id}>
-                      {patient.name || 'Unnamed patient'}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          <div className="flex justify-end">
-            <Button
-              onClick={loadUsers}
-              variant="outline"
-              size="icon"
-              className="mr-2"
-              title="Refresh user lists"
-            >
-              <RefreshCw className="h-4 w-4" />
-            </Button>
-            
-            <Button
-              onClick={handleCreateChatSession}
-              disabled={creatingSession || !selectedDoctor || !selectedPatient}
-              className="flex items-center"
-            >
-              {creatingSession ? (
-                <div className="flex items-center">
-                  <div className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full"></div>
-                  Creating...
-                </div>
+          </CardContent>
+          <CardFooter className="flex justify-end">
+            <Button onClick={handleSaveSettings} disabled={loading}>
+              {loading ? (
+                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
               ) : (
                 <>
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  Create Chat Session
+                  <SaveIcon className="mr-2 h-4 w-4" />
+                  Save Changes
                 </>
               )}
             </Button>
-          </div>
-        </CardContent>
-      </Card>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Transactions</CardTitle>
-          <CardDescription>
-            Last 10 payment transactions in the system
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent>
-          {loadingTransactions ? (
-            <div className="flex justify-center py-8">
-              <div className="animate-spin h-6 w-6 border-4 border-primary border-t-transparent rounded-full"></div>
-            </div>
-          ) : transactions.length === 0 ? (
-            <p className="text-center py-4 text-gray-500">No transactions found</p>
-          ) : (
-            <Table>
-              <TableCaption>Recent payment transactions</TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Patient</TableHead>
-                  <TableHead>Doctor</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Commission</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {transactions.map((transaction) => (
-                  <TableRow key={transaction.id}>
-                    <TableCell>
-                      {new Date(transaction.created_at).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>{transaction.patient?.name || 'Unknown'}</TableCell>
-                    <TableCell>{transaction.doctor?.name || 'Unknown'}</TableCell>
-                    <TableCell>${transaction.amount.toFixed(2)}</TableCell>
-                    <TableCell>${transaction.commission_amount.toFixed(2)}</TableCell>
-                    <TableCell>
-                      <span className={`px-2 py-1 rounded text-xs ${
-                        transaction.payment_status === 'completed' ? 'bg-green-100 text-green-800' :
-                        transaction.payment_status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
-                        {transaction.payment_status}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-        
-        <CardFooter>
-          <Button 
-            variant="outline" 
-            className="w-full" 
-            onClick={loadTransactions}
-            disabled={loadingTransactions}
-          >
-            Refresh Transactions
-          </Button>
-        </CardFooter>
-      </Card>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   );
 };
