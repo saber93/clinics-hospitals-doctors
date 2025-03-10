@@ -1,69 +1,88 @@
 
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ChatInputProps {
-  onSendMessage: (message: string) => Promise<void>;
-  isDisabled?: boolean;
-  disabledReason?: string;
+  sessionId: string;
+  senderId: string;
+  onMessageSent?: () => void;
 }
 
 const ChatInput: React.FC<ChatInputProps> = ({ 
-  onSendMessage, 
-  isDisabled = false,
-  disabledReason = 'Chat is disabled'
+  sessionId, 
+  senderId,
+  onMessageSent 
 }) => {
   const [message, setMessage] = useState('');
-  const [isSending, setIsSending] = useState(false);
+  const [sending, setSending] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!message.trim() || isDisabled || isSending) return;
-
-    setIsSending(true);
+    
+    if (!message.trim()) return;
+    if (!senderId) {
+      toast.error('You must be logged in to send messages');
+      return;
+    }
+    
+    setSending(true);
+    
     try {
-      await onSendMessage(message);
+      const { error } = await supabase
+        .from('chat_messages')
+        .insert({
+          session_id: sessionId,
+          sender_id: senderId,
+          message: message.trim(),
+          is_read: false
+        });
+        
+      if (error) throw error;
+      
+      // Update session's last activity
+      await supabase
+        .from('chat_sessions')
+        .update({ last_activity: new Date().toISOString() })
+        .eq('id', sessionId);
+      
       setMessage('');
+      if (onMessageSent) onMessageSent();
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast.error('Failed to send message');
     } finally {
-      setIsSending(false);
+      setSending(false);
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSubmit(e);
+      handleSendMessage(e);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border-t flex gap-2 items-end">
-      {isDisabled ? (
-        <div className="w-full bg-gray-100 rounded-lg p-3 text-sm text-gray-500">
-          {disabledReason}
-        </div>
-      ) : (
-        <>
-          <Textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Type your message..."
-            className="flex-1 resize-none focus-visible:ring-1"
-            rows={1}
-            disabled={isDisabled || isSending}
-          />
-          <Button 
-            type="submit" 
-            size="icon" 
-            disabled={!message.trim() || isDisabled || isSending}
-          >
-            <Send className="h-4 w-4" />
-          </Button>
-        </>
-      )}
+    <form onSubmit={handleSendMessage} className="flex items-end gap-2">
+      <Textarea
+        className="resize-none min-h-[80px]"
+        placeholder="Type your message..."
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={handleKeyDown}
+        disabled={sending || !senderId}
+      />
+      <Button type="submit" size="icon" disabled={sending || !message.trim() || !senderId}>
+        {sending ? (
+          <div className="animate-spin h-5 w-5 border-2 border-current border-t-transparent rounded-full" />
+        ) : (
+          <Send className="h-5 w-5" />
+        )}
+      </Button>
     </form>
   );
 };

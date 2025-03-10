@@ -60,6 +60,72 @@ export const createChatSession = async (patientId: string, doctorId: string, isF
   }
 };
 
+// Get a chat session by ID
+export const getChatSessionById = async (sessionId: string) => {
+  try {
+    const { data, error } = await supabase
+      .from('chat_sessions')
+      .select(`
+        *,
+        profiles!chat_sessions_patient_id_fkey(name),
+        doctor:profiles!chat_sessions_doctor_id_fkey(name)
+      `)
+      .eq('id', sessionId)
+      .single();
+
+    if (error) throw error;
+    
+    return {
+      ...data,
+      status: data.status as "active" | "expired" | "completed",
+      patient: data.profiles,
+      doctor: data.doctor
+    } as ChatSession;
+  } catch (error) {
+    console.error('Error fetching chat session:', error);
+    toast.error('Failed to load chat session');
+    return null;
+  }
+};
+
+// Update session last activity timestamp
+export const updateSessionActivity = async (sessionId: string) => {
+  try {
+    const { error } = await supabase
+      .from('chat_sessions')
+      .update({
+        last_activity: new Date().toISOString()
+      })
+      .eq('id', sessionId);
+
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error('Error updating session activity:', error);
+    return false;
+  }
+};
+
+// Mark all messages in a session as read for a user
+export const markAllMessagesAsRead = async (sessionId: string, userId: string) => {
+  try {
+    const { error } = await supabase
+      .from('chat_messages')
+      .update({
+        is_read: true
+      })
+      .eq('session_id', sessionId)
+      .neq('sender_id', userId)
+      .eq('is_read', false);
+
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error('Error marking messages as read:', error);
+    return false;
+  }
+};
+
 // Check if a free session exists between patient and doctor
 export const checkFreeSessionExists = async (patientId: string, doctorId: string) => {
   try {

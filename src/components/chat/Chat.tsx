@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -13,12 +14,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { getChatSessionById, updateSessionActivity, markAllMessagesAsRead } from '@/services/chat/sessionService';
 import { ChatSession } from '@/types/chat';
 
-interface Params {
-  chatId?: string;
+// Fix the Params interface to satisfy constraints
+interface RouteParams {
+  chatId: string;
 }
 
 const Chat: React.FC = () => {
-  const { chatId } = useParams<Params>();
+  const { chatId } = useParams<keyof RouteParams>() as RouteParams;
   const navigate = useNavigate();
   const { toast } = useToast();
   const [session, setSession] = useState<ChatSession | null>(null);
@@ -137,13 +139,26 @@ const Chat: React.FC = () => {
     setPaymentDialogOpen(false);
   };
 
+  const handlePaymentComplete = (success: boolean, transactionId?: string) => {
+    if (success) {
+      toast({
+        title: "Success",
+        description: "Payment completed successfully."
+      });
+      // Additional logic after successful payment if needed
+    }
+  };
+
   return (
     <div className="container h-screen flex flex-col">
       {paymentDialogOpen && (
         <PaymentDialog
           isOpen={paymentDialogOpen}
           onClose={handlePaymentDialogClose}
-          chatId={chatId!}
+          onPaymentComplete={handlePaymentComplete}
+          chatSettings={null}
+          doctorSettings={null}
+          sessionId={chatId}
           patientId={session.patient_id}
           doctorId={session.doctor_id}
         />
@@ -176,12 +191,23 @@ const Chat: React.FC = () => {
       <div className="flex-grow overflow-hidden">
         <ScrollArea className="h-full">
           <div className="flex flex-col h-full py-4 px-6 justify-end" ref={scrollRef}>
-            <ChatMessageList chatId={chatId!} userId={user?.id} isDoctor={isDoctor} />
+            <ChatMessageList 
+              currentUserId={user?.id}
+              patientId={session.patient_id}
+              doctorId={session.doctor_id}
+              sessionId={chatId}
+            />
           </div>
         </ScrollArea>
       </div>
       <div className="border-t py-2 px-4 bg-white">
-        <ChatInput chatId={chatId!} userId={user?.id} />
+        <ChatInput 
+          sessionId={chatId} 
+          senderId={user?.id} 
+          onMessageSent={() => {
+            scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+          }}
+        />
       </div>
     </div>
   );

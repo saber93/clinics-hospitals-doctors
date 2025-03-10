@@ -1,23 +1,54 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ChatMessage } from '@/types/chat';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ChatMessageListProps {
-  messages: ChatMessage[];
+  messages?: ChatMessage[];
   currentUserId: string;
   patientId: string;
   doctorId: string;
+  sessionId?: string;
 }
 
 const ChatMessageList: React.FC<ChatMessageListProps> = ({ 
-  messages, 
+  messages: initialMessages, 
   currentUserId,
   patientId,
-  doctorId
+  doctorId,
+  sessionId,
 }) => {
+  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages || []);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Fetch messages if they weren't provided and we have a sessionId
+    const loadMessages = async () => {
+      if (!sessionId) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('chat_messages')
+          .select('*')
+          .eq('session_id', sessionId)
+          .order('created_at', { ascending: true });
+          
+        if (error) throw error;
+        setMessages(data as ChatMessage[]);
+      } catch (error) {
+        console.error('Error loading messages:', error);
+      }
+    };
+    
+    // If we have a session ID but no messages, load them
+    if ((!initialMessages || initialMessages.length === 0) && sessionId) {
+      loadMessages();
+    } else if (initialMessages) {
+      setMessages(initialMessages);
+    }
+  }, [initialMessages, sessionId]);
 
   // Scroll to bottom when new messages are added
   useEffect(() => {

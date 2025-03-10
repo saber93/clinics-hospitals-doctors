@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -9,11 +10,12 @@ import { useToast } from '@/hooks/use-toast';
 import { SaveIcon } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { getDoctorChatSettings, updateDoctorChatSettings, getGlobalChatSettings } from '@/services/chat/settingsService';
+import { DoctorChatSettings as DoctorChatSettingsType, ChatSettings } from '@/types/chat';
 
 const DoctorChatSettingsComponent: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [settings, setSettings] = useState<DoctorChatSettings | null>(null);
+  const [settings, setSettings] = useState<DoctorChatSettingsType | null>(null);
   const [globalSettings, setGlobalSettings] = useState<ChatSettings | null>(null);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [offersFreeConsultation, setOffersFreeConsultation] = useState(false);
@@ -27,7 +29,11 @@ const DoctorChatSettingsComponent: React.FC = () => {
         setCurrentUser(data.session?.user || null);
         
         if (!data.session?.user) {
-          toast.error('Please log in to access settings');
+          toast({
+            title: "Error",
+            description: "Please log in to access settings",
+            variant: "destructive"
+          });
           return;
         }
         
@@ -39,7 +45,11 @@ const DoctorChatSettingsComponent: React.FC = () => {
           .single();
         
         if (profile?.role !== 'vendor') {
-          toast.error('Only doctors can access these settings');
+          toast({
+            title: "Error",
+            description: "Only doctors can access these settings",
+            variant: "destructive"
+          });
           return;
         }
         
@@ -58,7 +68,11 @@ const DoctorChatSettingsComponent: React.FC = () => {
         }
       } catch (error) {
         console.error('Error loading settings:', error);
-        toast.error('Failed to load settings');
+        toast({
+          title: "Error",
+          description: "Failed to load settings",
+          variant: "destructive"
+        });
       } finally {
         setLoading(false);
       }
@@ -80,11 +94,18 @@ const DoctorChatSettingsComponent: React.FC = () => {
       
       if (updated) {
         setSettings(updated);
-        toast.success('Settings saved successfully');
+        toast({
+          title: "Success",
+          description: "Settings saved successfully"
+        });
       }
     } catch (error) {
       console.error('Error saving settings:', error);
-      toast.error('Failed to save settings');
+      toast({
+        title: "Error",
+        description: "Failed to save settings",
+        variant: "destructive"
+      });
     } finally {
       setSaving(false);
     }
