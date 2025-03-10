@@ -1,4 +1,5 @@
 
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ChatSession } from "@/types/chat";
@@ -19,13 +20,24 @@ export const fetchUserChatSessions = async (userId: string, isDoctor: boolean = 
 
     if (error) throw error;
     
-    // Transform the data to match our ChatSession type
-    const typedData = data.map(session => ({
-      ...session,
-      status: session.status as "active" | "expired" | "completed",
-      patient: session.profiles ? { name: session.profiles.name } : null,
-      doctor: session.doctor ? { name: session.doctor.name } : null
-    })) as ChatSession[];
+    // Transform the data to match our ChatSession type with proper type safety
+    const typedData = data.map(session => {
+      // Safely access nested properties checking for existence first
+      const patientData = session.profiles && !('error' in session.profiles) 
+        ? { name: session.profiles.name } 
+        : null;
+        
+      const doctorData = session.doctor && !('error' in session.doctor) 
+        ? { name: session.doctor.name } 
+        : null;
+        
+      return {
+        ...session,
+        status: session.status as "active" | "expired" | "completed",
+        patient: patientData,
+        doctor: doctorData
+      };
+    }) as ChatSession[];
     
     return typedData;
   } catch (error) {
@@ -79,12 +91,21 @@ export const getChatSessionById = async (sessionId: string) => {
       return null;
     }
     
-    // Properly handle potentially missing relations
+    // Safely handle potentially missing or error relations
+    const patientData = data.profiles && !('error' in data.profiles) 
+      ? { name: data.profiles.name } 
+      : null;
+      
+    const doctorData = data.doctor && !('error' in data.doctor) 
+      ? { name: data.doctor.name } 
+      : null;
+    
+    // Create a properly formatted session object
     const formattedSession: ChatSession = {
       ...data,
       status: data.status as "active" | "expired" | "completed",
-      patient: data.profiles ? { name: data.profiles.name } : null,
-      doctor: data.doctor ? { name: data.doctor.name } : null
+      patient: patientData,
+      doctor: doctorData
     };
     
     return formattedSession;
