@@ -39,11 +39,15 @@ export const getUserReservations = async (
       status: (item.status as 'pending' | 'confirmed' | 'cancelled' | 'completed') || 'pending',
       created_at: item.created_at || '',
       updated_at: item.updated_at || '',
-      clients: { name: item.clients?.name || 'Unknown Client' },
-      vendors: { name: item.vendors?.name || 'Unknown Vendor' },
+      clients: { 
+        name: item.clients && typeof item.clients === 'object' ? (item.clients as any).name || 'Unknown Client' : 'Unknown Client' 
+      },
+      vendors: { 
+        name: item.vendors && typeof item.vendors === 'object' ? (item.vendors as any).name || 'Unknown Vendor' : 'Unknown Vendor' 
+      },
       services: { 
-        name: item.services?.name || 'Unknown Service',
-        price: item.services?.price
+        name: item.services && typeof item.services === 'object' ? (item.services as any).name || 'Unknown Service' : 'Unknown Service',
+        price: item.services && typeof item.services === 'object' ? (item.services as any).price : undefined
       }
     }));
     

@@ -1,3 +1,4 @@
+
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createComprehensiveDoctorData } from "./seedServiceData";
@@ -16,7 +17,7 @@ interface UserCreationResult {
   error?: string;
 }
 
-// Define the edge function response structure
+// Define the edge function response data structure
 interface EdgeFunctionResponseData {
   userId?: string;
   success: boolean;
@@ -30,7 +31,7 @@ interface EdgeFunctionResponse {
   error: Error | null;
 }
 
-// Define explicit return type for the function to prevent recursive type inference
+// Export function with explicit return type
 export const seedTestData = async (): Promise<SeedDataResult> => {
   try {
     toast.loading("Creating test accounts and sample data...");
@@ -81,7 +82,7 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
   }
 };
 
-// Helper function with fully explicit types to prevent type recursion
+// Helper function with fully explicit types
 const createUserSafely = async (
   email: string, 
   password: string, 
@@ -90,21 +91,18 @@ const createUserSafely = async (
 ): Promise<UserCreationResult> => {
   try {
     // Call edge function to create user with service role
-    const response = await supabase.functions.invoke('create-test-user', {
+    const response: EdgeFunctionResponse = await supabase.functions.invoke('create-test-user', {
       body: { email, password, role, name }
-    });
+    }) as EdgeFunctionResponse;
     
-    // Fixed to ensure correct typing
-    const { data, error } = response as EdgeFunctionResponse;
-    
-    if (error || !data?.success) {
-      throw new Error(error?.message || data?.error || 'Failed to create user');
+    if (response.error || !response.data?.success) {
+      throw new Error(response.error?.message || response.data?.error || 'Failed to create user');
     }
     
     return {
-      userId: data.userId,
-      success: data.success,
-      error: data.error
+      userId: response.data.userId,
+      success: response.data.success,
+      error: response.data.error
     };
   } catch (error: any) {
     console.error(`Error creating ${role} account:`, error);
@@ -112,5 +110,5 @@ const createUserSafely = async (
   }
 };
 
-import { getUserReservations } from '@/utils/reservations';
+// Fix the import but remove the circular reference
 import { EnrichedReservation } from '@/types/reservations';
