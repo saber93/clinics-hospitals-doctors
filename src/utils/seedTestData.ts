@@ -68,7 +68,7 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
   }
 };
 
-// Helper function with explicit types and simplified response handling
+// Simplified helper function with explicit types
 const createUserSafely = async (
   email: string, 
   password: string, 
@@ -76,22 +76,20 @@ const createUserSafely = async (
   name: string
 ): Promise<UserCreationResult> => {
   try {
-    // Call edge function to create user with service role
-    const { data, error } = await supabase.functions.invoke('create-test-user', {
+    // Use specific type annotation for the response to avoid deep inference
+    const response = await supabase.functions.invoke('create-test-user', {
       body: { email, password, role, name }
     });
     
-    if (!data || error) {
-      throw new Error(error?.message || 'Failed to create user');
+    if (!response.data || response.error) {
+      throw new Error(response.error?.message || 'Failed to create user');
     }
     
-    // Use explicit casting without complex type inference
-    const userData = data as Record<string, any>;
-    
+    // Use simple literal object to avoid complex type inference
     return { 
-      userId: userData.userId as string | undefined,
-      success: !!userData.success,
-      error: userData.error as string | undefined
+      userId: response.data.userId as string | undefined,
+      success: Boolean(response.data.success),
+      error: response.data.error as string | undefined
     };
   } catch (error: any) {
     console.error(`Error creating ${role} account:`, error);
