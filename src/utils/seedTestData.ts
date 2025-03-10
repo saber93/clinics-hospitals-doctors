@@ -1,15 +1,7 @@
 
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { 
-  createChatSettings, 
-  createDoctorChatSettings, 
-  createVendorDoctorSettings, 
-  createFreeChatSession, 
-  createPaidChatSession 
-} from "./chat";
-import { createServices, createReservations, createComprehensiveDoctorData } from "./seedServiceData";
-import { createTestUser } from "./seedUserData";
+import { createComprehensiveDoctorData } from "./seedServiceData";
 
 export const seedTestData = async () => {
   try {
@@ -61,7 +53,14 @@ export const seedTestData = async () => {
   }
 };
 
-const createUserSafely = async (email: string, password: string, role: string, name: string) => {
+// The type signature here was causing infinite recursion
+// Explicitly define the return type to avoid excessive type instantiation
+const createUserSafely = async (
+  email: string, 
+  password: string, 
+  role: string, 
+  name: string
+): Promise<{ userId?: string, success?: boolean, error?: string }> => {
   try {
     // Call edge function to create user with service role
     const { data, error } = await supabase.functions.invoke('create-test-user', {

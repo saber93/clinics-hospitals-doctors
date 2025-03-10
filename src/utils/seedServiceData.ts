@@ -1,7 +1,10 @@
+
+import { supabase } from "@/integrations/supabase/client";
 import { createDemoPatients } from "./seed/patients";
 import { createDoctorServices } from "./seed/services";
 import { createAppointments } from "./seed/appointments";
 import { createDemoPayments } from "./seed/payments";
+import { formatDateString } from "./dateUtils";
 
 /**
  * Create comprehensive data for a doctor to showcase day-to-day tasks
