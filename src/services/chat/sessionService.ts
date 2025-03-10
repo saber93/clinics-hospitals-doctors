@@ -21,20 +21,25 @@ export const fetchUserChatSessions = async (userId: string, isDoctor: boolean = 
     
     // Transform the data to match our ChatSession type with proper type safety
     const typedData = data.map(session => {
-      // Safely access nested properties checking for existence first
-      const patientData = session.profiles && !('error' in session.profiles) 
-        ? { name: session.profiles.name } 
-        : null;
-        
-      const doctorData = session.doctor && !('error' in session.doctor) 
-        ? { name: session.doctor.name } 
-        : null;
+      // Check if profiles exists and has a name property
+      const patientName = session.profiles && 
+        typeof session.profiles === 'object' && 
+        !('error' in session.profiles) && 
+        'name' in session.profiles ? 
+        session.profiles.name : null;
+      
+      // Check if doctor exists and has a name property
+      const doctorName = session.doctor && 
+        typeof session.doctor === 'object' && 
+        !('error' in session.doctor) && 
+        'name' in session.doctor ? 
+        session.doctor.name : null;
         
       return {
         ...session,
         status: session.status as "active" | "expired" | "completed",
-        patient: patientData,
-        doctor: doctorData
+        patient: patientName !== null ? { name: patientName } : null,
+        doctor: doctorName !== null ? { name: doctorName } : null
       };
     }) as ChatSession[];
     
@@ -90,21 +95,26 @@ export const getChatSessionById = async (sessionId: string) => {
       return null;
     }
     
-    // Safely handle potentially missing or error relations
-    const patientData = data.profiles && !('error' in data.profiles) 
-      ? { name: data.profiles.name } 
-      : null;
-      
-    const doctorData = data.doctor && !('error' in data.doctor) 
-      ? { name: data.doctor.name } 
-      : null;
+    // Check if profiles exists and has a name property
+    const patientName = data.profiles && 
+      typeof data.profiles === 'object' && 
+      !('error' in data.profiles) && 
+      'name' in data.profiles ? 
+      data.profiles.name : null;
+    
+    // Check if doctor exists and has a name property
+    const doctorName = data.doctor && 
+      typeof data.doctor === 'object' && 
+      !('error' in data.doctor) && 
+      'name' in data.doctor ? 
+      data.doctor.name : null;
     
     // Create a properly formatted session object
     const formattedSession: ChatSession = {
       ...data,
       status: data.status as "active" | "expired" | "completed",
-      patient: patientData,
-      doctor: doctorData
+      patient: patientName !== null ? { name: patientName } : null,
+      doctor: doctorName !== null ? { name: doctorName } : null
     };
     
     return formattedSession;
