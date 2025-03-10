@@ -58,13 +58,19 @@ export const seedTestData = async (): Promise<{
   }
 };
 
-// Helper function with explicit return type and parameter types to prevent type recursion
+// Helper function with fully explicit types to prevent type recursion
+interface UserCreationResult {
+  userId?: string;
+  success?: boolean;
+  error?: string;
+}
+
 const createUserSafely = async (
   email: string, 
   password: string, 
   role: string, 
   name: string
-): Promise<{ userId?: string; success?: boolean; error?: string }> => {
+): Promise<UserCreationResult> => {
   try {
     // Call edge function to create user with service role
     const { data, error } = await supabase.functions.invoke('create-test-user', {
