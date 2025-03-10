@@ -1,4 +1,3 @@
-
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createComprehensiveDoctorData } from "./seedServiceData";
@@ -12,13 +11,18 @@ interface SeedDataResult {
 
 interface UserCreationResult {
   userId?: string;
-  success?: boolean;
+  success: boolean;
   error?: string;
 }
 
 interface EdgeFunctionResponse {
-  data: UserCreationResult;
-  error: Error | null;
+  data: {
+    userId?: string;
+    success: boolean;
+    error?: string;
+    message?: string;
+  };
+  error: string | null;
 }
 
 // Define explicit return type for the function to prevent recursive type inference
@@ -86,7 +90,7 @@ const createUserSafely = async (
     });
     
     if (error || !data?.success) {
-      throw new Error(error?.message || data?.error || 'Failed to create user');
+      throw new Error(error?.toString() || data?.error || 'Failed to create user');
     }
     
     return {
