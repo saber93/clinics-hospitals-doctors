@@ -48,3 +48,51 @@ export const getRelativeTime = (timestamp: string | Date): string => {
     return formatReadableDate(date);
   }
 };
+
+/**
+ * Get an array of dates for the next n days
+ */
+export const getNextNDays = (n: number): Date[] => {
+  const dates: Date[] = [];
+  const today = new Date();
+  
+  for (let i = 0; i < n; i++) {
+    const date = new Date(today);
+    date.setDate(date.getDate() + i);
+    dates.push(date);
+  }
+  
+  return dates;
+};
+
+/**
+ * Get random time slot (for demo data)
+ */
+export const getRandomTimeSlot = (): string => {
+  const timeSlots = [
+    '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', 
+    '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'
+  ];
+  
+  return timeSlots[Math.floor(Math.random() * timeSlots.length)];
+};
+
+/**
+ * Get a random date within the next n days
+ */
+export const getRandomFutureDate = (daysAhead: number): Date => {
+  const today = new Date();
+  const futureDate = new Date();
+  futureDate.setDate(today.getDate() + Math.floor(Math.random() * daysAhead) + 1);
+  return futureDate;
+};
+
+/**
+ * Get a random past date within the last n days
+ */
+export const getRandomPastDate = (daysBack: number): Date => {
+  const today = new Date();
+  const pastDate = new Date();
+  pastDate.setDate(today.getDate() - Math.floor(Math.random() * daysBack) - 1);
+  return pastDate;
+};

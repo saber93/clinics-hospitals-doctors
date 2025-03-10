@@ -7,6 +7,7 @@ import DoctorDashboardTabs from "@/components/doctor/DoctorDashboardTabs";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { seedTestData } from "@/utils/seedTestData";
+import { AlertCircle } from "lucide-react";
 
 const DoctorDashboard = () => {
   const { 
@@ -74,17 +75,45 @@ const DoctorDashboard = () => {
     );
   }
 
+  // Check if there is no data to display
+  const hasNoData = 
+    stats.totalPatients === 0 && 
+    stats.pendingAppointments === 0 && 
+    services.length === 0 && 
+    recentPayments.length === 0;
+
   return (
     <div className="p-6">
       <DashboardHeader />
       
+      {hasNoData && (
+        <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg mb-6 flex items-start gap-3">
+          <AlertCircle className="h-5 w-5 text-amber-500 mt-0.5" />
+          <div>
+            <h3 className="font-medium text-amber-800">Dashboard is empty</h3>
+            <p className="text-amber-700 text-sm mt-1">
+              Click the button below to create comprehensive demo data to see how a doctor can manage their day-to-day tasks.
+            </p>
+            <Button
+              onClick={handleSeedTestData}
+              variant="default"
+              className="mt-3 bg-amber-600 hover:bg-amber-700"
+            >
+              Generate Doctor Demo Data
+            </Button>
+          </div>
+        </div>
+      )}
+      
       <DoctorStats stats={stats} />
       
-      <div className="mt-6 mb-4 flex justify-end">
-        <Button onClick={handleSeedTestData} variant="outline" size="sm">
-          Refresh Demo Data
-        </Button>
-      </div>
+      {!hasNoData && (
+        <div className="mt-6 mb-4 flex justify-end">
+          <Button onClick={handleSeedTestData} variant="outline" size="sm">
+            Refresh Demo Data
+          </Button>
+        </div>
+      )}
       
       <DoctorDashboardTabs
         userId={user?.id}

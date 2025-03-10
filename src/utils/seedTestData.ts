@@ -7,7 +7,7 @@ import {
   createFreeChatSession, 
   createPaidChatSession 
 } from "./chat";
-import { createServices, createReservations } from "./seedServiceData";
+import { createServices, createReservations, createComprehensiveDoctorData } from "./seedServiceData";
 import { createTestUser } from "./seedUserData";
 
 /**
@@ -31,6 +31,11 @@ export const seedTestData = async () => {
     
     const clientData = await createUserSafely('client@skinnect.com', 'Client123!', 'client', 'Client User');
     console.log("Client account created:", clientData?.userId || 'Failed');
+    
+    // Create doctor with comprehensive data for a full demo experience
+    if (doctorData?.userId && clientData?.userId) {
+      await createComprehensiveDoctorData(doctorData.userId, clientData.userId);
+    }
     
     // Create chat settings
     await createChatSettings();
