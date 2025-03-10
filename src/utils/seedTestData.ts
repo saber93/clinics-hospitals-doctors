@@ -1,7 +1,7 @@
-
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createComprehensiveDoctorData } from "./seedServiceData";
+import type { EnrichedReservation } from '@/types/reservations';
 
 // Define all possible return types explicitly
 interface SeedDataResult {
@@ -109,6 +109,3 @@ const createUserSafely = async (
     throw error;
   }
 };
-
-// Fix the import but remove the circular reference
-import { EnrichedReservation } from '@/types/reservations';
