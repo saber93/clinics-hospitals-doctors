@@ -82,18 +82,16 @@ const createUserSafely = async (
       body: { email, password, role, name }
     });
     
-    if (!response.data || (response.error)) {
+    if (!response.data || response.error) {
       throw new Error(response.error?.message || 'Failed to create user');
     }
     
-    // Safely type-cast the response data
-    const responseData = response.data as any;
+    // Type assertion for response data with a simpler approach
+    const userId = (response.data as any).userId;
+    const success = (response.data as any).success === true;
+    const error = (response.data as any).error;
     
-    return {
-      userId: responseData.userId,
-      success: responseData.success === true,
-      error: responseData.error
-    };
+    return { userId, success, error };
   } catch (error: any) {
     console.error(`Error creating ${role} account:`, error);
     throw error;

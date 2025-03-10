@@ -18,13 +18,13 @@ export const extractName = (
 
 // Helper to format session data from Supabase
 export const formatSessionData = (session: any): ChatSession => {
-  // Handle patient property which might be null
+  // Handle patient data which might be null
   let patientName = null;
   if (session.patient) {
     patientName = extractName(session.patient);
   }
   
-  // Handle doctor property which might be null
+  // Handle doctor data which might be null
   let doctorName = null;
   if (session.doctor) {
     doctorName = extractName(session.doctor);
