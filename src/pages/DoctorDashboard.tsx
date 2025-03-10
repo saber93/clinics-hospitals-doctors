@@ -3,15 +3,16 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Calendar, Users, MessageSquare, Clock, Settings, PieChart, DollarSign, Stethoscope, BookOpen } from "lucide-react";
-import { getDoctorChatSettings } from "@/services/chat/settingsService";
 import DoctorStats from "@/components/doctor/DoctorStats";
 import PatientList from "@/components/doctor/PatientList";
 import AppointmentCalendar from "@/components/doctor/AppointmentCalendar";
+import DashboardHeader from "@/components/doctor/DashboardHeader";
+import DoctorProfile from "@/components/doctor/DoctorProfile";
+import ConsultationsTab from "@/components/doctor/ConsultationsTab";
+import ServicesTab from "@/components/doctor/ServicesTab";
+import PaymentsTab from "@/components/doctor/PaymentsTab";
+import { getDoctorChatSettings } from "@/services/chat/settingsService";
 
 const DoctorDashboard = () => {
   const navigate = useNavigate();
@@ -192,20 +193,7 @@ const DoctorDashboard = () => {
 
   return (
     <div className="p-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-        <div>
-          <h2 className="text-2xl font-bold">Doctor Dashboard</h2>
-          <p className="text-muted-foreground">Manage your patients, appointments, and consultations</p>
-        </div>
-        <div className="mt-4 md:mt-0 space-x-2">
-          <Button variant="outline" onClick={() => navigate("/chat-settings")}>
-            <Settings className="h-4 w-4 mr-2" /> Consultation Settings
-          </Button>
-          <Button onClick={() => navigate("/chats")}>
-            <MessageSquare className="h-4 w-4 mr-2" /> Chat Sessions
-          </Button>
-        </div>
-      </div>
+      <DashboardHeader />
       
       <DoctorStats stats={stats} />
       
@@ -228,238 +216,26 @@ const DoctorDashboard = () => {
         </TabsContent>
         
         <TabsContent value="consultations">
-          <Card>
-            <CardHeader>
-              <CardTitle>Chat Consultations</CardTitle>
-              <CardDescription>
-                Manage your online consultations and patient chats
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="border rounded-lg p-4">
-                    <h3 className="font-medium mb-2">Consultation Settings</h3>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span>Free first consultation:</span>
-                        <span className="font-medium">
-                          {chatSettings?.offers_free_consultation ? 'Enabled' : 'Disabled'}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Session price:</span>
-                        <span className="font-medium">
-                          ${chatSettings?.session_price || 'Default pricing'}
-                        </span>
-                      </div>
-                    </div>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="mt-4 w-full"
-                      onClick={() => navigate('/chat-settings')}
-                    >
-                      Edit Settings
-                    </Button>
-                  </div>
-                  
-                  <div className="border rounded-lg p-4">
-                    <h3 className="font-medium mb-2">Active Conversations</h3>
-                    <p className="text-sm text-muted-foreground">
-                      You have {stats.chatSessions} total chat sessions with your patients.
-                    </p>
-                    <Button 
-                      variant="default" 
-                      size="sm" 
-                      className="mt-4 w-full"
-                      onClick={() => navigate('/chats')}
-                    >
-                      View All Chats
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button 
-                variant="outline" 
-                className="w-full"
-                onClick={() => navigate('/chats')}
-              >
-                Manage Consultations
-              </Button>
-            </CardFooter>
-          </Card>
+          <ConsultationsTab 
+            chatSettings={chatSettings} 
+            stats={stats} 
+          />
         </TabsContent>
         
         <TabsContent value="services">
-          <Card>
-            <CardHeader>
-              <CardTitle>My Services</CardTitle>
-              <CardDescription>
-                Services you offer to your patients
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {services.length > 0 ? (
-                <div className="space-y-4">
-                  {services.map(service => (
-                    <div key={service.id} className="border rounded-lg p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-medium">{service.name}</h3>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {service.description || 'No description provided'}
-                          </p>
-                        </div>
-                        <div className="flex flex-col items-end">
-                          <span className="font-bold text-lg">${service.price}</span>
-                          <span className="text-sm text-muted-foreground">{service.duration} min</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <Stethoscope className="mx-auto h-12 w-12 text-muted-foreground/50" />
-                  <h3 className="mt-4 text-lg font-medium">No services found</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    You haven't created any services yet.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-            <CardFooter>
-              <Button 
-                variant="default" 
-                className="w-full"
-                onClick={() => navigate('/reservations')}
-              >
-                Manage Services
-              </Button>
-            </CardFooter>
-          </Card>
+          <ServicesTab services={services} />
         </TabsContent>
         
         <TabsContent value="payments">
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Payments</CardTitle>
-              <CardDescription>
-                Latest payments received for your consultations
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {recentPayments.length > 0 ? (
-                <div className="space-y-4">
-                  {recentPayments.map(payment => (
-                    <div key={payment.id} className="border rounded-lg p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <div className="flex items-center">
-                            <p className="font-medium">{payment.patientName}</p>
-                            <Badge className="ml-2" variant={payment.payment_status === 'completed' ? 'default' : 'outline'}>
-                              {payment.payment_status}
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {new Date(payment.created_at).toLocaleDateString('en-US', { 
-                              year: 'numeric', 
-                              month: 'short', 
-                              day: 'numeric' 
-                            })}
-                          </p>
-                        </div>
-                        <div className="flex flex-col items-end">
-                          <span className="font-bold text-lg text-green-600">${payment.doctor_amount}</span>
-                          <span className="text-xs text-muted-foreground">Total: ${payment.amount}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <DollarSign className="mx-auto h-12 w-12 text-muted-foreground/50" />
-                  <h3 className="mt-4 text-lg font-medium">No payments yet</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    You haven't received any payments yet.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <PaymentsTab recentPayments={recentPayments} />
         </TabsContent>
         
         <TabsContent value="profile">
-          <Card>
-            <CardHeader>
-              <CardTitle>Doctor Profile</CardTitle>
-              <CardDescription>
-                Your professional information
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 border rounded-lg">
-                  <div className="bg-primary/10 h-20 w-20 rounded-full flex items-center justify-center">
-                    <Stethoscope className="h-10 w-10 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold">{doctorProfile?.name}</h3>
-                    <p className="text-sm text-muted-foreground">Joined on {new Date(doctorProfile?.created_at).toLocaleDateString()}</p>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="border rounded-lg p-4">
-                    <h3 className="font-medium text-lg mb-3">Consultation Pricing</h3>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">First consultation:</span>
-                        <span className="font-medium">
-                          {chatSettings?.offers_free_consultation ? 'Free' : `$${chatSettings?.session_price || 'Not set'}`}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Follow-up sessions:</span>
-                        <span className="font-medium">${chatSettings?.session_price || 'Default pricing'}</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="border rounded-lg p-4">
-                    <h3 className="font-medium text-lg mb-3">Activity Summary</h3>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Total patients:</span>
-                        <span className="font-medium">{stats.totalPatients}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Completed appointments:</span>
-                        <span className="font-medium">{stats.completedAppointments}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Active chats:</span>
-                        <span className="font-medium">{stats.chatSessions}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button 
-                variant="outline" 
-                className="w-full"
-                onClick={() => navigate('/chat-settings')}
-              >
-                Edit Settings
-              </Button>
-            </CardFooter>
-          </Card>
+          <DoctorProfile 
+            doctorProfile={doctorProfile} 
+            chatSettings={chatSettings} 
+            stats={stats} 
+          />
         </TabsContent>
       </Tabs>
     </div>
