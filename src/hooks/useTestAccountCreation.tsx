@@ -38,6 +38,8 @@ export const useTestAccountCreation = (
       let name;
       if (role === 'doctor') {
         name = `Dr. Mix (Demo-${timestamp})`;  // Updated name for consistency
+      } else if (role === 'center') {
+        name = `Medical Center (Demo-${timestamp})`;  // Custom name for center
       } else {
         name = `${capitalizeFirstLetter(role)} User`;
       }

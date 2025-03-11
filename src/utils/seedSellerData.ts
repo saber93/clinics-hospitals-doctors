@@ -30,7 +30,7 @@ export const createDemoSeller = async () => {
         options: {
           data: {
             name: "Demo Seller",
-            role: "vendor" // Changed from "seller" to "vendor" to match the valid role types
+            role: "seller" // Changed back to "seller" as we now support this role type
           }
         }
       });

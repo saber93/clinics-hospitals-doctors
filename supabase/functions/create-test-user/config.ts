@@ -5,7 +5,7 @@ export const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-export const validRoles = ['admin', 'vendor', 'client', 'doctor'];
+export const validRoles = ['admin', 'vendor', 'client', 'doctor', 'center', 'seller'];
 
 // Delay function to give Supabase time between operations
 export async function delay(ms: number) {

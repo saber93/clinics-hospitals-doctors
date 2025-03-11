@@ -6,4 +6,5 @@ export interface NavLinkType {
   path: string;
   icon?: string;
   auth?: boolean;
+  role?: string;
 }

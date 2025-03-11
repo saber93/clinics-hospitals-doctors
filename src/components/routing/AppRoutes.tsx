@@ -1,3 +1,4 @@
+
 import { Routes, Route, Navigate } from "react-router-dom";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
@@ -53,6 +54,9 @@ const AppRoutes = ({ session }: AppRoutesProps) => {
       <Route path="/chats" element={session ? <ChatSessions /> : <Navigate to="/auth" />} />
       <Route path="/chats/:sessionId" element={session ? <ChatPage /> : <Navigate to="/auth" />} />
       <Route path="/chat-settings" element={session ? <ChatSettings /> : <Navigate to="/auth" />} />
+      
+      {/* Include Seller Routes */}
+      {session && <SellerRoutes />}
       
       <Route path="*" element={<NotFound />} />
     </Routes>

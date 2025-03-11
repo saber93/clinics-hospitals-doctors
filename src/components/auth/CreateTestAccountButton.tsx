@@ -35,6 +35,14 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
         onClick={() => createTestAccount("client")}
       />
 
+      <TestAccountButton
+        role="center"
+        currentRole={currentRole}
+        isCreatingAccount={isCreatingAccount}
+        isLoading={isLoading}
+        onClick={() => createTestAccount("center")}
+      />
+
       <SellerAccountButton
         isCreatingAccount={isCreatingAccount}
         isLoading={isLoading}

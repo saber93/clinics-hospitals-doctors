@@ -8,6 +8,7 @@ export const useNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [session, setSession] = useState<any>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -20,6 +21,17 @@ export const useNavbar = () => {
           return;
         }
         setSession(data.session);
+        
+        // Get user role if session exists
+        if (data.session) {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', data.session.user.id)
+            .single();
+            
+          setUserRole(profileData?.role || data.session.user.user_metadata?.role || null);
+        }
       } catch (error) {
         console.error("Error in session check:", error);
         setSession(null);
@@ -30,9 +42,22 @@ export const useNavbar = () => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       console.log("Auth state changed:", _event);
       setSession(session);
+      
+      // Update user role when auth state changes
+      if (session) {
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single();
+          
+        setUserRole(profileData?.role || session.user.user_metadata?.role || null);
+      } else {
+        setUserRole(null);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -67,8 +92,19 @@ export const useNavbar = () => {
     { name: 'Offers', path: '/offers', auth: true },
     { name: 'Vouchers', path: '/vouchers', auth: true },
   ];
+  
+  // Add seller-specific links for seller users
+  if (userRole === 'seller') {
+    navLinks.push(
+      { name: 'Products', path: '/products', auth: true, role: 'seller' },
+      { name: 'Seller Dashboard', path: '/seller-dashboard', auth: true, role: 'seller' }
+    );
+  }
 
-  const filteredLinks = navLinks.filter(link => !link.auth || (link.auth && session));
+  const filteredLinks = navLinks.filter(link => 
+    !link.auth || (link.auth && session) && 
+    (!link.role || link.role === userRole)
+  );
 
   const handleToggleMenu = () => {
     setIsOpen(!isOpen);
@@ -78,6 +114,7 @@ export const useNavbar = () => {
     isOpen,
     scrolled,
     session,
+    userRole,
     filteredLinks,
     handleToggleMenu,
     setIsOpen
