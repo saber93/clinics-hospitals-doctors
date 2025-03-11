@@ -1,20 +1,21 @@
+
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createComprehensiveDoctorData } from "./seedServiceData";
 
-// Define all possible return types explicitly
-interface SeedDataResult {
+// Define result type interface
+type SeedDataResult = {
   success: boolean;
   doctorId?: string;
   clientId?: string;
-}
+};
 
-// Use a simpler type for user creation result
-type UserCreationResult = {
+// Use a simpler type for edge function response
+type EdgeFunctionResponse = {
   userId?: string;
   success: boolean;
   error?: string;
-}
+};
 
 // Export function with explicit return type
 export const seedTestData = async (): Promise<SeedDataResult> => {
@@ -37,7 +38,7 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
       });
     }
     
-    // Create doctor account with simpler type handling
+    // Create doctor account with explicit typing
     const doctorData = await createUserSafely('dr-mix@skinnect.com', 'Doctor123!', 'doctor', 'Dr. Mix (Demo)');
     console.log("Doctor account created:", doctorData?.userId || 'Failed');
     
@@ -59,34 +60,37 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
       doctorId: doctorData?.userId,
       clientId: clientData?.userId
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error seeding test data:", error);
     toast.dismiss();
-    toast.error(`Failed to seed test data: ${error.message || 'Unknown error'}`);
+    toast.error(`Failed to seed test data: ${error instanceof Error ? error.message : 'Unknown error'}`);
     return { success: false };
   }
 };
 
-// Simplified function with minimal type complexity
+// Create user with explicit type annotation
 const createUserSafely = async (
   email: string, 
   password: string, 
   role: string, 
   name: string
-): Promise<UserCreationResult> => {
+): Promise<EdgeFunctionResponse> => {
   try {
-    const { data, error } = await supabase.functions.invoke('create-test-user', {
+    type RawResponse = {
+      data: { userId?: string; success: boolean; error?: string } | null;
+      error: Error | null;
+    };
+
+    const response = await supabase.functions.invoke('create-test-user', {
       body: { email, password, role, name }
-    });
+    }) as RawResponse;
     
-    if (error) {
-      throw error;
-    }
+    if (response.error) throw response.error;
     
     return {
-      userId: data?.userId,
-      success: Boolean(data?.success),
-      error: data?.error
+      userId: response.data?.userId,
+      success: Boolean(response.data?.success),
+      error: response.data?.error
     };
   } catch (error: any) {
     console.error(`Error creating ${role} account:`, error);
