@@ -10,6 +10,16 @@ type SeedDataResult = {
   clientId?: string;
 };
 
+// Define explicit type for the edge function response
+type TestUserResponse = {
+  data: {
+    success: boolean;
+    userId?: string;
+    message?: string;
+  } | null;
+  error: Error | null;
+};
+
 // Export function with explicit return type
 export const seedTestData = async (): Promise<SeedDataResult> => {
   try {
@@ -31,33 +41,23 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
       });
     }
     
-    // Create doctor account without complex typing
-    const doctorResponse = await supabase.functions.invoke('create-test-user', {
+    // Create doctor account with explicit typing
+    const doctorResponse: TestUserResponse = await supabase.functions.invoke('create-test-user', {
       body: { email: 'dr-mix@skinnect.com', password: 'Doctor123!', role: 'doctor', name: 'Dr. Mix (Demo)' }
     });
     
-    const doctorData = {
-      userId: doctorResponse.data?.userId,
-      success: Boolean(doctorResponse.data?.success),
-    };
+    console.log("Doctor account created:", doctorResponse.data?.userId || 'Failed');
     
-    console.log("Doctor account created:", doctorData?.userId || 'Failed');
-    
-    // Create a test client account with the same approach
-    const clientResponse = await supabase.functions.invoke('create-test-user', {
+    // Create a test client account with explicit typing
+    const clientResponse: TestUserResponse = await supabase.functions.invoke('create-test-user', {
       body: { email: 'client@skinnect.com', password: 'Client123!', role: 'client', name: 'Client User' }
     });
     
-    const clientData = {
-      userId: clientResponse.data?.userId,
-      success: Boolean(clientResponse.data?.success),
-    };
-    
-    console.log("Client account created:", clientData?.userId || 'Failed');
+    console.log("Client account created:", clientResponse.data?.userId || 'Failed');
     
     // Create comprehensive demo data
-    if (doctorData?.userId && clientData?.userId) {
-      await createComprehensiveDoctorData(doctorData.userId, clientData.userId);
+    if (doctorResponse.data?.userId && clientResponse.data?.userId) {
+      await createComprehensiveDoctorData(doctorResponse.data.userId, clientResponse.data.userId);
       console.log("Created comprehensive doctor demo data");
     }
     
@@ -66,8 +66,8 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
     
     return {
       success: true,
-      doctorId: doctorData?.userId,
-      clientId: clientData?.userId
+      doctorId: doctorResponse.data?.userId,
+      clientId: clientResponse.data?.userId
     };
   } catch (error) {
     console.error("Error seeding test data:", error);
