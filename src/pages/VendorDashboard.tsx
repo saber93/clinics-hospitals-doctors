@@ -5,14 +5,39 @@ import SalesChart from "@/components/vendor/SalesChart";
 import ProductStatusChart from "@/components/vendor/ProductStatusChart";
 import QuickActions from "@/components/vendor/QuickActions";
 import { useVendorDashboardData } from "@/hooks/useVendorDashboardData";
+import { Button } from "@/components/ui/button";
+import { LineWave } from "lucide-react";
 
 const VendorDashboard = () => {
   const navigate = useNavigate();
   const { stats, loading, salesByMonth, productStatusData } = useVendorDashboardData();
   
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-[70vh]">
+        <div className="text-center">
+          <LineWave className="h-16 w-16 mx-auto animate-pulse text-primary" />
+          <p className="mt-4 text-lg">Loading dashboard data...</p>
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Vendor Dashboard</h2>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+        <h2 className="text-2xl font-bold">Vendor Dashboard</h2>
+        
+        <div className="mt-2 sm:mt-0">
+          <Button 
+            variant="default" 
+            size="sm"
+            onClick={() => navigate("/products-management")}
+          >
+            View All Products
+          </Button>
+        </div>
+      </div>
       
       <StatsCards stats={stats} />
       
