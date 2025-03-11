@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,17 +6,7 @@ import FormActions from "./FormActions";
 import StockField from "./StockField";
 import ImageUrlField from "./ImageUrlField";
 import AvailabilitySwitch from "./AvailabilitySwitch";
-
-interface ProductFormData {
-  name: string;
-  description: string;
-  price: string;
-  image_url: string;
-  stock_quantity: string;
-  low_stock_threshold: string;
-  is_available: boolean;
-  category: string;
-}
+import { ProductFormData } from "@/hooks/useProductForm";
 
 interface ProductDetailsCardProps {
   formData: ProductFormData;
