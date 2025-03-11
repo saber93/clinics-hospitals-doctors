@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Percent, Calendar, RefreshCw } from "lucide-react";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 
 type VoucherFormProps = {
   mode: "create" | "edit";
@@ -25,9 +25,9 @@ const VoucherForm = ({ mode }: VoucherFormProps) => {
     code: "",
     discount_percentage: "10",
     is_active: true,
-    start_date: new Date().toISOString().slice(0, 10), // Today in YYYY-MM-DD format
-    end_date: "", // Empty means no end date
-    max_uses: "", // Empty means unlimited uses
+    start_date: new Date().toISOString().slice(0, 10),
+    end_date: "",
+    max_uses: "",
     current_uses: "0"
   });
   
@@ -64,7 +64,6 @@ const VoucherForm = ({ mode }: VoucherFormProps) => {
       
       if (error) throw error;
       
-      // Set form data from fetched voucher
       setFormData({
         code: voucher.code,
         discount_percentage: voucher.discount_percentage.toString(),
@@ -113,13 +112,11 @@ const VoucherForm = ({ mode }: VoucherFormProps) => {
     try {
       setLoading(true);
       
-      // Basic validation
       if (!formData.code.trim() || !formData.discount_percentage.trim()) {
         toast.error("Please fill in all required fields");
         return;
       }
       
-      // Create voucher data object
       const voucherData: any = {
         code: formData.code.trim().toUpperCase(),
         discount_percentage: parseInt(formData.discount_percentage),
@@ -128,7 +125,6 @@ const VoucherForm = ({ mode }: VoucherFormProps) => {
         seller_id: user.id
       };
       
-      // Add optional fields if provided
       if (formData.end_date) {
         voucherData.end_date = formData.end_date;
       }
@@ -138,7 +134,6 @@ const VoucherForm = ({ mode }: VoucherFormProps) => {
       }
       
       if (isEditMode) {
-        // Update existing voucher
         const { error } = await supabase
           .from('vouchers')
           .update(voucherData)
@@ -146,7 +141,6 @@ const VoucherForm = ({ mode }: VoucherFormProps) => {
         
         if (error) throw error;
       } else {
-        // Create new voucher
         const { error } = await supabase
           .from('vouchers')
           .insert(voucherData);
@@ -164,14 +158,6 @@ const VoucherForm = ({ mode }: VoucherFormProps) => {
     }
   };
   
-  if (loading && isEditMode) {
-    return (
-      <div className="flex justify-center items-center p-12">
-        <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full"></div>
-      </div>
-    );
-  }
-  
   return (
     <div className="p-6 max-w-2xl mx-auto">
       <div className="flex items-center mb-6">
@@ -187,161 +173,165 @@ const VoucherForm = ({ mode }: VoucherFormProps) => {
         </h2>
       </div>
       
-      <form onSubmit={handleSubmit}>
-        <Card>
-          <CardHeader>
-            <CardTitle>Voucher Details</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="code" required>Voucher Code</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="code"
-                  name="code"
-                  placeholder="Enter voucher code (e.g., SUMMER25)"
-                  value={formData.code}
-                  onChange={handleChange}
-                  className="uppercase"
-                  required
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={generateRandomCode}
-                  title="Generate random code"
-                >
-                  <RefreshCw className="h-4 w-4" />
-                </Button>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                This is the code that customers will enter to redeem the voucher.
-              </p>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="discount_percentage" required>Discount Percentage</Label>
-              <div className="relative">
-                <Percent className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="discount_percentage"
-                  name="discount_percentage"
-                  type="number"
-                  min="1"
-                  max="100"
-                  placeholder="10"
-                  value={formData.discount_percentage}
-                  onChange={handleChange}
-                  className="pl-10"
-                  required
-                />
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="is_active">Active</Label>
+      {loading && isEditMode ? (
+        <LoadingSpinner />
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <Card>
+            <CardHeader>
+              <CardTitle>Voucher Details</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="code">Voucher Code *</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="code"
+                    name="code"
+                    placeholder="Enter voucher code (e.g., SUMMER25)"
+                    value={formData.code}
+                    onChange={handleChange}
+                    className="uppercase"
+                    required
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={generateRandomCode}
+                    title="Generate random code"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                  </Button>
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  Customers can only redeem active vouchers
+                  This is the code that customers will enter to redeem the voucher.
                 </p>
               </div>
-              <Switch
-                id="is_active"
-                checked={formData.is_active}
-                onCheckedChange={handleSwitchChange}
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="start_date" required>Start Date</Label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="start_date"
-                  name="start_date"
-                  type="date"
-                  value={formData.start_date}
-                  onChange={handleChange}
-                  className="pl-10"
-                  required
-                />
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="end_date">End Date (Optional)</Label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="end_date"
-                  name="end_date"
-                  type="date"
-                  value={formData.end_date}
-                  onChange={handleChange}
-                  className="pl-10"
-                />
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Leave blank for no expiration date
-              </p>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="max_uses">Maximum Uses (Optional)</Label>
-              <Input
-                id="max_uses"
-                name="max_uses"
-                type="number"
-                min="1"
-                placeholder="No limit"
-                value={formData.max_uses}
-                onChange={handleChange}
-              />
-              <p className="text-xs text-muted-foreground">
-                Leave blank for unlimited uses
-              </p>
-            </div>
-            
-            {isEditMode && (
+              
               <div className="space-y-2">
-                <Label htmlFor="current_uses">Current Uses</Label>
-                <Input
-                  id="current_uses"
-                  name="current_uses"
-                  type="number"
-                  min="0"
-                  value={formData.current_uses}
-                  onChange={handleChange}
-                  disabled
+                <Label htmlFor="discount_percentage">Discount Percentage *</Label>
+                <div className="relative">
+                  <Percent className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="discount_percentage"
+                    name="discount_percentage"
+                    type="number"
+                    min="1"
+                    max="100"
+                    placeholder="10"
+                    value={formData.discount_percentage}
+                    onChange={handleChange}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label htmlFor="is_active">Active</Label>
+                  <p className="text-xs text-muted-foreground">
+                    Customers can only redeem active vouchers
+                  </p>
+                </div>
+                <Switch
+                  id="is_active"
+                  checked={formData.is_active}
+                  onCheckedChange={handleSwitchChange}
                 />
               </div>
-            )}
-          </CardContent>
-          <CardFooter className="flex justify-end gap-4">
-            <Button 
-              type="button" 
-              variant="outline"
-              disabled={loading}
-              onClick={() => navigate("/seller-vouchers")}
-            >
-              Cancel
-            </Button>
-            <Button 
-              type="submit" 
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <span className="animate-spin mr-2">⏳</span>
-                  {isEditMode ? "Updating..." : "Creating..."}
-                </>
-              ) : (
-                isEditMode ? "Update Voucher" : "Create Voucher"
+              
+              <div className="space-y-2">
+                <Label htmlFor="start_date">Start Date *</Label>
+                <div className="relative">
+                  <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="start_date"
+                    name="start_date"
+                    type="date"
+                    value={formData.start_date}
+                    onChange={handleChange}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="end_date">End Date (Optional)</Label>
+                <div className="relative">
+                  <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="end_date"
+                    name="end_date"
+                    type="date"
+                    value={formData.end_date}
+                    onChange={handleChange}
+                    className="pl-10"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Leave blank for no expiration date
+                  </p>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="max_uses">Maximum Uses (Optional)</Label>
+                <Input
+                  id="max_uses"
+                  name="max_uses"
+                  type="number"
+                  min="1"
+                  placeholder="No limit"
+                  value={formData.max_uses}
+                  onChange={handleChange}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Leave blank for unlimited uses
+                </p>
+              </div>
+              
+              {isEditMode && (
+                <div className="space-y-2">
+                  <Label htmlFor="current_uses">Current Uses</Label>
+                  <Input
+                    id="current_uses"
+                    name="current_uses"
+                    type="number"
+                    min="0"
+                    value={formData.current_uses}
+                    onChange={handleChange}
+                    disabled
+                  />
+                </div>
               )}
-            </Button>
-          </CardFooter>
-        </Card>
-      </form>
+            </CardContent>
+            <CardFooter className="flex justify-end gap-4">
+              <Button 
+                type="button" 
+                variant="outline"
+                disabled={loading}
+                onClick={() => navigate("/seller-vouchers")}
+              >
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <span className="animate-spin mr-2">⏳</span>
+                    {isEditMode ? "Updating..." : "Creating..."}
+                  </>
+                ) : (
+                  isEditMode ? "Update Voucher" : "Create Voucher"
+                )}
+              </Button>
+            </CardFooter>
+          </Card>
+        </form>
+      )}
     </div>
   );
 };
