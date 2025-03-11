@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { capitalizeFirstLetter } from "@/utils/testCredentials";
+import { createDemoSeller } from "@/utils/seedSellerData";
 
 interface CreateTestAccountButtonProps {
   onAccountCreated: (email: string, password: string) => void;
@@ -152,6 +153,23 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
     }
   };
 
+  const handleCreateSellerAccount = async () => {
+    if (isCreatingAccount || isLoading) return;
+    
+    setIsCreatingAccount(true);
+    setCurrentRole("seller");
+    
+    try {
+      const credentials = await createDemoSeller();
+      onAccountCreated(credentials.email, credentials.password);
+    } catch (error) {
+      console.error("Failed to create seller account:", error);
+    } finally {
+      setIsCreatingAccount(false);
+      setCurrentRole(null);
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 gap-2 mt-2">
       <Button 
@@ -174,6 +192,17 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
         disabled={isLoading || isCreatingAccount}
       >
         {isCreatingAccount && currentRole === "client" ? "Creating Client Account..." : "Create Client Account"}
+      </Button>
+
+      <Button 
+        type="button" 
+        variant="secondary" 
+        size="sm" 
+        onClick={handleCreateSellerAccount}
+        className="text-xs"
+        disabled={isLoading || isCreatingAccount}
+      >
+        {isCreatingAccount && currentRole === "seller" ? "Creating Seller Account..." : "Create Seller Account"}
       </Button>
     </div>
   );
