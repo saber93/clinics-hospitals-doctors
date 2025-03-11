@@ -21,7 +21,6 @@ import NotFound from "@/pages/NotFound";
 import ChatSessions from "@/pages/ChatSessions";
 import ChatPage from "@/pages/ChatPage";
 import ChatSettings from "@/pages/ChatSettings";
-import { SellerRoutes } from "./SellerRoutes";
 
 interface AppRoutesProps {
   session: any;
@@ -54,9 +53,6 @@ const AppRoutes = ({ session }: AppRoutesProps) => {
       <Route path="/chats" element={session ? <ChatSessions /> : <Navigate to="/auth" />} />
       <Route path="/chats/:sessionId" element={session ? <ChatPage /> : <Navigate to="/auth" />} />
       <Route path="/chat-settings" element={session ? <ChatSettings /> : <Navigate to="/auth" />} />
-      
-      {/* Include Seller Routes */}
-      {session && <SellerRoutes />}
       
       <Route path="*" element={<NotFound />} />
     </Routes>
