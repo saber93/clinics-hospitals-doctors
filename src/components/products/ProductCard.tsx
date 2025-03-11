@@ -10,9 +10,11 @@ export type Product = {
   description: string | null;
   price: number;
   stock_quantity: number;
-  discount_percentage: number;
-  low_stock_threshold: number;
-  image_url?: string;
+  discount_percentage: number | null;
+  low_stock_threshold: number | null;
+  image_url: string | null;
+  is_available: boolean;
+  category: string | null;
 };
 
 interface ProductCardProps {
@@ -38,15 +40,21 @@ const ProductCard = ({ product, onDelete }: ProductCardProps) => {
           </div>
         )}
         
-        {product.stock_quantity <= product.low_stock_threshold && (
+        {product.stock_quantity <= (product.low_stock_threshold || 10) && (
           <div className="absolute top-2 right-2 bg-amber-500 text-white text-xs px-2 py-1 rounded-full">
             Low Stock
           </div>
         )}
         
-        {product.discount_percentage > 0 && (
+        {(product.discount_percentage || 0) > 0 && (
           <div className="absolute top-2 left-2 bg-emerald-500 text-white text-xs px-2 py-1 rounded-full">
             {product.discount_percentage}% OFF
+          </div>
+        )}
+        
+        {!product.is_available && (
+          <div className="absolute bottom-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+            Not Available
           </div>
         )}
       </div>
@@ -68,7 +76,7 @@ const ProductCard = ({ product, onDelete }: ProductCardProps) => {
                 ${product.price.toFixed(2)}
               </div>
               <div className="text-sm">
-                Stock: <span className={product.stock_quantity <= product.low_stock_threshold ? "text-amber-500 font-medium" : ""}>
+                Stock: <span className={product.stock_quantity <= (product.low_stock_threshold || 10) ? "text-amber-500 font-medium" : ""}>
                   {product.stock_quantity}
                 </span>
               </div>

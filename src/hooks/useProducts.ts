@@ -21,19 +21,10 @@ export const useProducts = (
       try {
         setLoading(true);
         
-        // First, fetch product data without filtering by low stock
+        // Fetch product data
         let query = supabase
           .from('products')
-          .select(`
-            id, 
-            name, 
-            description, 
-            price, 
-            stock_quantity, 
-            discount_percentage, 
-            low_stock_threshold,
-            product_images!inner(image_url)
-          `)
+          .select('*')
           .eq('seller_id', userId)
           .order(sortBy, { ascending: sortOrder === "asc" });
         
@@ -41,20 +32,15 @@ export const useProducts = (
         
         if (error) throw error;
         
-        // Transform data to include the primary image
-        let productsWithImages = data.map(p => ({
-          ...p,
-          image_url: p.product_images[0]?.image_url
-        }));
-        
-        // Then apply low stock filter in JavaScript if needed
+        // Apply low stock filter if needed
+        let filteredProducts = data;
         if (filterParam === "low-stock") {
-          productsWithImages = productsWithImages.filter(p => 
+          filteredProducts = filteredProducts.filter(p => 
             p.stock_quantity <= p.low_stock_threshold
           );
         }
         
-        setProducts(productsWithImages);
+        setProducts(filteredProducts);
       } catch (err) {
         console.error("Error fetching products:", err);
         setError(err instanceof Error ? err : new Error('Unknown error'));

@@ -281,10 +281,13 @@ export type Database = {
       }
       products: {
         Row: {
+          category: string | null
           created_at: string
           description: string | null
           discount_percentage: number | null
           id: string
+          image_url: string | null
+          is_available: boolean | null
           low_stock_threshold: number | null
           name: string
           price: number
@@ -293,10 +296,13 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          category?: string | null
           created_at?: string
           description?: string | null
           discount_percentage?: number | null
           id?: string
+          image_url?: string | null
+          is_available?: boolean | null
           low_stock_threshold?: number | null
           name: string
           price: number
@@ -305,10 +311,13 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          category?: string | null
           created_at?: string
           description?: string | null
           discount_percentage?: number | null
           id?: string
+          image_url?: string | null
+          is_available?: boolean | null
           low_stock_threshold?: number | null
           name?: string
           price?: number
