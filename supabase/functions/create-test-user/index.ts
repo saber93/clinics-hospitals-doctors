@@ -9,11 +9,10 @@ import { processAccountCreation } from './accountCreator.ts';
 
 console.log("Hello from create-test-user!")
 
-// Main server handler
 serve(async (req) => {
-  // Handle CORS preflight requests
+  // CORS Preflight
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response('ok', { headers: corsHeaders });
   }
 
   try {
@@ -69,8 +68,7 @@ serve(async (req) => {
         headers: { 
           ...corsHeaders, 
           'Content-Type': 'application/json' 
-        }, 
-        status: 200
+        }
       }
     );
   } catch (error: any) {
@@ -85,7 +83,7 @@ serve(async (req) => {
           ...corsHeaders, 
           'Content-Type': 'application/json' 
         }, 
-        status: 400
+        status: 500
       }
     );
   }

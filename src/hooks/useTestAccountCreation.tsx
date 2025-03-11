@@ -32,7 +32,7 @@ export const useTestAccountCreation = (
       
       const password = `${capitalizeFirstLetter(role)}123!`;
       
-      // Generate a unique name with timestamp to avoid any conflicts
+      // Generate a unique name with timestamp to avoid any conflicts 
       const timestamp = new Date().getTime();
       let name;
       if (role === 'doctor') {
@@ -46,84 +46,25 @@ export const useTestAccountCreation = (
       // Show detailed logs
       console.log(`Creating account with email: ${email}, role: ${role}, name: ${name}`);
       
-      // Implement retries for edge function call with increasing timeouts
-      let retries = 0;
-      const maxRetries = 3;
-      let data = null;
-      let error = null;
-      
-      while (retries <= maxRetries) {
-        try {
-          console.log(`Calling edge function (attempt ${retries + 1})`);
-          
-          // Set up a timeout without using the signal property directly
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 seconds timeout
-          
-          // Call the edge function with detailed logging
-          console.log(`Sending request to create-test-user with params:`, { email, password, role, name });
-          const response = await supabase.functions.invoke('create-test-user', {
-            body: {
-              email,
-              password,
-              role,
-              name
-            }
-          });
-          
-          // Clear the timeout
-          clearTimeout(timeoutId);
-          
-          data = response.data;
-          error = response.error;
-          
-          console.log(`Edge function response:`, data);
-          
-          // Check both for error object and data.success
-          if (!error && data && data.success) {
-            console.log(`Edge function response successful:`, data);
-            break;  // Success, exit retry loop
-          }
-          
-          // Log detailed information about the failure
-          if (error) {
-            console.error(`Error response from edge function (attempt ${retries + 1}):`, error);
-          } else if (data && !data.success) {
-            console.error(`Function returned error (attempt ${retries + 1}):`, data.error);
-            error = new Error(data.error);
-          } else {
-            console.error(`Unexpected response format (attempt ${retries + 1})`, data);
-            error = new Error("Invalid response from server");
-          }
-          
-          console.error(`Response data:`, data);
-          retries++;
-          
-          if (retries <= maxRetries) {
-            const delay = 1000 * retries; // Increasing delay with each retry
-            console.log(`Retrying in ${delay}ms...`);
-            await new Promise(resolve => setTimeout(resolve, delay));
-          }
-        } catch (callError) {
-          console.error(`Exception calling edge function (attempt ${retries + 1}):`, callError);
-          error = callError;
-          retries++;
-          
-          if (retries <= maxRetries) {
-            const delay = 1000 * retries; // Increasing delay with each retry
-            console.log(`Retrying in ${delay}ms...`);
-            await new Promise(resolve => setTimeout(resolve, delay));
-          }
+      // Call edge function with retries and better error handling
+      const { data, error } = await supabase.functions.invoke('create-test-user', {
+        body: {
+          email,
+          password,
+          role,
+          name
         }
+      });
+      
+      if (error) {
+        throw error;
+      }
+
+      if (!data || !data.success) {
+        throw new Error(data?.error || 'Failed to create account');
       }
       
-      if (error || !data || !data.success) {
-        console.error(`All edge function attempts failed:`, error);
-        const errorMessage = error?.message || (data?.error || 'Unknown error calling edge function');
-        throw new Error(errorMessage);
-      }
-      
-      console.log(`${role} account created or updated successfully:`, data);
+      console.log(`${role} account created successfully:`, data);
       toast.dismiss(loadingToast);
       toast.success(`${role} account created successfully! You can now log in.`);
       
@@ -133,18 +74,9 @@ export const useTestAccountCreation = (
       console.error(`Error creating ${role} account:`, error);
       toast.dismiss(loadingToast);
       
-      // Create a more user-friendly error message
-      let errorMessage = "Failed to create account";
-      
-      // Special case for the invalid UUID
-      if (error.message && error.message.includes('00000000-0000-0000-0000-000000000099')) {
-        errorMessage = `Account ID conflict detected. Please try again or contact support.`;
-      } else if (error.message && error.message.includes('Network')) {
-        errorMessage = `Network error. Please check your connection and try again.`;
-      } else if (error.message && error.message.includes('timeout')) {
-        errorMessage = `Request timed out. The server might be busy, please try again later.`;
-      } else if (error.message) {
-        errorMessage = `${errorMessage}: ${error.message}`;
+      let errorMessage = `Failed to create account: ${error.message}`;
+      if (error.message?.includes('Edge Function')) {
+        errorMessage = 'Server error. Please try again in a few moments.';
       }
       
       toast.error(errorMessage);
