@@ -1,4 +1,3 @@
-
 import { Routes, Route, Navigate } from "react-router-dom";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
@@ -22,6 +21,9 @@ import NotFound from "@/pages/NotFound";
 import ChatSessions from "@/pages/ChatSessions";
 import ChatPage from "@/pages/ChatPage";
 import ChatSettings from "@/pages/ChatSettings";
+import ProductsManagement from "@/pages/ProductsManagement";
+import AddProduct from "@/pages/AddProduct";
+import EditProduct from "@/pages/EditProduct";
 
 interface AppRoutesProps {
   session: any;
@@ -55,6 +57,10 @@ const AppRoutes = ({ session }: AppRoutesProps) => {
       <Route path="/chats" element={session ? <ChatSessions /> : <Navigate to="/auth" />} />
       <Route path="/chats/:sessionId" element={session ? <ChatPage /> : <Navigate to="/auth" />} />
       <Route path="/chat-settings" element={session ? <ChatSettings /> : <Navigate to="/auth" />} />
+      
+      <Route path="/products-management" element={session ? <ProductsManagement /> : <Navigate to="/auth" />} />
+      <Route path="/add-product" element={session ? <AddProduct /> : <Navigate to="/auth" />} />
+      <Route path="/edit-product/:id" element={session ? <EditProduct /> : <Navigate to="/auth" />} />
       
       <Route path="*" element={<NotFound />} />
     </Routes>
