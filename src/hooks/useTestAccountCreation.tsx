@@ -3,7 +3,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { capitalizeFirstLetter } from "@/utils/testCredentials";
-import { createDemoSeller } from "@/utils/seedSellerData";
 
 export const useTestAccountCreation = (
   onAccountCreated: (email: string, password: string) => void,
@@ -152,27 +151,9 @@ export const useTestAccountCreation = (
     }
   };
 
-  const handleCreateSellerAccount = async () => {
-    if (isCreatingAccount || isLoading) return;
-    
-    setIsCreatingAccount(true);
-    setCurrentRole("seller");
-    
-    try {
-      const credentials = await createDemoSeller();
-      onAccountCreated(credentials.email, credentials.password);
-    } catch (error) {
-      console.error("Failed to create seller account:", error);
-    } finally {
-      setIsCreatingAccount(false);
-      setCurrentRole(null);
-    }
-  };
-
   return {
     isCreatingAccount,
     currentRole,
-    createTestAccount,
-    handleCreateSellerAccount
+    createTestAccount
   };
 };

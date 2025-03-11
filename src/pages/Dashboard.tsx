@@ -43,8 +43,6 @@ const Dashboard = () => {
           navigate("/doctor-dashboard");
         } else if (role === 'vendor' || role === 'center') {
           navigate("/vendor-dashboard");
-        } else if (role === 'seller') {
-          navigate("/seller-dashboard");
         } else if (role === 'client') {
           navigate("/client-dashboard");
         }
@@ -90,12 +88,6 @@ const Dashboard = () => {
               </Button>
             )}
           </div>
-        )}
-        
-        {userRole === 'seller' && (
-          <Button onClick={() => navigate("/seller-dashboard")} className="w-full md:w-auto">
-            Go to Seller Dashboard
-          </Button>
         )}
         
         {userRole === 'client' && (

@@ -2,7 +2,6 @@
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createComprehensiveDoctorData } from "./seedServiceData";
-import { createSellerDemoData } from "./seedServiceData";
 
 // Define result type interface
 type SeedDataResult = {
@@ -11,7 +10,6 @@ type SeedDataResult = {
   clientId?: string;
   vendorId?: string;
   centerId?: string;
-  sellerId?: string;
   adminId?: string;
 };
 
@@ -36,8 +34,7 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
       { email: 'dr.skin@skinnect.com', password: 'Doctor123!', role: 'doctor', name: 'Dr. Skin (Demo)' },
       { email: 'client@skinnect.com', password: 'Client123!', role: 'client', name: 'Client User' },
       { email: 'vendor@skinnect.com', password: 'Vendor123!', role: 'vendor', name: 'Vendor Business' },
-      { email: 'center@skinnect.com', password: 'Center123!', role: 'center', name: 'Medical Center' },
-      { email: 'seller@skinnect.com', password: 'Seller123!', role: 'seller', name: 'Seller Shop' }
+      { email: 'center@skinnect.com', password: 'Center123!', role: 'center', name: 'Medical Center' }
     ];
     
     const results: Record<string, string | undefined> = {};
@@ -65,12 +62,6 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
       console.log("Created comprehensive doctor demo data");
     }
     
-    // Create seller demo data
-    if (results.seller) {
-      await createSellerDemoData(results.seller);
-      console.log("Created seller demo data");
-    }
-    
     toast.dismiss();
     toast.success("All demo accounts and data created successfully!");
     
@@ -80,7 +71,6 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
       clientId: results.client,
       vendorId: results.vendor,
       centerId: results.center,
-      sellerId: results.seller,
       adminId: results.admin
     };
   } catch (error) {

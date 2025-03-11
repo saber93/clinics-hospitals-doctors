@@ -2,7 +2,6 @@
 import React from "react";
 import { useTestAccountCreation } from "@/hooks/useTestAccountCreation";
 import TestAccountButton from "./buttons/TestAccountButton";
-import SellerAccountButton from "./buttons/SellerAccountButton";
 
 interface CreateTestAccountButtonProps {
   onAccountCreated: (email: string, password: string) => void;
@@ -13,8 +12,7 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
   const {
     isCreatingAccount,
     currentRole,
-    createTestAccount,
-    handleCreateSellerAccount
+    createTestAccount
   } = useTestAccountCreation(onAccountCreated, isLoading);
 
   return (
@@ -49,13 +47,6 @@ const CreateTestAccountButton = ({ onAccountCreated, isLoading }: CreateTestAcco
         isCreatingAccount={isCreatingAccount}
         isLoading={isLoading}
         onClick={() => createTestAccount("vendor")}
-      />
-
-      <SellerAccountButton
-        isCreatingAccount={isCreatingAccount}
-        isLoading={isLoading}
-        currentRole={currentRole}
-        onClick={handleCreateSellerAccount}
       />
     </div>
   );

@@ -11,7 +11,6 @@ const TestCredentialsDisplay = () => {
         <p><strong>Center:</strong> center@skinnect.com / Center123!</p>
         <p><strong>Doctor:</strong> dr.skin@skinnect.com / Doctor123!</p>
         <p><strong>Client:</strong> client@skinnect.com / Client123!</p>
-        <p><strong>Seller:</strong> seller@skinnect.com / Seller123!</p>
       </div>
     </div>
   );
