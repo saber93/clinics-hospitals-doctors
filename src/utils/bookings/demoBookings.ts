@@ -1,5 +1,5 @@
 
-import { Booking } from '@/hooks/useBookings';
+import { Booking } from '@/components/client-dashboard/BookingItem';
 
 export const generateDemoBookings = (): Booking[] => {
   return [
@@ -33,7 +33,7 @@ export const generateDemoBookings = (): Booking[] => {
       vendors: { name: 'Glamour Salon' },
       date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 14 days from now
       time: '3:00 PM',
-      status: 'completed'
+      status: 'confirmed'
     },
     {
       id: '5',

@@ -2,9 +2,10 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getUserReservations } from "@/utils/reservations";
+import { Booking } from "../BookingItem";
 
 export const useClientBookings = () => {
-  const [upcomingBookings, setUpcomingBookings] = useState([]);
+  const [upcomingBookings, setUpcomingBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,7 +53,7 @@ export const useClientBookings = () => {
     fetchClientBookings();
   }, []);
 
-  const generateDemoBookings = () => {
+  const generateDemoBookings = (): Booking[] => {
     return [
       {
         id: '1',

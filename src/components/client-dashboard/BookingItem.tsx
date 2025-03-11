@@ -1,15 +1,17 @@
 
 import { Calendar, Clock, Store } from "lucide-react";
 
+export interface Booking {
+  id: string;
+  services?: { name: string; price?: number };
+  vendors?: { name: string };
+  date: string;
+  time: string;
+  status: string;
+}
+
 interface BookingItemProps {
-  booking: {
-    id: string;
-    services?: { name: string; price?: number };
-    vendors?: { name: string };
-    date: string;
-    time: string;
-    status: string;
-  };
+  booking: Booking;
   formatDate: (dateString: string) => string;
 }
 

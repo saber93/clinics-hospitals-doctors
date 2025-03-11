@@ -2,13 +2,13 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import OfferItem from "./OfferItem";
+import OfferItem, { Offer } from "./OfferItem";
 import { formatDate } from "./utils/formatting";
 
 const SpecialOffers = () => {
   const navigate = useNavigate();
   
-  const specialOffers = [
+  const specialOffers: Offer[] = [
     { id: 1, title: "30% Off First Massage", provider: "Wellness Spa", validUntil: "2023-12-31" },
     { id: 2, title: "Buy 3 Sessions, Get 1 Free", provider: "Fitness Studio", validUntil: "2023-11-30" },
     { id: 3, title: "Free Consultation", provider: "Beauty Clinic", validUntil: "2023-12-15" },
