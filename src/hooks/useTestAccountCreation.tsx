@@ -26,6 +26,8 @@ export const useTestAccountCreation = (
       let email;
       if (role === 'doctor') {
         email = `dr.skin@skinnect.com`; // More professional doctor email
+      } else if (role === 'center') {
+        email = `center@skinnect.com`; // Specific email for center
       } else {
         email = `${role}@skinnect.com`;
       }
@@ -57,10 +59,12 @@ export const useTestAccountCreation = (
       });
       
       if (error) {
+        console.error('Edge function error:', error);
         throw error;
       }
 
       if (!data || !data.success) {
+        console.error('Function returned error:', data?.error || 'Unknown error');
         throw new Error(data?.error || 'Failed to create account');
       }
       

@@ -6,6 +6,7 @@ export const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
+// Ensure center is included in the valid roles
 export const validRoles = ['admin', 'vendor', 'client', 'doctor', 'center'];
 
 // Delay function to give Supabase time between operations

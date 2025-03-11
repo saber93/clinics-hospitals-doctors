@@ -11,5 +11,8 @@ export function validateRequestParams(email: string, password: string, role: str
     throw new Error(`Invalid role: ${role}. Must be one of: ${validRoles.join(', ')}`);
   }
   
+  // Log the validation result for debugging
+  console.log(`Validation passed for email: ${email}, role: ${role}`);
+  
   return true;
 }
