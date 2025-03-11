@@ -6,7 +6,7 @@ import ProductStatusChart from "@/components/vendor/ProductStatusChart";
 import QuickActions from "@/components/vendor/QuickActions";
 import { useVendorDashboardData } from "@/hooks/useVendorDashboardData";
 import { Button } from "@/components/ui/button";
-import { LineWave } from "lucide-react";
+import { Loader } from "lucide-react";
 
 const VendorDashboard = () => {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const VendorDashboard = () => {
     return (
       <div className="flex items-center justify-center h-[70vh]">
         <div className="text-center">
-          <LineWave className="h-16 w-16 mx-auto animate-pulse text-primary" />
+          <Loader className="h-16 w-16 mx-auto animate-spin text-primary" />
           <p className="mt-4 text-lg">Loading dashboard data...</p>
         </div>
       </div>
