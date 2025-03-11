@@ -64,6 +64,7 @@ export async function processAccountCreation(email: string, password: string, ro
     let userId;
     try {
       userId = await createNewUser(supabase, email, password, role, name);
+      console.log(`User created with ID: ${userId} and role: ${role}`);
     } catch (error: any) {
       if (error.message && error.message.includes("duplicate key value")) {
         console.error(`User already exists with email ${email}. Cannot create duplicate.`);
@@ -79,7 +80,13 @@ export async function processAccountCreation(email: string, password: string, ro
     await createUserProfile(supabase, userId, role, name);
     
     // 6. Set up specialized settings if needed
-    await setupSpecializedSettings(supabase, userId, role);
+    // For center role, need to set up as a vendor-like account
+    if (role === 'center') {
+      console.log(`Setting up center role as a vendor-like account`);
+      await setupSpecializedSettings(supabase, userId, 'center');
+    } else {
+      await setupSpecializedSettings(supabase, userId, role);
+    }
     
     console.log(`=== Account creation completed successfully for ${email} ===`);
     

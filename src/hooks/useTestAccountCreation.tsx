@@ -40,7 +40,7 @@ export const useTestAccountCreation = (
       } else if (role === 'center') {
         name = `Medical Center (Demo-${timestamp})`;
       } else {
-        name = `${capitalizeFirstLetter(role)} User`;
+        name = `${capitalizeFirstLetter(role)} User (Demo-${timestamp})`;
       }
       
       // Show detailed logs
@@ -60,7 +60,8 @@ export const useTestAccountCreation = (
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 seconds timeout
           
-          // Use the fetch API's standard approach with AbortController
+          // Call the edge function with detailed logging
+          console.log(`Sending request to create-test-user with params:`, { email, password, role, name });
           const response = await supabase.functions.invoke('create-test-user', {
             body: {
               email,
@@ -75,6 +76,8 @@ export const useTestAccountCreation = (
           
           data = response.data;
           error = response.error;
+          
+          console.log(`Edge function response:`, data);
           
           // Check both for error object and data.success
           if (!error && data && data.success) {

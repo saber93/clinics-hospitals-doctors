@@ -177,42 +177,89 @@ export async function createUserProfile(supabase: any, userId: string, role: str
   }
 }
 
-// Set up doctor chat settings if needed
+// Set up doctor chat settings and set up vendor services if needed
 export async function setupSpecializedSettings(supabase: any, userId: string, role: string) {
-  if (role !== 'doctor' && role !== 'vendor') {
-    return true;
-  }
-  
   // Skip for problematic UUID
   if (userId === '00000000-0000-0000-0000-000000000099') {
-    console.error(`Cannot set up doctor settings for invalid UUID: ${userId}`);
+    console.error(`Cannot set up specialized settings for invalid UUID: ${userId}`);
     return false;
   }
   
   try {
-    console.log(`Setting up doctor chat settings for ${role} user ${userId}`);
-    
-    const settingsData = {
-      doctor_id: userId,
-      offers_free_consultation: true,
-      session_price: role === 'doctor' ? 85 : 75,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    };
-    
-    const { error } = await supabase
-      .from('doctor_chat_settings')
-      .upsert(settingsData, { onConflict: 'doctor_id' });
+    // Set up doctor or center chat settings if needed
+    if (role === 'doctor' || role === 'vendor' || role === 'center') {
+      console.log(`Setting up chat settings for ${role} user ${userId}`);
       
-    if (error) {
-      console.error(`Error creating doctor settings: ${JSON.stringify(error)}`);
-      throw new Error(`Failed to create doctor settings: ${error.message}`);
+      const settingsData = {
+        doctor_id: userId,
+        offers_free_consultation: true,
+        session_price: role === 'doctor' ? 85 : role === 'center' ? 80 : 75,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      
+      const { error } = await supabase
+        .from('doctor_chat_settings')
+        .upsert(settingsData, { onConflict: 'doctor_id' });
+        
+      if (error) {
+        console.error(`Error creating chat settings: ${JSON.stringify(error)}`);
+        throw new Error(`Failed to create chat settings: ${error.message}`);
+      }
+      
+      console.log(`Chat settings created successfully for user ${userId}`);
+      
+      // For 'center' and 'vendor' roles, create some sample services
+      if (role === 'vendor' || role === 'center') {
+        console.log(`Setting up sample services for ${role} user ${userId}`);
+        
+        // Create a few sample services
+        const servicesData = [
+          {
+            vendor_id: userId,
+            name: role === 'center' ? 'Skin Consultation' : 'Skin Analysis',
+            description: role === 'center' ? 'Full skin health consultation with our specialists' : 'Professional skin analysis service',
+            price: role === 'center' ? 120 : 95,
+            duration: 60,
+            category: 'consultation',
+            is_available: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            vendor_id: userId,
+            name: role === 'center' ? 'Facial Treatment' : 'Skin Treatment',
+            description: role === 'center' ? 'Premium facial treatment for all skin types' : 'Custom skin treatment package',
+            price: role === 'center' ? 150 : 120,
+            duration: 90,
+            category: 'treatment',
+            is_available: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }
+        ];
+        
+        // Insert the services
+        for (const service of servicesData) {
+          const { error: serviceError } = await supabase
+            .from('services')
+            .upsert(service);
+            
+          if (serviceError) {
+            console.error(`Error creating service: ${JSON.stringify(serviceError)}`);
+            // Don't throw, just log the error and continue
+          }
+          
+          await delay(300);
+        }
+        
+        console.log(`Sample services created for ${role} user ${userId}`);
+      }
     }
     
-    console.log(`Doctor chat settings created successfully for user ${userId}`);
     return true;
   } catch (err) {
-    console.error(`Error setting up doctor chat settings: ${err.message}`);
+    console.error(`Error setting up specialized settings: ${err.message}`);
     throw err;
   }
 }

@@ -42,6 +42,8 @@ const Dashboard = () => {
           console.log("Doctor role detected, navigating to doctor dashboard");
           navigate("/doctor-dashboard");
         } else if (role === 'vendor' || role === 'center') {
+          // Ensure 'center' role users go to vendor dashboard
+          console.log("Vendor or center role detected, navigating to vendor dashboard");
           navigate("/vendor-dashboard");
         } else if (role === 'client') {
           navigate("/client-dashboard");
