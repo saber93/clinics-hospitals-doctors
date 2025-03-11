@@ -26,7 +26,7 @@ export const getTestCredentialsForRole = (role: string): { email: string; passwo
       password = "Seller123!";
       break;
     case "doctor":
-      email = "dr-mix@skinnect.com";
+      email = "dr.skin@skinnect.com";
       password = "Doctor123!";
       break;
     case "client":

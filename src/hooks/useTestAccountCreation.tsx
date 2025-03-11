@@ -26,7 +26,7 @@ export const useTestAccountCreation = (
       // Use a different email format for doctor
       let email;
       if (role === 'doctor') {
-        email = `dr-mix@skinnect.com`; // Changed to use dr-mix as requested
+        email = `dr.skin@skinnect.com`; // More professional doctor email
       } else {
         email = `${role}@skinnect.com`;
       }
@@ -37,9 +37,9 @@ export const useTestAccountCreation = (
       const timestamp = new Date().getTime();
       let name;
       if (role === 'doctor') {
-        name = `Dr. Mix (Demo-${timestamp})`;  // Updated name for consistency
+        name = `Dr. Skin (Demo-${timestamp})`;
       } else if (role === 'center') {
-        name = `Medical Center (Demo-${timestamp})`;  // Custom name for center
+        name = `Medical Center (Demo-${timestamp})`;
       } else {
         name = `${capitalizeFirstLetter(role)} User`;
       }

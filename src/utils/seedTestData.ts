@@ -9,7 +9,10 @@ type SeedDataResult = {
   success: boolean;
   doctorId?: string;
   clientId?: string;
+  vendorId?: string;
+  centerId?: string;
   sellerId?: string;
+  adminId?: string;
 };
 
 // Define explicit type for the edge function response
@@ -27,63 +30,58 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
   try {
     toast.loading("Creating test accounts and sample data...");
     
-    // First cleanup any existing test data
-    const { data: existingDoctorData } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('email', 'dr-mix@skinnect.com')
-      .single();
+    // Create accounts for all roles
+    const accounts = [
+      { email: 'admin@skinnect.com', password: 'Admin123!', role: 'admin', name: 'Admin User' },
+      { email: 'dr.skin@skinnect.com', password: 'Doctor123!', role: 'doctor', name: 'Dr. Skin (Demo)' },
+      { email: 'client@skinnect.com', password: 'Client123!', role: 'client', name: 'Client User' },
+      { email: 'vendor@skinnect.com', password: 'Vendor123!', role: 'vendor', name: 'Vendor Business' },
+      { email: 'center@skinnect.com', password: 'Center123!', role: 'center', name: 'Medical Center' },
+      { email: 'seller@skinnect.com', password: 'Seller123!', role: 'seller', name: 'Seller Shop' }
+    ];
+    
+    const results: Record<string, string | undefined> = {};
+    
+    // Create all accounts
+    for (const account of accounts) {
+      console.log(`Creating ${account.role} account: ${account.email}`);
       
-    if (existingDoctorData?.id) {
-      await supabase.functions.invoke('create-test-user', {
-        body: {
-          userId: existingDoctorData.id,
-          delete: true
-        }
+      // Create account using edge function
+      const response: TestUserResponse = await supabase.functions.invoke('create-test-user', {
+        body: account
       });
+      
+      if (response.data?.userId) {
+        results[account.role] = response.data.userId;
+        console.log(`Created ${account.role} account with ID: ${response.data.userId}`);
+      } else {
+        console.error(`Failed to create ${account.role} account:`, response.error || response.data?.message);
+      }
     }
     
-    // Create doctor account with explicit typing
-    const doctorResponse: TestUserResponse = await supabase.functions.invoke('create-test-user', {
-      body: { email: 'dr-mix@skinnect.com', password: 'Doctor123!', role: 'doctor', name: 'Dr. Mix (Demo)' }
-    });
-    
-    console.log("Doctor account created:", doctorResponse.data?.userId || 'Failed');
-    
-    // Create a test client account with explicit typing
-    const clientResponse: TestUserResponse = await supabase.functions.invoke('create-test-user', {
-      body: { email: 'client@skinnect.com', password: 'Client123!', role: 'client', name: 'Client User' }
-    });
-    
-    console.log("Client account created:", clientResponse.data?.userId || 'Failed');
-    
-    // Create a test seller account
-    const sellerResponse: TestUserResponse = await supabase.functions.invoke('create-test-user', {
-      body: { email: 'seller@skinnect.com', password: 'Seller123!', role: 'seller', name: 'Seller User' }
-    });
-    
-    console.log("Seller account created:", sellerResponse.data?.userId || 'Failed');
-    
-    // Create comprehensive demo data
-    if (doctorResponse.data?.userId && clientResponse.data?.userId) {
-      await createComprehensiveDoctorData(doctorResponse.data.userId, clientResponse.data.userId);
+    // Create comprehensive demo data for doctor and client
+    if (results.doctor && results.client) {
+      await createComprehensiveDoctorData(results.doctor, results.client);
       console.log("Created comprehensive doctor demo data");
     }
     
     // Create seller demo data
-    if (sellerResponse.data?.userId) {
-      await createSellerDemoData(sellerResponse.data.userId);
+    if (results.seller) {
+      await createSellerDemoData(results.seller);
       console.log("Created seller demo data");
     }
     
     toast.dismiss();
-    toast.success("Demo data created successfully! Refresh the page to see the changes.");
+    toast.success("All demo accounts and data created successfully!");
     
     return {
       success: true,
-      doctorId: doctorResponse.data?.userId,
-      clientId: clientResponse.data?.userId,
-      sellerId: sellerResponse.data?.userId
+      doctorId: results.doctor,
+      clientId: results.client,
+      vendorId: results.vendor,
+      centerId: results.center,
+      sellerId: results.seller,
+      adminId: results.admin
     };
   } catch (error) {
     console.error("Error seeding test data:", error);

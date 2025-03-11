@@ -64,6 +64,26 @@ const TestCredentialButtons = ({
       >
         Use Client
       </Button>
+      <Button 
+        type="button" 
+        variant="outline" 
+        size="sm" 
+        onClick={() => handleFillCredentials("center")}
+        className="text-xs"
+        disabled={isLoading || isCreatingAccount}
+      >
+        Use Center
+      </Button>
+      <Button 
+        type="button" 
+        variant="outline" 
+        size="sm" 
+        onClick={() => handleFillCredentials("seller")}
+        className="text-xs"
+        disabled={isLoading || isCreatingAccount}
+      >
+        Use Seller
+      </Button>
     </div>
   );
 };

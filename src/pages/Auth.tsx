@@ -49,12 +49,12 @@ const Auth = () => {
     if (isCreatingTestAccounts) return;
     
     setIsCreatingTestAccounts(true);
-    const loadingToast = toast.loading("Creating test accounts...", { duration: 20000 });
+    const loadingToast = toast.loading("Creating all test accounts and demo data...", { duration: 30000 });
     
     try {
       await seedTestData();
       toast.dismiss(loadingToast);
-      toast.success("Test accounts created successfully! You can now log in with any of the test credentials.");
+      toast.success("All test accounts created successfully! You can now log in with any of the test credentials.");
     } catch (error: any) {
       console.error("Error creating test accounts:", error);
       toast.dismiss(loadingToast);
@@ -97,16 +97,19 @@ const Auth = () => {
           
           <div className="mt-6 pt-6 border-t border-gray-200">
             <p className="text-center text-sm text-gray-600 mb-4">
-              Development Tools
+              Demo Tools
             </p>
             <Button 
               onClick={handleSeedTestData} 
               variant="outline" 
-              className="w-full"
+              className="w-full font-medium"
               disabled={isCreatingTestAccounts}
             >
-              {isCreatingTestAccounts ? "Creating Test Accounts..." : "Create Test Accounts"}
+              {isCreatingTestAccounts ? "Creating All Test Accounts..." : "Create All Test Accounts & Demo Data"}
             </Button>
+            <p className="mt-2 text-xs text-center text-gray-500">
+              This will create accounts for all roles with sample data
+            </p>
           </div>
         </div>
       </div>
