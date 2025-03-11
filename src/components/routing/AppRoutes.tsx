@@ -5,6 +5,7 @@ import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
 import ClientDashboard from "@/pages/ClientDashboard";
 import VendorDashboard from "@/pages/VendorDashboard";
+import CenterDashboard from "@/pages/CenterDashboard";
 import DoctorDashboard from "@/pages/DoctorDashboard";
 import AdminDashboard from "@/pages/AdminDashboard";
 import TotalClients from "@/pages/TotalClients";
@@ -39,6 +40,7 @@ const AppRoutes = ({ session }: AppRoutesProps) => {
       <Route path="/dashboard" element={session ? <Dashboard /> : <Navigate to="/auth" />} />
       <Route path="/client-dashboard" element={session ? <ClientDashboard /> : <Navigate to="/auth" />} />
       <Route path="/vendor-dashboard" element={session ? <VendorDashboard /> : <Navigate to="/auth" />} />
+      <Route path="/center-dashboard" element={session ? <CenterDashboard /> : <Navigate to="/auth" />} />
       <Route path="/doctor-dashboard" element={session ? <DoctorDashboard /> : <Navigate to="/auth" />} />
       <Route path="/admin-dashboard" element={session ? <AdminDashboard /> : <Navigate to="/auth" />} />
       

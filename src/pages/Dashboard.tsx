@@ -41,10 +41,12 @@ const Dashboard = () => {
         } else if (role === 'doctor' || (role === 'vendor' && session.user.email?.includes('dr-'))) {
           console.log("Doctor role detected, navigating to doctor dashboard");
           navigate("/doctor-dashboard");
-        } else if (role === 'vendor' || role === 'center') {
-          // Ensure 'center' role users go to vendor dashboard
-          console.log("Vendor or center role detected, navigating to vendor dashboard");
+        } else if (role === 'vendor') {
+          console.log("Vendor role detected, navigating to vendor dashboard");
           navigate("/vendor-dashboard");
+        } else if (role === 'center') {
+          console.log("Center role detected, navigating to center dashboard");
+          navigate("/center-dashboard");
         } else if (role === 'client') {
           navigate("/client-dashboard");
         }
@@ -77,19 +79,22 @@ const Dashboard = () => {
           </Button>
         )}
         
-        {(userRole === 'doctor' || userRole === 'vendor' || userRole === 'center') && (
-          <div className="space-y-2">
-            {(userRole === 'vendor' || userRole === 'center') && (
-              <Button onClick={() => navigate("/vendor-dashboard")} className="w-full md:w-auto">
-                Go to Vendor Dashboard
-              </Button>
-            )}
-            {userRole === 'doctor' && (
-              <Button onClick={() => navigate("/doctor-dashboard")} className="w-full md:w-auto">
-                Go to Doctor Dashboard
-              </Button>
-            )}
-          </div>
+        {userRole === 'doctor' && (
+          <Button onClick={() => navigate("/doctor-dashboard")} className="w-full md:w-auto">
+            Go to Doctor Dashboard
+          </Button>
+        )}
+        
+        {userRole === 'vendor' && (
+          <Button onClick={() => navigate("/vendor-dashboard")} className="w-full md:w-auto">
+            Go to Vendor Dashboard
+          </Button>
+        )}
+        
+        {userRole === 'center' && (
+          <Button onClick={() => navigate("/center-dashboard")} className="w-full md:w-auto">
+            Go to Center Dashboard
+          </Button>
         )}
         
         {userRole === 'client' && (
