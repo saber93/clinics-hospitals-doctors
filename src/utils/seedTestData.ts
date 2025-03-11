@@ -10,13 +10,6 @@ type SeedDataResult = {
   clientId?: string;
 };
 
-// Use a simpler type for edge function response
-type EdgeFunctionResponse = {
-  userId?: string;
-  success: boolean;
-  error?: string;
-};
-
 // Export function with explicit return type
 export const seedTestData = async (): Promise<SeedDataResult> => {
   try {
@@ -38,12 +31,28 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
       });
     }
     
-    // Create doctor account with explicit typing
-    const doctorData = await createUserSafely('dr-mix@skinnect.com', 'Doctor123!', 'doctor', 'Dr. Mix (Demo)');
+    // Create doctor account without complex typing
+    const doctorResponse = await supabase.functions.invoke('create-test-user', {
+      body: { email: 'dr-mix@skinnect.com', password: 'Doctor123!', role: 'doctor', name: 'Dr. Mix (Demo)' }
+    });
+    
+    const doctorData = {
+      userId: doctorResponse.data?.userId,
+      success: Boolean(doctorResponse.data?.success),
+    };
+    
     console.log("Doctor account created:", doctorData?.userId || 'Failed');
     
-    // Create a test client account
-    const clientData = await createUserSafely('client@skinnect.com', 'Client123!', 'client', 'Client User');
+    // Create a test client account with the same approach
+    const clientResponse = await supabase.functions.invoke('create-test-user', {
+      body: { email: 'client@skinnect.com', password: 'Client123!', role: 'client', name: 'Client User' }
+    });
+    
+    const clientData = {
+      userId: clientResponse.data?.userId,
+      success: Boolean(clientResponse.data?.success),
+    };
+    
     console.log("Client account created:", clientData?.userId || 'Failed');
     
     // Create comprehensive demo data
@@ -65,35 +74,5 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
     toast.dismiss();
     toast.error(`Failed to seed test data: ${error instanceof Error ? error.message : 'Unknown error'}`);
     return { success: false };
-  }
-};
-
-// Create user with explicit type annotation
-const createUserSafely = async (
-  email: string, 
-  password: string, 
-  role: string, 
-  name: string
-): Promise<EdgeFunctionResponse> => {
-  try {
-    type RawResponse = {
-      data: { userId?: string; success: boolean; error?: string } | null;
-      error: Error | null;
-    };
-
-    const response = await supabase.functions.invoke('create-test-user', {
-      body: { email, password, role, name }
-    }) as RawResponse;
-    
-    if (response.error) throw response.error;
-    
-    return {
-      userId: response.data?.userId,
-      success: Boolean(response.data?.success),
-      error: response.data?.error
-    };
-  } catch (error: any) {
-    console.error(`Error creating ${role} account:`, error);
-    throw error;
   }
 };
