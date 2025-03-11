@@ -1,30 +1,15 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { ArrowLeft, ImagePlus, Trash } from "lucide-react";
 import { useUser } from "@/hooks/useUser";
+import ProductFormHeader from "./form/ProductFormHeader";
+import ProductDetailsCard from "./form/ProductDetailsCard";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 
 type ProductFormProps = {
   mode: "create" | "edit";
-};
-
-export type Product = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image_url: string | null;
-  is_available: boolean;
-  category: string;
-  seller_id: string;
-  created_at: string;
 };
 
 const ProductForm = ({ mode }: ProductFormProps) => {
@@ -38,8 +23,10 @@ const ProductForm = ({ mode }: ProductFormProps) => {
     description: "",
     price: "",
     image_url: "",
+    stock_quantity: "0",
+    low_stock_threshold: "10",
     is_available: true,
-    category: "skincare",
+    category: ""
   });
 
   const isEditMode = mode === "edit";
@@ -64,11 +51,13 @@ const ProductForm = ({ mode }: ProductFormProps) => {
 
       setFormData({
         name: product.name,
-        description: product.description,
+        description: product.description || "",
         price: product.price.toString(),
         image_url: product.image_url || "",
-        is_available: product.is_available,
-        category: product.category,
+        stock_quantity: product.stock_quantity.toString(),
+        low_stock_threshold: product.low_stock_threshold?.toString() || "10",
+        is_available: product.is_available || true,
+        category: product.category || ""
       });
     } catch (error) {
       console.error("Error fetching product:", error);
@@ -79,11 +68,10 @@ const ProductForm = ({ mode }: ProductFormProps) => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type, checked } = e.target;
+  const handleChange = (name: string, value: string) => {
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     }));
   };
 
@@ -100,7 +88,7 @@ const ProductForm = ({ mode }: ProductFormProps) => {
     try {
       setLoading(true);
 
-      if (!formData.name.trim() || !formData.price.trim()) {
+      if (!formData.name.trim() || !formData.price || !formData.stock_quantity) {
         toast.error("Please fill in all required fields");
         return;
       }
@@ -109,7 +97,8 @@ const ProductForm = ({ mode }: ProductFormProps) => {
         name: formData.name.trim(),
         description: formData.description,
         price: parseFloat(formData.price),
-        image_url: formData.image_url,
+        stock_quantity: parseInt(formData.stock_quantity),
+        low_stock_threshold: parseInt(formData.low_stock_threshold),
         is_available: formData.is_available,
         category: formData.category,
         seller_id: user?.id
@@ -140,157 +129,23 @@ const ProductForm = ({ mode }: ProductFormProps) => {
     }
   };
 
-  const handleDeleteImage = () => {
-    setFormData(prev => ({ ...prev, image_url: "" }));
-  };
-
   return (
     <div className="p-6 max-w-2xl mx-auto">
-      <div className="flex items-center mb-6">
-        <Button
-          variant="ghost"
-          onClick={() => navigate("/products")}
-          className="mr-4"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back
-        </Button>
-        <h2 className="text-2xl font-bold">
-          {isEditMode ? "Edit Product" : "Add New Product"}
-        </h2>
-      </div>
-
-      <form onSubmit={handleSubmit}>
-        <Card>
-          <CardHeader>
-            <CardTitle>Product Details</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Product Name *</Label>
-              <Input
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Enter product name"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="Enter product description"
-                className="min-h-32"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="price">Price *</Label>
-              <div className="relative">
-                <span className="absolute left-3 top-2.5 text-muted-foreground">$</span>
-                <Input
-                  id="price"
-                  name="price"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={formData.price}
-                  onChange={handleChange}
-                  className="pl-7"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="image_url">Image URL</Label>
-              <div className="flex items-center">
-                <Input
-                  id="image_url"
-                  name="image_url"
-                  type="url"
-                  value={formData.image_url}
-                  onChange={handleChange}
-                  placeholder="Enter image URL"
-                />
-                {formData.image_url && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleDeleteImage}
-                    title="Remove image"
-                    className="ml-2"
-                  >
-                    <Trash className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
-              {formData.image_url ? (
-                <img src={formData.image_url} alt="Product preview" className="mt-2 rounded-md max-h-40 object-contain" />
-              ) : (
-                <div className="mt-2 text-muted-foreground">
-                  <ImagePlus className="inline-block h-4 w-4 mr-1" />
-                  No image selected
-                </div>
-              )}
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="is_available">Available</Label>
-                <p className="text-xs text-muted-foreground">
-                  Toggle product availability
-                </p>
-              </div>
-              <Switch
-                id="is_available"
-                checked={formData.is_available}
-                onCheckedChange={handleSwitchChange}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
-              <Input
-                id="category"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                placeholder="Enter category"
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-end gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              disabled={loading}
-              onClick={() => navigate("/products")}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <span className="animate-spin mr-2">⏳</span>
-                  {isEditMode ? "Updating..." : "Creating..."}
-                </>
-              ) : (
-                isEditMode ? "Update Product" : "Create Product"
-              )}
-            </Button>
-          </CardFooter>
-        </Card>
-      </form>
+      <ProductFormHeader isEditMode={isEditMode} />
+      
+      {loading && isEditMode ? (
+        <LoadingSpinner />
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <ProductDetailsCard
+            formData={formData}
+            handleChange={handleChange}
+            handleSwitchChange={handleSwitchChange}
+            isEditMode={isEditMode}
+            loading={loading}
+          />
+        </form>
+      )}
     </div>
   );
 };
