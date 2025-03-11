@@ -2,12 +2,14 @@
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createComprehensiveDoctorData } from "./seedServiceData";
+import { createSellerDemoData } from "./seedServiceData";
 
 // Define result type interface
 type SeedDataResult = {
   success: boolean;
   doctorId?: string;
   clientId?: string;
+  sellerId?: string;
 };
 
 // Define explicit type for the edge function response
@@ -55,10 +57,23 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
     
     console.log("Client account created:", clientResponse.data?.userId || 'Failed');
     
+    // Create a test seller account
+    const sellerResponse: TestUserResponse = await supabase.functions.invoke('create-test-user', {
+      body: { email: 'seller@skinnect.com', password: 'Seller123!', role: 'seller', name: 'Seller User' }
+    });
+    
+    console.log("Seller account created:", sellerResponse.data?.userId || 'Failed');
+    
     // Create comprehensive demo data
     if (doctorResponse.data?.userId && clientResponse.data?.userId) {
       await createComprehensiveDoctorData(doctorResponse.data.userId, clientResponse.data.userId);
       console.log("Created comprehensive doctor demo data");
+    }
+    
+    // Create seller demo data
+    if (sellerResponse.data?.userId) {
+      await createSellerDemoData(sellerResponse.data.userId);
+      console.log("Created seller demo data");
     }
     
     toast.dismiss();
@@ -67,7 +82,8 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
     return {
       success: true,
       doctorId: doctorResponse.data?.userId,
-      clientId: clientResponse.data?.userId
+      clientId: clientResponse.data?.userId,
+      sellerId: sellerResponse.data?.userId
     };
   } catch (error) {
     console.error("Error seeding test data:", error);

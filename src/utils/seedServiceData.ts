@@ -175,3 +175,95 @@ export const createReservations = async (clientId: string, vendorId: string, ser
   console.log("Reservations created successfully:", reservationsData);
   return reservationsData;
 };
+
+/**
+ * Create demo data for a seller
+ */
+export const createSellerDemoData = async (sellerId: string) => {
+  try {
+    // Create demo products
+    const productsData = [
+      {
+        name: "Hydrating Facial Serum",
+        description: "Advanced hydration for all skin types with hyaluronic acid and vitamin C.",
+        price: 39.99,
+        stock_quantity: 45,
+        discount_percentage: 15,
+        low_stock_threshold: 10,
+        seller_id: sellerId
+      },
+      {
+        name: "Anti-Aging Night Cream",
+        description: "Rejuvenating formula with retinol and peptides to reduce fine lines and wrinkles.",
+        price: 65.00,
+        stock_quantity: 30,
+        discount_percentage: 0,
+        low_stock_threshold: 8,
+        seller_id: sellerId
+      },
+      {
+        name: "Gentle Exfoliating Scrub",
+        description: "Natural exfoliant with bamboo particles to remove dead skin cells and promote radiance.",
+        price: 28.50,
+        stock_quantity: 12,
+        discount_percentage: 0,
+        low_stock_threshold: 15,
+        seller_id: sellerId
+      },
+      {
+        name: "SPF 50 Mineral Sunscreen",
+        description: "Broad-spectrum protection with zinc oxide and antioxidants.",
+        price: 34.99,
+        stock_quantity: 5,
+        discount_percentage: 10,
+        low_stock_threshold: 10,
+        seller_id: sellerId
+      }
+    ];
+    
+    // Insert products
+    const { data: insertedProducts, error: productError } = await supabase
+      .from('products')
+      .insert(productsData)
+      .select('id');
+    
+    if (productError) throw productError;
+    
+    // Create some vouchers
+    const vouchersData = [
+      {
+        code: "WELCOME25",
+        discount_percentage: 25,
+        is_active: true,
+        start_date: new Date().toISOString(),
+        end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
+        max_uses: 100,
+        current_uses: 0,
+        seller_id: sellerId
+      },
+      {
+        code: "SUMMER10",
+        discount_percentage: 10,
+        is_active: true,
+        start_date: new Date().toISOString(),
+        end_date: null, // No end date
+        max_uses: null, // Unlimited uses
+        current_uses: 0,
+        seller_id: sellerId
+      }
+    ];
+    
+    // Insert vouchers
+    const { error: voucherError } = await supabase
+      .from('vouchers')
+      .insert(vouchersData);
+    
+    if (voucherError) throw voucherError;
+    
+    console.log("Created demo data for seller");
+    return true;
+  } catch (error) {
+    console.error("Error creating seller demo data:", error);
+    return false;
+  }
+};

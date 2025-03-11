@@ -1,4 +1,3 @@
-
 import { Routes, Route, Navigate } from "react-router-dom";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
@@ -21,6 +20,7 @@ import NotFound from "@/pages/NotFound";
 import ChatSessions from "@/pages/ChatSessions";
 import ChatPage from "@/pages/ChatPage";
 import ChatSettings from "@/pages/ChatSettings";
+import { SellerRoutes } from "./SellerRoutes";
 
 interface AppRoutesProps {
   session: any;
