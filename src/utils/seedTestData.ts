@@ -1,4 +1,3 @@
-
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createComprehensiveDoctorData } from "./seedServiceData";
@@ -10,8 +9,8 @@ interface SeedDataResult {
   clientId?: string;
 }
 
-// Define the user creation result type with simple types
-interface UserCreationResult {
+// Use a simpler type for user creation result
+type UserCreationResult = {
   userId?: string;
   success: boolean;
   error?: string;
@@ -38,7 +37,7 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
       });
     }
     
-    // Create doctor account
+    // Create doctor account with simpler type handling
     const doctorData = await createUserSafely('dr-mix@skinnect.com', 'Doctor123!', 'doctor', 'Dr. Mix (Demo)');
     console.log("Doctor account created:", doctorData?.userId || 'Failed');
     
@@ -68,7 +67,7 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
   }
 };
 
-// Use a simplified approach with minimal type inference
+// Simplified function with minimal type complexity
 const createUserSafely = async (
   email: string, 
   password: string, 
@@ -76,21 +75,18 @@ const createUserSafely = async (
   name: string
 ): Promise<UserCreationResult> => {
   try {
-    // Avoid deep type inference by using any for the intermediate response
-    const response: any = await supabase.functions.invoke('create-test-user', {
+    const { data, error } = await supabase.functions.invoke('create-test-user', {
       body: { email, password, role, name }
     });
     
-    // Simple validation of response
-    if (!response.data) {
-      throw new Error(response.error?.message || 'Failed to create user');
+    if (error) {
+      throw error;
     }
     
-    // Return a new object with explicit types instead of passing through response data
-    return { 
-      userId: typeof response.data.userId === 'string' ? response.data.userId : undefined,
-      success: Boolean(response.data.success),
-      error: typeof response.data.error === 'string' ? response.data.error : undefined
+    return {
+      userId: data?.userId,
+      success: Boolean(data?.success),
+      error: data?.error
     };
   } catch (error: any) {
     console.error(`Error creating ${role} account:`, error);
