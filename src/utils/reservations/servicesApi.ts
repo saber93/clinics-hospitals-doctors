@@ -6,11 +6,13 @@ export const getAvailableServices = async (clinicId?: string): Promise<Service[]
   try {
     console.log('Fetching available services...');
     
-    // Use raw query without complex type annotations - avoid "Type instantiation is excessively deep" error
-    const { data, error } = await supabase
+    // Avoid the complex type inference by using raw query with explicit casting
+    const { data: rawData, error } = await supabase
       .from('services')
-      .select('*')
-      .eq(clinicId ? 'clinic_id' : 'id', clinicId || 'id');
+      .select('*');
+    
+    // Apply filtering after fetching
+    const data = rawData?.filter(service => !clinicId || service.clinic_id === clinicId);
     
     if (error) {
       console.error('Error fetching services:', error);
@@ -67,26 +69,27 @@ export const getAvailableServices = async (clinicId?: string): Promise<Service[]
       ];
     }
     
-    // Process the returned data without complex types
-    // For each service, fetch its vendor separately to avoid complex join types
+    // Process the returned data and fetch vendor information separately
     const typedServices: Service[] = await Promise.all(data.map(async (service: any) => {
       // Get vendor data separately to avoid deep type issues
       let vendorName = 'Unknown Provider';
-      let vendorId = '';
+      let vendorId = service.vendor_id || '';
       
-      try {
-        const { data: vendorData } = await supabase
-          .from('profiles')
-          .select('id, name')
-          .eq('id', service.vendor_id)
-          .maybeSingle(); // Use maybeSingle instead of single to avoid errors
-        
-        if (vendorData) {
-          vendorId = vendorData.id;
-          vendorName = vendorData.name;
+      if (service.vendor_id) {
+        try {
+          const { data: vendorData } = await supabase
+            .from('profiles')
+            .select('id, name')
+            .eq('id', service.vendor_id)
+            .maybeSingle();
+          
+          if (vendorData) {
+            vendorId = vendorData.id;
+            vendorName = vendorData.name;
+          }
+        } catch (err) {
+          console.error('Error fetching vendor data:', err);
         }
-      } catch (err) {
-        console.error('Error fetching vendor data:', err);
       }
       
       return {
