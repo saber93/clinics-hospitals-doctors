@@ -6,7 +6,7 @@ export const getAvailableServices = async (clinicId?: string): Promise<Service[]
   try {
     console.log('Fetching available services...');
     
-    // Use a basic query without complex type annotations
+    // Use raw query without complex type annotations - avoid "Type instantiation is excessively deep" error
     const { data, error } = await supabase
       .from('services')
       .select('*')
@@ -67,16 +67,27 @@ export const getAvailableServices = async (clinicId?: string): Promise<Service[]
       ];
     }
     
-    // Since we're not fetching vendor details in the initial query, make a second query for vendors
-    const typedServices: Service[] = await Promise.all((data as any[]).map(async service => {
+    // Process the returned data without complex types
+    // For each service, fetch its vendor separately to avoid complex join types
+    const typedServices: Service[] = await Promise.all(data.map(async (service: any) => {
       // Get vendor data separately to avoid deep type issues
-      const { data: vendorData } = await supabase
-        .from('profiles')
-        .select('id, name')
-        .eq('id', service.vendor_id)
-        .single();
+      let vendorName = 'Unknown Provider';
+      let vendorId = '';
       
-      const vendor = vendorData || { id: '', name: 'Unknown Provider' };
+      try {
+        const { data: vendorData } = await supabase
+          .from('profiles')
+          .select('id, name')
+          .eq('id', service.vendor_id)
+          .maybeSingle(); // Use maybeSingle instead of single to avoid errors
+        
+        if (vendorData) {
+          vendorId = vendorData.id;
+          vendorName = vendorData.name;
+        }
+      } catch (err) {
+        console.error('Error fetching vendor data:', err);
+      }
       
       return {
         id: service.id,
@@ -88,8 +99,8 @@ export const getAvailableServices = async (clinicId?: string): Promise<Service[]
         image_url: null,
         created_at: service.created_at,
         vendors: {
-          id: vendor.id,
-          name: vendor.name
+          id: vendorId,
+          name: vendorName
         }
       };
     }));
