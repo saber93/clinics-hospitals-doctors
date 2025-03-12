@@ -36,8 +36,7 @@ export const getAvailableServices = async (clinicId?: string): Promise<Service[]
         updated_at,
         vendors:profiles(id, name)
       `)
-      .eq(clinicId ? 'clinic_id' : 'id', clinicId || 'id') // Only apply filter if clinicId exists
-      .returns<ServiceQueryResult[]>();
+      .eq(clinicId ? 'clinic_id' : 'id', clinicId || 'id') // Only apply filter if clinicId exists;
     
     if (error) {
       console.error('Error fetching services:', error);
