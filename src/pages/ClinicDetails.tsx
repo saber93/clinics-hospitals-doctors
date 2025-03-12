@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Separator } from "@/components/ui/separator";
 
 // Imported refactored components
 import ClinicDetailHeader from "@/components/clinics/ClinicDetailHeader";
@@ -13,6 +12,7 @@ import ProductVouchers from "@/components/clinics/ProductVouchers";
 import ReservationCard from "@/components/clinics/ReservationCard";
 import ClinicDetailsLoading from "@/components/clinics/ClinicDetailsLoading";
 import ClinicDetailsError from "@/components/clinics/ClinicDetailsError";
+import { Clinic } from "@/types/clinic";
 
 const ClinicDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -47,6 +47,15 @@ const ClinicDetails = () => {
         hasReservation = reservations && reservations.length > 0;
       }
       
+      // Ensure productsVoucher is properly typed
+      const typedProductsVoucher = clinicData.products_voucher ? 
+        clinicData.products_voucher.map((v: any) => ({
+          productName: v.productName,
+          description: v.description,
+          discount: v.discount,
+          validUntil: v.validUntil
+        })) : [];
+      
       return {
         id: clinicData.id,
         name: clinicData.name,
@@ -56,9 +65,9 @@ const ClinicDetails = () => {
         subCategory: clinicData.sub_category,
         offerPercentage: clinicData.offer_percentage,
         imageUrl: clinicData.image_url || "/placeholder.svg",
-        productsVoucher: clinicData.products_voucher || [],
+        productsVoucher: typedProductsVoucher,
         hasReservation
-      };
+      } as Clinic;
     }
   });
 
@@ -75,6 +84,29 @@ const ClinicDetails = () => {
     return <ClinicDetailsError />;
   }
 
+  // If the clinic has no product vouchers, add some demo ones
+  const vouchers = clinic.productsVoucher && clinic.productsVoucher.length > 0 
+    ? clinic.productsVoucher 
+    : [
+        {
+          productName: "Anti-Aging Serum",
+          description: "Advanced formula with retinol for reducing fine lines and wrinkles",
+          discount: 15,
+          validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+        },
+        {
+          productName: "Hydrating Facial Mask",
+          description: "Deep moisture treatment with hyaluronic acid and ceramides",
+          discount: 20,
+          validUntil: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString()
+        },
+        {
+          productName: "Skin Brightening Cream",
+          description: "Vitamin C enriched formula to even skin tone and boost radiance",
+          discount: 10
+        }
+      ];
+
   return (
     <div className="container py-8 px-4 md:px-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -83,7 +115,7 @@ const ClinicDetails = () => {
           <ClinicDetailHeader clinic={clinic} />
           <ClinicDescription description={clinic.description} />
           <ProductVouchers 
-            vouchers={clinic.productsVoucher || []} 
+            vouchers={vouchers} 
             hasReservation={clinic.hasReservation}
             onReservation={handleReservation}
           />
@@ -94,7 +126,7 @@ const ClinicDetails = () => {
           <ReservationCard 
             clinicName={clinic.name} 
             offerPercentage={clinic.offerPercentage}
-            vouchers={clinic.productsVoucher?.map(v => ({ 
+            vouchers={vouchers.map(v => ({ 
               productName: v.productName, 
               discount: v.discount 
             }))}
