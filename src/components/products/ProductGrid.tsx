@@ -1,4 +1,3 @@
-
 import { Product } from "@/types";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -55,16 +54,18 @@ const ProductGrid = ({ products, loading, onDelete, onEdit }: ProductGridProps) 
     }
   };
 
-  // Fallback images if product image URL is invalid or missing
   const fallbackImages = [
-    "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=800&auto=format&fit=crop"
+    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1491933382434-500287f9b54b?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1542219550-37153d387c27?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1585386959984-a4155224a1ad?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1560343090-f0409e92791a?q=80&w=800&auto=format&fit=crop"
   ];
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, index: number) => {
-    // Use a fallback image when the product image fails to load
     const fallbackIndex = index % fallbackImages.length;
     e.currentTarget.src = fallbackImages[fallbackIndex];
   };

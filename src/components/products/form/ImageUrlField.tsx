@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ImagePlus, Trash } from "lucide-react";
+import { useState } from "react";
 
 interface ImageUrlFieldProps {
   imageUrl: string;
@@ -10,8 +11,18 @@ interface ImageUrlFieldProps {
 }
 
 const ImageUrlField = ({ imageUrl, onChange }: ImageUrlFieldProps) => {
+  const [hasError, setHasError] = useState(false);
+  
+  // Product-related fallback image
+  const fallbackImage = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=800&auto=format&fit=crop";
+
   const handleDeleteImage = () => {
     onChange("image_url", "");
+    setHasError(false);
+  };
+
+  const handleImageError = () => {
+    setHasError(true);
   };
 
   return (
@@ -23,7 +34,10 @@ const ImageUrlField = ({ imageUrl, onChange }: ImageUrlFieldProps) => {
           name="image_url"
           type="url"
           value={imageUrl}
-          onChange={(e) => onChange("image_url", e.target.value)}
+          onChange={(e) => {
+            onChange("image_url", e.target.value);
+            setHasError(false);
+          }}
           placeholder="Enter image URL"
         />
         {imageUrl && (
@@ -40,7 +54,19 @@ const ImageUrlField = ({ imageUrl, onChange }: ImageUrlFieldProps) => {
         )}
       </div>
       {imageUrl ? (
-        <img src={imageUrl} alt="Product preview" className="mt-2 rounded-md max-h-40 object-contain" />
+        <div className="mt-2 relative">
+          <img 
+            src={hasError ? fallbackImage : imageUrl} 
+            alt="Product preview" 
+            className="rounded-md max-h-40 object-contain" 
+            onError={handleImageError}
+          />
+          {hasError && (
+            <div className="absolute bottom-0 left-0 right-0 bg-red-500 bg-opacity-70 text-white text-xs p-1 text-center">
+              Image URL is invalid - using fallback
+            </div>
+          )}
+        </div>
       ) : (
         <div className="mt-2 text-muted-foreground">
           <ImagePlus className="inline-block h-4 w-4 mr-1" />
