@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useState } from "react";
 
 interface ProductGridProps {
   products: Product[];
@@ -21,6 +22,8 @@ interface ProductGridProps {
 }
 
 const ProductGrid = ({ products, loading, onDelete, onEdit }: ProductGridProps) => {
+  const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
+
   if (loading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -65,9 +68,12 @@ const ProductGrid = ({ products, loading, onDelete, onEdit }: ProductGridProps) 
     "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?q=80&w=800&auto=format&fit=crop"
   ];
 
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, index: number) => {
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, productId: string, index: number) => {
+    e.preventDefault();
+    console.log(`Image error for product ${productId}`);
     const fallbackIndex = index % fallbackImages.length;
     e.currentTarget.src = fallbackImages[fallbackIndex];
+    setImageErrors(prev => ({ ...prev, [productId]: true }));
   };
 
   return (
@@ -78,10 +84,11 @@ const ProductGrid = ({ products, loading, onDelete, onEdit }: ProductGridProps) 
             <div className="aspect-video relative overflow-hidden bg-gray-100 rounded-t-lg">
               {product.image_url ? (
                 <img
-                  src={product.image_url}
+                  src={imageErrors[product.id] ? fallbackImages[index % fallbackImages.length] : product.image_url}
                   alt={product.name}
                   className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
-                  onError={(e) => handleImageError(e, index)}
+                  onError={(e) => handleImageError(e, product.id, index)}
+                  key={`img-${product.id}-${imageErrors[product.id] ? 'fallback' : 'original'}`}
                 />
               ) : (
                 <img

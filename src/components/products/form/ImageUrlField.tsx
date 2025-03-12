@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ImagePlus, Trash } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ImageUrlFieldProps {
   imageUrl: string;
@@ -16,14 +16,39 @@ const ImageUrlField = ({ imageUrl, onChange }: ImageUrlFieldProps) => {
   // Cosmetics-related fallback image
   const fallbackImage = "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?q=80&w=800&auto=format&fit=crop";
 
+  // Reset error state when imageUrl changes
+  useEffect(() => {
+    if (imageUrl) {
+      setHasError(false);
+    }
+  }, [imageUrl]);
+
   const handleDeleteImage = () => {
     onChange("image_url", "");
     setHasError(false);
   };
 
-  const handleImageError = () => {
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    console.log("Image failed to load in form:", imageUrl);
+    e.preventDefault();
     setHasError(true);
   };
+
+  // Test the image URL before displaying
+  const testImageUrl = () => {
+    if (!imageUrl) return;
+    
+    const img = new Image();
+    img.onload = () => setHasError(false);
+    img.onerror = () => setHasError(true);
+    img.src = imageUrl;
+  };
+
+  useEffect(() => {
+    if (imageUrl) {
+      testImageUrl();
+    }
+  }, [imageUrl]);
 
   return (
     <div className="space-y-2">
@@ -39,6 +64,7 @@ const ImageUrlField = ({ imageUrl, onChange }: ImageUrlFieldProps) => {
             setHasError(false);
           }}
           placeholder="Enter image URL"
+          className={hasError ? "border-red-300 pr-10" : ""}
         />
         {imageUrl && (
           <Button
@@ -60,6 +86,7 @@ const ImageUrlField = ({ imageUrl, onChange }: ImageUrlFieldProps) => {
             alt="Product preview" 
             className="rounded-md max-h-40 object-contain" 
             onError={handleImageError}
+            key={`preview-${hasError ? 'fallback' : imageUrl}`}
           />
           {hasError && (
             <div className="absolute bottom-0 left-0 right-0 bg-red-500 bg-opacity-70 text-white text-xs p-1 text-center">
