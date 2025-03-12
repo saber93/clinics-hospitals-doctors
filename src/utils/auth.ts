@@ -22,9 +22,9 @@ export const logoutUser = async () => {
     toast.dismiss(loadingToast);
     toast.success("Logged out successfully");
     
-    // Force a full page reload to clear any React state
+    // Force a full page reload to clear any React state and redirect to login
     setTimeout(() => {
-      window.location.href = "/auth";
+      window.location.href = "/login";
     }, 500);
   } catch (error) {
     console.error("Error logging out:", error);
@@ -36,7 +36,7 @@ export const logoutUser = async () => {
       localStorage.removeItem('sb-rghakqvaawoopcoeowir-auth-token');
       sessionStorage.clear();
       setTimeout(() => {
-        window.location.href = "/auth";
+        window.location.href = "/login";
       }, 500);
     } catch (e) {
       console.error("Failed to clear local storage:", e);
