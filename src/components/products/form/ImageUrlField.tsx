@@ -13,8 +13,8 @@ interface ImageUrlFieldProps {
 const ImageUrlField = ({ imageUrl, onChange }: ImageUrlFieldProps) => {
   const [hasError, setHasError] = useState(false);
   
-  // Product-related fallback image
-  const fallbackImage = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=800&auto=format&fit=crop";
+  // Cosmetics-related fallback image
+  const fallbackImage = "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?q=80&w=800&auto=format&fit=crop";
 
   const handleDeleteImage = () => {
     onChange("image_url", "");

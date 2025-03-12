@@ -55,14 +55,14 @@ const ProductGrid = ({ products, loading, onDelete, onEdit }: ProductGridProps) 
   };
 
   const fallbackImages = [
-    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1491933382434-500287f9b54b?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1542219550-37153d387c27?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1618160612081-7b6c8afb84fe?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1571781418606-70265b9cce90?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1620804587331-effc68d47d7e?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1522338242992-e1a54906a8da?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=800&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1585386959984-a4155224a1ad?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1560343090-f0409e92791a?q=80&w=800&auto=format&fit=crop"
+    "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?q=80&w=800&auto=format&fit=crop"
   ];
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, index: number) => {
