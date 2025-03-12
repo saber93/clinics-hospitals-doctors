@@ -8,6 +8,12 @@ export interface Clinic {
   subCategory: string;
   offerPercentage: number;
   imageUrl?: string;
+  productsVoucher?: Array<{
+    productName: string;
+    description: string;
+    discount: number;
+    validUntil?: string;
+  }>;
 }
 
 export interface Category {

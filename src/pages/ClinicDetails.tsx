@@ -18,14 +18,10 @@ const ClinicDetails = () => {
   const { data: clinic, isLoading, error } = useQuery({
     queryKey: ['clinic', id],
     queryFn: async () => {
+      // First fetch the clinic data
       const { data: clinicData, error: clinicError } = await supabase
         .from('clinics')
-        .select(`
-          *,
-          reservations(
-            client_id
-          )
-        `)
+        .select('*')
         .eq('id', id)
         .single();
 
@@ -35,7 +31,18 @@ const ClinicDetails = () => {
 
       // Get current user's ID
       const { data: { user } } = await supabase.auth.getUser();
-      const hasReservation = user && clinicData.reservations?.some(r => r.client_id === user.id);
+      
+      // If user is authenticated, check for reservations separately
+      let hasReservation = false;
+      if (user) {
+        const { data: reservations } = await supabase
+          .from('reservations')
+          .select('client_id')
+          .eq('client_id', user.id)
+          .eq('status', 'confirmed');
+          
+        hasReservation = reservations && reservations.length > 0;
+      }
       
       return {
         id: clinicData.id,
