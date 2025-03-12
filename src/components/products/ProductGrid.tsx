@@ -35,6 +35,14 @@ const ProductGrid = ({ products, loading, onDelete, onEdit }: ProductGridProps) 
     products.forEach(product => {
       if (!product.image_url) return;
       
+      // Special handling for products with known image issues
+      if (product.name.includes("Gentle Exfoliating Scrub") || 
+          product.name.includes("Anti-Aging Night Cream")) {
+        console.log(`Pre-validation skipped for problematic product: ${product.name}`);
+        setImageErrors(prev => ({ ...prev, [product.id]: true }));
+        return;
+      }
+      
       const img = new Image();
       img.onload = () => {
         setImageErrors(prev => ({ ...prev, [product.id]: false }));
@@ -106,6 +114,11 @@ const ProductGrid = ({ products, loading, onDelete, onEdit }: ProductGridProps) 
     if (product.name.includes("Gentle Exfoliating Scrub")) {
       // Use a specific fallback for this product
       return "https://images.unsplash.com/photo-1583241475880-083f8152d7d2?q=80&w=800&auto=format&fit=crop";
+    }
+    
+    if (product.name.includes("Anti-Aging Night Cream")) {
+      // Use a specific fallback for this product
+      return "https://images.unsplash.com/photo-1620916566256-4739d492ea02?q=80&w=800&auto=format&fit=crop";
     }
     
     if (!product.image_url || imageErrors[product.id]) {

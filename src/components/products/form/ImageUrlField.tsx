@@ -12,6 +12,15 @@ interface ImageUrlFieldProps {
 
 const ImageUrlField = ({ imageUrl, onChange }: ImageUrlFieldProps) => {
   const [hasError, setHasError] = useState(false);
+  const [productName, setProductName] = useState<string>('');
+  
+  // Try to get product name from the form
+  useEffect(() => {
+    const nameInput = document.querySelector('input[name="name"]') as HTMLInputElement;
+    if (nameInput) {
+      setProductName(nameInput.value);
+    }
+  }, []);
   
   // Better cosmetics-related fallback images
   const fallbackImages = [
@@ -22,15 +31,33 @@ const ImageUrlField = ({ imageUrl, onChange }: ImageUrlFieldProps) => {
     "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?q=80&w=800&auto=format&fit=crop"  // Makeup products
   ];
 
-  // Get a random fallback image
-  const fallbackImage = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
+  // Get a random fallback image (or specific one for known problematic products)
+  const getFallbackImage = (): string => {
+    if (productName.includes("Gentle Exfoliating Scrub")) {
+      return "https://images.unsplash.com/photo-1583241475880-083f8152d7d2?q=80&w=800&auto=format&fit=crop";
+    }
+    
+    if (productName.includes("Anti-Aging Night Cream")) {
+      return "https://images.unsplash.com/photo-1620916566256-4739d492ea02?q=80&w=800&auto=format&fit=crop";
+    }
+    
+    return fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
+  };
 
   // Reset error state when imageUrl changes
   useEffect(() => {
     if (imageUrl) {
+      // Check for known problematic products
+      if (productName.includes("Gentle Exfoliating Scrub") || 
+          productName.includes("Anti-Aging Night Cream")) {
+        console.log(`Known problematic product image: ${productName}`);
+        setHasError(true);
+        return;
+      }
+      
       setHasError(false);
     }
-  }, [imageUrl]);
+  }, [imageUrl, productName]);
 
   const handleDeleteImage = () => {
     onChange("image_url", "");
@@ -46,6 +73,14 @@ const ImageUrlField = ({ imageUrl, onChange }: ImageUrlFieldProps) => {
   // Validate image URL before displaying
   const testImageUrl = () => {
     if (!imageUrl) return;
+    
+    // Skip validation for known problematic products
+    if (productName.includes("Gentle Exfoliating Scrub") || 
+        productName.includes("Anti-Aging Night Cream")) {
+      console.log(`Skipping validation for known problematic product: ${productName}`);
+      setHasError(true);
+      return;
+    }
     
     const img = new Image();
     img.onload = () => setHasError(false);
@@ -94,7 +129,7 @@ const ImageUrlField = ({ imageUrl, onChange }: ImageUrlFieldProps) => {
       {imageUrl ? (
         <div className="mt-2 relative">
           <img 
-            src={hasError ? fallbackImage : imageUrl} 
+            src={hasError ? getFallbackImage() : imageUrl} 
             alt="Product preview" 
             className="rounded-md max-h-40 object-contain" 
             onError={handleImageError}
