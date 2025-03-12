@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
@@ -10,11 +11,13 @@ import DateTimePicker from "@/components/reservations/DateTimePicker";
 import BookingsList from "@/components/reservations/BookingsList";
 import VendorPanel from "@/components/reservations/VendorPanel";
 import LoadingState from "@/components/reservations/LoadingState";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Reservations = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
+  const { session, user } = useAuth();
   
   const clinicId = location.state?.clinicId;
   const clinicName = location.state?.clinicName;
@@ -26,7 +29,6 @@ const Reservations = () => {
   const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [reservations, setReservations] = useState<any[]>([]);
   
@@ -36,36 +38,39 @@ const Reservations = () => {
   ];
   
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        console.log("Checking auth session...");
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (!session) {
-          console.log("No session found, redirecting to login");
+        // Check if we have a session
+        if (!session || !user) {
+          console.log("No session or user found, redirecting to login");
+          toast.error("Please login to book appointments");
           navigate("/login");
           return;
         }
         
-        setUserId(session.user.id);
+        console.log('User logged in:', user.id);
         
+        // Get user profile to determine role
         const { data: profile } = await supabase
           .from('profiles')
           .select('role')
-          .eq('id', session.user.id)
-          .maybeSingle();
+          .eq('id', user.id)
+          .single();
         
         if (profile) {
+          console.log('User role:', profile.role);
           setUserRole(profile.role);
         }
         
-        console.log("Getting available services...");
+        // Get available services
+        console.log('Fetching services...');
         const servicesData = await getAvailableServices();
-        console.log("Services data:", servicesData);
+        console.log('Services fetched:', servicesData.length);
         
+        // Filter by clinic if needed
         const filteredServices = clinicId 
           ? servicesData.filter(service => service.vendor_id === clinicId)
           : servicesData;
@@ -77,24 +82,27 @@ const Reservations = () => {
           toast.success(`Booking appointment at ${clinicName}`);
         }
         
-        if (session.user.id && profile?.role) {
-          const reservationsData = await getUserReservations(session.user.id, profile.role);
+        // Get user reservations
+        if (user.id && profile?.role) {
+          console.log('Fetching reservations...');
+          const reservationsData = await getUserReservations(user.id, profile.role);
+          console.log('Reservations fetched:', reservationsData.length);
           setReservations(reservationsData);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching data:", error);
-        setError("Failed to load services data");
+        setError(error.message || "Failed to load services data");
         toast.error("Failed to load data");
       } finally {
         setLoading(false);
       }
     };
     
-    fetchUserData();
-  }, [clinicId, clinicName, navigate]);
+    fetchData();
+  }, [clinicId, clinicName, navigate, session, user]);
   
   const handleBookAppointment = async () => {
-    if (!selectedDate || !selectedTimeSlot || !selectedService || !userId) {
+    if (!selectedDate || !selectedTimeSlot || !selectedService || !user?.id) {
       toast.error("Please select a date, time and service");
       return;
     }
@@ -110,7 +118,7 @@ const Reservations = () => {
       const formattedDate = selectedDate.toISOString().split('T')[0];
       
       await createReservation(
-        userId,
+        user.id,
         service.vendor_id,
         selectedService,
         formattedDate,
@@ -123,18 +131,30 @@ const Reservations = () => {
       setSelectedTimeSlot(null);
       setSelectedService(null);
       
-      if (userId && userRole) {
-        const reservationsData = await getUserReservations(userId, userRole);
+      if (user.id && userRole) {
+        const reservationsData = await getUserReservations(user.id, userRole);
         setReservations(reservationsData);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error booking appointment:", error);
-      toast.error("Failed to book appointment");
+      toast.error(error.message || "Failed to book appointment");
     }
   };
   
   if (loading) {
     return <LoadingState />;
+  }
+  
+  if (!session || !user) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-3xl font-bold mb-4">Authentication Required</h1>
+          <p className="mb-6">Please log in to book appointments.</p>
+          <Button onClick={() => navigate('/login')}>Go to Login</Button>
+        </div>
+      </div>
+    );
   }
   
   return (
