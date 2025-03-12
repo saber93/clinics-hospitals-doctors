@@ -2,11 +2,28 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Service } from '@/types/reservations';
 
+// Define a type for the raw database response to avoid deep type inference issues
+type ServiceQueryResult = {
+  id: string;
+  name: string;
+  description: string | null;
+  duration: number;
+  price: number;
+  vendor_id: string;
+  created_at: string;
+  updated_at: string;
+  vendors: {
+    id: string;
+    name: string;
+  } | null;
+}
+
 export const getAvailableServices = async (clinicId?: string): Promise<Service[]> => {
   try {
     console.log('Fetching available services...');
     
-    let query = supabase
+    // Using explicit type annotation to break the circular reference
+    const { data, error } = await supabase
       .from('services')
       .select(`
         id,
@@ -18,14 +35,9 @@ export const getAvailableServices = async (clinicId?: string): Promise<Service[]
         created_at,
         updated_at,
         vendors:profiles(id, name)
-      `);
-    
-    // Filter by clinicId if provided
-    if (clinicId) {
-      query = query.eq('clinic_id', clinicId);
-    }
-    
-    const { data, error } = await query;
+      `)
+      .eq(clinicId ? 'clinic_id' : 'id', clinicId || 'id') // Only apply filter if clinicId exists
+      .returns<ServiceQueryResult[]>();
     
     if (error) {
       console.error('Error fetching services:', error);
@@ -84,10 +96,8 @@ export const getAvailableServices = async (clinicId?: string): Promise<Service[]
     
     // Cast to the proper Service type
     const typedServices: Service[] = data.map(service => {
-      // Handle the vendors data, which may be an error object if the join fails
-      const vendorData = typeof service.vendors === 'object' && service.vendors !== null 
-        ? service.vendors 
-        : { id: '', name: 'Unknown Provider' };
+      // Handle the vendors data, which may be null
+      const vendorData = service.vendors || { id: '', name: 'Unknown Provider' };
         
       return {
         id: service.id,
