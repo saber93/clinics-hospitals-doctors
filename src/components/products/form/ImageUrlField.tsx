@@ -1,3 +1,4 @@
+
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -21,23 +22,23 @@ const ImageUrlField = ({ imageUrl, onChange }: ImageUrlFieldProps) => {
     }
   }, []);
   
-  // Updated cosmetics-related fallback images with valid URLs
+  // Updated cosmetics-related fallback images with more relevant product images
   const fallbackImages = [
-    "https://images.unsplash.com/photo-1598452963314-b09f397a5c48?q=80&w=800&auto=format&fit=crop", 
-    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop", 
-    "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?q=80&w=800&auto=format&fit=crop", 
-    "https://images.unsplash.com/photo-1600612253971-422e7f7faeb6?q=80&w=800&auto=format&fit=crop", 
-    "https://images.unsplash.com/photo-1598662972299-5408ddb8a3dc?q=80&w=800&auto=format&fit=crop"  
+    "https://images.unsplash.com/photo-1598452963314-b09f397a5c48?q=80&w=800&auto=format&fit=crop", // Cosmetics set
+    "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=800&auto=format&fit=crop", // Facial scrub 
+    "https://images.unsplash.com/photo-1567721913486-6585f069b332?q=80&w=800&auto=format&fit=crop", // Night cream
+    "https://images.unsplash.com/photo-1562887250-9a52d844ad30?q=80&w=800&auto=format&fit=crop", // Serum bottles
+    "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?q=80&w=800&auto=format&fit=crop"  // Makeup products
   ];
 
   // Get a random fallback image (or specific one for known problematic products)
   const getFallbackImage = (): string => {
     if (productName.includes("Gentle Exfoliating Scrub")) {
-      return "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop";
+      return "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=800&auto=format&fit=crop"; // Facial scrub
     }
     
     if (productName.includes("Anti-Aging Night Cream")) {
-      return "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?q=80&w=800&auto=format&fit=crop";
+      return "https://images.unsplash.com/photo-1567721913486-6585f069b332?q=80&w=800&auto=format&fit=crop"; // Night cream
     }
     
     return fallbackImages[Math.floor(Math.random() * fallbackImages.length)];

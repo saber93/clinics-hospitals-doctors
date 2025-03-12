@@ -48,13 +48,13 @@ const ProductImageWithFallback = ({
 
   // Get image URL with fallback logic
   const getImageUrl = (): string => {
-    // Special case for products we know have issues - updated with valid URLs
+    // Special case for products we know have issues - updated with relevant product images
     if (productName.includes("Gentle Exfoliating Scrub")) {
-      return "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop";
+      return "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=800&auto=format&fit=crop"; // Facial scrub
     }
     
     if (productName.includes("Anti-Aging Night Cream")) {
-      return "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?q=80&w=800&auto=format&fit=crop";
+      return "https://images.unsplash.com/photo-1567721913486-6585f069b332?q=80&w=800&auto=format&fit=crop"; // Night cream
     }
     
     if (!imageUrl || hasError) {
