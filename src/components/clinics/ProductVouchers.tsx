@@ -1,26 +1,16 @@
+
 import React, { useState } from "react";
-import { Gift, ImageIcon, ExternalLink, ArrowLeft, ArrowRight } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Gift } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import ProductImageWithFallback from "@/components/products/ProductImageWithFallback";
+import VoucherCard from "./vouchers/VoucherCard";
+import VoucherPreviewDialog from "./vouchers/VoucherPreviewDialog";
+import { ProductVoucherType } from "./types";
 
-type ProductVoucherType = {
-  productName: string;
-  description: string;
-  discount: number;
-  validUntil?: string;
-  imageUrl?: string;
-  additionalImages?: string[]; // Array of additional image URLs
-};
-
-type ProductVouchersProps = {
+interface ProductVouchersProps {
   vouchers: ProductVoucherType[];
   hasReservation: boolean;
   onReservation: () => void;
-};
+}
 
 const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVouchersProps) => {
   const [selectedProduct, setSelectedProduct] = useState<ProductVoucherType | null>(null);
@@ -34,12 +24,11 @@ const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVou
 
   const handleProductPreview = (product: ProductVoucherType) => {
     setSelectedProduct(product);
-    setCurrentImageIndex(0); // Reset to first image when opening preview
-    setSlideDirection(null); // Reset slide direction
+    setCurrentImageIndex(0);
+    setSlideDirection(null);
     setIsDialogOpen(true);
   };
 
-  // Get all images for the selected product (main image + additional images)
   const getAllProductImages = () => {
     if (!selectedProduct) return [];
     
@@ -51,13 +40,10 @@ const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVou
     return images.filter(Boolean) as string[];
   };
 
-  const allImages = getAllProductImages();
-
   const handlePrevImage = () => {
     setSlideDirection("right");
     setTimeout(() => {
       setCurrentImageIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));
-      // Reset direction after a short delay to trigger the entrance animation
       setTimeout(() => setSlideDirection(null), 50);
     }, 200);
   };
@@ -66,10 +52,11 @@ const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVou
     setSlideDirection("left");
     setTimeout(() => {
       setCurrentImageIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
-      // Reset direction after a short delay to trigger the entrance animation
       setTimeout(() => setSlideDirection(null), 50);
     }, 200);
   };
+
+  const allImages = getAllProductImages();
 
   return (
     <>
@@ -85,139 +72,27 @@ const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVou
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {vouchers.map((voucher, index) => (
-            <Card 
-              key={index} 
-              className={`
-                ${hasReservation ? "bg-muted/50" : "bg-muted/50 relative overflow-hidden group"}
-                cursor-pointer hover:shadow-md transition-shadow duration-200
-              `}
-              onClick={() => handleProductPreview(voucher)}
-            >
-              {!hasReservation && (
-                <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10 transition-opacity group-hover:bg-black/50">
-                  <div className="text-center px-4 py-3">
-                    <p className="text-white font-medium mb-2">Reserve now to unlock this offer!</p>
-                    <Badge className="bg-primary text-primary-foreground px-3 py-1.5 text-sm font-bold">
-                      {voucher.discount}% OFF
-                    </Badge>
-                  </div>
-                </div>
-              )}
-              
-              {/* Product Image */}
-              <div className={hasReservation ? "" : "blur-sm"}>
-                <ProductImageWithFallback
-                  imageUrl={voucher.imageUrl}
-                  productName={voucher.productName}
-                  productId={`voucher-${index}`}
-                  index={index}
-                />
-              </div>
-
-              <CardHeader className={hasReservation ? "" : "blur-sm"}>
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-lg">{voucher.productName}</CardTitle>
-                </div>
-                <CardDescription>{voucher.description}</CardDescription>
-              </CardHeader>
-              <CardContent className={hasReservation ? "" : "blur-sm"}>
-                <p className="text-primary font-bold">{voucher.discount}% OFF</p>
-                {voucher.validUntil && (
-                  <p className="text-sm text-muted-foreground">
-                    Valid until: {new Date(voucher.validUntil).toLocaleDateString()}
-                  </p>
-                )}
-              </CardContent>
-            </Card>
+            <VoucherCard
+              key={index}
+              voucher={voucher}
+              hasReservation={hasReservation}
+              onPreview={handleProductPreview}
+              index={index}
+            />
           ))}
         </div>
       </div>
 
-      {/* Product Preview Dialog with Animated Image Carousel */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          {selectedProduct && (
-            <>
-              <DialogHeader>
-                <DialogTitle>{selectedProduct.productName}</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                {/* Image Carousel with Animation */}
-                <div className="rounded-md overflow-hidden relative">
-                  {allImages.length > 0 && (
-                    <>
-                      <div className="relative aspect-video overflow-hidden">
-                        <div 
-                          className={`
-                            w-full h-full transition-all duration-300 ease-in-out
-                            ${slideDirection === "left" ? "translate-x-[-100%] opacity-0" : 
-                              slideDirection === "right" ? "translate-x-[100%] opacity-0" : 
-                              "translate-x-0 opacity-100"}
-                          `}
-                        >
-                          <ProductImageWithFallback
-                            imageUrl={allImages[currentImageIndex]}
-                            productName={selectedProduct.productName}
-                            productId={`preview-${selectedProduct.productName}-${currentImageIndex}`}
-                            index={currentImageIndex}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      </div>
-                      
-                      {/* Image Navigation Controls */}
-                      {allImages.length > 1 && (
-                        <div className="absolute inset-y-0 left-0 right-0 flex justify-between items-center">
-                          <Button 
-                            onClick={(e) => { e.stopPropagation(); handlePrevImage(); }} 
-                            variant="ghost" 
-                            size="icon" 
-                            className="bg-black/20 hover:bg-black/40 text-white h-8 w-8 rounded-full ml-2 transition-all duration-200 hover:scale-110"
-                          >
-                            <ArrowLeft className="h-4 w-4" />
-                            <span className="sr-only">Previous image</span>
-                          </Button>
-                          <Button 
-                            onClick={(e) => { e.stopPropagation(); handleNextImage(); }} 
-                            variant="ghost" 
-                            size="icon" 
-                            className="bg-black/20 hover:bg-black/40 text-white h-8 w-8 rounded-full mr-2 transition-all duration-200 hover:scale-110"
-                          >
-                            <ArrowRight className="h-4 w-4" />
-                            <span className="sr-only">Next image</span>
-                          </Button>
-                        </div>
-                      )}
-                      
-                      {/* Image Counter */}
-                      {allImages.length > 1 && (
-                        <div className="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-md">
-                          {currentImageIndex + 1} / {allImages.length}
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-                
-                <div>
-                  <h3 className="font-medium">Description</h3>
-                  <p className="text-muted-foreground mt-1">{selectedProduct.description}</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <Badge className="bg-primary text-primary-foreground px-3 py-1.5 text-sm font-bold">
-                    {selectedProduct.discount}% OFF
-                  </Badge>
-                  {selectedProduct.validUntil && (
-                    <span className="text-sm text-muted-foreground">
-                      Valid until: {new Date(selectedProduct.validUntil).toLocaleDateString()}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+      <VoucherPreviewDialog
+        voucher={selectedProduct}
+        isOpen={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        currentImageIndex={currentImageIndex}
+        slideDirection={slideDirection}
+        onPrevImage={handlePrevImage}
+        onNextImage={handleNextImage}
+        allImages={allImages}
+      />
     </>
   );
 };
