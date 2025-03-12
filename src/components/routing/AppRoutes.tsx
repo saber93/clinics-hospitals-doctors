@@ -1,3 +1,4 @@
+
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -8,6 +9,7 @@ import Loading from '@/components/ui/Loading';
 const Home = lazy(() => import('@/pages/Home'));
 const Login = lazy(() => import('@/pages/Login'));
 const Register = lazy(() => import('@/pages/Register'));
+const Auth = lazy(() => import('@/pages/Auth'));
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
 const Products = lazy(() => import('@/pages/Products'));
 const ProductForm = lazy(() => import('@/pages/ProductForm'));
@@ -16,8 +18,6 @@ const CategoryForm = lazy(() => import('@/pages/CategoryForm'));
 const Clinics = lazy(() => import('@/pages/Clinics'));
 const ClinicDetails = lazy(() => import('@/pages/ClinicDetails'));
 const Reservations = lazy(() => import('@/pages/Reservations'));
-
-// Add the new import for AllBookings page
 import AllBookings from "@/pages/AllBookings";
 
 const AppRoutes = () => {
@@ -30,6 +30,7 @@ const AppRoutes = () => {
           <Route path="/clinics" element={<Clinics />} />
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+          <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
           <Route path="/reservations" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />

@@ -1,18 +1,15 @@
 
 import { useSearchParams, Navigate } from "react-router-dom";
-import LoginForm from "@/components/auth/LoginForm";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { seedTestData } from "@/utils/seedTestData";
+import LoginForm from "@/components/auth/LoginForm";
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
   const mode = searchParams.get("mode") || "login";
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [isCreatingTestAccounts, setIsCreatingTestAccounts] = useState(false);
 
   useEffect(() => {
     // Check current auth status
@@ -45,25 +42,6 @@ const Auth = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleSeedTestData = async () => {
-    if (isCreatingTestAccounts) return;
-    
-    setIsCreatingTestAccounts(true);
-    const loadingToast = toast.loading("Creating all test accounts and demo data...", { duration: 30000 });
-    
-    try {
-      await seedTestData();
-      toast.dismiss(loadingToast);
-      toast.success("All test accounts created successfully! You can now log in with any of the test credentials.");
-    } catch (error: any) {
-      console.error("Error creating test accounts:", error);
-      toast.dismiss(loadingToast);
-      toast.error(`Failed to create test accounts: ${error.message}`);
-    } finally {
-      setIsCreatingTestAccounts(false);
-    }
-  };
-
   // If still loading, show a loading indicator
   if (loading) {
     return (
@@ -94,23 +72,6 @@ const Auth = () => {
         </div>
         <div className="mt-8 bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <LoginForm />
-          
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <p className="text-center text-sm text-gray-600 mb-4">
-              Demo Tools
-            </p>
-            <Button 
-              onClick={handleSeedTestData} 
-              variant="outline" 
-              className="w-full font-medium"
-              disabled={isCreatingTestAccounts}
-            >
-              {isCreatingTestAccounts ? "Creating All Test Accounts..." : "Create All Test Accounts & Demo Data"}
-            </Button>
-            <p className="mt-2 text-xs text-center text-gray-500">
-              This will create accounts for all roles with sample data
-            </p>
-          </div>
         </div>
       </div>
     </div>

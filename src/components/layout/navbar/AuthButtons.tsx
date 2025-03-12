@@ -28,7 +28,7 @@ const AuthButtons = ({ session, isMobile = false }: AuthButtonsProps) => {
             isMobile && "w-full"
           )}
         >
-          <Link to="/auth?mode=login">Log In</Link>
+          <Link to="/login">Log In</Link>
         </Button>
         <Button 
           asChild 
@@ -38,7 +38,7 @@ const AuthButtons = ({ session, isMobile = false }: AuthButtonsProps) => {
             isMobile && "w-full"
           )}
         >
-          <Link to="/auth?mode=register">Sign Up</Link>
+          <Link to="/register">Sign Up</Link>
         </Button>
       </div>
     );
