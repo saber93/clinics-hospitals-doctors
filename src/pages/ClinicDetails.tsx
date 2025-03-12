@@ -1,19 +1,21 @@
 
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, MapPin, Calendar, Clock, Phone, Gift } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import ProductImageWithFallback from "@/components/products/ProductImageWithFallback";
+import { Separator } from "@/components/ui/separator";
+
+// Imported refactored components
+import ClinicDetailHeader from "@/components/clinics/ClinicDetailHeader";
+import ClinicDescription from "@/components/clinics/ClinicDescription";
+import ProductVouchers from "@/components/clinics/ProductVouchers";
+import ReservationCard from "@/components/clinics/ReservationCard";
+import ClinicDetailsLoading from "@/components/clinics/ClinicDetailsLoading";
+import ClinicDetailsError from "@/components/clinics/ClinicDetailsError";
 
 const ClinicDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
 
   // Fetch clinic details and check if user has reservations
   const { data: clinic, isLoading, error } = useQuery({
@@ -60,213 +62,44 @@ const ClinicDetails = () => {
     }
   });
 
-  // Handle image error by falling back to placeholder
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    console.log(`Image failed to load: ${clinic?.imageUrl}`);
-    e.currentTarget.src = "/placeholder.svg";
-  };
-
-  // Use placeholder for Body Sculpt Studio which has a problematic image
-  const getImageUrl = () => {
-    if (clinic?.name === "Body Sculpt Studio") {
-      return "https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=500&auto=format&fit=crop";
-    }
-    return clinic?.imageUrl || "/placeholder.svg";
-  };
-
   const handleReservation = () => {
     // For now just show a toast; in a real app, this would navigate to a reservation form
     toast.success("Reservation feature coming soon!");
   };
 
   if (isLoading) {
-    return (
-      <div className="container py-12 flex justify-center">
-        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
-      </div>
-    );
+    return <ClinicDetailsLoading />;
   }
 
   if (error || !clinic) {
-    return (
-      <div className="container py-12">
-        <div className="text-center space-y-4">
-          <h2 className="text-2xl font-bold">Clinic Not Found</h2>
-          <p className="text-muted-foreground">
-            Sorry, we couldn't find the clinic you were looking for.
-          </p>
-          <Button onClick={() => navigate('/clinics')}>Back to Clinics</Button>
-        </div>
-      </div>
-    );
+    return <ClinicDetailsError />;
   }
 
   return (
     <div className="container py-8 px-4 md:px-6">
-      <Button
-        variant="back"
-        onClick={() => navigate('/clinics')}
-        className="mb-6"
-      >
-        <ArrowLeft className="h-4 w-4" /> Back to Clinics
-      </Button>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Clinic Image and Basic Info */}
+        {/* Left column: Clinic details and vouchers */}
         <div className="lg:col-span-2">
-          <div className="relative rounded-lg overflow-hidden h-64 md:h-96 mb-6">
-            <img
-              src={getImageUrl()}
-              alt={clinic.name}
-              className="w-full h-full object-cover"
-              onError={handleImageError}
-            />
-            {clinic.offerPercentage > 0 && (
-              <div className="absolute top-0 right-0 m-4">
-                <Badge className="bg-primary text-primary-foreground px-3 py-1.5 text-sm font-bold">
-                  {clinic.offerPercentage}% OFF
-                </Badge>
-              </div>
-            )}
-          </div>
-
-          <h1 className="text-3xl font-bold tracking-tight mb-2">{clinic.name}</h1>
-          
-          <div className="flex items-center text-muted-foreground mb-4">
-            <MapPin className="h-4 w-4 mr-1" />
-            <span>{clinic.location}</span>
-          </div>
-
-          <div className="flex flex-wrap gap-2 mb-6">
-            <Badge variant="secondary">{clinic.category}</Badge>
-            <Badge variant="outline">{clinic.subCategory}</Badge>
-          </div>
-
-          <Separator className="my-6" />
-
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">About this Clinic</h2>
-            <p className="text-muted-foreground">{clinic.description}</p>
-          </div>
-
-          {/* Product Vouchers Section - Now shown to all users */}
-          {clinic.productsVoucher && clinic.productsVoucher.length > 0 && (
-            <>
-              <Separator className="my-6" />
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <Gift className="h-5 w-5 text-primary" />
-                  <h2 className="text-xl font-semibold">
-                    {clinic.hasReservation 
-                      ? "Your Available Product Vouchers" 
-                      : "Reserve Now To Unlock These Vouchers!"}
-                  </h2>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {clinic.productsVoucher.map((voucher: any, index: number) => (
-                    <Card 
-                      key={index} 
-                      className={
-                        clinic.hasReservation 
-                          ? "bg-muted/50" 
-                          : "bg-muted/50 relative overflow-hidden group"
-                      }
-                    >
-                      {!clinic.hasReservation && (
-                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10 transition-opacity group-hover:bg-black/50">
-                          <div className="text-center px-4 py-3">
-                            <p className="text-white font-medium mb-2">Reserve now to unlock this offer!</p>
-                            <Badge className="bg-primary text-primary-foreground px-3 py-1.5 text-sm font-bold">
-                              {voucher.discount}% OFF
-                            </Badge>
-                          </div>
-                        </div>
-                      )}
-                      <CardHeader className={clinic.hasReservation ? "" : "blur-sm"}>
-                        <CardTitle className="text-lg">{voucher.productName}</CardTitle>
-                        <CardDescription>{voucher.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent className={clinic.hasReservation ? "" : "blur-sm"}>
-                        <p className="text-primary font-bold">{voucher.discount}% OFF</p>
-                        {voucher.validUntil && (
-                          <p className="text-sm text-muted-foreground">
-                            Valid until: {new Date(voucher.validUntil).toLocaleDateString()}
-                          </p>
-                        )}
-                      </CardContent>
-                      <CardFooter>
-                        {clinic.hasReservation ? (
-                          <Button 
-                            className="w-full" 
-                            onClick={() => toast.success(`Voucher for ${voucher.productName} claimed!`)}
-                          >
-                            Claim Voucher
-                          </Button>
-                        ) : (
-                          <Button 
-                            className="w-full z-20 relative" 
-                            onClick={handleReservation}
-                          >
-                            Reserve to Unlock
-                          </Button>
-                        )}
-                      </CardFooter>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
+          <ClinicDetailHeader clinic={clinic} />
+          <ClinicDescription description={clinic.description} />
+          <ProductVouchers 
+            vouchers={clinic.productsVoucher || []} 
+            hasReservation={clinic.hasReservation}
+            onReservation={handleReservation}
+          />
         </div>
 
-        {/* Reservation Card */}
+        {/* Right column: Reservation card */}
         <div>
-          <Card className="sticky top-24">
-            <CardHeader>
-              <CardTitle>Book an Appointment</CardTitle>
-              <CardDescription>Reserve your spot at {clinic.name}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-muted-foreground" />
-                <span>Available 7 days a week</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="h-5 w-5 text-muted-foreground" />
-                <span>9:00 AM - 7:00 PM</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="h-5 w-5 text-muted-foreground" />
-                <span>Call for urgent appointments</span>
-              </div>
-
-              {clinic.offerPercentage > 0 && (
-                <div className="mt-4 p-3 bg-muted rounded-md">
-                  <p className="font-medium text-sm">Special Offer</p>
-                  <p className="text-primary font-bold">{clinic.offerPercentage}% off your first visit</p>
-                </div>
-              )}
-
-              {/* Show preview of available vouchers */}
-              {clinic.productsVoucher && clinic.productsVoucher.length > 0 && (
-                <div className="mt-4 p-3 bg-muted rounded-md">
-                  <p className="font-medium text-sm">Unlock These Vouchers</p>
-                  <div className="flex gap-1 mt-2 flex-wrap">
-                    {clinic.productsVoucher.map((voucher: any, index: number) => (
-                      <Badge key={index} variant="outline" className="bg-primary/10">
-                        {voucher.discount}% off {voucher.productName}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full" onClick={handleReservation}>
-                Make a Reservation
-              </Button>
-            </CardFooter>
-          </Card>
+          <ReservationCard 
+            clinicName={clinic.name} 
+            offerPercentage={clinic.offerPercentage}
+            vouchers={clinic.productsVoucher?.map(v => ({ 
+              productName: v.productName, 
+              discount: v.discount 
+            }))}
+            onReservation={handleReservation}
+          />
         </div>
       </div>
     </div>
