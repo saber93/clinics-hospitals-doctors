@@ -6,19 +6,10 @@ export const getAvailableServices = async (clinicId?: string): Promise<Service[]
   try {
     console.log('Fetching available services...');
     
+    // Use a simpler query without complex type annotations
     const { data, error } = await supabase
       .from('services')
-      .select(`
-        id,
-        name,
-        description,
-        duration,
-        price,
-        vendor_id,
-        created_at,
-        updated_at,
-        vendors:profiles!services_vendor_id_fkey(id, name)
-      `)
+      .select('*, vendors:profiles!services_vendor_id_fkey(id, name)')
       .eq(clinicId ? 'clinic_id' : 'id', clinicId || 'id');
     
     if (error) {
@@ -76,8 +67,9 @@ export const getAvailableServices = async (clinicId?: string): Promise<Service[]
       ];
     }
     
-    // Cast to the proper Service type
+    // Cast to the proper Service type using type assertion
     const typedServices: Service[] = (data as any[]).map(service => {
+      // Safely handle possibly undefined vendors data
       const vendorData = service.vendors || { id: '', name: 'Unknown Provider' };
       
       return {
