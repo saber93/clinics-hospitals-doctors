@@ -11,6 +11,8 @@ export interface Product {
   category?: string;
   seller_id: string;
   discount_percentage?: number;
+  is_reservable?: boolean;
+  reservation_duration?: number; // in minutes
 }
 
 // Types missing from the error list

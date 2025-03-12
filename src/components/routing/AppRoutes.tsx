@@ -1,69 +1,47 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import Index from "@/pages/Index";
-import Auth from "@/pages/Auth";
-import Dashboard from "@/pages/Dashboard";
-import ClientDashboard from "@/pages/ClientDashboard";
-import VendorDashboard from "@/pages/VendorDashboard";
-import CenterDashboard from "@/pages/CenterDashboard";
-import DoctorDashboard from "@/pages/DoctorDashboard";
-import AdminDashboard from "@/pages/AdminDashboard";
-import TotalClients from "@/pages/TotalClients";
-import TotalVendors from "@/pages/TotalVendors";
-import Reservations from "@/pages/Reservations";
-import Offers from "@/pages/Offers";
-import Vouchers from "@/pages/Vouchers";
+import React, { lazy, Suspense } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { ProtectedRoute } from './ProtectedRoute';
+import { PublicRoute } from './PublicRoute';
+import Loading from '@/components/ui/Loading';
+
+const Home = lazy(() => import('@/pages/Home'));
+const Login = lazy(() => import('@/pages/Login'));
+const Register = lazy(() => import('@/pages/Register'));
+const Dashboard = lazy(() => import('@/pages/Dashboard'));
+const Products = lazy(() => import('@/pages/Products'));
+const ProductForm = lazy(() => import('@/pages/ProductForm'));
+const Categories = lazy(() => import('@/pages/Categories'));
+const CategoryForm = lazy(() => import('@/pages/CategoryForm'));
+const Clinics = lazy(() => import('@/pages/Clinics'));
+const ClinicDetails = lazy(() => import('@/pages/ClinicDetails'));
+const Reservations = lazy(() => import('@/pages/Reservations'));
+
+// Add the new import for AllBookings page
 import AllBookings from "@/pages/AllBookings";
-import ClinicDirectory from "@/pages/ClinicDirectory";
-import ClinicDetails from "@/pages/ClinicDetails";
-import About from "@/pages/About";
-import Contact from "@/pages/Contact";
-import NotFound from "@/pages/NotFound";
-import ChatSessions from "@/pages/ChatSessions";
-import ChatPage from "@/pages/ChatPage";
-import ChatSettings from "@/pages/ChatSettings";
-import ProductsManagement from "@/pages/ProductsManagement";
-import AddProduct from "@/pages/AddProduct";
-import EditProduct from "@/pages/EditProduct";
 
-interface AppRoutesProps {
-  session: any;
-}
-
-const AppRoutes = ({ session }: AppRoutesProps) => {
+const AppRoutes = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/dashboard" />} />
-      <Route path="/clinics" element={<ClinicDirectory />} />
-      <Route path="/clinics/:id" element={<ClinicDetails />} />
-      
-      <Route path="/dashboard" element={session ? <Dashboard /> : <Navigate to="/auth" />} />
-      <Route path="/client-dashboard" element={session ? <ClientDashboard /> : <Navigate to="/auth" />} />
-      <Route path="/vendor-dashboard" element={session ? <VendorDashboard /> : <Navigate to="/auth" />} />
-      <Route path="/center-dashboard" element={session ? <CenterDashboard /> : <Navigate to="/auth" />} />
-      <Route path="/doctor-dashboard" element={session ? <DoctorDashboard /> : <Navigate to="/auth" />} />
-      <Route path="/admin-dashboard" element={session ? <AdminDashboard /> : <Navigate to="/auth" />} />
-      
-      <Route path="/clients" element={session ? <TotalClients /> : <Navigate to="/auth" />} />
-      <Route path="/vendors" element={session ? <TotalVendors /> : <Navigate to="/auth" />} />
-      
-      <Route path="/reservations" element={session ? <Reservations /> : <Navigate to="/auth" />} />
-      <Route path="/all-bookings" element={session ? <AllBookings /> : <Navigate to="/auth" />} />
-      <Route path="/offers" element={session ? <Offers /> : <Navigate to="/auth" />} />
-      <Route path="/vouchers" element={session ? <Vouchers /> : <Navigate to="/auth" />} />
-      
-      <Route path="/chats" element={session ? <ChatSessions /> : <Navigate to="/auth" />} />
-      <Route path="/chats/:sessionId" element={session ? <ChatPage /> : <Navigate to="/auth" />} />
-      <Route path="/chat-settings" element={session ? <ChatSettings /> : <Navigate to="/auth" />} />
-      
-      <Route path="/products-management" element={session ? <ProductsManagement /> : <Navigate to="/auth" />} />
-      <Route path="/add-product" element={session ? <AddProduct /> : <Navigate to="/auth" />} />
-      <Route path="/edit-product/:id" element={session ? <EditProduct /> : <Navigate to="/auth" />} />
-      
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <AuthProvider>
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/clinics/:id" element={<ClinicDetails />} />
+          <Route path="/clinics" element={<Clinics />} />
+          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+          <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+          <Route path="/reservations" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
+          <Route path="/products/new" element={<ProtectedRoute><ProductForm /></ProtectedRoute>} />
+          <Route path="/products/:id/edit" element={<ProtectedRoute><ProductForm /></ProtectedRoute>} />
+          <Route path="/categories" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
+          <Route path="/categories/new" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />
+          <Route path="/categories/:id/edit" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />
+          <Route path="/all-bookings" element={<ProtectedRoute><AllBookings /></ProtectedRoute>} />
+        </Routes>
+      </Suspense>
+    </AuthProvider>
   );
 };
 
