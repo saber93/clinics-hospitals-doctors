@@ -2,27 +2,10 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Service } from '@/types/reservations';
 
-// Define a type for the raw database response to avoid deep type inference issues
-type ServiceQueryResult = {
-  id: string;
-  name: string;
-  description: string | null;
-  duration: number;
-  price: number;
-  vendor_id: string;
-  created_at: string;
-  updated_at: string;
-  vendors: {
-    id: string;
-    name: string;
-  } | null;
-}
-
 export const getAvailableServices = async (clinicId?: string): Promise<Service[]> => {
   try {
     console.log('Fetching available services...');
     
-    // Using explicit type annotation to break the circular reference
     const { data, error } = await supabase
       .from('services')
       .select(`
@@ -34,9 +17,9 @@ export const getAvailableServices = async (clinicId?: string): Promise<Service[]
         vendor_id,
         created_at,
         updated_at,
-        vendors:profiles(id, name)
+        vendors:profiles!services_vendor_id_fkey(id, name)
       `)
-      .eq(clinicId ? 'clinic_id' : 'id', clinicId || 'id') // Only apply filter if clinicId exists;
+      .eq(clinicId ? 'clinic_id' : 'id', clinicId || 'id');
     
     if (error) {
       console.error('Error fetching services:', error);
@@ -94,10 +77,9 @@ export const getAvailableServices = async (clinicId?: string): Promise<Service[]
     }
     
     // Cast to the proper Service type
-    const typedServices: Service[] = data.map(service => {
-      // Handle the vendors data, which may be null
+    const typedServices: Service[] = (data as any[]).map(service => {
       const vendorData = service.vendors || { id: '', name: 'Unknown Provider' };
-        
+      
       return {
         id: service.id,
         name: service.name,
@@ -105,11 +87,11 @@ export const getAvailableServices = async (clinicId?: string): Promise<Service[]
         duration: service.duration,
         price: service.price,
         vendor_id: service.vendor_id,
-        image_url: null, // Since image_url is not in the database, set to null
+        image_url: null,
         created_at: service.created_at,
         vendors: {
-          id: vendorData.id || '',
-          name: vendorData.name || 'Unknown Provider'
+          id: vendorData.id,
+          name: vendorData.name
         }
       };
     });
