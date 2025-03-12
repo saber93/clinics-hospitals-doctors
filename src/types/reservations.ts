@@ -18,6 +18,12 @@ export type Service = {
   description: string;
   duration: number;
   price: number;
+  image_url: string | null;
+  created_at: string;
+  vendors: {
+    id: string;
+    name: string;
+  };
 };
 
 export type EnrichedReservation = {

@@ -76,20 +76,27 @@ export const getAvailableServices = async (clinicId?: string): Promise<Service[]
     }
     
     // Cast to the proper Service type
-    const typedServices: Service[] = data.map(service => ({
-      id: service.id,
-      name: service.name,
-      description: service.description,
-      duration: service.duration,
-      price: service.price,
-      vendor_id: service.vendor_id,
-      image_url: service.image_url,
-      created_at: service.created_at,
-      vendors: {
-        id: service.vendors?.id || '',
-        name: service.vendors?.name || 'Unknown Provider'
-      }
-    }));
+    const typedServices: Service[] = data.map(service => {
+      // Handle the vendors data, which may be an error object if the join fails
+      const vendorData = typeof service.vendors === 'object' && service.vendors !== null 
+        ? service.vendors 
+        : { id: '', name: 'Unknown Provider' };
+        
+      return {
+        id: service.id,
+        name: service.name,
+        description: service.description || '',
+        duration: service.duration,
+        price: service.price,
+        vendor_id: service.vendor_id,
+        image_url: service.image_url,
+        created_at: service.created_at,
+        vendors: {
+          id: vendorData.id || '',
+          name: vendorData.name || 'Unknown Provider'
+        }
+      };
+    });
     
     return typedServices;
   } catch (error) {
