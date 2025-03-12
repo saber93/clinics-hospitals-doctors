@@ -53,7 +53,8 @@ const ClinicDetails = () => {
           productName: v.productName,
           description: v.description,
           discount: v.discount,
-          validUntil: v.validUntil
+          validUntil: v.validUntil,
+          imageUrl: v.imageUrl
         })) : [];
       
       return {
@@ -92,18 +93,21 @@ const ClinicDetails = () => {
           productName: "Anti-Aging Serum",
           description: "Advanced formula with retinol for reducing fine lines and wrinkles",
           discount: 15,
-          validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+          validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          imageUrl: "https://images.unsplash.com/photo-1598452963314-b09f397a5c48?q=80&w=800&auto=format&fit=crop"
         },
         {
           productName: "Hydrating Facial Mask",
           description: "Deep moisture treatment with hyaluronic acid and ceramides",
           discount: 20,
-          validUntil: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString()
+          validUntil: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+          imageUrl: "https://images.unsplash.com/photo-1600612253971-422e7f7faeb6?q=80&w=800&auto=format&fit=crop"
         },
         {
           productName: "Skin Brightening Cream",
           description: "Vitamin C enriched formula to even skin tone and boost radiance",
-          discount: 10
+          discount: 10,
+          imageUrl: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?q=80&w=800&auto=format&fit=crop"
         }
       ];
 

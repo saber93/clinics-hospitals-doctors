@@ -1,16 +1,19 @@
 
-import React from "react";
-import { Gift } from "lucide-react";
+import React, { useState } from "react";
+import { Gift, ImageIcon, ExternalLink } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import ProductImageWithFallback from "@/components/products/ProductImageWithFallback";
 
 type ProductVoucherType = {
   productName: string;
   description: string;
   discount: number;
   validUntil?: string;
+  imageUrl?: string;
 };
 
 type ProductVouchersProps = {
@@ -20,9 +23,17 @@ type ProductVouchersProps = {
 };
 
 const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVouchersProps) => {
+  const [selectedProduct, setSelectedProduct] = useState<ProductVoucherType | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   if (!vouchers || vouchers.length === 0) {
     return null;
   }
+
+  const handleProductPreview = (product: ProductVoucherType) => {
+    setSelectedProduct(product);
+    setIsDialogOpen(true);
+  };
 
   return (
     <>
@@ -56,8 +67,30 @@ const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVou
                   </div>
                 </div>
               )}
+              
+              {/* Product Image */}
+              <div className={hasReservation ? "" : "blur-sm"}>
+                <ProductImageWithFallback
+                  imageUrl={voucher.imageUrl}
+                  productName={voucher.productName}
+                  productId={`voucher-${index}`}
+                  index={index}
+                />
+              </div>
+
               <CardHeader className={hasReservation ? "" : "blur-sm"}>
-                <CardTitle className="text-lg">{voucher.productName}</CardTitle>
+                <div className="flex justify-between items-start">
+                  <CardTitle className="text-lg">{voucher.productName}</CardTitle>
+                  <Button 
+                    size="sm" 
+                    variant="ghost" 
+                    className="p-1 h-auto" 
+                    onClick={() => handleProductPreview(voucher)}
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    <span className="sr-only">Preview</span>
+                  </Button>
+                </div>
                 <CardDescription>{voucher.description}</CardDescription>
               </CardHeader>
               <CardContent className={hasReservation ? "" : "blur-sm"}>
@@ -72,6 +105,44 @@ const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVou
           ))}
         </div>
       </div>
+
+      {/* Product Preview Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          {selectedProduct && (
+            <>
+              <DialogHeader>
+                <DialogTitle>{selectedProduct.productName}</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="rounded-md overflow-hidden">
+                  <ProductImageWithFallback
+                    imageUrl={selectedProduct.imageUrl}
+                    productName={selectedProduct.productName}
+                    productId={`preview-${selectedProduct.productName}`}
+                    index={0}
+                    className="w-full h-auto aspect-video object-cover"
+                  />
+                </div>
+                <div>
+                  <h3 className="font-medium">Description</h3>
+                  <p className="text-muted-foreground mt-1">{selectedProduct.description}</p>
+                </div>
+                <div className="flex items-center justify-between">
+                  <Badge className="bg-primary text-primary-foreground px-3 py-1.5 text-sm font-bold">
+                    {selectedProduct.discount}% OFF
+                  </Badge>
+                  {selectedProduct.validUntil && (
+                    <span className="text-sm text-muted-foreground">
+                      Valid until: {new Date(selectedProduct.validUntil).toLocaleDateString()}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
