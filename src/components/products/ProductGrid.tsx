@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ProductGridProps {
   products: Product[];
@@ -23,6 +23,24 @@ interface ProductGridProps {
 
 const ProductGrid = ({ products, loading, onDelete, onEdit }: ProductGridProps) => {
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
+  
+  useEffect(() => {
+    if (!products.length) return;
+    
+    products.forEach(product => {
+      if (!product.image_url) return;
+      
+      const img = new Image();
+      img.onload = () => {
+        setImageErrors(prev => ({ ...prev, [product.id]: false }));
+      };
+      img.onerror = () => {
+        console.log(`Pre-validation failed for product image: ${product.id}`, product.image_url);
+        setImageErrors(prev => ({ ...prev, [product.id]: true }));
+      };
+      img.src = product.image_url;
+    });
+  }, [products]);
 
   if (loading) {
     return (
@@ -58,22 +76,33 @@ const ProductGrid = ({ products, loading, onDelete, onEdit }: ProductGridProps) 
   };
 
   const fallbackImages = [
-    "https://images.unsplash.com/photo-1618160612081-7b6c8afb84fe?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1571781418606-70265b9cce90?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1620804587331-effc68d47d7e?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1522338242992-e1a54906a8da?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1585386959984-a4155224a1ad?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?q=80&w=800&auto=format&fit=crop"
+    "https://images.unsplash.com/photo-1598452963314-b09f397a5c48?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1600612253971-422e7f7faeb6?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1620916566256-4739d492ea02?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1598662972299-5408ddb8a3dc?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1583241475880-083f8152d7d2?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1614159102522-35260209ffa7?q=80&w=800&auto=format&fit=crop"
   ];
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, productId: string, index: number) => {
     e.preventDefault();
-    console.log(`Image error for product ${productId}`);
+    console.log(`Image error for product ${productId} with url:`, products.find(p => p.id === productId)?.image_url);
     const fallbackIndex = index % fallbackImages.length;
     e.currentTarget.src = fallbackImages[fallbackIndex];
     setImageErrors(prev => ({ ...prev, [productId]: true }));
+  };
+
+  const reloadImage = (productId: string, index: number) => {
+    const product = products.find(p => p.id === productId);
+    if (!product || !product.image_url) return fallbackImages[index % fallbackImages.length];
+    
+    if (imageErrors[productId]) {
+      return `${product.image_url}?t=${Date.now()}`;
+    }
+    
+    return product.image_url;
   };
 
   return (
@@ -84,11 +113,11 @@ const ProductGrid = ({ products, loading, onDelete, onEdit }: ProductGridProps) 
             <div className="aspect-video relative overflow-hidden bg-gray-100 rounded-t-lg">
               {product.image_url ? (
                 <img
-                  src={imageErrors[product.id] ? fallbackImages[index % fallbackImages.length] : product.image_url}
+                  src={reloadImage(product.id, index)}
                   alt={product.name}
                   className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
                   onError={(e) => handleImageError(e, product.id, index)}
-                  key={`img-${product.id}-${imageErrors[product.id] ? 'fallback' : 'original'}`}
+                  key={`img-${product.id}-${imageErrors[product.id] ? 'fallback' : 'original'}-${Date.now()}`}
                 />
               ) : (
                 <img

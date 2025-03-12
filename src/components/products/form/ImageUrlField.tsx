@@ -13,8 +13,15 @@ interface ImageUrlFieldProps {
 const ImageUrlField = ({ imageUrl, onChange }: ImageUrlFieldProps) => {
   const [hasError, setHasError] = useState(false);
   
-  // Cosmetics-related fallback image
-  const fallbackImage = "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?q=80&w=800&auto=format&fit=crop";
+  // Better cosmetics-related fallback images
+  const fallbackImages = [
+    "https://images.unsplash.com/photo-1598662972299-5408ddb8a3dc?q=80&w=800&auto=format&fit=crop", // Serum bottles
+    "https://images.unsplash.com/photo-1600612253971-422e7f7faeb6?q=80&w=800&auto=format&fit=crop", // Beauty products
+    "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?q=80&w=800&auto=format&fit=crop"  // Makeup products
+  ];
+
+  // Get a random fallback image
+  const fallbackImage = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
 
   // Reset error state when imageUrl changes
   useEffect(() => {
@@ -34,13 +41,16 @@ const ImageUrlField = ({ imageUrl, onChange }: ImageUrlFieldProps) => {
     setHasError(true);
   };
 
-  // Test the image URL before displaying
+  // Validate image URL before displaying
   const testImageUrl = () => {
     if (!imageUrl) return;
     
     const img = new Image();
     img.onload = () => setHasError(false);
-    img.onerror = () => setHasError(true);
+    img.onerror = () => {
+      console.log("Failed pre-validation of image:", imageUrl);
+      setHasError(true);
+    };
     img.src = imageUrl;
   };
 
@@ -86,7 +96,7 @@ const ImageUrlField = ({ imageUrl, onChange }: ImageUrlFieldProps) => {
             alt="Product preview" 
             className="rounded-md max-h-40 object-contain" 
             onError={handleImageError}
-            key={`preview-${hasError ? 'fallback' : imageUrl}`}
+            key={`preview-${hasError ? 'fallback' : imageUrl}-${Date.now()}`}
           />
           {hasError && (
             <div className="absolute bottom-0 left-0 right-0 bg-red-500 bg-opacity-70 text-white text-xs p-1 text-center">
