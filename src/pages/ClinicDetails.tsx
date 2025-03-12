@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, MapPin, Calendar, Clock, Phone } from "lucide-react";
+import { ArrowLeft, MapPin, Calendar, Clock, Phone, Gift } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 
@@ -14,29 +14,40 @@ const ClinicDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  // Fetch clinic details from Supabase
+  // Fetch clinic details and check if user has reservations
   const { data: clinic, isLoading, error } = useQuery({
     queryKey: ['clinic', id],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: clinicData, error: clinicError } = await supabase
         .from('clinics')
-        .select('*')
+        .select(`
+          *,
+          reservations(
+            client_id
+          )
+        `)
         .eq('id', id)
         .single();
 
-      if (error) {
-        throw error;
+      if (clinicError) {
+        throw clinicError;
       }
+
+      // Get current user's ID
+      const { data: { user } } = await supabase.auth.getUser();
+      const hasReservation = user && clinicData.reservations?.some(r => r.client_id === user.id);
       
       return {
-        id: data.id,
-        name: data.name,
-        description: data.description,
-        location: data.location,
-        category: data.category,
-        subCategory: data.sub_category,
-        offerPercentage: data.offer_percentage,
-        imageUrl: data.image_url || "/placeholder.svg"
+        id: clinicData.id,
+        name: clinicData.name,
+        description: clinicData.description,
+        location: clinicData.location,
+        category: clinicData.category,
+        subCategory: clinicData.sub_category,
+        offerPercentage: clinicData.offer_percentage,
+        imageUrl: clinicData.image_url || "/placeholder.svg",
+        productsVoucher: clinicData.products_voucher || [],
+        hasReservation
       };
     }
   });
@@ -129,6 +140,45 @@ const ClinicDetails = () => {
             <h2 className="text-xl font-semibold">About this Clinic</h2>
             <p className="text-muted-foreground">{clinic.description}</p>
           </div>
+
+          {/* Product Vouchers Section */}
+          {clinic.hasReservation && clinic.productsVoucher && clinic.productsVoucher.length > 0 && (
+            <>
+              <Separator className="my-6" />
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Gift className="h-5 w-5 text-primary" />
+                  <h2 className="text-xl font-semibold">Available Product Vouchers</h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {clinic.productsVoucher.map((voucher: any, index: number) => (
+                    <Card key={index} className="bg-muted/50">
+                      <CardHeader>
+                        <CardTitle className="text-lg">{voucher.productName}</CardTitle>
+                        <CardDescription>{voucher.description}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-primary font-bold">{voucher.discount}% OFF</p>
+                        {voucher.validUntil && (
+                          <p className="text-sm text-muted-foreground">
+                            Valid until: {new Date(voucher.validUntil).toLocaleDateString()}
+                          </p>
+                        )}
+                      </CardContent>
+                      <CardFooter>
+                        <Button 
+                          className="w-full" 
+                          onClick={() => toast.success(`Voucher for ${voucher.productName} claimed!`)}
+                        >
+                          Claim Voucher
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Reservation Card */}

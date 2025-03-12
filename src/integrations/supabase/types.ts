@@ -188,6 +188,7 @@ export type Database = {
           location: string
           name: string
           offer_percentage: number
+          products_voucher: Json[] | null
           sub_category: string
           updated_at: string | null
         }
@@ -200,6 +201,7 @@ export type Database = {
           location: string
           name: string
           offer_percentage?: number
+          products_voucher?: Json[] | null
           sub_category: string
           updated_at?: string | null
         }
@@ -212,6 +214,7 @@ export type Database = {
           location?: string
           name?: string
           offer_percentage?: number
+          products_voucher?: Json[] | null
           sub_category?: string
           updated_at?: string | null
         }
