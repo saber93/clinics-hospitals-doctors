@@ -1,11 +1,10 @@
 
 import React from "react";
-import { toast } from "sonner";
-import { Separator } from "@/components/ui/separator";
 import { Gift } from "lucide-react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 type ProductVoucherType = {
   productName: string;
@@ -69,23 +68,6 @@ const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVou
                   </p>
                 )}
               </CardContent>
-              <CardFooter>
-                {hasReservation ? (
-                  <Button 
-                    className="w-full" 
-                    onClick={() => toast.success(`Voucher for ${voucher.productName} claimed!`)}
-                  >
-                    Claim Voucher
-                  </Button>
-                ) : (
-                  <Button 
-                    className="w-full z-20 relative" 
-                    onClick={onReservation}
-                  >
-                    Reserve to Unlock
-                  </Button>
-                )}
-              </CardFooter>
             </Card>
           ))}
         </div>
