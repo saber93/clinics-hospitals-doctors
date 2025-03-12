@@ -5,7 +5,7 @@ import AppRoutes from "./components/routing/AppRoutes";
 import GlassyNavbar from "./components/layout/GlassyNavbar";
 
 const App = () => {
-  const { session, loading } = useAppAuth();
+  const { loading } = useAppAuth();
 
   if (loading) {
     return (
@@ -20,7 +20,7 @@ const App = () => {
       <div className="min-h-screen">
         <GlassyNavbar />
         <div className="pt-24">
-          <AppRoutes session={session} />
+          <AppRoutes />
         </div>
       </div>
     </AppProviders>

@@ -62,7 +62,18 @@ const AllBookings = () => {
           throw error;
         }
         
-        setBookings(reservations as EnrichedReservation[]);
+        // Safely cast the data to the right type
+        const typedReservations = (reservations || []).map(res => ({
+          ...res,
+          clients: { name: res.clients?.name || 'Unknown Client' },
+          vendors: { name: res.vendors?.name || 'Unknown Vendor' },
+          services: { 
+            name: res.services?.name || 'Unknown Service',
+            price: res.services?.price || 0
+          }
+        })) as EnrichedReservation[];
+        
+        setBookings(typedReservations);
       } catch (error) {
         console.error("Error fetching bookings:", error);
         toast.error("Failed to load bookings");
