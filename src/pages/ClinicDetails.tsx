@@ -1,5 +1,6 @@
+
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -15,6 +16,7 @@ import { Clinic } from "@/types/clinic";
 
 const ClinicDetails = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   // Fetch clinic details and check if user has reservations
   const { data: clinic, isLoading, error } = useQuery({
@@ -73,8 +75,22 @@ const ClinicDetails = () => {
   });
 
   const handleReservation = () => {
-    // For now just show a toast; in a real app, this would navigate to a reservation form
-    toast.success("Reservation feature coming soon!");
+    // Check if user is authenticated
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) {
+        toast.error("Please login to make a reservation");
+        navigate("/login");
+        return;
+      }
+      
+      // If authenticated, navigate to reservations page
+      navigate("/reservations", { 
+        state: { 
+          clinicId: id,
+          clinicName: clinic?.name 
+        }
+      });
+    });
   };
 
   if (isLoading) {

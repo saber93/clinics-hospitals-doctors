@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { getUserReservations, getAvailableServices, createReservation } from "@/utils/reservations";
@@ -14,7 +14,13 @@ import LoadingState from "@/components/reservations/LoadingState";
 
 const Reservations = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
+  
+  // Get clinic info from location state if available
+  const clinicId = location.state?.clinicId;
+  const clinicName = location.state?.clinicName;
+  
   const userType = searchParams.get("userType") || "client";
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
@@ -57,11 +63,17 @@ const Reservations = () => {
           setUserRole(profile.role);
         }
         
-        // Fetch available services
+        // Fetch available services (filtered by clinic if clinicId is provided)
         console.log("Getting available services...");
-        const servicesData = await getAvailableServices();
+        const servicesData = await getAvailableServices(clinicId);
         console.log("Services data:", servicesData);
         setServices(servicesData);
+        
+        // If a specific clinic was passed, try to select the first service
+        if (clinicId && servicesData.length > 0) {
+          setSelectedService(servicesData[0].id);
+          toast.success(`Booking appointment at ${clinicName}`);
+        }
         
         if (session.user.id) {
           const role = profile?.role || 'client';
@@ -78,7 +90,7 @@ const Reservations = () => {
     };
     
     fetchUserData();
-  }, []);
+  }, [clinicId, clinicName]);
   
   const handleBookAppointment = async () => {
     if (!selectedDate || !selectedTimeSlot || !selectedService || !userId) {
@@ -128,7 +140,9 @@ const Reservations = () => {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold">Book an Appointment</h1>
+          <h1 className="text-3xl font-bold">
+            {clinicName ? `Book at ${clinicName}` : "Book an Appointment"}
+          </h1>
           <Button 
             variant="outline" 
             onClick={() => navigate('/all-bookings')}

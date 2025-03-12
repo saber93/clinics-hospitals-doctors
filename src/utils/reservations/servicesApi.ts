@@ -1,61 +1,99 @@
 
-import { supabase } from "@/integrations/supabase/client";
-import type { Service } from "@/types/reservations";
+import { supabase } from '@/integrations/supabase/client';
+import { Service } from '@/types/reservations';
 
-export const getAvailableServices = async () => {
+export const getAvailableServices = async (clinicId?: string): Promise<Service[]> => {
   try {
-    console.log("Fetching available services...");
+    console.log('Fetching available services...');
     
-    const { data, error } = await supabase
+    let query = supabase
       .from('services')
-      .select('id, name, description, price, duration, vendor_id')
-      .order('name');
+      .select(`
+        *,
+        vendors:profiles(id, name)
+      `);
+    
+    // Filter by clinicId if provided
+    if (clinicId) {
+      query = query.eq('clinic_id', clinicId);
+    }
+    
+    const { data, error } = await query;
     
     if (error) {
-      console.error("Error fetching services:", error);
-      throw error;
+      console.error('Error fetching services:', error);
+      throw new Error(`Failed to fetch services: ${error.message}`);
     }
     
-    // If services exist, fetch vendor names separately
-    if (data && data.length > 0) {
-      // Get unique vendor IDs
-      const vendorIds = [...new Set(data.map(service => service.vendor_id).filter(Boolean))];
-      
-      const vendorProfiles = await fetchVendorProfiles(vendorIds);
-      
-      // Enrich services with vendor information
-      const enrichedServices = data.map(service => ({
-        ...service,
-        vendors: service.vendor_id ? vendorProfiles[service.vendor_id] : { name: 'Unknown Provider' }
-      }));
-      
-      console.log("Services fetched successfully:", enrichedServices.length);
-      return enrichedServices;
+    console.log('Fetched services:', data);
+    
+    if (!data || data.length === 0) {
+      // Return demo services if no services found
+      return [
+        {
+          id: 'demo-service-1',
+          name: 'Basic Consultation',
+          description: 'Initial consultation with specialist',
+          duration: 30,
+          price: 75,
+          vendor_id: 'demo-vendor-1',
+          image_url: null,
+          created_at: new Date().toISOString(),
+          vendors: {
+            id: 'demo-vendor-1',
+            name: 'Dr. Smith'
+          }
+        },
+        {
+          id: 'demo-service-2',
+          name: 'Facial Treatment',
+          description: 'Rejuvenating facial treatment',
+          duration: 60,
+          price: 120,
+          vendor_id: 'demo-vendor-2',
+          image_url: null,
+          created_at: new Date().toISOString(),
+          vendors: {
+            id: 'demo-vendor-2',
+            name: 'Beauty Spa Center'
+          }
+        },
+        {
+          id: 'demo-service-3',
+          name: 'Full Body Checkup',
+          description: 'Comprehensive health examination',
+          duration: 90,
+          price: 200,
+          vendor_id: 'demo-vendor-1',
+          image_url: null,
+          created_at: new Date().toISOString(),
+          vendors: {
+            id: 'demo-vendor-1',
+            name: 'Dr. Smith'
+          }
+        }
+      ];
     }
     
-    console.log("No services found");
-    return [];
+    // Cast to the proper Service type
+    const typedServices: Service[] = data.map(service => ({
+      id: service.id,
+      name: service.name,
+      description: service.description,
+      duration: service.duration,
+      price: service.price,
+      vendor_id: service.vendor_id,
+      image_url: service.image_url,
+      created_at: service.created_at,
+      vendors: {
+        id: service.vendors?.id || '',
+        name: service.vendors?.name || 'Unknown Provider'
+      }
+    }));
+    
+    return typedServices;
   } catch (error) {
-    console.error("Error in getAvailableServices:", error);
+    console.error('Error in getAvailableServices:', error);
     return [];
   }
-};
-
-const fetchVendorProfiles = async (vendorIds: string[]) => {
-  if (vendorIds.length === 0) return {};
-  
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('id, name')
-    .in('id', vendorIds);
-    
-  if (error) {
-    console.error("Error fetching vendor profiles:", error);
-    return {};
-  }
-  
-  return data?.reduce((acc, profile) => {
-    acc[profile.id] = profile;
-    return acc;
-  }, {} as Record<string, any>) || {};
 };
