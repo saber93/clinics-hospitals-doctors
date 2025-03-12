@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Gift, ImageIcon, ExternalLink, ArrowLeft, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,6 +26,7 @@ const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVou
   const [selectedProduct, setSelectedProduct] = useState<ProductVoucherType | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [slideDirection, setSlideDirection] = useState<"left" | "right" | null>(null);
 
   if (!vouchers || vouchers.length === 0) {
     return null;
@@ -35,6 +35,7 @@ const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVou
   const handleProductPreview = (product: ProductVoucherType) => {
     setSelectedProduct(product);
     setCurrentImageIndex(0); // Reset to first image when opening preview
+    setSlideDirection(null); // Reset slide direction
     setIsDialogOpen(true);
   };
 
@@ -53,11 +54,21 @@ const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVou
   const allImages = getAllProductImages();
 
   const handlePrevImage = () => {
-    setCurrentImageIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));
+    setSlideDirection("right");
+    setTimeout(() => {
+      setCurrentImageIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));
+      // Reset direction after a short delay to trigger the entrance animation
+      setTimeout(() => setSlideDirection(null), 50);
+    }, 200);
   };
 
   const handleNextImage = () => {
-    setCurrentImageIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
+    setSlideDirection("left");
+    setTimeout(() => {
+      setCurrentImageIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
+      // Reset direction after a short delay to trigger the entrance animation
+      setTimeout(() => setSlideDirection(null), 50);
+    }, 200);
   };
 
   return (
@@ -122,7 +133,7 @@ const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVou
         </div>
       </div>
 
-      {/* Product Preview Dialog with Image Carousel */}
+      {/* Product Preview Dialog with Animated Image Carousel */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-md">
           {selectedProduct && (
@@ -131,18 +142,27 @@ const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVou
                 <DialogTitle>{selectedProduct.productName}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
-                {/* Image Carousel */}
+                {/* Image Carousel with Animation */}
                 <div className="rounded-md overflow-hidden relative">
                   {allImages.length > 0 && (
                     <>
-                      <div className="relative aspect-video">
-                        <ProductImageWithFallback
-                          imageUrl={allImages[currentImageIndex]}
-                          productName={selectedProduct.productName}
-                          productId={`preview-${selectedProduct.productName}-${currentImageIndex}`}
-                          index={currentImageIndex}
-                          className="w-full h-full object-cover"
-                        />
+                      <div className="relative aspect-video overflow-hidden">
+                        <div 
+                          className={`
+                            w-full h-full transition-all duration-300 ease-in-out
+                            ${slideDirection === "left" ? "translate-x-[-100%] opacity-0" : 
+                              slideDirection === "right" ? "translate-x-[100%] opacity-0" : 
+                              "translate-x-0 opacity-100"}
+                          `}
+                        >
+                          <ProductImageWithFallback
+                            imageUrl={allImages[currentImageIndex]}
+                            productName={selectedProduct.productName}
+                            productId={`preview-${selectedProduct.productName}-${currentImageIndex}`}
+                            index={currentImageIndex}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
                       </div>
                       
                       {/* Image Navigation Controls */}
@@ -152,7 +172,7 @@ const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVou
                             onClick={(e) => { e.stopPropagation(); handlePrevImage(); }} 
                             variant="ghost" 
                             size="icon" 
-                            className="bg-black/20 hover:bg-black/40 text-white h-8 w-8 rounded-full ml-2"
+                            className="bg-black/20 hover:bg-black/40 text-white h-8 w-8 rounded-full ml-2 transition-all duration-200 hover:scale-110"
                           >
                             <ArrowLeft className="h-4 w-4" />
                             <span className="sr-only">Previous image</span>
@@ -161,7 +181,7 @@ const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVou
                             onClick={(e) => { e.stopPropagation(); handleNextImage(); }} 
                             variant="ghost" 
                             size="icon" 
-                            className="bg-black/20 hover:bg-black/40 text-white h-8 w-8 rounded-full mr-2"
+                            className="bg-black/20 hover:bg-black/40 text-white h-8 w-8 rounded-full mr-2 transition-all duration-200 hover:scale-110"
                           >
                             <ArrowRight className="h-4 w-4" />
                             <span className="sr-only">Next image</span>
