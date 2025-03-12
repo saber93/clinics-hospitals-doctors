@@ -1,18 +1,13 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { Service } from '@/types/reservations';
 
-export const getAvailableServices = async (clinicId?: string): Promise<Service[]> => {
+export const getAvailableServices = async (): Promise<Service[]> => {
   try {
     console.log('Fetching available services...');
     
-    // Avoid the complex type inference by using raw query with explicit casting
-    const { data: rawData, error } = await supabase
+    const { data, error } = await supabase
       .from('services')
       .select('*');
-    
-    // Apply filtering after fetching
-    const data = rawData?.filter(service => !clinicId || service.clinic_id === clinicId);
     
     if (error) {
       console.error('Error fetching services:', error);
