@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { Product } from "@/types";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import ProductImageWithFallback from "./ProductImageWithFallback";
+import ProductPreviewDialog from "./ProductPreviewDialog";
 
 interface ProductCardProps {
   product: Product;
@@ -22,74 +24,123 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, index, onDelete, onEdit }: ProductCardProps) => {
-  return (
-    <Card className="flex flex-col overflow-hidden transition-all duration-200 hover:shadow-lg">
-      <CardHeader className="p-0">
-        <div className="relative">
-          <ProductImageWithFallback
-            imageUrl={product.image_url}
-            productName={product.name}
-            productId={product.id}
-            index={index}
-          />
-          {product.discount_percentage && (
-            <div className="absolute top-2 right-2 bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-bold">
-              {product.discount_percentage}% OFF
-            </div>
-          )}
-        </div>
-      </CardHeader>
-      
-      <CardContent className="flex-grow p-4">
-        <CardTitle className="text-lg mb-2 line-clamp-1">{product.name}</CardTitle>
-        <p className="text-gray-600 text-sm mb-2 line-clamp-2">{product.description || "No description available"}</p>
-        <div className="flex items-center gap-2 text-sm">
-          <span className="font-semibold">${product.price.toFixed(2)}</span>
-          {product.stock_quantity <= (product.low_stock_threshold || 10) && (
-            <div className="flex items-center text-amber-500">
-              <AlertTriangle className="h-4 w-4 mr-1" />
-              Low Stock
-            </div>
-          )}
-        </div>
-      </CardContent>
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [slideDirection, setSlideDirection] = useState<"left" | "right" | null>(null);
 
-      <CardFooter className="flex justify-between p-4 pt-0 border-t mt-auto">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onEdit(product.id)}
-        >
-          <Pencil className="h-4 w-4 mr-2" />
-          Edit
-        </Button>
+  const getAllProductImages = () => {
+    const images = [product.image_url];
+    if (product.additional_images) {
+      images.push(...product.additional_images.filter(img => img));
+    }
+    return images.filter(Boolean) as string[];
+  };
+
+  const handlePrevImage = () => {
+    setSlideDirection("right");
+    setTimeout(() => {
+      setCurrentImageIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));
+      setTimeout(() => setSlideDirection(null), 50);
+    }, 200);
+  };
+
+  const handleNextImage = () => {
+    setSlideDirection("left");
+    setTimeout(() => {
+      setCurrentImageIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
+      setTimeout(() => setSlideDirection(null), 50);
+    }, 200);
+  };
+
+  const handleCardClick = () => {
+    setCurrentImageIndex(0);
+    setSlideDirection(null);
+    setIsPreviewOpen(true);
+  };
+
+  const allImages = getAllProductImages();
+
+  return (
+    <>
+      <Card className="flex flex-col overflow-hidden transition-all duration-200 hover:shadow-lg cursor-pointer" onClick={handleCardClick}>
+        <CardHeader className="p-0">
+          <div className="relative">
+            <ProductImageWithFallback
+              imageUrl={product.image_url}
+              productName={product.name}
+              productId={product.id}
+              index={index}
+            />
+            {product.discount_percentage && (
+              <div className="absolute top-2 right-2 bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-bold">
+                {product.discount_percentage}% OFF
+              </div>
+            )}
+          </div>
+        </CardHeader>
         
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="destructive" size="sm">
-              <Trash2 className="h-4 w-4 mr-2" />
-              Delete
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Delete Product</DialogTitle>
-              <DialogDescription>
-                Are you sure you want to delete {product.name}? This action cannot be undone.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button
-                variant="destructive"
-                onClick={() => onDelete(product.id, product.name)}
-              >
+        <CardContent className="flex-grow p-4">
+          <CardTitle className="text-lg mb-2 line-clamp-1">{product.name}</CardTitle>
+          <p className="text-gray-600 text-sm mb-2 line-clamp-2">{product.description || "No description available"}</p>
+          <div className="flex items-center gap-2 text-sm">
+            <span className="font-semibold">${product.price.toFixed(2)}</span>
+            {product.stock_quantity <= (product.low_stock_threshold || 10) && (
+              <div className="flex items-center text-amber-500">
+                <AlertTriangle className="h-4 w-4 mr-1" />
+                Low Stock
+              </div>
+            )}
+          </div>
+        </CardContent>
+
+        <CardFooter className="flex justify-between p-4 pt-0 border-t mt-auto" onClick={e => e.stopPropagation()}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onEdit(product.id)}
+          >
+            <Pencil className="h-4 w-4 mr-2" />
+            Edit
+          </Button>
+          
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="destructive" size="sm">
+                <Trash2 className="h-4 w-4 mr-2" />
                 Delete
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </CardFooter>
-    </Card>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Delete Product</DialogTitle>
+                <DialogDescription>
+                  Are you sure you want to delete {product.name}? This action cannot be undone.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button
+                  variant="destructive"
+                  onClick={() => onDelete(product.id, product.name)}
+                >
+                  Delete
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </CardFooter>
+      </Card>
+
+      <ProductPreviewDialog
+        product={product}
+        isOpen={isPreviewOpen}
+        onOpenChange={setIsPreviewOpen}
+        currentImageIndex={currentImageIndex}
+        slideDirection={slideDirection}
+        onPrevImage={handlePrevImage}
+        onNextImage={handleNextImage}
+        allImages={allImages}
+      />
+    </>
   );
 };
 

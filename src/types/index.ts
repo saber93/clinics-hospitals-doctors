@@ -1,15 +1,16 @@
-
 export interface Product {
   id: string;
   name: string;
   description?: string;
   price: number;
+  image_url?: string;
+  additional_images?: string[];
   stock_quantity: number;
   low_stock_threshold?: number;
-  discount_percentage?: number;
-  image_url?: string;
-  is_available?: boolean;
+  is_available: boolean;
+  category?: string;
   seller_id: string;
+  discount_percentage?: number;
 }
 
 // Types missing from the error list
