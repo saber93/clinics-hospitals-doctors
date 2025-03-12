@@ -9,7 +9,14 @@ export const getAvailableServices = async (clinicId?: string): Promise<Service[]
     let query = supabase
       .from('services')
       .select(`
-        *,
+        id,
+        name,
+        description,
+        duration,
+        price,
+        vendor_id,
+        created_at,
+        updated_at,
         vendors:profiles(id, name)
       `);
     
@@ -89,7 +96,7 @@ export const getAvailableServices = async (clinicId?: string): Promise<Service[]
         duration: service.duration,
         price: service.price,
         vendor_id: service.vendor_id,
-        image_url: service.image_url,
+        image_url: null, // Since image_url is not in the database, set to null
         created_at: service.created_at,
         vendors: {
           id: vendorData.id || '',
