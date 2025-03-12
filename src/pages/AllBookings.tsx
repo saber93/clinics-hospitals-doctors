@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatReadableDate } from "@/utils/dateUtils";
 import { EnrichedReservation } from "@/types/reservations";
 import { Calendar, Clock, Store, ArrowLeft, Filter } from "lucide-react";
+import { getUserReservations } from "@/utils/reservations";
 
 const AllBookings = () => {
   const navigate = useNavigate();
@@ -46,34 +46,9 @@ const AllBookings = () => {
           
         const role = profile?.role || 'client';
         
-        // Fetch reservations
-        const { data: reservations, error } = await supabase
-          .from('reservations')
-          .select(`
-            *,
-            clients:profiles!reservations_client_id_fkey(name),
-            vendors:profiles!reservations_vendor_id_fkey(name),
-            services(name, price)
-          `)
-          .eq(role === 'client' ? 'client_id' : 'vendor_id', user.id)
-          .order('date', { ascending: true });
-          
-        if (error) {
-          throw error;
-        }
-        
-        // Safely cast the data to the right type
-        const typedReservations = (reservations || []).map(res => ({
-          ...res,
-          clients: { name: res.clients?.name || 'Unknown Client' },
-          vendors: { name: res.vendors?.name || 'Unknown Vendor' },
-          services: { 
-            name: res.services?.name || 'Unknown Service',
-            price: res.services?.price || 0
-          }
-        })) as EnrichedReservation[];
-        
-        setBookings(typedReservations);
+        // Use the getUserReservations utility function
+        const reservations = await getUserReservations(user.id, role);
+        setBookings(reservations);
       } catch (error) {
         console.error("Error fetching bookings:", error);
         toast.error("Failed to load bookings");
