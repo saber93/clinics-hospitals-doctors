@@ -1,3 +1,4 @@
+
 export interface Clinic {
   id: string;
   name: string;
@@ -14,6 +15,7 @@ export interface Clinic {
     discount: number;
     validUntil?: string;
     imageUrl?: string;
+    additionalImages?: string[];
   }>;
 }
 
