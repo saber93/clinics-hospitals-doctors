@@ -1,34 +1,30 @@
 
 import { useState, useEffect } from "react";
-import { cleanupInvalidAuth } from "@/utils/authCleanup";
-import { checkSession, setupAuthStateChangeListener } from "./authSession";
+import { supabase } from "@/integrations/supabase/client";
+import { Session } from "@supabase/supabase-js";
 
 export const useAppAuth = () => {
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    cleanupInvalidAuth();
-  }, []);
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Initial session check:", session ? "Has session" : "No session");
+      setSession(session);
+      setLoading(false);
+    });
 
-  useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        const validSession = await checkSession();
-        setSession(validSession);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error initializing auth:", error);
-        setLoading(false);
-        setSession(null);
-      }
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("Auth state changed:", _event, session ? "Has session" : "No session");
+      setSession(session);
+      setLoading(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
     };
-    
-    initializeAuth();
-
-    const subscription = setupAuthStateChangeListener(setSession);
-
-    return () => subscription.unsubscribe();
   }, []);
 
   return { session, loading };

@@ -5,9 +5,19 @@ export const getAvailableServices = async (): Promise<Service[]> => {
   try {
     console.log('Fetching available services...');
     
+    // First check if we have an active session
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      console.log('No active session found');
+      return [];
+    }
+
     const { data, error } = await supabase
       .from('services')
-      .select('*');
+      .select(`
+        *,
+        vendors:profiles(id, name)
+      `);
     
     if (error) {
       console.error('Error fetching services:', error);
@@ -64,43 +74,20 @@ export const getAvailableServices = async (): Promise<Service[]> => {
       ];
     }
     
-    // Process the returned data and fetch vendor information separately
-    const typedServices: Service[] = await Promise.all(data.map(async (service: any) => {
-      // Get vendor data separately to avoid deep type issues
-      let vendorName = 'Unknown Provider';
-      let vendorId = service.vendor_id || '';
-      
-      if (service.vendor_id) {
-        try {
-          const { data: vendorData } = await supabase
-            .from('profiles')
-            .select('id, name')
-            .eq('id', service.vendor_id)
-            .maybeSingle();
-          
-          if (vendorData) {
-            vendorId = vendorData.id;
-            vendorName = vendorData.name;
-          }
-        } catch (err) {
-          console.error('Error fetching vendor data:', err);
-        }
+    // Process the returned data with vendor information included
+    const typedServices: Service[] = data.map((service: any) => ({
+      id: service.id,
+      name: service.name,
+      description: service.description || '',
+      duration: service.duration,
+      price: service.price,
+      vendor_id: service.vendor_id,
+      image_url: null,
+      created_at: service.created_at,
+      vendors: {
+        id: service.vendors?.id || service.vendor_id,
+        name: service.vendors?.name || 'Unknown Provider'
       }
-      
-      return {
-        id: service.id,
-        name: service.name,
-        description: service.description || '',
-        duration: service.duration,
-        price: service.price,
-        vendor_id: service.vendor_id,
-        image_url: null,
-        created_at: service.created_at,
-        vendors: {
-          id: vendorId,
-          name: vendorName
-        }
-      };
     }));
     
     return typedServices;

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
@@ -17,7 +16,6 @@ const Reservations = () => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   
-  // Get clinic info from location state if available
   const clinicId = location.state?.clinicId;
   const clinicName = location.state?.clinicName;
   
@@ -43,11 +41,12 @@ const Reservations = () => {
         setLoading(true);
         setError(null);
         
-        console.log("Fetching user data and services...");
+        console.log("Checking auth session...");
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session) {
-          toast.error("Please login to access reservations");
+          console.log("No session found, redirecting to login");
+          navigate("/login");
           return;
         }
         
@@ -57,33 +56,29 @@ const Reservations = () => {
           .from('profiles')
           .select('role')
           .eq('id', session.user.id)
-          .single();
+          .maybeSingle();
         
         if (profile) {
           setUserRole(profile.role);
         }
         
-        // Fetch available services (now without clinicId parameter)
         console.log("Getting available services...");
         const servicesData = await getAvailableServices();
         console.log("Services data:", servicesData);
         
-        // If a specific clinic was passed, filter services for that clinic client-side
         const filteredServices = clinicId 
           ? servicesData.filter(service => service.vendor_id === clinicId)
           : servicesData;
           
         setServices(filteredServices);
         
-        // If a specific clinic was passed, try to select the first service
         if (clinicId && filteredServices.length > 0) {
           setSelectedService(filteredServices[0].id);
           toast.success(`Booking appointment at ${clinicName}`);
         }
         
-        if (session.user.id) {
-          const role = profile?.role || 'client';
-          const reservationsData = await getUserReservations(session.user.id, role);
+        if (session.user.id && profile?.role) {
+          const reservationsData = await getUserReservations(session.user.id, profile.role);
           setReservations(reservationsData);
         }
       } catch (error) {
@@ -96,7 +91,7 @@ const Reservations = () => {
     };
     
     fetchUserData();
-  }, [clinicId, clinicName]);
+  }, [clinicId, clinicName, navigate]);
   
   const handleBookAppointment = async () => {
     if (!selectedDate || !selectedTimeSlot || !selectedService || !userId) {
