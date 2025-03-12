@@ -2,7 +2,7 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ImagePlus, Trash } from "lucide-react";
+import { ImagePlus, Trash, ImageOff } from "lucide-react";
 import { useState, useEffect } from "react";
 
 interface ImageUrlFieldProps {
@@ -15,8 +15,10 @@ const ImageUrlField = ({ imageUrl, onChange }: ImageUrlFieldProps) => {
   
   // Better cosmetics-related fallback images
   const fallbackImages = [
-    "https://images.unsplash.com/photo-1598662972299-5408ddb8a3dc?q=80&w=800&auto=format&fit=crop", // Serum bottles
-    "https://images.unsplash.com/photo-1600612253971-422e7f7faeb6?q=80&w=800&auto=format&fit=crop", // Beauty products
+    "https://images.unsplash.com/photo-1598452963314-b09f397a5c48?q=80&w=800&auto=format&fit=crop", // Skin care products
+    "https://images.unsplash.com/photo-1583241475880-083f8152d7d2?q=80&w=800&auto=format&fit=crop", // Facial products
+    "https://images.unsplash.com/photo-1620916566256-4739d492ea02?q=80&w=800&auto=format&fit=crop", // Face cream
+    "https://images.unsplash.com/photo-1598662972299-5408ddb8a3dc?q=80&w=800&auto=format&fit=crop", // Cosmetics bottles
     "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?q=80&w=800&auto=format&fit=crop"  // Makeup products
   ];
 
@@ -100,6 +102,7 @@ const ImageUrlField = ({ imageUrl, onChange }: ImageUrlFieldProps) => {
           />
           {hasError && (
             <div className="absolute bottom-0 left-0 right-0 bg-red-500 bg-opacity-70 text-white text-xs p-1 text-center">
+              <ImageOff className="inline-block h-3 w-3 mr-1" />
               Image URL is invalid - using fallback
             </div>
           )}

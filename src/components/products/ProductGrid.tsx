@@ -1,7 +1,8 @@
+
 import { Product } from "@/types";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, AlertTriangle, Tag } from "lucide-react";
+import { Pencil, Trash2, AlertTriangle, ImageOff, Tag } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -24,8 +25,12 @@ interface ProductGridProps {
 const ProductGrid = ({ products, loading, onDelete, onEdit }: ProductGridProps) => {
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
   
+  // Pre-validate images when products change
   useEffect(() => {
     if (!products.length) return;
+    
+    // Clear previous errors when product list changes
+    setImageErrors({});
     
     products.forEach(product => {
       if (!product.image_url) return;
@@ -75,15 +80,16 @@ const ProductGrid = ({ products, loading, onDelete, onEdit }: ProductGridProps) 
     }
   };
 
+  // Enhanced cosmetics-specific fallback images
   const fallbackImages = [
-    "https://images.unsplash.com/photo-1598452963314-b09f397a5c48?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1600612253971-422e7f7faeb6?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1620916566256-4739d492ea02?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1598662972299-5408ddb8a3dc?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1583241475880-083f8152d7d2?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1614159102522-35260209ffa7?q=80&w=800&auto=format&fit=crop"
+    "https://images.unsplash.com/photo-1598452963314-b09f397a5c48?q=80&w=800&auto=format&fit=crop", // Skin care products
+    "https://images.unsplash.com/photo-1583241475880-083f8152d7d2?q=80&w=800&auto=format&fit=crop", // Facial products  
+    "https://images.unsplash.com/photo-1620916566256-4739d492ea02?q=80&w=800&auto=format&fit=crop", // Face cream
+    "https://images.unsplash.com/photo-1600612253971-422e7f7faeb6?q=80&w=800&auto=format&fit=crop", // Beauty products
+    "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?q=80&w=800&auto=format&fit=crop", // Cosmetics
+    "https://images.unsplash.com/photo-1598662972299-5408ddb8a3dc?q=80&w=800&auto=format&fit=crop", // Serum bottles
+    "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?q=80&w=800&auto=format&fit=crop", // Makeup products
+    "https://images.unsplash.com/photo-1614159102522-35260209ffa7?q=80&w=800&auto=format&fit=crop"  // Skincare
   ];
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, productId: string, index: number) => {
@@ -94,12 +100,16 @@ const ProductGrid = ({ products, loading, onDelete, onEdit }: ProductGridProps) 
     setImageErrors(prev => ({ ...prev, [productId]: true }));
   };
 
-  const reloadImage = (productId: string, index: number) => {
-    const product = products.find(p => p.id === productId);
-    if (!product || !product.image_url) return fallbackImages[index % fallbackImages.length];
+  // Function to get image URL, with fallback for specific problem products
+  const getImageUrl = (product: Product, index: number): string => {
+    // Special case for products we know have issues
+    if (product.name.includes("Gentle Exfoliating Scrub")) {
+      // Use a specific fallback for this product
+      return "https://images.unsplash.com/photo-1583241475880-083f8152d7d2?q=80&w=800&auto=format&fit=crop";
+    }
     
-    if (imageErrors[productId]) {
-      return `${product.image_url}?t=${Date.now()}`;
+    if (!product.image_url || imageErrors[product.id]) {
+      return fallbackImages[index % fallbackImages.length];
     }
     
     return product.image_url;
@@ -111,20 +121,18 @@ const ProductGrid = ({ products, loading, onDelete, onEdit }: ProductGridProps) 
         <Card key={product.id} className="flex flex-col overflow-hidden transition-all duration-200 hover:shadow-lg">
           <CardHeader className="p-0">
             <div className="aspect-video relative overflow-hidden bg-gray-100 rounded-t-lg">
-              {product.image_url ? (
-                <img
-                  src={reloadImage(product.id, index)}
-                  alt={product.name}
-                  className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
-                  onError={(e) => handleImageError(e, product.id, index)}
-                  key={`img-${product.id}-${imageErrors[product.id] ? 'fallback' : 'original'}-${Date.now()}`}
-                />
-              ) : (
-                <img
-                  src={fallbackImages[index % fallbackImages.length]}
-                  alt={product.name}
-                  className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
-                />
+              <img
+                src={getImageUrl(product, index)}
+                alt={product.name}
+                className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
+                onError={(e) => handleImageError(e, product.id, index)}
+                key={`img-${product.id}-${imageErrors[product.id] ? 'fallback' : 'original'}-${Date.now()}`}
+              />
+              {imageErrors[product.id] && (
+                <div className="absolute bottom-0 left-0 right-0 bg-amber-500 bg-opacity-70 text-white text-xs p-1 text-center flex items-center justify-center">
+                  <ImageOff className="h-3 w-3 mr-1" />
+                  Using placeholder image
+                </div>
               )}
               {product.discount_percentage && (
                 <div className="absolute top-2 right-2 bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-bold">
