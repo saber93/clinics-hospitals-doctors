@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, MapPin, Calendar, Clock, Phone, Gift } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import ProductImageWithFallback from "@/components/products/ProductImageWithFallback";
 
 const ClinicDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -148,23 +149,44 @@ const ClinicDetails = () => {
             <p className="text-muted-foreground">{clinic.description}</p>
           </div>
 
-          {/* Product Vouchers Section */}
-          {clinic.hasReservation && clinic.productsVoucher && clinic.productsVoucher.length > 0 && (
+          {/* Product Vouchers Section - Now shown to all users */}
+          {clinic.productsVoucher && clinic.productsVoucher.length > 0 && (
             <>
               <Separator className="my-6" />
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
                   <Gift className="h-5 w-5 text-primary" />
-                  <h2 className="text-xl font-semibold">Available Product Vouchers</h2>
+                  <h2 className="text-xl font-semibold">
+                    {clinic.hasReservation 
+                      ? "Your Available Product Vouchers" 
+                      : "Reserve Now To Unlock These Vouchers!"}
+                  </h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {clinic.productsVoucher.map((voucher: any, index: number) => (
-                    <Card key={index} className="bg-muted/50">
-                      <CardHeader>
+                    <Card 
+                      key={index} 
+                      className={
+                        clinic.hasReservation 
+                          ? "bg-muted/50" 
+                          : "bg-muted/50 relative overflow-hidden group"
+                      }
+                    >
+                      {!clinic.hasReservation && (
+                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10 transition-opacity group-hover:bg-black/50">
+                          <div className="text-center px-4 py-3">
+                            <p className="text-white font-medium mb-2">Reserve now to unlock this offer!</p>
+                            <Badge className="bg-primary text-primary-foreground px-3 py-1.5 text-sm font-bold">
+                              {voucher.discount}% OFF
+                            </Badge>
+                          </div>
+                        </div>
+                      )}
+                      <CardHeader className={clinic.hasReservation ? "" : "blur-sm"}>
                         <CardTitle className="text-lg">{voucher.productName}</CardTitle>
                         <CardDescription>{voucher.description}</CardDescription>
                       </CardHeader>
-                      <CardContent>
+                      <CardContent className={clinic.hasReservation ? "" : "blur-sm"}>
                         <p className="text-primary font-bold">{voucher.discount}% OFF</p>
                         {voucher.validUntil && (
                           <p className="text-sm text-muted-foreground">
@@ -173,12 +195,21 @@ const ClinicDetails = () => {
                         )}
                       </CardContent>
                       <CardFooter>
-                        <Button 
-                          className="w-full" 
-                          onClick={() => toast.success(`Voucher for ${voucher.productName} claimed!`)}
-                        >
-                          Claim Voucher
-                        </Button>
+                        {clinic.hasReservation ? (
+                          <Button 
+                            className="w-full" 
+                            onClick={() => toast.success(`Voucher for ${voucher.productName} claimed!`)}
+                          >
+                            Claim Voucher
+                          </Button>
+                        ) : (
+                          <Button 
+                            className="w-full z-20 relative" 
+                            onClick={handleReservation}
+                          >
+                            Reserve to Unlock
+                          </Button>
+                        )}
                       </CardFooter>
                     </Card>
                   ))}
@@ -213,6 +244,20 @@ const ClinicDetails = () => {
                 <div className="mt-4 p-3 bg-muted rounded-md">
                   <p className="font-medium text-sm">Special Offer</p>
                   <p className="text-primary font-bold">{clinic.offerPercentage}% off your first visit</p>
+                </div>
+              )}
+
+              {/* Show preview of available vouchers */}
+              {clinic.productsVoucher && clinic.productsVoucher.length > 0 && (
+                <div className="mt-4 p-3 bg-muted rounded-md">
+                  <p className="font-medium text-sm">Unlock These Vouchers</p>
+                  <div className="flex gap-1 mt-2 flex-wrap">
+                    {clinic.productsVoucher.map((voucher: any, index: number) => (
+                      <Badge key={index} variant="outline" className="bg-primary/10">
+                        {voucher.discount}% off {voucher.productName}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
               )}
             </CardContent>
