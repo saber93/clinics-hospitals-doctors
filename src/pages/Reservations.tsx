@@ -63,15 +63,21 @@ const Reservations = () => {
           setUserRole(profile.role);
         }
         
-        // Fetch available services (filtered by clinic if clinicId is provided)
+        // Fetch available services (now without clinicId parameter)
         console.log("Getting available services...");
-        const servicesData = await getAvailableServices(clinicId);
+        const servicesData = await getAvailableServices();
         console.log("Services data:", servicesData);
-        setServices(servicesData);
+        
+        // If a specific clinic was passed, filter services for that clinic client-side
+        const filteredServices = clinicId 
+          ? servicesData.filter(service => service.vendor_id === clinicId)
+          : servicesData;
+          
+        setServices(filteredServices);
         
         // If a specific clinic was passed, try to select the first service
-        if (clinicId && servicesData.length > 0) {
-          setSelectedService(servicesData[0].id);
+        if (clinicId && filteredServices.length > 0) {
+          setSelectedService(filteredServices[0].id);
           toast.success(`Booking appointment at ${clinicName}`);
         }
         
