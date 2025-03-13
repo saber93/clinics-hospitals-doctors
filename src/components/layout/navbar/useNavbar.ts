@@ -1,11 +1,13 @@
 
 import { useState, useEffect } from 'react';
 import { useAppAuth } from '@/hooks/useAppAuth';
+import { useNavigate } from 'react-router-dom';
 
 export const useNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { session } = useAppAuth();
+  const { session, signOut } = useAppAuth();
+  const navigate = useNavigate();
 
   // Define all nav links
   const allLinks = [
@@ -32,6 +34,14 @@ export const useNavbar = () => {
     setIsOpen(!isOpen);
   };
 
+  // Handle logout
+  const handleLogout = () => {
+    if (signOut) {
+      signOut();
+      navigate('/');
+    }
+  };
+
   // Handle scrolling
   useEffect(() => {
     const handleScroll = () => {
@@ -52,6 +62,7 @@ export const useNavbar = () => {
     scrolled,
     session,
     filteredLinks,
-    handleToggleMenu
+    handleToggleMenu,
+    handleLogout
   };
 };

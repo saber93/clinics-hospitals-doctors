@@ -2,9 +2,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { AuthButtonsProps } from './types';
 
-const AuthButtons: React.FC = () => {
+const AuthButtons: React.FC<AuthButtonsProps> = ({ session }) => {
   const navigate = useNavigate();
+  
+  // If we have a session, don't render the auth buttons
+  if (session) return null;
   
   return (
     <>

@@ -1,144 +1,64 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../../../context/AuthContext';
+import { X } from 'lucide-react';
+import NavLink from './NavLink';
+import { MobileMenuProps } from './types';
 
-interface MobileMenuProps {
-  isOpen: boolean;
-  toggleMobileMenu: () => void;
-  handleLogout: () => void;
-}
-
-const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, toggleMobileMenu, handleLogout }) => {
-  const { user, isClient, isVendor, isAdmin } = useAuth();
-
+const MobileMenu: React.FC<MobileMenuProps> = ({ 
+  isOpen, 
+  onClose, 
+  filteredLinks, 
+  session, 
+  handleLogout 
+}) => {
   if (!isOpen) return null;
 
   return (
-    <div className="md:hidden mt-4 pb-2">
-      <div className="flex flex-col space-y-3">
-        <Link
-          to="/"
-          className="text-gray-600 hover:text-primary py-2 transition-colors"
-          onClick={toggleMobileMenu}
+    <div className="md:hidden fixed inset-0 z-50 bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm">
+      <div className="flex justify-end p-4">
+        <button 
+          onClick={onClose} 
+          className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
         >
-          Home
-        </Link>
+          <X size={24} />
+        </button>
+      </div>
+      
+      <div className="flex flex-col items-center space-y-6 p-8">
+        {filteredLinks.map((link) => (
+          <NavLink 
+            key={link.path} 
+            path={link.path} 
+            name={link.name} 
+            icon={link.icon}
+            className="text-lg"
+          />
+        ))}
         
-        {user ? (
+        {session && handleLogout && (
+          <button
+            onClick={() => {
+              handleLogout();
+              onClose();
+            }}
+            className="text-lg text-gray-600 hover:text-primary py-2 transition-colors"
+          >
+            Log out
+          </button>
+        )}
+        
+        {!session && (
           <>
-            {isClient() && (
-              <>
-                <Link
-                  to="/reservations"
-                  className="text-gray-600 hover:text-primary py-2 transition-colors"
-                  onClick={toggleMobileMenu}
-                >
-                  My Reservations
-                </Link>
-                <Link
-                  to="/offers"
-                  className="text-gray-600 hover:text-primary py-2 transition-colors"
-                  onClick={toggleMobileMenu}
-                >
-                  Special Offers
-                </Link>
-              </>
-            )}
-            
-            {isVendor() && (
-              <>
-                <Link
-                  to="/dashboard"
-                  className="text-gray-600 hover:text-primary py-2 transition-colors"
-                  onClick={toggleMobileMenu}
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  to="/services"
-                  className="text-gray-600 hover:text-primary py-2 transition-colors"
-                  onClick={toggleMobileMenu}
-                >
-                  My Services
-                </Link>
-                <Link
-                  to="/manage-reservations"
-                  className="text-gray-600 hover:text-primary py-2 transition-colors"
-                  onClick={toggleMobileMenu}
-                >
-                  Reservations
-                </Link>
-                <Link
-                  to="/promotions"
-                  className="text-gray-600 hover:text-primary py-2 transition-colors"
-                  onClick={toggleMobileMenu}
-                >
-                  Promotions
-                </Link>
-              </>
-            )}
-            
-            {isAdmin() && (
-              <>
-                <Link
-                  to="/admin"
-                  className="text-gray-600 hover:text-primary py-2 transition-colors"
-                  onClick={toggleMobileMenu}
-                >
-                  Admin Dashboard
-                </Link>
-                <Link
-                  to="/manage-users"
-                  className="text-gray-600 hover:text-primary py-2 transition-colors"
-                  onClick={toggleMobileMenu}
-                >
-                  Manage Users
-                </Link>
-              </>
-            )}
-            
-            <Link
-              to="/profile"
-              className="text-gray-600 hover:text-primary py-2 transition-colors"
-              onClick={toggleMobileMenu}
-            >
-              Profile
-            </Link>
-            
-            <button
-              onClick={() => {
-                handleLogout();
-                toggleMobileMenu();
-              }}
-              className="text-left text-gray-600 hover:text-primary py-2 transition-colors"
-            >
-              Log out
-            </button>
-          </>
-        ) : (
-          <>
-            <Link
-              to="/offers"
-              className="text-gray-600 hover:text-primary py-2 transition-colors"
-              onClick={toggleMobileMenu}
-            >
-              Special Offers
-            </Link>
-            <Link
-              to="/auth?mode=login"
-              className="text-gray-600 hover:text-primary py-2 transition-colors"
-              onClick={toggleMobileMenu}
-            >
-              Login
-            </Link>
-            <Link
-              to="/auth?mode=register"
-              className="text-gray-600 hover:text-primary py-2 transition-colors font-medium"
-              onClick={toggleMobileMenu}
-            >
-              Sign Up
-            </Link>
+            <NavLink 
+              path="/auth?mode=login"
+              name="Login"
+              className="text-lg"
+            />
+            <NavLink 
+              path="/auth?mode=register"
+              name="Sign Up"
+              className="text-lg font-medium"
+            />
           </>
         )}
       </div>

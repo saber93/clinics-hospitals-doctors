@@ -2,12 +2,7 @@
 import React from 'react';
 import NavLink from './NavLink';
 import AuthButtons from './AuthButtons';
-import { NavLinkType } from './types';
-
-interface DesktopNavProps {
-  filteredLinks: NavLinkType[];
-  session: any;
-}
+import { DesktopNavProps } from './types';
 
 const DesktopNav = ({ filteredLinks, session }: DesktopNavProps) => {
   return (

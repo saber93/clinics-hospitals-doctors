@@ -2,30 +2,18 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { Search, MessageSquare, LucideIcon } from 'lucide-react';
+import { Search, MessageSquare } from 'lucide-react';
+import { ReactNode } from 'react';
 
 interface NavLinkProps {
   name: string;
   path: string;
-  icon?: string;
+  icon?: ReactNode;
   className?: string;
 }
 
 const NavLink = ({ name, path, icon, className }: NavLinkProps) => {
   const location = useLocation();
-  
-  const renderIcon = () => {
-    if (!icon) return null;
-    
-    switch (icon) {
-      case 'search':
-        return <Search className="h-4 w-4 mr-1" />;
-      case 'message-square':
-        return <MessageSquare className="h-4 w-4 mr-1" />;
-      default:
-        return null;
-    }
-  };
   
   return (
     <Link
@@ -36,7 +24,7 @@ const NavLink = ({ name, path, icon, className }: NavLinkProps) => {
         className
       )}
     >
-      {renderIcon()}
+      {icon && <span className="mr-1">{icon}</span>}
       {name}
     </Link>
   );

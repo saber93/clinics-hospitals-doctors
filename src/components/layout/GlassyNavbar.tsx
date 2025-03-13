@@ -8,7 +8,7 @@ import DesktopNav from './navbar/DesktopNav';
 import MobileMenu from './navbar/MobileMenu';
 
 const GlassyNavbar = () => {
-  const { isOpen, scrolled, session, filteredLinks, handleToggleMenu } = useNavbar();
+  const { isOpen, scrolled, session, filteredLinks, handleToggleMenu, handleLogout } = useNavbar();
 
   return (
     <header
@@ -36,7 +36,8 @@ const GlassyNavbar = () => {
         isOpen={isOpen} 
         filteredLinks={filteredLinks} 
         session={session} 
-        onClose={handleToggleMenu} 
+        onClose={handleToggleMenu}
+        handleLogout={handleLogout}
       />
     </header>
   );
