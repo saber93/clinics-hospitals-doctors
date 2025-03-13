@@ -1,74 +1,42 @@
 
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
-import { NavLinkType } from './types';
+import { useAppAuth } from '@/hooks/useAppAuth';
 
 export const useNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [session, setSession] = useState<any>(null);
-  const [userRole, setUserRole] = useState<string | null>(null);
-  const location = useLocation();
+  const { session } = useAppAuth();
 
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const { data, error } = await supabase.auth.getSession();
-        if (error) {
-          console.error("Error checking session:", error);
-          setSession(null);
-          return;
-        }
-        setSession(data.session);
-        
-        // Get user role if session exists
-        if (data.session) {
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('role')
-            .eq('id', data.session.user.id)
-            .single();
-            
-          setUserRole(profileData?.role || data.session.user.user_metadata?.role || null);
-        }
-      } catch (error) {
-        console.error("Error in session check:", error);
-        setSession(null);
-      }
-    };
-    
-    checkSession();
+  // Define all nav links
+  const allLinks = [
+    { name: 'Home', path: '/' },
+    { name: 'Clinics', path: '/clinics' },
+    { name: 'About', path: '/about' },
+    { name: 'Contact', path: '/contact' },
+    { name: 'Dashboard', path: '/dashboard', protected: true },
+    { name: 'Reservations', path: '/reservations', protected: true },
+    { name: 'Products', path: '/products', protected: true },
+  ];
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      console.log("Auth state changed:", _event);
-      setSession(session);
-      
-      // Update user role when auth state changes
-      if (session) {
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', session.user.id)
-          .single();
-          
-        setUserRole(profileData?.role || session.user.user_metadata?.role || null);
-      } else {
-        setUserRole(null);
-      }
-    });
+  // Filter links based on authentication
+  const filteredLinks = allLinks.filter(link => {
+    if (link.protected) {
+      return session !== null;
+    }
+    return true;
+  });
 
-    return () => subscription.unsubscribe();
-  }, []);
+  // Handle menu toggle
+  const handleToggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
 
+  // Handle scrolling
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
+      const isScrolled = window.scrollY > 10;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
       }
     };
 
@@ -76,47 +44,13 @@ export const useNavbar = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
-
-  useEffect(() => {
-    setIsOpen(false);
-  }, [location.pathname]);
-
-  const navLinks: NavLinkType[] = [
-    { name: 'Home', path: '/' },
-    { name: 'Clinics', path: '/clinics', icon: 'search' },
-    { name: 'About', path: '/about' },
-    { name: 'Contact', path: '/contact', icon: 'message-square' },
-    { name: 'Dashboard', path: '/dashboard', auth: true },
-    { name: 'Reservations', path: '/reservations', auth: true },
-    { name: 'Offers', path: '/offers', auth: true },
-    { name: 'Vouchers', path: '/vouchers', auth: true },
-  ];
-  
-  // Add seller-specific links for seller users
-  if (userRole === 'seller') {
-    navLinks.push(
-      { name: 'Products', path: '/products', auth: true, role: 'seller' },
-      { name: 'Seller Dashboard', path: '/seller-dashboard', auth: true, role: 'seller' }
-    );
-  }
-
-  const filteredLinks = navLinks.filter(link => 
-    !link.auth || (link.auth && session) && 
-    (!link.role || link.role === userRole)
-  );
-
-  const handleToggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
+  }, [scrolled]);
 
   return {
     isOpen,
     scrolled,
     session,
-    userRole,
     filteredLinks,
-    handleToggleMenu,
-    setIsOpen
+    handleToggleMenu
   };
 };
