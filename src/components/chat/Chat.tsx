@@ -1,18 +1,14 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, Clock } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import ChatMessageList from './ChatMessageList';
-import ChatInput from './ChatInput';
-import PaymentDialog from './PaymentDialog';
 import { supabase } from '@/integrations/supabase/client';
 import { getChatSessionById, updateSessionActivity, markAllMessagesAsRead } from '@/services/chat/sessionService';
 import { ChatSession } from '@/types/chat';
+import ChatHeader from './ChatHeader';
+import ChatContainer from './ChatContainer';
+import ChatFooter from './ChatFooter';
+import PaymentDialog from './PaymentDialog';
 
 // Fix the Params interface to satisfy constraints
 interface RouteParams {
@@ -21,7 +17,6 @@ interface RouteParams {
 
 const Chat: React.FC = () => {
   const { chatId } = useParams<keyof RouteParams>() as RouteParams;
-  const navigate = useNavigate();
   const { toast } = useToast();
   const [session, setSession] = useState<ChatSession | null>(null);
   const [loading, setLoading] = useState(true);
@@ -149,6 +144,10 @@ const Chat: React.FC = () => {
     }
   };
 
+  const handleMessageSent = () => {
+    scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="container h-screen flex flex-col">
       {paymentDialogOpen && (
@@ -163,52 +162,26 @@ const Chat: React.FC = () => {
           doctorId={session.doctor_id}
         />
       )}
-      <div className="border-b py-2 px-4 bg-white">
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/chat-sessions')}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
-          </Button>
-          <div className="flex items-center gap-2">
-            <Avatar>
-              <AvatarImage alt={otherPartyName} />
-              <AvatarFallback>{otherPartyName?.substring(0, 2).toUpperCase()}</AvatarFallback>
-            </Avatar>
-            <div>
-              <div className="font-semibold">{otherPartyName}</div>
-              <div className="text-xs text-gray-500">
-                Last active: {new Date(session.last_activity).toLocaleTimeString()}
-              </div>
-            </div>
-            {!session.is_free && (
-              <Badge variant="secondary" className="ml-2 cursor-pointer" onClick={handlePaymentDialogOpen}>
-                <Clock className="mr-1 h-3 w-3" /> Pay
-              </Badge>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className="flex-grow overflow-hidden">
-        <ScrollArea className="h-full">
-          <div className="flex flex-col h-full py-4 px-6 justify-end" ref={scrollRef}>
-            <ChatMessageList 
-              currentUserId={user?.id}
-              patientId={session.patient_id}
-              doctorId={session.doctor_id}
-              sessionId={chatId}
-            />
-          </div>
-        </ScrollArea>
-      </div>
-      <div className="border-t py-2 px-4 bg-white">
-        <ChatInput 
-          sessionId={chatId} 
-          senderId={user?.id} 
-          onMessageSent={() => {
-            scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
-          }}
-        />
-      </div>
+      
+      <ChatHeader 
+        otherPartyName={otherPartyName}
+        lastActivity={session.last_activity}
+        isFree={session.is_free}
+        onPaymentDialogOpen={handlePaymentDialogOpen}
+      />
+      
+      <ChatContainer 
+        userId={user?.id}
+        patientId={session.patient_id}
+        doctorId={session.doctor_id}
+        sessionId={chatId}
+      />
+      
+      <ChatFooter 
+        sessionId={chatId}
+        senderId={user?.id}
+        onMessageSent={handleMessageSent}
+      />
     </div>
   );
 };
