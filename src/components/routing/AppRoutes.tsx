@@ -11,7 +11,6 @@ import NotFound from '@/pages/NotFound';
 const Home = lazy(() => import('@/pages/Home'));
 const Login = lazy(() => import('@/pages/Login'));
 const Register = lazy(() => import('@/pages/Register'));
-const Auth = lazy(() => import('@/pages/Auth'));
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
 const Products = lazy(() => import('@/pages/Products'));
 const ProductForm = lazy(() => import('@/pages/ProductForm'));
@@ -39,7 +38,6 @@ const AppRoutes = () => {
           {/* Authentication routes */}
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-          <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
           
           {/* Protected routes */}
           <Route path="/reservations" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />
