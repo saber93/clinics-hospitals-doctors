@@ -29,6 +29,9 @@ const AllBookings = lazy(() => import('@/pages/AllBookings'));
 const AdminDashboard = lazy(() => import('@/pages/AdminDashboard'));
 const TotalVendors = lazy(() => import('@/pages/TotalVendors'));
 const TotalClients = lazy(() => import('@/pages/TotalClients'));
+const ChatPage = lazy(() => import('@/pages/ChatPage'));
+const ChatSessions = lazy(() => import('@/pages/ChatSessions'));
+const ChatSettings = lazy(() => import('@/pages/ChatSettings'));
 
 const AppRoutes = () => {
   return (
@@ -62,6 +65,12 @@ const AppRoutes = () => {
           <Route path="/vendor-dashboard" element={<ProtectedRoute><VendorDashboard /></ProtectedRoute>} />
           <Route path="/center-dashboard" element={<ProtectedRoute><CenterDashboard /></ProtectedRoute>} />
           <Route path="/client-dashboard" element={<ProtectedRoute><ClientDashboard /></ProtectedRoute>} />
+          
+          {/* Chat system routes */}
+          <Route path="/chats/:chatId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+          <Route path="/chats" element={<ProtectedRoute><ChatSessions /></ProtectedRoute>} />
+          <Route path="/chat-sessions" element={<ProtectedRoute><ChatSessions /></ProtectedRoute>} />
+          <Route path="/chat-settings" element={<ProtectedRoute><ChatSettings /></ProtectedRoute>} />
           
           {/* Admin routes */}
           <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
