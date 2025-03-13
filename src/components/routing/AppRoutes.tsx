@@ -21,7 +21,7 @@ const ClinicDetails = lazy(() => import('@/pages/ClinicDetails'));
 const Reservations = lazy(() => import('@/pages/Reservations'));
 const About = lazy(() => import('@/pages/About'));
 const Contact = lazy(() => import('@/pages/Contact'));
-import AllBookings from "@/pages/AllBookings";
+const AllBookings = lazy(() => import('@/pages/AllBookings'));
 
 const AppRoutes = () => {
   return (
