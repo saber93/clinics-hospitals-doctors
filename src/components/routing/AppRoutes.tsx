@@ -12,6 +12,10 @@ const Home = lazy(() => import('@/pages/Home'));
 const Login = lazy(() => import('@/pages/Login'));
 const Register = lazy(() => import('@/pages/Register'));
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
+const DoctorDashboard = lazy(() => import('@/pages/DoctorDashboard'));
+const VendorDashboard = lazy(() => import('@/pages/VendorDashboard'));
+const CenterDashboard = lazy(() => import('@/pages/CenterDashboard'));
+const ClientDashboard = lazy(() => import('@/pages/ClientDashboard'));
 const Products = lazy(() => import('@/pages/Products'));
 const ProductForm = lazy(() => import('@/pages/ProductForm'));
 const Categories = lazy(() => import('@/pages/Categories'));
@@ -52,6 +56,12 @@ const AppRoutes = () => {
           <Route path="/categories/new" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />
           <Route path="/categories/:id/edit" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />
           <Route path="/all-bookings" element={<ProtectedRoute><AllBookings /></ProtectedRoute>} />
+          
+          {/* Role-specific dashboard routes */}
+          <Route path="/doctor-dashboard" element={<ProtectedRoute><DoctorDashboard /></ProtectedRoute>} />
+          <Route path="/vendor-dashboard" element={<ProtectedRoute><VendorDashboard /></ProtectedRoute>} />
+          <Route path="/center-dashboard" element={<ProtectedRoute><CenterDashboard /></ProtectedRoute>} />
+          <Route path="/client-dashboard" element={<ProtectedRoute><ClientDashboard /></ProtectedRoute>} />
           
           {/* Admin routes */}
           <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
