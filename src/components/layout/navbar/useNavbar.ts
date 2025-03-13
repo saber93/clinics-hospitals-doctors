@@ -6,7 +6,8 @@ import { useNavigate } from 'react-router-dom';
 export const useNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { session, signOut } = useAppAuth();
+  const auth = useAppAuth();
+  const { session } = auth;
   const navigate = useNavigate();
 
   // Define all nav links
@@ -36,9 +37,11 @@ export const useNavbar = () => {
 
   // Handle logout
   const handleLogout = () => {
-    if (signOut) {
-      signOut();
+    if (auth.signOut) {
+      auth.signOut();
       navigate('/');
+    } else {
+      console.error('signOut function is not available');
     }
   };
 

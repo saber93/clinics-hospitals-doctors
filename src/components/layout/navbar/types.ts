@@ -16,7 +16,8 @@ export interface AuthButtonsProps {
 
 export interface MobileMenuProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose?: () => void;
+  toggleMobileMenu?: () => void;
   handleLogout?: () => void;
   filteredLinks: NavLinkType[];
   session: any;

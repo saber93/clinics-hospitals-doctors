@@ -23,6 +23,13 @@ const Navbar: React.FC = () => {
     navigate('/');
   };
 
+  // Create a filteredLinks array for the mobile menu
+  const filteredLinks = [
+    { name: 'Home', path: '/' },
+    { name: 'About', path: '/about' },
+    { name: 'Contact', path: '/contact' }
+  ];
+
   return (
     <nav className="bg-white shadow-sm border-b py-4">
       <div className="container mx-auto px-4 md:px-6">
@@ -38,7 +45,7 @@ const Navbar: React.FC = () => {
             {user ? (
               <UserDropdownMenu handleLogout={handleLogout} />
             ) : (
-              <AuthButtons />
+              <AuthButtons session={user} />
             )}
           </div>
 
@@ -57,6 +64,8 @@ const Navbar: React.FC = () => {
         <MobileMenu 
           isOpen={mobileMenuOpen} 
           toggleMobileMenu={toggleMobileMenu} 
+          filteredLinks={filteredLinks}
+          session={user}
           handleLogout={handleLogout}
         />
       </div>

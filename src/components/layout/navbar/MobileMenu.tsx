@@ -7,17 +7,27 @@ import { MobileMenuProps } from './types';
 const MobileMenu: React.FC<MobileMenuProps> = ({ 
   isOpen, 
   onClose, 
+  toggleMobileMenu,
   filteredLinks, 
   session, 
   handleLogout 
 }) => {
   if (!isOpen) return null;
 
+  // Use the appropriate close function
+  const closeMenu = () => {
+    if (onClose) {
+      onClose();
+    } else if (toggleMobileMenu) {
+      toggleMobileMenu();
+    }
+  };
+
   return (
     <div className="md:hidden fixed inset-0 z-50 bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm">
       <div className="flex justify-end p-4">
         <button 
-          onClick={onClose} 
+          onClick={closeMenu} 
           className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
         >
           <X size={24} />
@@ -39,7 +49,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
           <button
             onClick={() => {
               handleLogout();
-              onClose();
+              closeMenu();
             }}
             className="text-lg text-gray-600 hover:text-primary py-2 transition-colors"
           >
