@@ -32,6 +32,9 @@ const TotalClients = lazy(() => import('@/pages/TotalClients'));
 const ChatPage = lazy(() => import('@/pages/ChatPage'));
 const ChatSessions = lazy(() => import('@/pages/ChatSessions'));
 const ChatSettings = lazy(() => import('@/pages/ChatSettings'));
+const SellerVouchers = lazy(() => import('@/pages/VoucherManagement'));
+const VoucherForm = lazy(() => import('@/pages/AddVoucher'));
+const EditVoucherPage = lazy(() => import('@/pages/EditVoucher'));
 
 const AppRoutes = () => {
   return (
@@ -52,9 +55,19 @@ const AppRoutes = () => {
           {/* Protected routes */}
           <Route path="/reservations" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          
+          {/* Product management routes */}
           <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
           <Route path="/products/new" element={<ProtectedRoute><ProductForm /></ProtectedRoute>} />
           <Route path="/products/:id/edit" element={<ProtectedRoute><ProductForm /></ProtectedRoute>} />
+          <Route path="/add-product" element={<ProtectedRoute><ProductForm /></ProtectedRoute>} />
+          
+          {/* Voucher management routes */}
+          <Route path="/seller-vouchers" element={<ProtectedRoute><SellerVouchers /></ProtectedRoute>} />
+          <Route path="/seller-vouchers/new" element={<ProtectedRoute><VoucherForm /></ProtectedRoute>} />
+          <Route path="/seller-vouchers/:id/edit" element={<ProtectedRoute><EditVoucherPage /></ProtectedRoute>} />
+          <Route path="/add-voucher" element={<ProtectedRoute><VoucherForm /></ProtectedRoute>} />
+          
           <Route path="/categories" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
           <Route path="/categories/new" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />
           <Route path="/categories/:id/edit" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />

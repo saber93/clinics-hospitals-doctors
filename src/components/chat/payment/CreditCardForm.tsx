@@ -63,7 +63,7 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({
             id="cvv"
             placeholder="123"
             value={cardCvv}
-            onChange={(e) => setCvv(e.target.value)}
+            onChange={(e) => setCardCvv(e.target.value)}
           />
         </div>
       </div>
