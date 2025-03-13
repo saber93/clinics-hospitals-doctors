@@ -1,47 +1,146 @@
 
 import React from 'react';
-import { X } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import NavLink from './NavLink';
-import AuthButtons from './AuthButtons';
-import { NavLinkType } from './types';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
 
 interface MobileMenuProps {
   isOpen: boolean;
-  filteredLinks: NavLinkType[];
-  session: any;
-  onClose: () => void;
+  toggleMobileMenu: () => void;
+  handleLogout: () => void;
 }
 
-const MobileMenu = ({ isOpen, filteredLinks, session, onClose }: MobileMenuProps) => {
+const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, toggleMobileMenu, handleLogout }) => {
+  const { user, isClient, isVendor, isAdmin } = useAuth();
+
+  if (!isOpen) return null;
+
   return (
-    <div
-      className={cn(
-        'md:hidden fixed inset-0 top-0 left-0 w-full h-screen z-40 transition-transform duration-300 ease-in-out',
-        'backdrop-blur-xl bg-white/95 dark:bg-black/95 shadow-lg border border-white/10 dark:border-white/5',
-        isOpen ? 'translate-x-0' : 'translate-x-full'
-      )}
-    >
-      <div className="flex flex-col items-center justify-center h-full space-y-8 p-4">
-        <button
-          onClick={onClose}
-          className="absolute top-6 right-6 text-foreground hover:text-primary transition-colors"
-          aria-label="Close menu"
+    <div className="md:hidden mt-4 pb-2">
+      <div className="flex flex-col space-y-3">
+        <Link
+          to="/"
+          className="text-gray-600 hover:text-primary py-2 transition-colors"
+          onClick={toggleMobileMenu}
         >
-          <X size={28} />
-        </button>
+          Home
+        </Link>
         
-        {filteredLinks.map((link) => (
-          <NavLink
-            key={link.path}
-            path={link.path}
-            name={link.name}
-            icon={link.icon}
-            className="text-lg font-medium"
-          />
-        ))}
-        
-        <AuthButtons session={session} isMobile={true} />
+        {user ? (
+          <>
+            {isClient() && (
+              <>
+                <Link
+                  to="/reservations"
+                  className="text-gray-600 hover:text-primary py-2 transition-colors"
+                  onClick={toggleMobileMenu}
+                >
+                  My Reservations
+                </Link>
+                <Link
+                  to="/offers"
+                  className="text-gray-600 hover:text-primary py-2 transition-colors"
+                  onClick={toggleMobileMenu}
+                >
+                  Special Offers
+                </Link>
+              </>
+            )}
+            
+            {isVendor() && (
+              <>
+                <Link
+                  to="/dashboard"
+                  className="text-gray-600 hover:text-primary py-2 transition-colors"
+                  onClick={toggleMobileMenu}
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  to="/services"
+                  className="text-gray-600 hover:text-primary py-2 transition-colors"
+                  onClick={toggleMobileMenu}
+                >
+                  My Services
+                </Link>
+                <Link
+                  to="/manage-reservations"
+                  className="text-gray-600 hover:text-primary py-2 transition-colors"
+                  onClick={toggleMobileMenu}
+                >
+                  Reservations
+                </Link>
+                <Link
+                  to="/promotions"
+                  className="text-gray-600 hover:text-primary py-2 transition-colors"
+                  onClick={toggleMobileMenu}
+                >
+                  Promotions
+                </Link>
+              </>
+            )}
+            
+            {isAdmin() && (
+              <>
+                <Link
+                  to="/admin"
+                  className="text-gray-600 hover:text-primary py-2 transition-colors"
+                  onClick={toggleMobileMenu}
+                >
+                  Admin Dashboard
+                </Link>
+                <Link
+                  to="/manage-users"
+                  className="text-gray-600 hover:text-primary py-2 transition-colors"
+                  onClick={toggleMobileMenu}
+                >
+                  Manage Users
+                </Link>
+              </>
+            )}
+            
+            <Link
+              to="/profile"
+              className="text-gray-600 hover:text-primary py-2 transition-colors"
+              onClick={toggleMobileMenu}
+            >
+              Profile
+            </Link>
+            
+            <button
+              onClick={() => {
+                handleLogout();
+                toggleMobileMenu();
+              }}
+              className="text-left text-gray-600 hover:text-primary py-2 transition-colors"
+            >
+              Log out
+            </button>
+          </>
+        ) : (
+          <>
+            <Link
+              to="/offers"
+              className="text-gray-600 hover:text-primary py-2 transition-colors"
+              onClick={toggleMobileMenu}
+            >
+              Special Offers
+            </Link>
+            <Link
+              to="/auth?mode=login"
+              className="text-gray-600 hover:text-primary py-2 transition-colors"
+              onClick={toggleMobileMenu}
+            >
+              Login
+            </Link>
+            <Link
+              to="/auth?mode=register"
+              className="text-gray-600 hover:text-primary py-2 transition-colors font-medium"
+              onClick={toggleMobileMenu}
+            >
+              Sign Up
+            </Link>
+          </>
+        )}
       </div>
     </div>
   );
