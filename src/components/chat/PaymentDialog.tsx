@@ -1,20 +1,12 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ChatSettings, DoctorChatSettings } from '@/types/chat';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Input } from '@/components/ui/input';
-import { CreditCard, Check } from 'lucide-react';
 import { toast } from 'sonner';
-
-interface PaymentMethod {
-  id: string;
-  name: string;
-  logo?: string;
-  supports_installments: boolean;
-}
+import PaymentMethodSelector, { PaymentMethod } from './payment/PaymentMethodSelector';
+import CreditCardForm from './payment/CreditCardForm';
+import PaymentButton from './payment/PaymentButton';
 
 interface PaymentDialogProps {
   isOpen: boolean;
@@ -118,76 +110,23 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({
         </DialogHeader>
         
         <div className="space-y-4 py-4">
-          <RadioGroup 
-            defaultValue={selectedMethod} 
-            onValueChange={setSelectedMethod}
-            className="space-y-2"
-          >
-            <div className="grid grid-cols-1 gap-2">
-              {paymentMethods.map((method) => (
-                <div key={method.id} className="flex items-center">
-                  <RadioGroupItem value={method.id} id={method.id} />
-                  <Label 
-                    htmlFor={method.id} 
-                    className="flex items-center gap-2 rounded-md border p-2 ml-2 w-full cursor-pointer"
-                  >
-                    {method.id === 'credit_card' ? (
-                      <CreditCard className="h-5 w-5" />
-                    ) : (
-                      <span className="font-medium">{method.name}</span>
-                    )}
-                    {method.id === 'credit_card' ? 'Credit Card' : 
-                      method.supports_installments ? `${method.name} (Pay in installments)` : method.name}
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </RadioGroup>
+          <PaymentMethodSelector 
+            paymentMethods={paymentMethods}
+            selectedMethod={selectedMethod}
+            onMethodChange={setSelectedMethod}
+          />
 
           {selectedMethod === 'credit_card' && (
-            <div className="space-y-3 mt-4">
-              <div className="space-y-1">
-                <Label htmlFor="cardName">Cardholder Name</Label>
-                <Input
-                  id="cardName"
-                  placeholder="John Doe"
-                  value={cardName}
-                  onChange={(e) => setCardName(e.target.value)}
-                />
-              </div>
-              
-              <div className="space-y-1">
-                <Label htmlFor="cardNumber">Card Number</Label>
-                <Input
-                  id="cardNumber"
-                  placeholder="4111 1111 1111 1111"
-                  value={cardNumber}
-                  onChange={(e) => setCardNumber(e.target.value)}
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <Label htmlFor="expiry">Expiry Date</Label>
-                  <Input
-                    id="expiry"
-                    placeholder="MM/YY"
-                    value={cardExpiry}
-                    onChange={(e) => setCardExpiry(e.target.value)}
-                  />
-                </div>
-                
-                <div className="space-y-1">
-                  <Label htmlFor="cvv">CVV</Label>
-                  <Input
-                    id="cvv"
-                    placeholder="123"
-                    value={cardCvv}
-                    onChange={(e) => setCvv(e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
+            <CreditCardForm 
+              cardName={cardName}
+              setCardName={setCardName}
+              cardNumber={cardNumber}
+              setCardNumber={setCardNumber}
+              cardExpiry={cardExpiry}
+              setCardExpiry={setCardExpiry}
+              cardCvv={cardCvv}
+              setCardCvv={setCvv}
+            />
           )}
         </div>
         
@@ -195,19 +134,11 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({
           <Button variant="outline" onClick={onClose} disabled={isProcessing}>
             Cancel
           </Button>
-          <Button onClick={handlePayment} disabled={isProcessing}>
-            {isProcessing ? (
-              <div className="flex items-center">
-                <div className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full"></div>
-                Processing...
-              </div>
-            ) : (
-              <div className="flex items-center">
-                <Check className="mr-2 h-4 w-4" />
-                Pay ${sessionPrice.toFixed(2)}
-              </div>
-            )}
-          </Button>
+          <PaymentButton 
+            isProcessing={isProcessing}
+            onClick={handlePayment}
+            price={sessionPrice}
+          />
         </DialogFooter>
       </DialogContent>
     </Dialog>
