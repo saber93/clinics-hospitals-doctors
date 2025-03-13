@@ -6,6 +6,7 @@ import { ProtectedRoute } from './ProtectedRoute';
 import { PublicRoute } from './PublicRoute';
 import Loading from '@/components/ui/Loading';
 
+// Lazy load pages to improve performance
 const Home = lazy(() => import('@/pages/Home'));
 const Login = lazy(() => import('@/pages/Login'));
 const Register = lazy(() => import('@/pages/Register'));
@@ -27,14 +28,19 @@ const AppRoutes = () => {
     <AuthProvider>
       <Suspense fallback={<Loading />}>
         <Routes>
+          {/* Main public routes */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/clinics/:id" element={<ClinicDetails />} />
           <Route path="/clinics" element={<Clinics />} />
+          
+          {/* Authentication routes */}
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
           <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
+          
+          {/* Protected routes */}
           <Route path="/reservations" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
