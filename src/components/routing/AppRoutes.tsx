@@ -22,6 +22,9 @@ const Reservations = lazy(() => import('@/pages/Reservations'));
 const About = lazy(() => import('@/pages/About'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const AllBookings = lazy(() => import('@/pages/AllBookings'));
+const AdminDashboard = lazy(() => import('@/pages/AdminDashboard'));
+const TotalVendors = lazy(() => import('@/pages/TotalVendors'));
+const TotalClients = lazy(() => import('@/pages/TotalClients'));
 
 const AppRoutes = () => {
   return (
@@ -49,6 +52,11 @@ const AppRoutes = () => {
           <Route path="/categories/new" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />
           <Route path="/categories/:id/edit" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />
           <Route path="/all-bookings" element={<ProtectedRoute><AllBookings /></ProtectedRoute>} />
+          
+          {/* Admin routes */}
+          <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/vendors" element={<ProtectedRoute><TotalVendors /></ProtectedRoute>} />
+          <Route path="/clients" element={<ProtectedRoute><TotalClients /></ProtectedRoute>} />
           
           {/* 404 Page */}
           <Route path="*" element={<NotFound />} />
