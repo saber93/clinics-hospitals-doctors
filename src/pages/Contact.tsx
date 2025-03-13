@@ -1,158 +1,109 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { toast } from 'sonner';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-  
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false);
-      toast.success('Message sent successfully! We will get back to you soon.');
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-      });
-    }, 1500);
-  };
-  
   return (
     <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold">Contact Us</h1>
-        <p className="mt-4 text-gray-600 mb-8">Have questions or feedback? We'd love to hear from you.</p>
+        <p className="mt-4 text-gray-600">We'd love to hear from you. Get in touch with us.</p>
         
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Send Us a Message</CardTitle>
-              <CardDescription>Fill out the form below and we'll get back to you as soon as possible.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                  <Input
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    placeholder="Your name"
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    placeholder="your.email@example.com"
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                  <Input
-                    id="subject"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    required
-                    placeholder="What is this regarding?"
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                    placeholder="How can we help you?"
-                    rows={5}
-                  />
-                </div>
-                
-                <Button type="submit" className="w-full" disabled={isSubmitting}>
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+        <Separator className="my-8" />
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="md:col-span-2">
+            <Card>
+              <CardContent className="p-6">
+                <h2 className="text-xl font-semibold mb-4">Send us a Message</h2>
+                <form className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Your Name</Label>
+                      <Input id="name" placeholder="John Doe" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email Address</Label>
+                      <Input id="email" type="email" placeholder="john@example.com" />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="subject">Subject</Label>
+                    <Input id="subject" placeholder="How can we help you?" />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="message">Message</Label>
+                    <Textarea 
+                      id="message" 
+                      placeholder="Please provide details about your inquiry..." 
+                      className="min-h-[150px]" 
+                    />
+                  </div>
+                  
+                  <Button type="submit" className="w-full sm:w-auto">
+                    Send Message
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
           
           <div>
             <Card>
-              <CardHeader>
-                <CardTitle>Contact Information</CardTitle>
-                <CardDescription>Here's how you can reach us directly.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h3 className="text-sm font-medium text-gray-500">Address</h3>
-                  <p className="mt-1">123 Healthcare Avenue, Suite 456<br />Medical District, CA 90210</p>
-                </div>
-                
-                <div>
-                  <h3 className="text-sm font-medium text-gray-500">Email</h3>
-                  <p className="mt-1">support@healthcare-platform.com</p>
-                </div>
-                
-                <div>
-                  <h3 className="text-sm font-medium text-gray-500">Phone</h3>
-                  <p className="mt-1">(555) 123-4567</p>
-                </div>
-                
-                <div>
-                  <h3 className="text-sm font-medium text-gray-500">Hours</h3>
-                  <p className="mt-1">Monday - Friday: 9:00 AM - 5:00 PM<br />Saturday: 10:00 AM - 2:00 PM<br />Sunday: Closed</p>
-                </div>
+              <CardContent className="p-6">
+                <h2 className="text-xl font-semibold mb-4">Contact Information</h2>
+                <ul className="space-y-4">
+                  <li className="flex items-start">
+                    <MapPin className="h-5 w-5 text-primary mr-3 mt-0.5" />
+                    <div>
+                      <p className="font-medium">Address</p>
+                      <p className="text-gray-600">123 Healthcare Avenue, Medical District, CA 90210</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <Phone className="h-5 w-5 text-primary mr-3 mt-0.5" />
+                    <div>
+                      <p className="font-medium">Phone</p>
+                      <p className="text-gray-600">+1 (800) 123-4567</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <Mail className="h-5 w-5 text-primary mr-3 mt-0.5" />
+                    <div>
+                      <p className="font-medium">Email</p>
+                      <p className="text-gray-600">support@healthcareplatform.com</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <Clock className="h-5 w-5 text-primary mr-3 mt-0.5" />
+                    <div>
+                      <p className="font-medium">Working Hours</p>
+                      <p className="text-gray-600">Monday - Friday: 9:00 AM - 6:00 PM</p>
+                      <p className="text-gray-600">Saturday: 10:00 AM - 4:00 PM</p>
+                      <p className="text-gray-600">Sunday: Closed</p>
+                    </div>
+                  </li>
+                </ul>
               </CardContent>
             </Card>
             
-            <div className="mt-8 bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-medium mb-3">Frequently Asked Questions</h3>
-              <div className="space-y-4">
-                <div>
-                  <h4 className="font-medium">How do I schedule an appointment?</h4>
-                  <p className="text-gray-600">You can book appointments through our online booking system or by contacting us directly.</p>
-                </div>
-                <div>
-                  <h4 className="font-medium">Do you accept insurance?</h4>
-                  <p className="text-gray-600">Yes, we accept most major insurance plans. Please contact us for specific information.</p>
-                </div>
-                <div>
-                  <h4 className="font-medium">How can I access my medical records?</h4>
-                  <p className="text-gray-600">You can access your records through your patient portal after logging in.</p>
-                </div>
+            <div className="mt-6">
+              <div className="bg-primary/5 rounded-lg p-4">
+                <h3 className="font-medium mb-2">Emergency Contact</h3>
+                <p className="text-sm text-gray-600">
+                  For medical emergencies, please call our 24/7 helpline:
+                </p>
+                <p className="text-primary font-bold mt-1">
+                  +1 (800) 999-8888
+                </p>
               </div>
             </div>
           </div>

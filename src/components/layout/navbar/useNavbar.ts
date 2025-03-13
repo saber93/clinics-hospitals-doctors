@@ -16,6 +16,7 @@ export const useNavbar = () => {
     { name: 'Dashboard', path: '/dashboard', protected: true },
     { name: 'Reservations', path: '/reservations', protected: true },
     { name: 'Products', path: '/products', protected: true },
+    { name: 'My Bookings', path: '/all-bookings', protected: true },
   ];
 
   // Filter links based on authentication

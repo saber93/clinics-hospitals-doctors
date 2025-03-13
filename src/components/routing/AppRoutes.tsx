@@ -5,6 +5,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { ProtectedRoute } from './ProtectedRoute';
 import { PublicRoute } from './PublicRoute';
 import Loading from '@/components/ui/Loading';
+import NotFound from '@/pages/NotFound';
 
 // Lazy load pages to improve performance
 const Home = lazy(() => import('@/pages/Home'));
@@ -50,6 +51,9 @@ const AppRoutes = () => {
           <Route path="/categories/new" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />
           <Route path="/categories/:id/edit" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />
           <Route path="/all-bookings" element={<ProtectedRoute><AllBookings /></ProtectedRoute>} />
+          
+          {/* 404 Page */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </AuthProvider>
