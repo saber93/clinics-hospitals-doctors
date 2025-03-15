@@ -13,6 +13,7 @@ import ReservationCard from "@/components/clinics/ReservationCard";
 import ClinicDetailsLoading from "@/components/clinics/ClinicDetailsLoading";
 import ClinicDetailsError from "@/components/clinics/ClinicDetailsError";
 import { Clinic } from "@/types/clinic";
+import { clinics as mockClinics } from "@/data/clinicData";
 
 const ClinicDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -22,55 +23,85 @@ const ClinicDetails = () => {
   const { data: clinic, isLoading, error } = useQuery({
     queryKey: ['clinic', id],
     queryFn: async () => {
-      // First fetch the clinic data
-      const { data: clinicData, error: clinicError } = await supabase
-        .from('clinics')
-        .select('*')
-        .eq('id', id)
-        .single();
+      try {
+        // First try to fetch from Supabase
+        const { data: clinicData, error: clinicError } = await supabase
+          .from('clinics')
+          .select('*')
+          .eq('id', id)
+          .single();
 
-      if (clinicError) {
-        throw clinicError;
-      }
-
-      // Get current user's ID
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      // If user is authenticated, check for reservations separately
-      let hasReservation = false;
-      if (user) {
-        const { data: reservations } = await supabase
-          .from('reservations')
-          .select('client_id')
-          .eq('client_id', user.id)
-          .eq('status', 'confirmed');
+        if (clinicError) {
+          console.log("Supabase error, falling back to mock data:", clinicError.message);
+          // If Supabase fails, try to find the clinic in our mock data
+          const mockClinic = mockClinics.find(c => c.id === id);
+          if (!mockClinic) {
+            throw new Error("Clinic not found in mock data");
+          }
           
-        hasReservation = reservations && reservations.length > 0;
+          // Get current user's ID for reservation check
+          const { data: { user } } = await supabase.auth.getUser();
+          
+          // If user is authenticated, check for reservations separately
+          let hasReservation = false;
+          if (user) {
+            const { data: reservations } = await supabase
+              .from('reservations')
+              .select('client_id')
+              .eq('client_id', user.id)
+              .eq('status', 'confirmed');
+              
+            hasReservation = reservations && reservations.length > 0;
+          }
+          
+          return {
+            ...mockClinic,
+            hasReservation
+          } as Clinic;
+        }
+
+        // Get current user's ID
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        // If user is authenticated, check for reservations separately
+        let hasReservation = false;
+        if (user) {
+          const { data: reservations } = await supabase
+            .from('reservations')
+            .select('client_id')
+            .eq('client_id', user.id)
+            .eq('status', 'confirmed');
+            
+          hasReservation = reservations && reservations.length > 0;
+        }
+        
+        // Ensure productsVoucher is properly typed
+        const typedProductsVoucher = clinicData.products_voucher ? 
+          clinicData.products_voucher.map((v: any) => ({
+            productName: v.productName,
+            description: v.description,
+            discount: v.discount,
+            validUntil: v.validUntil,
+            imageUrl: v.imageUrl,
+            additionalImages: v.additionalImages || []
+          })) : [];
+        
+        return {
+          id: clinicData.id,
+          name: clinicData.name,
+          description: clinicData.description,
+          location: clinicData.location,
+          category: clinicData.category,
+          subCategory: clinicData.sub_category,
+          offerPercentage: clinicData.offer_percentage,
+          imageUrl: clinicData.image_url || "/placeholder.svg",
+          productsVoucher: typedProductsVoucher,
+          hasReservation
+        } as Clinic;
+      } catch (error) {
+        console.error("Error fetching clinic:", error);
+        throw error;
       }
-      
-      // Ensure productsVoucher is properly typed
-      const typedProductsVoucher = clinicData.products_voucher ? 
-        clinicData.products_voucher.map((v: any) => ({
-          productName: v.productName,
-          description: v.description,
-          discount: v.discount,
-          validUntil: v.validUntil,
-          imageUrl: v.imageUrl,
-          additionalImages: v.additionalImages || []
-        })) : [];
-      
-      return {
-        id: clinicData.id,
-        name: clinicData.name,
-        description: clinicData.description,
-        location: clinicData.location,
-        category: clinicData.category,
-        subCategory: clinicData.sub_category,
-        offerPercentage: clinicData.offer_percentage,
-        imageUrl: clinicData.image_url || "/placeholder.svg",
-        productsVoucher: typedProductsVoucher,
-        hasReservation
-      } as Clinic;
     }
   });
 
