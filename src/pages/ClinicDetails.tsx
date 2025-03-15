@@ -24,26 +24,19 @@ const ClinicDetails = () => {
     queryKey: ['clinic', id],
     queryFn: async () => {
       try {
-        // First try to fetch from Supabase
-        const { data: clinicData, error: clinicError } = await supabase
-          .from('clinics')
-          .select('*')
-          .eq('id', id)
-          .single();
-
-        if (clinicError) {
-          console.log("Supabase error, falling back to mock data:", clinicError.message);
-          // If Supabase fails, try to find the clinic in our mock data
-          const mockClinic = mockClinics.find(c => c.id === id);
-          if (!mockClinic) {
-            throw new Error("Clinic not found in mock data");
-          }
-          
-          // Get current user's ID for reservation check
+        // First try to find the clinic in mock data
+        const mockClinic = mockClinics.find(c => c.id === id);
+        if (!mockClinic) {
+          console.log("Clinic not found in mock data");
+          throw new Error("Clinic not found");
+        }
+        
+        // Get current user's ID for reservation check
+        let hasReservation = false;
+        try {
           const { data: { user } } = await supabase.auth.getUser();
           
           // If user is authenticated, check for reservations separately
-          let hasReservation = false;
           if (user) {
             const { data: reservations } = await supabase
               .from('reservations')
@@ -53,49 +46,13 @@ const ClinicDetails = () => {
               
             hasReservation = reservations && reservations.length > 0;
           }
-          
-          return {
-            ...mockClinic,
-            hasReservation
-          } as Clinic;
+        } catch (authError) {
+          console.log("Auth check error:", authError);
+          // Continue with mock data even if auth check fails
         }
-
-        // Get current user's ID
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        // If user is authenticated, check for reservations separately
-        let hasReservation = false;
-        if (user) {
-          const { data: reservations } = await supabase
-            .from('reservations')
-            .select('client_id')
-            .eq('client_id', user.id)
-            .eq('status', 'confirmed');
-            
-          hasReservation = reservations && reservations.length > 0;
-        }
-        
-        // Ensure productsVoucher is properly typed
-        const typedProductsVoucher = clinicData.products_voucher ? 
-          clinicData.products_voucher.map((v: any) => ({
-            productName: v.productName,
-            description: v.description,
-            discount: v.discount,
-            validUntil: v.validUntil,
-            imageUrl: v.imageUrl,
-            additionalImages: v.additionalImages || []
-          })) : [];
         
         return {
-          id: clinicData.id,
-          name: clinicData.name,
-          description: clinicData.description,
-          location: clinicData.location,
-          category: clinicData.category,
-          subCategory: clinicData.sub_category,
-          offerPercentage: clinicData.offer_percentage,
-          imageUrl: clinicData.image_url || "/placeholder.svg",
-          productsVoucher: typedProductsVoucher,
+          ...mockClinic,
           hasReservation
         } as Clinic;
       } catch (error) {
