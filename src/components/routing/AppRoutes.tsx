@@ -1,4 +1,3 @@
-
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -18,6 +17,7 @@ const CenterDashboard = lazy(() => import('@/pages/CenterDashboard'));
 const ClientDashboard = lazy(() => import('@/pages/ClientDashboard'));
 const Products = lazy(() => import('@/pages/Products'));
 const ProductForm = lazy(() => import('@/pages/ProductForm'));
+const ProductsManagement = lazy(() => import('@/pages/ProductsManagement')); // Added import
 const Categories = lazy(() => import('@/pages/Categories'));
 const CategoryForm = lazy(() => import('@/pages/CategoryForm'));
 const Clinics = lazy(() => import('@/pages/Clinics'));
@@ -35,6 +35,8 @@ const ChatSettings = lazy(() => import('@/pages/ChatSettings'));
 const SellerVouchers = lazy(() => import('@/pages/VoucherManagement'));
 const VoucherForm = lazy(() => import('@/pages/AddVoucher'));
 const EditVoucherPage = lazy(() => import('@/pages/EditVoucher'));
+const AddProduct = lazy(() => import('@/pages/AddProduct')); // Added import
+const EditProduct = lazy(() => import('@/pages/EditProduct')); // Added import
 
 const AppRoutes = () => {
   return (
@@ -60,7 +62,9 @@ const AppRoutes = () => {
           <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
           <Route path="/products/new" element={<ProtectedRoute><ProductForm /></ProtectedRoute>} />
           <Route path="/products/:id/edit" element={<ProtectedRoute><ProductForm /></ProtectedRoute>} />
-          <Route path="/add-product" element={<ProtectedRoute><ProductForm /></ProtectedRoute>} />
+          <Route path="/add-product" element={<ProtectedRoute><AddProduct /></ProtectedRoute>} />
+          <Route path="/edit-product/:id" element={<ProtectedRoute><EditProduct /></ProtectedRoute>} />
+          <Route path="/products-management" element={<ProtectedRoute><ProductsManagement /></ProtectedRoute>} />
           
           {/* Voucher management routes */}
           <Route path="/seller-vouchers" element={<ProtectedRoute><SellerVouchers /></ProtectedRoute>} />
