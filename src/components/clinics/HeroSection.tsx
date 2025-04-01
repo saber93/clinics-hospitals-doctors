@@ -15,7 +15,7 @@ const HeroSection = () => {
           />
         </div>
         
-        {/* Second left image - moved further down */}
+        {/* Second left image - moved further to the left */}
         <div className="w-28 h-28 pointer-events-none absolute left-16 top-[420px]">
           <img 
             src="https://images.unsplash.com/photo-1600443271879-5378a3e0dedc?w=300&auto=format&fit=crop&q=80" 
