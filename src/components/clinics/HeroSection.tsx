@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 
@@ -8,8 +7,8 @@ const HeroSection = () => {
       {/* Background image with overlay */}
       <div className="absolute inset-0 w-full h-full">
         <img 
-          src="https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=1920&auto=format&fit=crop&q=80"
-          alt="Doctor background" 
+          src="https://images.unsplash.com/photo-1584982751601-97dcc096659c?w=1920&auto=format&fit=crop&q=80"
+          alt="Doctor in medical setting" 
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-purple-800/80 to-blue-900/90"></div>
