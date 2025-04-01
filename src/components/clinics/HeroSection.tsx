@@ -6,7 +6,7 @@ const HeroSection = () => {
   return (
     <div className="relative min-h-[500px] w-full bg-gradient-to-b from-purple-500 to-blue-400 overflow-hidden">
       {/* Medical clinic floating images - positioned in foreground for better visibility */}
-      <div className="absolute top-24 left-48 w-40 h-40 z-10 hidden md:block">
+      <div className="absolute top-24 left-48 w-40 h-40 z-10 hidden md:block pointer-events-none">
         <img 
           src="https://images.unsplash.com/photo-1666214280190-7aef01d0dbcc?q=80&w=300&auto=format&fit=crop"
           alt="Dental clinic" 
@@ -14,7 +14,7 @@ const HeroSection = () => {
         />
       </div>
       
-      <div className="absolute bottom-24 right-48 w-40 h-40 z-10 hidden md:block">
+      <div className="absolute bottom-24 right-48 w-40 h-40 z-10 hidden md:block pointer-events-none">
         <img 
           src="https://images.unsplash.com/photo-1581056771107-24ca5f033842?q=80&w=300&auto=format&fit=crop" 
           alt="Medical aesthetic treatment" 
