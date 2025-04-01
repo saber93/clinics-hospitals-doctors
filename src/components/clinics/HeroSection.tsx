@@ -26,10 +26,10 @@ const HeroSection = () => {
         </div>
       </div>
       
-      {/* Right side images - arranged in non-vertical pattern with different sizes */}
-      <div className="absolute top-20 right-48 hidden md:block z-10">
+      {/* Right side images - arranged in a vertical column with spacing */}
+      <div className="absolute top-20 right-48 hidden md:flex flex-col gap-6 z-10">
         {/* Top right image - skin analysis (smaller) */}
-        <div className="w-32 h-32 pointer-events-none absolute right-8 top-0">
+        <div className="w-32 h-32 pointer-events-none">
           <img 
             src="https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?w=300&auto=format&fit=crop&q=80" 
             alt="Skin analysis technology" 
@@ -38,7 +38,7 @@ const HeroSection = () => {
         </div>
         
         {/* Middle right image - skincare products (bigger) */}
-        <div className="w-48 h-48 pointer-events-none absolute right-0 top-20">
+        <div className="w-48 h-48 pointer-events-none">
           <img 
             src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=300&auto=format&fit=crop&q=80" 
             alt="Professional skincare products" 
@@ -47,7 +47,7 @@ const HeroSection = () => {
         </div>
         
         {/* Bottom right image - dermatology specialist (smaller) */}
-        <div className="w-32 h-32 pointer-events-none absolute right-12 top-64">
+        <div className="w-32 h-32 pointer-events-none">
           <img 
             src="https://images.unsplash.com/photo-1576671081837-49000212a370?w=300&auto=format&fit=crop&q=80" 
             alt="Dermatology specialist" 
