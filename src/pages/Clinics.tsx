@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -160,7 +161,10 @@ const Clinics = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <HeroSection />
+      {/* HeroSection moved here to touch the navbar directly */}
+      <div className="-mt-24">
+        <HeroSection />
+      </div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
