@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 
@@ -16,10 +17,19 @@ const HeroSection = () => {
         </div>
         
         {/* Second left image */}
-        <div className="w-36 h-36 pointer-events-none absolute left-56 top-96">
+        <div className="w-28 h-28 pointer-events-none absolute left-16 top-96">
           <img 
             src="https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?w=300&auto=format&fit=crop&q=80" 
             alt="Skin care specialist" 
+            className="w-full h-full object-cover rounded-lg shadow-lg"
+          />
+        </div>
+        
+        {/* Third left image (adding back the missing one) */}
+        <div className="w-40 h-40 pointer-events-none absolute left-56 top-60">
+          <img 
+            src="https://images.unsplash.com/photo-1580465446361-8aae5321522b?w=300&auto=format&fit=crop&q=80" 
+            alt="Skin treatment procedure" 
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
         </div>
