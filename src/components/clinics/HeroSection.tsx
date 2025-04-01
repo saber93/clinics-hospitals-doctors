@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 
@@ -27,7 +26,7 @@ const HeroSection = () => {
       </div>
       
       {/* Right side images - arranged in random positions */}
-      <div className="absolute hidden md:block z-10">
+      <div className="absolute right-0 hidden md:block z-10">
         {/* Top right image - skin analysis (smaller) */}
         <div className="w-32 h-32 pointer-events-none absolute right-56 top-32">
           <img 
