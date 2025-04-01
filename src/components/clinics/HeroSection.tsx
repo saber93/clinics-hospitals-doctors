@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 
@@ -7,8 +6,8 @@ const HeroSection = () => {
     <div className="relative min-h-[500px] w-full bg-gradient-to-b from-purple-500 to-blue-400 overflow-hidden">
       {/* Left side images - positioned with vertical spacing */}
       <div className="absolute left-0 top-0 w-1/3 h-full hidden md:block z-10">
-        {/* Medical plastic surgery clinic image - moved more to the left */}
-        <div className="w-36 h-36 pointer-events-none absolute left-4 top-20">
+        {/* Medical plastic surgery clinic image - moved more to the right */}
+        <div className="w-36 h-36 pointer-events-none absolute left-20 top-20">
           <img 
             src="https://images.unsplash.com/photo-1624727828489-a1e03b79bba8?w=300&auto=format&fit=crop&q=80"
             alt="Plastic surgery clinic reception" 
