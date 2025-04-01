@@ -5,19 +5,19 @@ import { Badge } from "@/components/ui/badge";
 const HeroSection = () => {
   return (
     <div className="relative min-h-[500px] w-full bg-gradient-to-b from-purple-500 to-blue-400 overflow-hidden">
-      {/* Background floating images - moved to foreground with improved visibility */}
-      <div className="absolute top-24 left-48 w-32 h-32 z-10 hidden md:block">
+      {/* Medical clinic floating images - positioned in foreground for better visibility */}
+      <div className="absolute top-24 left-48 w-40 h-40 z-10 hidden md:block">
         <img 
-          src="/lovable-uploads/291d0d3f-5957-4b1d-8b4b-4e42bca6403b.png" 
-          alt="Clinic imagery" 
+          src="https://images.unsplash.com/photo-1666214280190-7aef01d0dbcc?q=80&w=300&auto=format&fit=crop"
+          alt="Dental clinic" 
           className="w-full h-full object-cover rounded-lg shadow-lg"
         />
       </div>
       
-      <div className="absolute bottom-24 right-48 w-32 h-32 z-10 hidden md:block">
+      <div className="absolute bottom-24 right-48 w-40 h-40 z-10 hidden md:block">
         <img 
-          src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=300&auto=format&fit=crop" 
-          alt="Clinic imagery" 
+          src="https://images.unsplash.com/photo-1581056771107-24ca5f033842?q=80&w=300&auto=format&fit=crop" 
+          alt="Medical aesthetic treatment" 
           className="w-full h-full object-cover rounded-lg shadow-lg"
         />
       </div>
