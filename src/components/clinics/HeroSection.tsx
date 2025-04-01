@@ -1,13 +1,14 @@
+
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 
 const HeroSection = () => {
   return (
     <div className="relative min-h-[500px] w-full bg-gradient-to-b from-purple-500 to-blue-400 overflow-hidden">
-      {/* Left side images - arranged in random positions */}
-      <div className="absolute hidden md:block z-10">
+      {/* Left side images - randomly positioned without overlap */}
+      <div className="absolute left-0 top-0 w-1/3 h-full hidden md:block z-10">
         {/* Medical dermatology clinic image */}
-        <div className="w-36 h-36 pointer-events-none absolute left-48 top-24">
+        <div className="w-36 h-36 pointer-events-none absolute left-10 top-24">
           <img 
             src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300&auto=format&fit=crop&q=80"
             alt="Medical dermatology clinic" 
@@ -16,7 +17,7 @@ const HeroSection = () => {
         </div>
         
         {/* Second left image */}
-        <div className="w-36 h-36 pointer-events-none absolute left-60 top-80">
+        <div className="w-36 h-36 pointer-events-none absolute left-32 top-80">
           <img 
             src="https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?w=300&auto=format&fit=crop&q=80" 
             alt="Skin care specialist" 
@@ -25,10 +26,10 @@ const HeroSection = () => {
         </div>
       </div>
       
-      {/* Right side images - arranged in random positions */}
-      <div className="absolute right-0 hidden md:block z-10">
+      {/* Right side images - randomly positioned without overlap */}
+      <div className="absolute right-0 top-0 w-1/3 h-full hidden md:block z-10">
         {/* Top right image - skin analysis (smaller) */}
-        <div className="w-32 h-32 pointer-events-none absolute right-56 top-32">
+        <div className="w-32 h-32 pointer-events-none absolute right-36 top-20">
           <img 
             src="https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?w=300&auto=format&fit=crop&q=80" 
             alt="Skin analysis technology" 
@@ -37,7 +38,7 @@ const HeroSection = () => {
         </div>
         
         {/* Middle right image - skincare products (bigger) */}
-        <div className="w-48 h-48 pointer-events-none absolute right-40 top-72">
+        <div className="w-40 h-40 pointer-events-none absolute right-10 top-60">
           <img 
             src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=300&auto=format&fit=crop&q=80" 
             alt="Professional skincare products" 
@@ -46,7 +47,7 @@ const HeroSection = () => {
         </div>
         
         {/* Bottom right image - dermatology specialist (smaller) */}
-        <div className="w-32 h-32 pointer-events-none absolute right-64 top-56">
+        <div className="w-32 h-32 pointer-events-none absolute right-44 top-40">
           <img 
             src="https://images.unsplash.com/photo-1576671081837-49000212a370?w=300&auto=format&fit=crop&q=80" 
             alt="Dermatology specialist" 
