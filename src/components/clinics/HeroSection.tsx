@@ -24,10 +24,10 @@ const HeroSection = () => {
           />
         </div>
         
-        {/* Third left image */}
+        {/* Third left image - updated image URL */}
         <div className="w-40 h-40 pointer-events-none absolute left-56 top-60">
           <img 
-            src="https://images.unsplash.com/photo-1581093450021-4a7360e9a6b5?w=300&auto=format&fit=crop&q=80" 
+            src="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=300&auto=format&fit=crop&q=80" 
             alt="Plastic surgery procedure" 
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
