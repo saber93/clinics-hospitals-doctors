@@ -8,6 +8,10 @@ export interface Clinic {
   subCategory: string;
   offerPercentage: number;
   imageUrl?: string;
+  rating?: number;
+  reviews?: number;
+  specialties?: string[];
+  featured?: boolean;
   hasReservation?: boolean;
   productsVoucher?: Array<{
     productName: string;

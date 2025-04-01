@@ -73,7 +73,11 @@ const ClinicDirectory = () => {
           category: clinic.category,
           subCategory: clinic.sub_category,
           offerPercentage: clinic.offer_percentage,
-          imageUrl: clinic.image_url || "/placeholder.svg"
+          imageUrl: clinic.image_url || "/placeholder.svg",
+          rating: 4.5,
+          reviews: 0,
+          specialties: [],
+          featured: false
         };
       });
     }
