@@ -1,16 +1,37 @@
+
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 
 const HeroSection = () => {
   return (
     <div className="relative min-h-[500px] w-full bg-gradient-to-b from-purple-500 to-blue-400 overflow-hidden">
-      {/* ENT specialist clinic image - replace with skin treatment image */}
+      {/* Medical dermatology clinic image - top-left */}
       <div className="absolute top-24 left-48 w-40 h-40 z-10 hidden md:block pointer-events-none">
         <img 
           src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300&auto=format&fit=crop&q=80"
           alt="Medical dermatology clinic" 
           className="w-full h-full object-cover rounded-lg shadow-lg"
         />
+      </div>
+      
+      {/* New images for top-right */}
+      <div className="absolute top-20 right-48 hidden md:block">
+        {/* Larger image on top - skin analysis */}
+        <div className="w-48 h-48 z-10 pointer-events-none">
+          <img 
+            src="https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?w=300&auto=format&fit=crop&q=80" 
+            alt="Skin analysis technology" 
+            className="w-full h-full object-cover rounded-lg shadow-lg"
+          />
+        </div>
+        {/* Smaller image on bottom right corner - skincare products */}
+        <div className="w-32 h-32 absolute bottom-4 right-4 z-20 pointer-events-none">
+          <img 
+            src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=300&auto=format&fit=crop&q=80" 
+            alt="Professional skincare products" 
+            className="w-full h-full object-cover rounded-lg shadow-lg border-2 border-white"
+          />
+        </div>
       </div>
       
       {/* Bottom-right image - Dermatology specialist */}
