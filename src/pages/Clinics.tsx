@@ -1,20 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Search, MapPin, Star, Filter, ArrowUpDown } from 'lucide-react';
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import HeroSection from '@/components/clinics/HeroSection';
+import ClinicFilters from '@/components/clinics/ClinicFilters';
+import ClinicsList from '@/components/clinics/ClinicsList';
 
 // Demo clinic data with enhanced details
 const clinicsData = [
@@ -150,13 +139,10 @@ const Clinics = () => {
     setFilteredClinics(result);
   }, [searchTerm, categoryFilter, offerFilter, sortBy]);
 
-  const handleClinicSelect = (clinic) => {
-    navigate(`/clinics/${clinic.id}`, { 
-      state: { 
-        clinicName: clinic.name,
-        clinicId: clinic.id
-      } 
-    });
+  const clearFilters = () => {
+    setSearchTerm('');
+    setCategoryFilter('all');
+    setOfferFilter('all');
   };
 
   return (
@@ -180,254 +166,24 @@ const Clinics = () => {
           </Button>
         </div>
         
-        <div className="bg-white rounded-xl shadow-md p-4 mb-8">
-          <div className="relative mb-6">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400" />
-            </div>
-            <Input
-              type="text"
-              placeholder="Search by name, specialty, or location..."
-              className="pl-10"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm">Category:</span>
-              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="w-auto flex-1">
-                  <SelectValue placeholder="All Categories" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  {categories.filter(c => c !== 'all').map(category => (
-                    <SelectItem key={category} value={category}>{category}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm">Offers:</span>
-              <Select value={offerFilter} onValueChange={setOfferFilter}>
-                <SelectTrigger className="w-auto flex-1">
-                  <SelectValue placeholder="Filter by offers" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Clinics</SelectItem>
-                  <SelectItem value="offers">With Offers Only</SelectItem>
-                  <SelectItem value="no-offers">No Offers</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm">Sort By:</span>
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-auto flex-1">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="featured">Featured</SelectItem>
-                  <SelectItem value="rating">Highest Rating</SelectItem>
-                  <SelectItem value="reviews">Most Reviews</SelectItem>
-                  <SelectItem value="offers">Best Offers</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
+        <ClinicFilters 
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          categoryFilter={categoryFilter}
+          setCategoryFilter={setCategoryFilter}
+          offerFilter={offerFilter}
+          setOfferFilter={setOfferFilter}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          categories={categories}
+        />
         
-        <Tabs defaultValue={viewMode} onValueChange={setViewMode} className="mb-6">
-          <div className="flex items-center justify-between">
-            <TabsList>
-              <TabsTrigger value="grid">Grid View</TabsTrigger>
-              <TabsTrigger value="list">List View</TabsTrigger>
-            </TabsList>
-            <div className="text-sm text-muted-foreground">
-              {filteredClinics.length} clinics found
-            </div>
-          </div>
-          
-          <TabsContent value="grid" className="mt-6">
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredClinics.map((clinic) => (
-                <Card 
-                  key={clinic.id} 
-                  className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-                  onClick={() => handleClinicSelect(clinic)}
-                >
-                  <div className="relative h-48 overflow-hidden">
-                    <img 
-                      src={clinic.imageUrl} 
-                      alt={clinic.name}
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                    />
-                    {clinic.offerPercentage > 0 && (
-                      <div className="absolute top-2 right-2">
-                        <Badge className="bg-primary text-white">
-                          {clinic.offerPercentage}% OFF
-                        </Badge>
-                      </div>
-                    )}
-                    {clinic.featured && (
-                      <div className="absolute top-2 left-2">
-                        <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 border border-yellow-300">
-                          Featured
-                        </Badge>
-                      </div>
-                    )}
-                  </div>
-                  <CardHeader className="pb-2">
-                    <div className="flex justify-between items-start">
-                      <CardTitle className="text-lg">{clinic.name}</CardTitle>
-                      <div className="flex items-center">
-                        <Star className="h-4 w-4 text-yellow-400 fill-yellow-400 mr-1" />
-                        <span className="text-sm font-medium">{clinic.rating}</span>
-                        <span className="text-xs text-muted-foreground ml-1">({clinic.reviews})</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center text-muted-foreground text-sm">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      <span>{clinic.location}</span>
-                    </div>
-                    <CardDescription className="mt-2 line-clamp-2">
-                      {clinic.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-0 pb-2">
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {clinic.specialties.slice(0, 3).map((specialty, i) => (
-                        <Badge key={i} variant="outline" className="text-xs">
-                          {specialty}
-                        </Badge>
-                      ))}
-                      {clinic.specialties.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{clinic.specialties.length - 3} more
-                        </Badge>
-                      )}
-                    </div>
-                  </CardContent>
-                  <CardFooter className="pt-0">
-                    <Button 
-                      variant="ghost" 
-                      className="w-full hover:bg-primary hover:text-white transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate('/reservations', { 
-                          state: { 
-                            clinicName: clinic.name,
-                            clinicId: clinic.id
-                          } 
-                        });
-                      }}
-                    >
-                      Book Appointment
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="list" className="mt-6">
-            <div className="space-y-4">
-              {filteredClinics.map((clinic) => (
-                <Card 
-                  key={clinic.id} 
-                  className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-                  onClick={() => handleClinicSelect(clinic)}
-                >
-                  <div className="flex flex-col md:flex-row">
-                    <div className="relative md:w-1/4 h-48 md:h-auto">
-                      <img 
-                        src={clinic.imageUrl} 
-                        alt={clinic.name}
-                        className="w-full h-full object-cover"
-                      />
-                      {clinic.offerPercentage > 0 && (
-                        <div className="absolute top-2 right-2">
-                          <Badge className="bg-primary text-white">
-                            {clinic.offerPercentage}% OFF
-                          </Badge>
-                        </div>
-                      )}
-                    </div>
-                    <div className="md:w-3/4 p-5">
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <h3 className="text-lg font-bold">{clinic.name}</h3>
-                          <div className="flex items-center text-muted-foreground text-sm">
-                            <MapPin className="h-4 w-4 mr-1" />
-                            <span>{clinic.location}</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center">
-                          <Star className="h-4 w-4 text-yellow-400 fill-yellow-400 mr-1" />
-                          <span className="text-sm font-medium">{clinic.rating}</span>
-                          <span className="text-xs text-muted-foreground ml-1">({clinic.reviews} reviews)</span>
-                        </div>
-                      </div>
-                      
-                      <p className="text-gray-600 mb-3">{clinic.description}</p>
-                      
-                      <div className="flex flex-wrap gap-1 mb-4">
-                        <Badge variant="secondary" className="text-xs">{clinic.category}</Badge>
-                        <Badge variant="outline" className="text-xs">{clinic.subCategory}</Badge>
-                        {clinic.specialties.map((specialty, i) => (
-                          <Badge key={i} variant="outline" className="text-xs">
-                            {specialty}
-                          </Badge>
-                        ))}
-                      </div>
-                      
-                      <Button 
-                        className="mt-2"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate('/reservations', { 
-                            state: { 
-                              clinicName: clinic.name,
-                              clinicId: clinic.id
-                            } 
-                          });
-                        }}
-                      >
-                        Book Appointment
-                      </Button>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
-        
-        {filteredClinics.length === 0 && (
-          <div className="text-center py-12 bg-white rounded-lg shadow-sm">
-            <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium">No clinics found</h3>
-            <p className="text-gray-500 mt-2">Try adjusting your search filters or browse all clinics</p>
-            <Button 
-              variant="outline" 
-              className="mt-4"
-              onClick={() => {
-                setSearchTerm('');
-                setCategoryFilter('all');
-                setOfferFilter('all');
-              }}
-            >
-              Clear Filters
-            </Button>
-          </div>
-        )}
+        <ClinicsList 
+          filteredClinics={filteredClinics}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          clearFilters={clearFilters}
+        />
       </div>
     </div>
   );

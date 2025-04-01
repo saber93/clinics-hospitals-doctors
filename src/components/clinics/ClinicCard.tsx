@@ -1,72 +1,180 @@
 
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Clinic } from "@/types/clinic";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { MapPin } from "lucide-react";
+import React from 'react';
+import { MapPin, Star } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
-interface ClinicCardProps {
-  clinic: Clinic;
+export interface ClinicCardProps {
+  clinic: {
+    id: string;
+    name: string;
+    description: string;
+    category: string;
+    subCategory: string;
+    location: string;
+    rating: number;
+    reviews: number;
+    offerPercentage: number;
+    imageUrl: string;
+    specialties: string[];
+    featured: boolean;
+  };
+  view: 'grid' | 'list';
 }
 
-const ClinicCard: React.FC<ClinicCardProps> = ({ clinic }) => {
+const ClinicCard: React.FC<ClinicCardProps> = ({ clinic, view }) => {
   const navigate = useNavigate();
-  
-  // Handle image error by falling back to placeholder
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    console.log(`Image failed to load: ${clinic.imageUrl}`);
-    e.currentTarget.src = "/placeholder.svg";
+
+  const handleClinicSelect = () => {
+    navigate(`/clinics/${clinic.id}`, { 
+      state: { 
+        clinicName: clinic.name,
+        clinicId: clinic.id
+      } 
+    });
   };
 
-  const handleCardClick = () => {
-    navigate(`/clinics/${clinic.id}`);
+  const handleBooking = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate('/reservations', { 
+      state: { 
+        clinicName: clinic.name,
+        clinicId: clinic.id
+      } 
+    });
   };
 
-  // Use placeholder for Body Sculpt Studio which has a problematic image
-  const imageUrl = clinic.name === "Body Sculpt Studio" 
-    ? "https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=500&auto=format&fit=crop" 
-    : (clinic.imageUrl || "/placeholder.svg");
+  if (view === 'grid') {
+    return (
+      <Card 
+        key={clinic.id} 
+        className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+        onClick={handleClinicSelect}
+      >
+        <div className="relative h-48 overflow-hidden">
+          <img 
+            src={clinic.imageUrl} 
+            alt={clinic.name}
+            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+          />
+          {clinic.offerPercentage > 0 && (
+            <div className="absolute top-2 right-2">
+              <Badge className="bg-primary text-white">
+                {clinic.offerPercentage}% OFF
+              </Badge>
+            </div>
+          )}
+          {clinic.featured && (
+            <div className="absolute top-2 left-2">
+              <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 border border-yellow-300">
+                Featured
+              </Badge>
+            </div>
+          )}
+        </div>
+        <CardHeader className="pb-2">
+          <div className="flex justify-between items-start">
+            <CardTitle className="text-lg">{clinic.name}</CardTitle>
+            <div className="flex items-center">
+              <Star className="h-4 w-4 text-yellow-400 fill-yellow-400 mr-1" />
+              <span className="text-sm font-medium">{clinic.rating}</span>
+              <span className="text-xs text-muted-foreground ml-1">({clinic.reviews})</span>
+            </div>
+          </div>
+          <div className="flex items-center text-muted-foreground text-sm">
+            <MapPin className="h-4 w-4 mr-1" />
+            <span>{clinic.location}</span>
+          </div>
+          <CardDescription className="mt-2 line-clamp-2">
+            {clinic.description}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="pt-0 pb-2">
+          <div className="flex flex-wrap gap-1 mt-2">
+            {clinic.specialties.slice(0, 3).map((specialty, i) => (
+              <Badge key={i} variant="outline" className="text-xs">
+                {specialty}
+              </Badge>
+            ))}
+            {clinic.specialties.length > 3 && (
+              <Badge variant="outline" className="text-xs">
+                +{clinic.specialties.length - 3} more
+              </Badge>
+            )}
+          </div>
+        </CardContent>
+        <CardFooter className="pt-0">
+          <Button 
+            variant="ghost" 
+            className="w-full hover:bg-primary hover:text-white transition-colors"
+            onClick={handleBooking}
+          >
+            Book Appointment
+          </Button>
+        </CardFooter>
+      </Card>
+    );
+  }
 
   return (
     <Card 
-      className="overflow-hidden hover:shadow-lg transition-all duration-300 h-full cursor-pointer"
-      onClick={handleCardClick}
+      key={clinic.id} 
+      className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+      onClick={handleClinicSelect}
     >
-      <div className="relative card-image-container">
-        <img
-          src={imageUrl}
-          alt={clinic.name}
-          className="h-48 w-full object-cover transition-transform duration-300 hover:scale-105"
-          loading="lazy"
-          onError={handleImageError}
-        />
-        {clinic.offerPercentage > 0 && (
-          <div className="absolute top-0 right-0 m-3">
-            <Badge className="bg-primary text-primary-foreground px-2 py-1 text-xs font-bold">
-              {clinic.offerPercentage}% OFF
-            </Badge>
+      <div className="flex flex-col md:flex-row">
+        <div className="relative md:w-1/4 h-48 md:h-auto">
+          <img 
+            src={clinic.imageUrl} 
+            alt={clinic.name}
+            className="w-full h-full object-cover"
+          />
+          {clinic.offerPercentage > 0 && (
+            <div className="absolute top-2 right-2">
+              <Badge className="bg-primary text-white">
+                {clinic.offerPercentage}% OFF
+              </Badge>
+            </div>
+          )}
+        </div>
+        <div className="md:w-3/4 p-5">
+          <div className="flex justify-between items-start mb-2">
+            <div>
+              <h3 className="text-lg font-bold">{clinic.name}</h3>
+              <div className="flex items-center text-muted-foreground text-sm">
+                <MapPin className="h-4 w-4 mr-1" />
+                <span>{clinic.location}</span>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <Star className="h-4 w-4 text-yellow-400 fill-yellow-400 mr-1" />
+              <span className="text-sm font-medium">{clinic.rating}</span>
+              <span className="text-xs text-muted-foreground ml-1">({clinic.reviews} reviews)</span>
+            </div>
           </div>
-        )}
+          
+          <p className="text-gray-600 mb-3">{clinic.description}</p>
+          
+          <div className="flex flex-wrap gap-1 mb-4">
+            <Badge variant="secondary" className="text-xs">{clinic.category}</Badge>
+            <Badge variant="outline" className="text-xs">{clinic.subCategory}</Badge>
+            {clinic.specialties.map((specialty, i) => (
+              <Badge key={i} variant="outline" className="text-xs">
+                {specialty}
+              </Badge>
+            ))}
+          </div>
+          
+          <Button 
+            className="mt-2"
+            onClick={handleBooking}
+          >
+            Book Appointment
+          </Button>
+        </div>
       </div>
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-start gap-2">
-          <CardTitle className="text-lg line-clamp-1">{clinic.name}</CardTitle>
-        </div>
-        <div className="flex items-center text-muted-foreground text-xs gap-1.5 mt-1.5 bg-muted bg-opacity-50 px-2 py-1 rounded-full w-fit">
-          <MapPin className="h-3 w-3 text-primary" />
-          <span className="line-clamp-1">{clinic.location}</span>
-        </div>
-      </CardHeader>
-      <CardContent className="pb-2">
-        <CardDescription className="line-clamp-3 text-sm">
-          {clinic.description}
-        </CardDescription>
-      </CardContent>
-      <CardFooter className="flex justify-between pt-0 text-xs text-muted-foreground">
-        <span>{clinic.category}</span>
-        <span>{clinic.subCategory}</span>
-      </CardFooter>
     </Card>
   );
 };
