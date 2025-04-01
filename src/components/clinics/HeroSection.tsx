@@ -8,7 +8,7 @@ const HeroSection = () => {
       {/* Medical clinic floating images - positioned in foreground for better visibility */}
       <div className="absolute top-24 left-48 w-40 h-40 z-10 hidden md:block pointer-events-none">
         <img 
-          src="https://images.unsplash.com/photo-1666214280190-7aef01d0dbcc?q=80&w=300&auto=format&fit=crop"
+          src="https://images.unsplash.com/photo-1606265752439-1f18756aa5fc?q=80&w=300&auto=format&fit=crop"
           alt="Dental clinic" 
           className="w-full h-full object-cover rounded-lg shadow-lg"
         />
