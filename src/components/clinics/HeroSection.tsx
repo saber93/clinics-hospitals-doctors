@@ -5,8 +5,8 @@ import { Badge } from "@/components/ui/badge";
 const HeroSection = () => {
   return (
     <div className="relative min-h-[500px] w-full bg-gradient-to-b from-purple-500 to-blue-400 overflow-hidden">
-      {/* Background floating images - optional based on your assets */}
-      <div className="absolute top-24 left-48 w-32 h-32 opacity-30 hidden md:block">
+      {/* Background floating images - moved to foreground with improved visibility */}
+      <div className="absolute top-24 left-48 w-32 h-32 z-10 hidden md:block">
         <img 
           src="/lovable-uploads/291d0d3f-5957-4b1d-8b4b-4e42bca6403b.png" 
           alt="Clinic imagery" 
@@ -14,7 +14,7 @@ const HeroSection = () => {
         />
       </div>
       
-      <div className="absolute bottom-24 right-48 w-32 h-32 opacity-30 hidden md:block">
+      <div className="absolute bottom-24 right-48 w-32 h-32 z-10 hidden md:block">
         <img 
           src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=300&auto=format&fit=crop" 
           alt="Clinic imagery" 
