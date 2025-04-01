@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -14,6 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import HeroSection from '@/components/clinics/HeroSection';
 
 // Demo clinic data with enhanced details
 const clinicsData = [
@@ -112,13 +112,11 @@ const Clinics = () => {
   const [viewMode, setViewMode] = useState('grid');
   const [filteredClinics, setFilteredClinics] = useState(clinicsData);
   
-  // Get unique categories for filter
   const categories = ['all', ...new Set(clinicsData.map(clinic => clinic.category))];
 
   useEffect(() => {
     let result = clinicsData;
 
-    // Apply search filter
     if (searchTerm) {
       result = result.filter(clinic => 
         clinic.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -128,19 +126,16 @@ const Clinics = () => {
       );
     }
 
-    // Apply category filter
     if (categoryFilter !== 'all') {
       result = result.filter(clinic => clinic.category === categoryFilter);
     }
 
-    // Apply offers filter
     if (offerFilter === 'offers') {
       result = result.filter(clinic => clinic.offerPercentage > 0);
     } else if (offerFilter === 'no-offers') {
       result = result.filter(clinic => clinic.offerPercentage === 0);
     }
 
-    // Apply sorting
     if (sortBy === 'rating') {
       result = [...result].sort((a, b) => b.rating - a.rating);
     } else if (sortBy === 'reviews') {
@@ -164,8 +159,10 @@ const Clinics = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50">
+      <HeroSection />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold">Find Your Perfect Skin Clinic</h1>
@@ -179,7 +176,6 @@ const Clinics = () => {
           </Button>
         </div>
         
-        {/* Search and Filters */}
         <div className="bg-white rounded-xl shadow-md p-4 mb-8">
           <div className="relative mb-6">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -244,7 +240,6 @@ const Clinics = () => {
           </div>
         </div>
         
-        {/* View Mode Tabs */}
         <Tabs defaultValue={viewMode} onValueChange={setViewMode} className="mb-6">
           <div className="flex items-center justify-between">
             <TabsList>
@@ -256,7 +251,6 @@ const Clinics = () => {
             </div>
           </div>
           
-          {/* Grid View */}
           <TabsContent value="grid" className="mt-6">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {filteredClinics.map((clinic) => (
@@ -339,7 +333,6 @@ const Clinics = () => {
             </div>
           </TabsContent>
           
-          {/* List View */}
           <TabsContent value="list" className="mt-6">
             <div className="space-y-4">
               {filteredClinics.map((clinic) => (
