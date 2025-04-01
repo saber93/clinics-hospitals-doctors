@@ -1,15 +1,14 @@
-
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 
 const HeroSection = () => {
   return (
     <div className="relative min-h-[500px] w-full bg-gradient-to-b from-purple-500 to-blue-400 overflow-hidden">
-      {/* ENT specialist clinic image */}
+      {/* ENT specialist clinic image - replace with skin treatment image */}
       <div className="absolute top-24 left-48 w-40 h-40 z-10 hidden md:block pointer-events-none">
         <img 
-          src="https://images.unsplash.com/photo-1631815589968-ffd03fda1eeb?w=300&auto=format&fit=crop&q=80"
-          alt="ENT Specialist clinic" 
+          src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300&auto=format&fit=crop&q=80"
+          alt="Medical dermatology clinic" 
           className="w-full h-full object-cover rounded-lg shadow-lg"
         />
       </div>
@@ -28,16 +27,16 @@ const HeroSection = () => {
         {/* Larger image in back - cosmetic surgery */}
         <div className="w-48 h-48 z-10 pointer-events-none">
           <img 
-            src="https://images.unsplash.com/photo-1579684453423-f84349ef60b0?w=300&auto=format&fit=crop&q=80" 
-            alt="Cosmetic surgery clinic" 
+            src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=300&auto=format&fit=crop&q=80" 
+            alt="Facial treatment clinic" 
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
         </div>
         {/* Smaller image overlapping in front - plastic surgery */}
         <div className="w-32 h-32 absolute -top-10 -right-10 z-20 pointer-events-none">
           <img 
-            src="https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?w=300&auto=format&fit=crop&q=80" 
-            alt="Plastic surgery specialist" 
+            src="https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?w=300&auto=format&fit=crop&q=80" 
+            alt="Skin care specialist" 
             className="w-full h-full object-cover rounded-lg shadow-lg border-2 border-white"
           />
         </div>
