@@ -1,9 +1,20 @@
+
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 
 const HeroSection = () => {
   return (
-    <div className="relative min-h-[500px] w-full bg-gradient-to-b from-purple-500 to-blue-400 overflow-hidden">
+    <div className="relative min-h-[500px] w-full overflow-hidden">
+      {/* Background image with overlay */}
+      <div className="absolute inset-0 w-full h-full">
+        <img 
+          src="https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=1920&auto=format&fit=crop&q=80"
+          alt="Doctor background" 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-800/70 to-blue-900/80"></div>
+      </div>
+
       {/* Left side images - positioned with vertical spacing */}
       <div className="absolute left-0 top-0 w-1/3 h-full hidden md:block z-10">
         {/* Medical plastic surgery clinic image - moved more to the right */}
@@ -65,7 +76,7 @@ const HeroSection = () => {
       </div>
       
       {/* Main content */}
-      <div className="container mx-auto px-4 h-full flex flex-col justify-center items-center text-center py-16">
+      <div className="container mx-auto px-4 h-full flex flex-col justify-center items-center text-center py-16 relative z-20">
         <div className="flex items-center gap-2 mb-6">
           <div className="text-white text-5xl font-bold">PLASTIC</div>
           <div className="bg-white p-1 rounded-lg">
