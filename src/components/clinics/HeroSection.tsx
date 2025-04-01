@@ -11,7 +11,7 @@ const HeroSection = () => {
           alt="Doctor in medical setting" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-800/80 to-blue-900/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-800/95 to-blue-900/95"></div>
       </div>
 
       {/* Left side images - positioned with vertical spacing */}
