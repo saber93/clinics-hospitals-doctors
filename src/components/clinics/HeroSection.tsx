@@ -37,11 +37,11 @@ const HeroSection = () => {
       
       {/* Right side images - positioned with vertical spacing */}
       <div className="absolute right-0 top-0 w-1/3 h-full hidden md:block z-10">
-        {/* Top right image - cosmetic consultation (smaller) - moved more to the left */}
+        {/* Top right image - changed to plastic surgery related image */}
         <div className="w-32 h-32 pointer-events-none absolute right-40 top-24">
           <img 
-            src="https://images.unsplash.com/photo-1581093577421-f561a654a353?w=300&auto=format&fit=crop&q=80" 
-            alt="Cosmetic consultation" 
+            src="https://images.unsplash.com/photo-1624727828489-a1e03b79bba8?w=300&auto=format&fit=crop&q=80" 
+            alt="Plastic surgery clinic reception" 
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
         </div>
