@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 
@@ -8,7 +7,7 @@ const HeroSection = () => {
       {/* ENT specialist clinic image */}
       <div className="absolute top-24 left-48 w-40 h-40 z-10 hidden md:block pointer-events-none">
         <img 
-          src="https://images.unsplash.com/photo-1590105577767-e21a1067899f?q=80&w=300&auto=format&fit=crop"
+          src="https://images.unsplash.com/photo-1590105577767-e21a1067899f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300"
           alt="ENT Specialist clinic" 
           className="w-full h-full object-cover rounded-lg shadow-lg"
         />
@@ -17,7 +16,7 @@ const HeroSection = () => {
       {/* Bottom-right image - Dermatology specialist */}
       <div className="absolute bottom-24 right-48 w-40 h-40 z-10 hidden md:block pointer-events-none">
         <img 
-          src="https://images.unsplash.com/photo-1612349331846-847ae8db5506?q=80&w=300&auto=format&fit=crop" 
+          src="https://images.unsplash.com/photo-1612349331846-847ae8db5506?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300" 
           alt="Dermatology specialist" 
           className="w-full h-full object-cover rounded-lg shadow-lg"
         />
@@ -28,7 +27,7 @@ const HeroSection = () => {
         {/* Larger image in back - cosmetic surgery */}
         <div className="w-48 h-48 z-10 pointer-events-none">
           <img 
-            src="https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=300&auto=format&fit=crop" 
+            src="https://images.unsplash.com/photo-1584515933487-779824d29309?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300" 
             alt="Cosmetic surgery clinic" 
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
@@ -36,7 +35,7 @@ const HeroSection = () => {
         {/* Smaller image overlapping in front - plastic surgery */}
         <div className="w-32 h-32 absolute -top-10 -right-10 z-20 pointer-events-none">
           <img 
-            src="https://images.unsplash.com/photo-1579684288361-5c1a262aeb53?q=80&w=300&auto=format&fit=crop" 
+            src="https://images.unsplash.com/photo-1579684288361-5c1a262aeb53?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300" 
             alt="Plastic surgery specialist" 
             className="w-full h-full object-cover rounded-lg shadow-lg border-2 border-white"
           />
