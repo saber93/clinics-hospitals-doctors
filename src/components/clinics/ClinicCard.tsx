@@ -5,10 +5,12 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import OfferBadge from './badges/OfferBadge';
 import FeaturedBadge from './badges/FeaturedBadge';
+import FavoriteButton from './badges/FavoriteButton';
 import SpecialtyBadges from './badges/SpecialtyBadges';
 import RatingDisplay from './display/RatingDisplay';
 import LocationDisplay from './display/LocationDisplay';
 import CategoryBadges from './display/CategoryBadges';
+import { useFavorites } from '@/hooks/useFavorites';
 
 export interface ClinicCardProps {
   clinic: {
@@ -30,6 +32,7 @@ export interface ClinicCardProps {
 
 const ClinicCard: React.FC<ClinicCardProps> = ({ clinic, view }) => {
   const navigate = useNavigate();
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   const handleClinicSelect = () => {
     navigate(`/clinics/${clinic.id}`, { 
@@ -50,6 +53,11 @@ const ClinicCard: React.FC<ClinicCardProps> = ({ clinic, view }) => {
     });
   };
 
+  const handleFavoriteToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    toggleFavorite(clinic.id);
+  };
+
   if (view === 'grid') {
     return (
       <Card 
@@ -65,6 +73,10 @@ const ClinicCard: React.FC<ClinicCardProps> = ({ clinic, view }) => {
           />
           <OfferBadge offerPercentage={clinic.offerPercentage} />
           <FeaturedBadge featured={clinic.featured} />
+          <FavoriteButton 
+            isFavorite={isFavorite(clinic.id)}
+            onClick={handleFavoriteToggle}
+          />
         </div>
         <CardHeader className="pb-2">
           <div className="flex justify-between items-start">
@@ -106,6 +118,10 @@ const ClinicCard: React.FC<ClinicCardProps> = ({ clinic, view }) => {
             className="w-full h-full object-cover"
           />
           <OfferBadge offerPercentage={clinic.offerPercentage} />
+          <FavoriteButton 
+            isFavorite={isFavorite(clinic.id)}
+            onClick={handleFavoriteToggle}
+          />
         </div>
         <div className="md:w-3/4 p-5">
           <div className="flex justify-between items-start mb-2">

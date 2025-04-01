@@ -13,6 +13,7 @@ export interface Clinic {
   specialties?: string[];
   featured?: boolean;
   hasReservation?: boolean;
+  favorite?: boolean;
   productsVoucher?: Array<{
     productName: string;
     description: string;
