@@ -27,8 +27,8 @@ const HeroSection = () => {
       
       {/* Right side images - positioned with vertical spacing */}
       <div className="absolute right-0 top-0 w-1/3 h-full hidden md:block z-10">
-        {/* Top right image - skin analysis (smaller) */}
-        <div className="w-32 h-32 pointer-events-none absolute right-12 top-24">
+        {/* Top right image - skin analysis (smaller) - moved more to the left */}
+        <div className="w-32 h-32 pointer-events-none absolute right-24 top-24">
           <img 
             src="https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?w=300&auto=format&fit=crop&q=80" 
             alt="Skin analysis technology" 
