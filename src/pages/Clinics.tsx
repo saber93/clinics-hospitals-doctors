@@ -161,8 +161,8 @@ const Clinics = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* HeroSection moved here to touch the navbar directly */}
-      <div className="-mt-24">
+      {/* HeroSection positioned to touch the bottom of the navbar */}
+      <div className="pt-16">
         <HeroSection />
       </div>
       
