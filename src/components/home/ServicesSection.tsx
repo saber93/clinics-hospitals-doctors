@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ArrowRight, ArrowLeft, ChevronRight } from 'lucide-react';
 import { 
@@ -100,26 +101,24 @@ const ServicesSection = () => {
     <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center mb-12">
-          <div className="flex flex-col md:flex-row md:items-center gap-6 mb-8 md:mb-0">
-            <div>
-              <h4 className="text-sm uppercase font-medium tracking-wider text-gray-700 mb-3">MAIN DIRECTIONS</h4>
-              <h2 className="text-5xl font-bold">Services</h2>
-            </div>
-
-            <div className="hidden md:flex items-center space-x-4">
-              <button 
-                onClick={scrollPrev}
-                className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </button>
-              <button 
-                onClick={scrollNext}
-                className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
-              >
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            </div>
+          <div className="mb-8 md:mb-0">
+            <h4 className="text-sm uppercase font-medium tracking-wider text-gray-700 mb-3">MAIN DIRECTIONS</h4>
+            <h2 className="text-5xl font-bold">Services</h2>
+          </div>
+          
+          <div className="flex items-center space-x-4 order-last md:order-none">
+            <button 
+              onClick={scrollPrev}
+              className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <button 
+              onClick={scrollNext}
+              className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+            >
+              <ArrowRight className="w-5 h-5" />
+            </button>
           </div>
           
           <div className="max-w-xl">
