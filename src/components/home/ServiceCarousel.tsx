@@ -22,10 +22,13 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = ({ services, api, setApi
       <Carousel 
         className="w-full overflow-visible" 
         setApi={setApi} 
-        opts={{ 
+        opts={{
           align: "start",
           containScroll: false,
-          gap: 16  // Setting the gap to exactly 16px
+          slides: {
+            perView: 1,
+            spacing: 16,  // Set spacing between slides to 16px
+          }
         }}
       >
         <CarouselContent className="-ml-4">
