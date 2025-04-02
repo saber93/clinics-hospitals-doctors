@@ -71,7 +71,7 @@ const Products = () => {
           alt="Clearance Sale on Sports Nutrition" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary/70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/60 to-primary/40" />
         
         {/* Cover content - improved visibility */}
         <div className="absolute inset-0 flex items-center justify-center z-10">
