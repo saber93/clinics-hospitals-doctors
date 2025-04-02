@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowRight, ArrowLeft, ChevronRight } from 'lucide-react';
 import { 
@@ -164,34 +163,32 @@ const ServicesSection = () => {
           </div>
         </div>
         
-        <div className="relative w-full overflow-visible">
-          <div className="w-full -mr-4 md:-mr-8 lg:-mr-16 overflow-visible">
-            <Carousel 
-              className="w-full overflow-visible" 
-              setApi={setApi} 
-              opts={{ 
-                align: "start",
-                containScroll: false
-              }}
-            >
-              <CarouselContent className="-ml-4">
-                {services.map((service, index) => (
-                  <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                    <ServiceCard
-                      title={service.title}
-                      description={service.description}
-                      icon={service.icon}
-                      isActive={index === 1}
-                    />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <div className="hidden">
-                <CarouselPrevious />
-                <CarouselNext />
-              </div>
-            </Carousel>
-          </div>
+        <div className="relative mx-0 w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] lg:w-[calc(100%+6rem)] -right-4 md:-right-8 lg:-right-12 overflow-visible">
+          <Carousel 
+            className="w-full overflow-visible" 
+            setApi={setApi} 
+            opts={{ 
+              align: "start",
+              containScroll: false
+            }}
+          >
+            <CarouselContent>
+              {services.map((service, index) => (
+                <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                  <ServiceCard
+                    title={service.title}
+                    description={service.description}
+                    icon={service.icon}
+                    isActive={index === 1}
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <div className="hidden">
+              <CarouselPrevious />
+              <CarouselNext />
+            </div>
+          </Carousel>
         </div>
       </div>
     </section>
