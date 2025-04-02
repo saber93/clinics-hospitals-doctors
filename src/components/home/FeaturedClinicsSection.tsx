@@ -1,9 +1,10 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Star, MapPin } from 'lucide-react';
+import { Star, MapPin, Heart } from 'lucide-react';
 import { featuredClinics } from '@/data/featuredClinics';
 
 const FeaturedClinicsSection = () => {
@@ -41,6 +42,15 @@ const FeaturedClinicsSection = () => {
                     </Badge>
                   </div>
                 )}
+                <div className="absolute top-2 right-2">
+                  <Button
+                    className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90"
+                    size="icon"
+                    variant="ghost"
+                  >
+                    <Heart className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
               <CardContent className="p-5">
                 <div className="flex justify-between items-start">

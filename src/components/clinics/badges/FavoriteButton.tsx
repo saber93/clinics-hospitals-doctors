@@ -11,7 +11,7 @@ interface FavoriteButtonProps {
 const FavoriteButton: React.FC<FavoriteButtonProps> = ({ isFavorite, onClick }) => {
   return (
     <Button
-      className={`absolute top-2 right-12 p-2 w-8 h-8 flex items-center justify-center rounded-full ${
+      className={`absolute top-2 right-2 p-2 w-8 h-8 flex items-center justify-center rounded-full ${
         isFavorite ? 'bg-rose-500 text-white hover:bg-rose-600' : 'bg-white/70 backdrop-blur-sm hover:bg-white/90'
       }`}
       onClick={onClick}
