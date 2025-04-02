@@ -19,7 +19,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon: Ico
       onMouseLeave={() => setIsHovered(false)}
     >
       <div>
-        <div className="mb-6 text-4xl">
+        <div className="mb-6">
           <Icon />
         </div>
         <h3 className="text-2xl font-semibold mb-3">{title}</h3>
