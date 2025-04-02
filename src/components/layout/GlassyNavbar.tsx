@@ -17,8 +17,15 @@ const GlassyNavbar = () => {
   const navigate = useNavigate();
   const { totalItems } = useCart();
 
+  // Determine if user is authenticated - use user as the primary check
+  const isAuthenticated = !!user;
+
   const handleAccountClick = () => {
-    navigate('/dashboard');
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    } else {
+      navigate('/auth?mode=login');
+    }
   };
 
   const handleCartClick = () => {
@@ -51,7 +58,7 @@ const GlassyNavbar = () => {
             </span>
           </Button>
           
-          {user ? (
+          {isAuthenticated ? (
             <UserDropdownMenu handleLogout={handleLogout} />
           ) : (
             <AuthButtons session={user} />

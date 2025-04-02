@@ -31,6 +31,9 @@ const Navbar: React.FC = () => {
     { name: 'Contact', path: '/contact' }
   ];
 
+  // Determine if user is authenticated - use session as primary check
+  const isAuthenticated = !!session;
+
   return (
     <nav className="bg-white shadow-sm border-b py-2">
       <div className="container mx-auto px-4 md:px-6">
@@ -43,7 +46,7 @@ const Navbar: React.FC = () => {
 
           {/* Auth Buttons / User Menu */}
           <div className="hidden md:flex items-center space-x-2">
-            {session ? (
+            {isAuthenticated ? (
               <UserDropdownMenu handleLogout={handleLogout} />
             ) : (
               <AuthButtons session={session} />

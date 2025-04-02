@@ -4,6 +4,7 @@ import { X, LogOut } from 'lucide-react';
 import NavLink from './NavLink';
 import { MobileMenuProps } from './types';
 import { logoutUser } from '@/utils/auth';
+import { Button } from '@/components/ui/button';
 
 const MobileMenu: React.FC<MobileMenuProps> = ({ 
   isOpen, 
@@ -56,13 +57,14 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
         ))}
         
         {session && (
-          <button
+          <Button
             onClick={onLogout}
             className="text-lg text-red-500 font-medium py-2 transition-colors flex items-center gap-2"
+            variant="ghost"
           >
             <LogOut size={18} />
             Log out
-          </button>
+          </Button>
         )}
         
         {!session && (
