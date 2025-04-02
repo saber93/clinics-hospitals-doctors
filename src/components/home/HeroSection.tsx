@@ -48,8 +48,8 @@ const HeroSection = () => {
         <div className="md:w-1/2 relative">
           <div className="rounded-2xl overflow-hidden shadow-2xl max-w-md mx-auto">
             <img 
-              src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=800&auto=format&fit=crop" 
-              alt="Skincare specialist with patient" 
+              src="/lovable-uploads/f538345f-52aa-4960-a4a2-c377edde5280.png" 
+              alt="Team collaborating on healthcare planning" 
               className="w-full h-[400px] object-cover"
             />
           </div>
