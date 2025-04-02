@@ -25,10 +25,11 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = ({ services, api, setApi
         opts={{
           align: "start",
           containScroll: false,
-          spacing: 16  // Set spacing between slides to 16px
+          loop: false,
+          dragFree: false
         }}
       >
-        <CarouselContent className="-ml-4">
+        <CarouselContent className="-ml-4 gap-4">
           {services.map((service, index) => (
             <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
               <ServiceCard
