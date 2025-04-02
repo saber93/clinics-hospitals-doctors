@@ -16,12 +16,13 @@ export const useNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  // Use icon components without JSX syntax in .ts file
   const links: NavLinkType[] = [
-    { name: 'Home', path: '/', icon: <Home size={18} /> },
-    { name: 'Clinics', path: '/clinics', icon: <Building2 size={18} /> },
-    { name: 'Doctors', path: '/doctors', icon: <Stethoscope size={18} /> },
-    { name: 'About', path: '/about', icon: <Info size={18} /> },
-    { name: 'Contact', path: '/contact', icon: <Phone size={18} /> },
+    { name: 'Home', path: '/', icon: Home },
+    { name: 'Clinics', path: '/clinics', icon: Building2 },
+    { name: 'Doctors', path: '/doctors', icon: Stethoscope },
+    { name: 'About', path: '/about', icon: Info },
+    { name: 'Contact', path: '/contact', icon: Phone },
   ];
 
   const handleScrollListener = () => {
