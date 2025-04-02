@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useDoctorDashboard } from "@/components/doctor/hooks/useDoctorDashboard";
 import DoctorStats from "@/components/doctor/DoctorStats";
@@ -41,7 +42,7 @@ const DoctorDashboard = () => {
 
   if (!user && !loading) {
     return (
-      <div className="p-6 text-center">
+      <div className="p-6 text-center mt-16 sm:mt-20"> {/* Added top margin */}
         <h2 className="text-xl font-semibold text-red-600">Access Denied</h2>
         <p className="mt-2 text-muted-foreground">You must be logged in as a doctor to view this dashboard.</p>
         <div className="mt-6">
@@ -55,7 +56,7 @@ const DoctorDashboard = () => {
 
   if (loading) {
     return (
-      <div className="p-6 flex justify-center items-center min-h-[70vh]">
+      <div className="p-6 flex justify-center items-center min-h-[70vh] mt-16 sm:mt-20"> {/* Added top margin */}
         <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
       </div>
     );
@@ -64,7 +65,7 @@ const DoctorDashboard = () => {
   if (!doctorProfile) {
     toast.error("Doctor profile not found");
     return (
-      <div className="p-6 text-center">
+      <div className="p-6 text-center mt-16 sm:mt-20"> {/* Added top margin */}
         <h2 className="text-xl font-semibold text-red-600">Profile Not Found</h2>
         <p className="mt-2 text-muted-foreground">Unable to load doctor profile. Please try again later.</p>
         <div className="mt-6">
@@ -77,7 +78,7 @@ const DoctorDashboard = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 mt-16 sm:mt-20"> {/* Added top margin */}
       <DashboardHeader />
       
       {stats.totalPatients === 0 && stats.pendingAppointments === 0 && (

@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,7 +34,7 @@ const CenterDashboard = () => {
   }, [navigate]);
 
   return (
-    <div className="p-6">
+    <div className="p-6 mt-16 sm:mt-20">
       <h2 className="text-2xl font-bold mb-4">Center Dashboard</h2>
       <p className="text-gray-600 mb-6">
         Welcome to your Center Dashboard. Manage your medical center operations from here.
