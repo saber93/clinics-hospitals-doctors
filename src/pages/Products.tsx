@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -65,21 +64,12 @@ const Products = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 mt-16">
-      <div className="w-full h-64 relative overflow-hidden">
-        {/* Background image with gradient overlay - updated to show health supplements */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center" 
-          style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?auto=format&fit=crop&w=1500&q=80)' }}
+      <div className="w-full h-72 relative overflow-hidden">
+        <img 
+          src="/lovable-uploads/9b620d87-47a0-41af-b2a9-6118424081e8.png" 
+          alt="Clearance Sale on Sports Nutrition" 
+          className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary/60" />
-        
-        {/* Cover content */}
-        <div className="relative h-full flex items-center justify-center">
-          <div className="max-w-7xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-white">Zames Products</h1>
-            <p className="mt-2 text-lg text-white/80">Quality healthcare products for your needs</p>
-          </div>
-        </div>
       </div>
 
       <div className="px-4 sm:px-6 lg:px-8 py-8">
