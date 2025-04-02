@@ -9,7 +9,8 @@ import {
   ConferenceIcon,
   HospitalSolutionsIcon,
   MarketingConsultingIcon,
-  WebDesignIcon
+  WebDesignIcon,
+  ExhibitionsIcon
 } from './ServiceIcons';
 
 export interface ServiceItem {
@@ -63,5 +64,10 @@ export const services: ServiceItem[] = [
     title: "Website Design and Development Services",
     description: "read more",
     icon: WebDesignIcon,
+  },
+  {
+    title: "Organizing Medical Exhibitions",
+    description: "read more",
+    icon: ExhibitionsIcon,
   },
 ];
