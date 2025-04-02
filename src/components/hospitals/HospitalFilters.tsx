@@ -51,7 +51,7 @@ const HospitalFilters: React.FC<HospitalFiltersProps> = ({
               <SelectValue placeholder="Hospital Type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Types</SelectItem>
+              <SelectItem value="all">All Types</SelectItem>
               {categories.map((category) => (
                 <SelectItem key={category} value={category}>
                   {category}

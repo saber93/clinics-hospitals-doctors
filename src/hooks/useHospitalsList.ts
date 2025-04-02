@@ -27,7 +27,7 @@ export function useHospitalsList({
   initialPageSize = 9 
 }: UseHospitalsListProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
   const [offerFilter, setOfferFilter] = useState(false);
   const [sortBy, setSortBy] = useState('featured');
   const [viewMode, setViewMode] = useState('grid');
@@ -59,7 +59,7 @@ export function useHospitalsList({
     }
     
     // Category filter
-    if (categoryFilter) {
+    if (categoryFilter && categoryFilter !== 'all') {
       result = result.filter(hospital => hospital.category === categoryFilter);
     }
     
@@ -101,7 +101,7 @@ export function useHospitalsList({
 
   const clearFilters = () => {
     setSearchTerm('');
-    setCategoryFilter('');
+    setCategoryFilter('all');
     setOfferFilter(false);
     setSortBy('featured');
   };
