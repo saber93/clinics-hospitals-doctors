@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ArrowRight, ArrowLeft, ChevronRight } from 'lucide-react';
 import { 
@@ -80,7 +81,7 @@ const ServicesSection = () => {
       icon: <ProductionIcon />,
     },
     {
-      title: "Rebranding",
+      title: "Providing the Best Medical and Cosmetic Products and Equipment",
       description: "read more",
       icon: <RebrandingIcon />,
     },
