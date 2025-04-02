@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 
@@ -38,7 +37,7 @@ const HeroSection = () => {
         {/* Second left image - bottom */}
         <div className="w-28 h-28 pointer-events-none absolute left-[90px] top-[420px]">
           <img 
-            src="https://images.unsplash.com/photo-1600443271879-5378a3e0dedc?w=300&auto=format&fit=crop&q=80" 
+            src="https://images.unsplash.com/photo-1487252665478-49b61b47f302?w=300&auto=format&fit=crop&q=80" 
             alt="Medical consultation" 
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
