@@ -11,10 +11,10 @@ const HeroSection = () => {
   return (
     <section className="py-16 md:py-24 px-4">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center">
-        <div className="md:w-1/2 mb-10 md:mb-0">
+        <div className="md:w-1/2 mb-10 md:mb-0 pr-0 md:pr-8">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-            Your Marketing Deserves <br />
-            <span className="text-primary">Expert Care</span>
+            Your Marketing Deserves
+            <span className="text-primary block mt-2">Expert Care</span>
           </h1>
           <p className="mt-5 text-lg text-gray-600 max-w-xl">
             At Zams Marketing Management Company, we bring a unique & innovative experience to the UAE market. Our approach centers on building strategic partnerships that create mutual value & sustainable growth. Through our extensive customer & influencer network, we connect businesses with their ideal audience, amplifying their market presence & enhancing their competitive edge.
