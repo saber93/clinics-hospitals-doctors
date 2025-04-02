@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -88,13 +87,13 @@ const HeroSection = () => {
         </div>
         
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-          Expert Doctors
+          Healthcare Excellence
           <br />
-          In Every Specialty
+          Across All Specialties
         </h1>
         
         <p className="text-white text-lg md:text-xl mb-12 max-w-2xl">
-          Connect with board-certified specialists across all medical fields who provide personalized treatment plans for your health needs
+          Connect with board-certified doctors across every medical field, from cardiology to neurology, providing comprehensive care for all your health needs
         </p>
         
         {/* Feature badges */}
