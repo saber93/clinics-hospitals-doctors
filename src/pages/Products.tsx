@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -70,7 +71,7 @@ const Products = () => {
           alt="Clearance Sale on Sports Nutrition" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/40 to-primary/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/70 to-primary/50" />
         
         {/* Cover content - improved visibility */}
         <div className="absolute inset-0 flex items-center justify-center z-10">
