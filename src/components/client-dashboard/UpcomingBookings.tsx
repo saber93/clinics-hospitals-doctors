@@ -41,7 +41,7 @@ const UpcomingBookings = () => {
         )}
       </CardContent>
       <CardFooter>
-        <Button variant="outline" className="w-full" onClick={() => navigate("/all-bookings")}>
+        <Button variant="outline" className="w-full" onClick={() => navigate("/my-reservations")}>
           View All Bookings
         </Button>
       </CardFooter>

@@ -28,11 +28,11 @@ const ReservationsHeader = ({ clinicName }: ReservationsHeaderProps) => {
       </div>
       <Button 
         variant="outline" 
-        onClick={() => navigate('/all-bookings')}
+        onClick={() => navigate('/my-reservations')}
         className="flex items-center"
       >
         <List className="mr-2 h-4 w-4" />
-        View All Bookings
+        View My Reservations
       </Button>
     </div>
   );
