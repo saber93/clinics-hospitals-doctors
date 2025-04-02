@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
+import { LoadMore } from '@/components/ui/load-more';
 import ClinicsList from './ClinicsList';
 import { Clinic } from '@/types/clinic';
 
@@ -37,19 +37,12 @@ const ClinicsListView: React.FC<ClinicsListViewProps> = ({
         Total: {filteredClinics.length}, Showing: {visibleClinics.length}, Has more: {hasMore ? 'Yes' : 'No'}
       </div>
 
-      {/* Load more button */}
-      {hasMore && (
-        <div className="mt-8 text-center">
-          <Button 
-            onClick={loadMoreClinics}
-            className="px-6"
-            variant="default"
-            size="lg"
-          >
-            See More Clinics
-          </Button>
-        </div>
-      )}
+      {/* Load more using the reusable component */}
+      <LoadMore 
+        hasMore={hasMore}
+        onLoadMore={loadMoreClinics}
+        buttonText="See More Clinics"
+      />
     </>
   );
 };
