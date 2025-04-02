@@ -58,7 +58,7 @@ const VisionMissionSection = () => {
             {/* Large background image */}
             <div className="absolute right-0 top-0 w-[80%] h-[80%]">
               <img 
-                src="public/lovable-uploads/da11f43c-4176-4142-a47d-140f21300c1d.png"
+                src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
                 alt="Team collaborating on strategic vision"
                 className="rounded-lg object-cover w-full h-full"
               />
@@ -67,8 +67,8 @@ const VisionMissionSection = () => {
             {/* Overlapping smaller image */}
             <div className="absolute left-0 bottom-0 w-[75%] h-[75%] shadow-xl">
               <img 
-                src="public/lovable-uploads/92eca1af-a6f8-4f2a-a524-a8a0d601ba17.png"
-                alt="Business strategy meeting"
+                src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
+                alt="Strategic planning and execution"
                 className="rounded-lg object-cover w-full h-full border-4 border-white"
               />
             </div>
