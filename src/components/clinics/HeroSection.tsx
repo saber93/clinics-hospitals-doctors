@@ -1,7 +1,11 @@
+
 import React from "react";
 import { Badge } from "@/components/ui/badge";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const HeroSection = () => {
+  const isMobile = useIsMobile();
+  
   return (
     <div className="relative min-h-[500px] w-full overflow-hidden">
       {/* Background image with overlay */}
@@ -76,10 +80,10 @@ const HeroSection = () => {
       
       {/* Main content */}
       <div className="container mx-auto px-4 h-full flex flex-col justify-center items-center text-center py-16 relative z-20">
-        <div className="flex items-center gap-2 mb-6">
-          <div className="text-white text-5xl font-bold">MEDICAL</div>
+        <div className="flex items-center gap-1 sm:gap-2 mb-6">
+          <div className="text-white text-3xl sm:text-4xl md:text-5xl font-bold">MEDICAL</div>
           <div className="bg-white p-1 rounded-lg">
-            <div className="text-primary text-5xl font-bold">CLINICS</div>
+            <div className="text-primary text-3xl sm:text-4xl md:text-5xl font-bold">CLINICS</div>
           </div>
         </div>
         
