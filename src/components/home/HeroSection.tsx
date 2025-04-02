@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -13,7 +12,7 @@ const HeroSection = () => {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center">
         <div className="md:w-1/2 mb-10 md:mb-0">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-            Your Skin Deserves <span className="text-primary">Expert Care</span>
+            Your Marketing Deserves <span className="text-primary">Expert Care</span>
           </h1>
           <p className="mt-5 text-lg text-gray-600 max-w-xl">
             Connect with top-rated dermatology clinics and skincare specialists. 
