@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Home, Info, Phone, Building2, Stethoscope, Hospital } from 'lucide-react';
+import { Home, Info, Phone, Building2, Stethoscope, Hospital, ShoppingBag } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { logoutUser } from '@/utils/auth';
 
@@ -21,6 +21,7 @@ export const useNavbar = () => {
     { name: 'Clinics', path: '/clinics', icon: Building2 },
     { name: 'Hospitals', path: '/hospitals', icon: Hospital },
     { name: 'Doctors', path: '/doctors', icon: Stethoscope },
+    { name: 'Products', path: '/products', icon: ShoppingBag },
     { name: 'About', path: '/about', icon: Info },
     { name: 'Contact', path: '/contact', icon: Phone },
   ];
