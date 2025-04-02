@@ -25,10 +25,7 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = ({ services, api, setApi
         opts={{
           align: "start",
           containScroll: false,
-          slides: {
-            perView: 1,
-            spacing: 16,  // Set spacing between slides to 16px
-          }
+          spacing: 16  // Set spacing between slides to 16px
         }}
       >
         <CarouselContent className="-ml-4">
