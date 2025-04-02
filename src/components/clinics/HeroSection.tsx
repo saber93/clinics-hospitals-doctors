@@ -36,7 +36,7 @@ const HeroSection = () => {
         </div>
         
         {/* Second left image - bottom */}
-        <div className="w-28 h-28 pointer-events-none absolute left-[-34px] top-[420px]">
+        <div className="w-28 h-28 pointer-events-none absolute left-[16px] top-[420px]">
           <img 
             src="https://images.unsplash.com/photo-1600443271879-5378a3e0dedc?w=300&auto=format&fit=crop&q=80" 
             alt="Medical consultation" 
