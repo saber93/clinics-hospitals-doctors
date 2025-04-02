@@ -1,5 +1,5 @@
 
-import { Booking } from '@/components/client-dashboard/BookingItem';
+import { Booking } from '@/hooks/types/bookingTypes';
 
 export const generateDemoBookings = (): Booking[] => {
   return [

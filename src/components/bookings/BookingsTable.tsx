@@ -2,7 +2,7 @@
 import React from 'react';
 import { Store, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import type { Booking } from '@/hooks/useBookings';
+import type { Booking } from '@/hooks/types/bookingTypes';
 
 interface BookingsTableProps {
   bookings: Booking[];
