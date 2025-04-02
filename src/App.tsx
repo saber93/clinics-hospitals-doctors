@@ -4,6 +4,7 @@ import AppProviders from "./components/providers/AppProviders";
 import AppRoutes from "./components/routing/AppRoutes";
 import GlassyNavbar from "./components/layout/GlassyNavbar";
 import ModernFooter from "./components/layout/ModernFooter";
+import { CartProvider } from "./contexts/CartContext";
 
 const App = () => {
   const { loading } = useAppAuth();
@@ -18,13 +19,15 @@ const App = () => {
 
   return (
     <AppProviders>
-      <div className="min-h-screen flex flex-col">
-        <GlassyNavbar />
-        <div className="flex-grow">
-          <AppRoutes />
+      <CartProvider>
+        <div className="min-h-screen flex flex-col">
+          <GlassyNavbar />
+          <div className="flex-grow">
+            <AppRoutes />
+          </div>
+          <ModernFooter />
         </div>
-        <ModernFooter />
-      </div>
+      </CartProvider>
     </AppProviders>
   );
 };

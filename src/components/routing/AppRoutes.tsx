@@ -4,7 +4,6 @@ import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { ProtectedRoute } from './ProtectedRoute';
 import { PublicRoute } from './PublicRoute';
-import { CartProvider } from '@/contexts/CartContext';
 import Loading from '@/components/ui/Loading';
 import NotFound from '@/pages/NotFound';
 
@@ -48,70 +47,68 @@ const Cart = lazy(() => import('@/pages/Cart'));
 const AppRoutes = () => {
   return (
     <AuthProvider>
-      <CartProvider>
-        <Suspense fallback={<Loading />}>
-          <Routes>
-            {/* Main public routes */}
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/clinics/:id" element={<ClinicDetails />} />
-            <Route path="/clinics" element={<Clinics />} />
-            <Route path="/doctors" element={<Doctors />} />
-            <Route path="/hospitals" element={<Hospitals />} />
-            <Route path="/cart" element={<Cart />} />
-            
-            {/* Authentication routes */}
-            <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
-            <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-            <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-            
-            {/* Protected routes */}
-            <Route path="/reservations" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            
-            {/* Product routes */}
-            <Route path="/products" element={<Products />} />
-            <Route path="/product/:id" element={<ProductDetails />} />
-            <Route path="/products/new" element={<ProtectedRoute><ProductForm /></ProtectedRoute>} />
-            <Route path="/products/:id/edit" element={<ProtectedRoute><ProductForm /></ProtectedRoute>} />
-            <Route path="/add-product" element={<ProtectedRoute><AddProduct /></ProtectedRoute>} />
-            <Route path="/edit-product/:id" element={<ProtectedRoute><EditProduct /></ProtectedRoute>} />
-            <Route path="/products-management" element={<ProtectedRoute><ProductsManagement /></ProtectedRoute>} />
-            
-            {/* Voucher management routes */}
-            <Route path="/seller-vouchers" element={<ProtectedRoute><SellerVouchers /></ProtectedRoute>} />
-            <Route path="/seller-vouchers/new" element={<ProtectedRoute><VoucherForm /></ProtectedRoute>} />
-            <Route path="/seller-vouchers/:id/edit" element={<ProtectedRoute><EditVoucherPage /></ProtectedRoute>} />
-            <Route path="/add-voucher" element={<ProtectedRoute><VoucherForm /></ProtectedRoute>} />
-            
-            <Route path="/categories" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
-            <Route path="/categories/new" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />
-            <Route path="/categories/:id/edit" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />
-            <Route path="/all-bookings" element={<ProtectedRoute><AllBookings /></ProtectedRoute>} />
-            
-            {/* Role-specific dashboard routes */}
-            <Route path="/doctor-dashboard" element={<ProtectedRoute><DoctorDashboard /></ProtectedRoute>} />
-            <Route path="/vendor-dashboard" element={<ProtectedRoute><VendorDashboard /></ProtectedRoute>} />
-            <Route path="/center-dashboard" element={<ProtectedRoute><CenterDashboard /></ProtectedRoute>} />
-            <Route path="/client-dashboard" element={<ProtectedRoute><ClientDashboard /></ProtectedRoute>} />
-            
-            {/* Chat system routes */}
-            <Route path="/chats/:chatId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
-            <Route path="/chats" element={<ProtectedRoute><ChatSessions /></ProtectedRoute>} />
-            <Route path="/chat-sessions" element={<ProtectedRoute><ChatSessions /></ProtectedRoute>} />
-            <Route path="/chat-settings" element={<ProtectedRoute><ChatSettings /></ProtectedRoute>} />
-            
-            {/* Admin routes */}
-            <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-            <Route path="/vendors" element={<ProtectedRoute><TotalVendors /></ProtectedRoute>} />
-            <Route path="/clients" element={<ProtectedRoute><TotalClients /></ProtectedRoute>} />
-            
-            {/* 404 Page */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-      </CartProvider>
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          {/* Main public routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/clinics/:id" element={<ClinicDetails />} />
+          <Route path="/clinics" element={<Clinics />} />
+          <Route path="/doctors" element={<Doctors />} />
+          <Route path="/hospitals" element={<Hospitals />} />
+          <Route path="/cart" element={<Cart />} />
+          
+          {/* Authentication routes */}
+          <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
+          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+          <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+          
+          {/* Protected routes */}
+          <Route path="/reservations" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          
+          {/* Product routes */}
+          <Route path="/products" element={<Products />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/products/new" element={<ProtectedRoute><ProductForm /></ProtectedRoute>} />
+          <Route path="/products/:id/edit" element={<ProtectedRoute><ProductForm /></ProtectedRoute>} />
+          <Route path="/add-product" element={<ProtectedRoute><AddProduct /></ProtectedRoute>} />
+          <Route path="/edit-product/:id" element={<ProtectedRoute><EditProduct /></ProtectedRoute>} />
+          <Route path="/products-management" element={<ProtectedRoute><ProductsManagement /></ProtectedRoute>} />
+          
+          {/* Voucher management routes */}
+          <Route path="/seller-vouchers" element={<ProtectedRoute><SellerVouchers /></ProtectedRoute>} />
+          <Route path="/seller-vouchers/new" element={<ProtectedRoute><VoucherForm /></ProtectedRoute>} />
+          <Route path="/seller-vouchers/:id/edit" element={<ProtectedRoute><EditVoucherPage /></ProtectedRoute>} />
+          <Route path="/add-voucher" element={<ProtectedRoute><VoucherForm /></ProtectedRoute>} />
+          
+          <Route path="/categories" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
+          <Route path="/categories/new" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />
+          <Route path="/categories/:id/edit" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />
+          <Route path="/all-bookings" element={<ProtectedRoute><AllBookings /></ProtectedRoute>} />
+          
+          {/* Role-specific dashboard routes */}
+          <Route path="/doctor-dashboard" element={<ProtectedRoute><DoctorDashboard /></ProtectedRoute>} />
+          <Route path="/vendor-dashboard" element={<ProtectedRoute><VendorDashboard /></ProtectedRoute>} />
+          <Route path="/center-dashboard" element={<ProtectedRoute><CenterDashboard /></ProtectedRoute>} />
+          <Route path="/client-dashboard" element={<ProtectedRoute><ClientDashboard /></ProtectedRoute>} />
+          
+          {/* Chat system routes */}
+          <Route path="/chats/:chatId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+          <Route path="/chats" element={<ProtectedRoute><ChatSessions /></ProtectedRoute>} />
+          <Route path="/chat-sessions" element={<ProtectedRoute><ChatSessions /></ProtectedRoute>} />
+          <Route path="/chat-settings" element={<ProtectedRoute><ChatSettings /></ProtectedRoute>} />
+          
+          {/* Admin routes */}
+          <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/vendors" element={<ProtectedRoute><TotalVendors /></ProtectedRoute>} />
+          <Route path="/clients" element={<ProtectedRoute><TotalClients /></ProtectedRoute>} />
+          
+          {/* 404 Page */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </AuthProvider>
   );
 };
