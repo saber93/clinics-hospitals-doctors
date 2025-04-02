@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -30,8 +29,13 @@ const FeaturedClinicsSection = () => {
                   alt={clinic.name}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
+                <div className="absolute top-2 left-2">
+                  <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 border border-yellow-300">
+                    Featured
+                  </Badge>
+                </div>
                 {clinic.discount > 0 && (
-                  <div className="absolute top-2 left-2">
+                  <div className="absolute top-2 left-24">
                     <Badge className="bg-primary text-white">
                       {clinic.discount}% OFF
                     </Badge>

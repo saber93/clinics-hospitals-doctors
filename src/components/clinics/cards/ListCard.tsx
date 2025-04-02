@@ -1,8 +1,8 @@
-
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import OfferBadge from '../badges/OfferBadge';
+import FeaturedBadge from '../badges/FeaturedBadge';
 import FavoriteButton from '../badges/FavoriteButton';
 import SpecialtyBadges from '../badges/SpecialtyBadges';
 import RatingDisplay from '../display/RatingDisplay';
@@ -29,7 +29,8 @@ const ListCard: React.FC<ClinicCardBaseProps> = ({
             alt={clinic.name}
             className="w-full h-full object-cover"
           />
-          <OfferBadge offerPercentage={clinic.offerPercentage} />
+          <FeaturedBadge featured={clinic.featured || false} />
+          <OfferBadge offerPercentage={clinic.offerPercentage} featured={clinic.featured || false} />
           <FavoriteButton 
             isFavorite={isFavorite}
             onClick={handleFavoriteToggle}

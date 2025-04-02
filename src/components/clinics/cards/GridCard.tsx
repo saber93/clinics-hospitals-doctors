@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -28,8 +27,8 @@ const GridCard: React.FC<ClinicCardBaseProps> = ({
           alt={clinic.name}
           className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
         />
-        <OfferBadge offerPercentage={clinic.offerPercentage} />
         <FeaturedBadge featured={clinic.featured || false} />
+        <OfferBadge offerPercentage={clinic.offerPercentage} featured={clinic.featured || false} />
         <FavoriteButton 
           isFavorite={isFavorite}
           onClick={handleFavoriteToggle}
