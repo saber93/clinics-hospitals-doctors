@@ -19,11 +19,11 @@ const Home = () => {
       {/* Vision Mission Section */}
       <VisionMissionSection />
 
+      {/* Services Section - Moved above Featured Clinics */}
+      <ServicesSection />
+
       {/* Featured Clinics Section */}
       <FeaturedClinicsSection />
-
-      {/* Services Section */}
-      <ServicesSection />
 
       {/* CTA Section */}
       <CTASection />
