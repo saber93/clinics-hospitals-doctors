@@ -65,7 +65,7 @@ const Products = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 mt-16">
-      <div className="w-full h-72 relative overflow-hidden">
+      <div className="w-full h-48 relative overflow-hidden">
         <img 
           src="/lovable-uploads/9b620d87-47a0-41af-b2a9-6118424081e8.png" 
           alt="Clearance Sale on Sports Nutrition" 
