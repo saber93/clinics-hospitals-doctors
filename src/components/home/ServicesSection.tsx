@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ArrowRight, ArrowLeft, ChevronRight } from 'lucide-react';
 import { 
@@ -67,6 +68,18 @@ const CorporateIcon = () => (
   </svg>
 );
 
+const KpiMarketingIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 36V24" stroke="currentColor" strokeWidth="2" />
+    <path d="M20 36V16" stroke="currentColor" strokeWidth="2" />
+    <path d="M28 36V20" stroke="currentColor" strokeWidth="2" />
+    <path d="M36 36V12" stroke="currentColor" strokeWidth="2" />
+    <path d="M8 28L16 20" stroke="currentColor" strokeWidth="2" />
+    <path d="M16 20H8" stroke="currentColor" strokeWidth="2" />
+    <path d="M16 20V12" stroke="currentColor" strokeWidth="2" />
+  </svg>
+);
+
 const ServicesSection = () => {
   const services = [
     {
@@ -88,6 +101,11 @@ const ServicesSection = () => {
       title: "Digital Reputation Management for Clinics and Hospitals",
       description: "read more",
       icon: <CorporateIcon />,
+    },
+    {
+      title: "KPI-Driven Marketing",
+      description: "read more",
+      icon: <KpiMarketingIcon />,
     },
   ];
 
