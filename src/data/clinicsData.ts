@@ -1,4 +1,3 @@
-
 import { Clinic } from '@/types/clinic';
 
 // Demo clinic data with enhanced details
@@ -87,4 +86,116 @@ export const clinicsData: Clinic[] = [
     specialties: ['Laser Resurfacing', 'Tattoo Removal', 'Scar Reduction'],
     featured: true
   },
+  {
+    id: 'clinic-7',
+    name: 'Glow Skin Studio',
+    description: 'Premium skincare center specializing in hydrating treatments and personalized skin analysis.',
+    category: 'Skin Clinic',
+    subCategory: 'Hydration',
+    location: '123 Riverside Drive, East Village',
+    rating: 4.9,
+    reviews: 87,
+    offerPercentage: 10,
+    imageUrl: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=500&auto=format&fit=crop',
+    specialties: ['Hydrafacial', 'Skin Analysis', 'Custom Serums'],
+    featured: false
+  },
+  {
+    id: 'clinic-8',
+    name: 'Radiance Beauty Bar',
+    description: 'Luxury beauty bar offering the latest in non-invasive facial treatments and advanced skincare.',
+    category: 'Beauty Clinic',
+    subCategory: 'Non-invasive Treatments',
+    location: '456 Fashion Avenue, Tribeca',
+    rating: 4.8,
+    reviews: 132,
+    offerPercentage: 15,
+    imageUrl: 'https://images.unsplash.com/photo-1560750588-73207b1ef5b8?q=80&w=500&auto=format&fit=crop',
+    specialties: ['Oxygen Facials', 'LED Therapy', 'Collagen Boosting'],
+    featured: true
+  },
+  {
+    id: 'clinic-9',
+    name: 'Eternal Youth Med Spa',
+    description: 'Advanced medical spa focusing on age-reversing treatments and preventative skincare solutions.',
+    category: 'Med Spa',
+    subCategory: 'Anti-Aging',
+    location: '789 Luxury Lane, Upper East Side',
+    rating: 4.7,
+    reviews: 98,
+    offerPercentage: 20,
+    imageUrl: 'https://images.unsplash.com/photo-1603217040830-34498643c9b4?q=80&w=500&auto=format&fit=crop',
+    specialties: ['Microneedling', 'PRP Therapy', 'Chemical Peels'],
+    featured: false
+  },
+  {
+    id: 'clinic-10',
+    name: 'Clear Complexion Clinic',
+    description: 'Specialized clinic for treating acne, scarring and problematic skin with proven clinical methods.',
+    category: 'Dermatology',
+    subCategory: 'Acne Treatment',
+    location: '321 Health Street, Financial District',
+    rating: 4.6,
+    reviews: 112,
+    offerPercentage: 0,
+    imageUrl: 'https://images.unsplash.com/photo-1571941096025-8d6797f9a3f2?q=80&w=500&auto=format&fit=crop',
+    specialties: ['Acne Treatment', 'Scar Revision', 'Oil Control'],
+    featured: false
+  },
+  {
+    id: 'clinic-11',
+    name: 'Holistic Healing Spa',
+    description: 'Wellness-focused spa combining traditional and modern techniques for overall skin health improvement.',
+    category: 'Wellness & Prevention',
+    subCategory: 'Holistic Treatment',
+    location: '555 Zen Way, Greenwich Village',
+    rating: 4.9,
+    reviews: 76,
+    offerPercentage: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=500&auto=format&fit=crop',
+    specialties: ['Aromatherapy', 'Natural Ingredients', 'Energy Balancing'],
+    featured: true
+  },
+  {
+    id: 'clinic-12',
+    name: 'Sculpt Face & Body',
+    description: 'Comprehensive aesthetics center offering both facial and body contouring treatments with visible results.',
+    category: 'Aesthetics',
+    subCategory: 'Contouring',
+    location: '987 Sculpt Street, SoHo',
+    rating: 4.8,
+    reviews: 145,
+    offerPercentage: 25,
+    imageUrl: 'https://images.unsplash.com/photo-1470259078422-826894b933aa?q=80&w=500&auto=format&fit=crop',
+    specialties: ['Face Contouring', 'Body Sculpting', 'Fat Reduction'],
+    featured: false
+  },
+  {
+    id: 'clinic-13',
+    name: 'Precision Laser Center',
+    description: 'State-of-the-art laser facility with the latest technology for various skin conditions and hair removal.',
+    category: 'Laser Clinic',
+    subCategory: 'Multi-treatment',
+    location: '654 Tech Blvd, Midtown',
+    rating: 4.7,
+    reviews: 89,
+    offerPercentage: 15,
+    imageUrl: 'https://images.unsplash.com/photo-1598256989800-fe5f95da9787?q=80&w=500&auto=format&fit=crop',
+    specialties: ['Laser Hair Removal', 'Pigmentation Treatment', 'Vascular Lesions'],
+    featured: false
+  },
+  {
+    id: 'clinic-14',
+    name: 'Refresh Botox Boutique',
+    description: 'Specialized clinic focusing exclusively on premium injectable treatments administered by top specialists.',
+    category: 'Med Spa',
+    subCategory: 'Injectables',
+    location: '321 Youthful Avenue, Upper West Side',
+    rating: 4.9,
+    reviews: 167,
+    offerPercentage: 10,
+    imageUrl: 'https://images.unsplash.com/photo-1550831107-1553da8c8464?q=80&w=500&auto=format&fit=crop',
+    specialties: ['Botox', 'Fillers', 'Kybella', 'PDO Threads'],
+    featured: true
+  }
 ];
