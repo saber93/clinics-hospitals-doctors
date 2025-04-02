@@ -43,7 +43,7 @@ const AdminDashboard = () => {
   };
   
   return (
-    <div className="p-6 mt-16 sm:mt-20"> {/* Added top margin */}
+    <div className="p-6 pt-20">
       <h2 className="text-2xl font-bold mb-4">Admin Dashboard</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

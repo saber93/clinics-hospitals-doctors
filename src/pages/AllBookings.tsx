@@ -108,7 +108,7 @@ const AllBookings = () => {
   };
   
   return (
-    <div className="min-h-screen bg-gray-50 py-8 mt-16 sm:mt-20"> {/* Added top margin */}
+    <div className="min-h-screen bg-gray-50 py-8 pt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold">My Bookings</h1>

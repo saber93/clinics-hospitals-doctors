@@ -17,7 +17,7 @@ const VoucherManagement = () => {
   } = useVouchers();
   
   return (
-    <div className="p-6">
+    <div className="p-6 pt-20">
       <VouchersHeader />
       
       <VouchersSearch 
