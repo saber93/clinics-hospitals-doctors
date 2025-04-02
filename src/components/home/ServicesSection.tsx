@@ -106,7 +106,15 @@ const ServicesSection = () => {
             <h2 className="text-5xl font-bold">Services</h2>
           </div>
           
-          <div className="flex items-center space-x-4 order-last md:order-none">
+          <div className="max-w-xl mx-4 md:mx-0">
+            <p className="text-lg text-gray-600">
+              Dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit 
+              aspernaturaut odit aut fugit, sed quia consequuntur. Dicta sunt 
+              explicabo. Nemo enim ipsam voluptatem quia voluptas.
+            </p>
+          </div>
+          
+          <div className="flex items-center space-x-4 mt-6 md:mt-0">
             <button 
               onClick={scrollPrev}
               className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
@@ -119,14 +127,6 @@ const ServicesSection = () => {
             >
               <ArrowRight className="w-5 h-5" />
             </button>
-          </div>
-          
-          <div className="max-w-xl">
-            <p className="text-lg text-gray-600">
-              Dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit 
-              aspernaturaut odit aut fugit, sed quia consequuntur. Dicta sunt 
-              explicabo. Nemo enim ipsam voluptatem quia voluptas.
-            </p>
           </div>
         </div>
 
