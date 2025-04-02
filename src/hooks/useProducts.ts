@@ -1,24 +1,11 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Product } from "@/types";
 
-// Sample pharmacy product data for initial display
+// Sample pharmacy product data for non-medicinal items
 const demoProducts: Product[] = [
   {
     id: "1",
-    name: "Ibuprofen 200mg Tablets",
-    description: "Fast and effective relief from headaches, back pain, and fever",
-    price: 8.99,
-    image_url: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=500&q=80",
-    stock_quantity: 120,
-    is_available: true,
-    category: "Pain Relief",
-    seller_id: "demo",
-    discount_percentage: 10
-  },
-  {
-    id: "2",
     name: "Digital Thermometer",
     description: "Fast and accurate temperature readings for all ages",
     price: 15.95,
@@ -29,7 +16,7 @@ const demoProducts: Product[] = [
     seller_id: "demo"
   },
   {
-    id: "3",
+    id: "2",
     name: "First Aid Kit",
     description: "Complete emergency kit with bandages, antiseptics, and medical tools",
     price: 29.99,
@@ -41,30 +28,18 @@ const demoProducts: Product[] = [
     discount_percentage: 15
   },
   {
-    id: "4",
-    name: "Vitamin D3 Supplements",
-    description: "Support bone health and immune system with daily vitamin D3",
-    price: 12.49,
+    id: "3",
+    name: "Compression Bandage",
+    description: "Elasticated support bandage for sprains and muscle injuries",
+    price: 8.49,
     image_url: null,
     stock_quantity: 85,
     is_available: true,
-    category: "Vitamins",
+    category: "First Aid",
     seller_id: "demo"
   },
   {
-    id: "5",
-    name: "Allergy Relief Tablets",
-    description: "24-hour relief from seasonal allergies and hay fever symptoms",
-    price: 14.95,
-    image_url: null,
-    stock_quantity: 60,
-    is_available: true,
-    category: "Allergy",
-    seller_id: "demo",
-    discount_percentage: 5
-  },
-  {
-    id: "6",
+    id: "4",
     name: "Antibacterial Hand Sanitizer",
     description: "Kills 99.9% of germs without water, with moisturizing aloe vera",
     price: 4.99,
@@ -72,6 +47,29 @@ const demoProducts: Product[] = [
     stock_quantity: 150,
     is_available: true,
     category: "Hygiene",
+    seller_id: "demo"
+  },
+  {
+    id: "5",
+    name: "Ice Pack",
+    description: "Reusable cooling pack for injuries and pain relief",
+    price: 6.95,
+    image_url: null,
+    stock_quantity: 60,
+    is_available: true,
+    category: "Medical Supplies",
+    seller_id: "demo",
+    discount_percentage: 5
+  },
+  {
+    id: "6",
+    name: "Digital Blood Pressure Monitor",
+    description: "Easy-to-use home blood pressure monitoring device with large display",
+    price: 42.99,
+    image_url: null,
+    stock_quantity: 25,
+    is_available: true,
+    category: "Medical Devices",
     seller_id: "demo"
   }
 ];
