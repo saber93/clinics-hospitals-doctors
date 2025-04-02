@@ -31,7 +31,7 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = ({ services, api, setApi
       >
         <CarouselContent className="-ml-1 gap-0">
           {services.map((service, index) => (
-            <CarouselItem key={index} className="pl-1 md:basis-1/2 lg:basis-1/3">
+            <CarouselItem key={index} className="pl-1 md:basis-1/3 lg:basis-1/4">
               <ServiceCard
                 title={service.title}
                 description={service.description}
