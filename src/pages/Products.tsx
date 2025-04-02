@@ -66,12 +66,12 @@ const Products = () => {
   return (
     <div className="min-h-screen bg-gray-50 mt-16">
       <div className="w-full h-64 relative overflow-hidden">
-        {/* Background image with gradient overlay */}
+        {/* Background image with gradient overlay - updated with more reliable URL */}
         <div 
           className="absolute inset-0 bg-cover bg-center" 
-          style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1612452787715-f6626c2c1c7a?auto=format&fit=crop&w=1500&q=80)' }}
+          style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1471864190281-a93a3070b6de?auto=format&fit=crop&w=1500&q=80)' }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary/70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary/60" />
         
         {/* Cover content */}
         <div className="relative h-full flex items-center justify-center">
