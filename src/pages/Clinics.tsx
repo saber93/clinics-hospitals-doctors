@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -103,6 +104,9 @@ const Clinics = () => {
   const [sortBy, setSortBy] = useState('featured');
   const [viewMode, setViewMode] = useState('grid');
   const [filteredClinics, setFilteredClinics] = useState(clinicsData);
+  const [visibleClinics, setVisibleClinics] = useState<typeof clinicsData>([]);
+  const [visibleCount, setVisibleCount] = useState(6);
+  const [hasMore, setHasMore] = useState(false);
   
   const categories = ['all', ...new Set(clinicsData.map(clinic => clinic.category))];
 
@@ -141,10 +145,20 @@ const Clinics = () => {
     setFilteredClinics(result);
   }, [searchTerm, categoryFilter, offerFilter, sortBy]);
 
+  useEffect(() => {
+    // Update visible clinics whenever the filtered clinics change or visibleCount changes
+    setVisibleClinics(filteredClinics.slice(0, visibleCount));
+    setHasMore(filteredClinics.length > visibleCount);
+  }, [filteredClinics, visibleCount]);
+
   const clearFilters = () => {
     setSearchTerm('');
     setCategoryFilter('all');
     setOfferFilter('all');
+  };
+
+  const loadMoreClinics = () => {
+    setVisibleCount(prevCount => prevCount + 6);
   };
 
   return (
@@ -181,11 +195,23 @@ const Clinics = () => {
         />
         
         <ClinicsList 
-          filteredClinics={filteredClinics}
+          filteredClinics={visibleClinics}
           viewMode={viewMode}
           setViewMode={setViewMode}
           clearFilters={clearFilters}
         />
+
+        {hasMore && (
+          <div className="mt-8 text-center">
+            <Button 
+              onClick={loadMoreClinics}
+              className="px-6"
+              size="lg"
+            >
+              See More Clinics
+            </Button>
+          </div>
+        )}
       </div>
       
       {/* Features and Testimonials sections */}
