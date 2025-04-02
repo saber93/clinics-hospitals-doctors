@@ -8,7 +8,7 @@ const NavLogo = () => {
       <img 
         src="/lovable-uploads/26800541-dedb-4ee8-b47c-4788a924d1d6.png" 
         alt="Zamos Marketing Management" 
-        className="h-7 md:h-9"
+        className="h-10 md:h-12 object-contain"
       />
     </Link>
   );
