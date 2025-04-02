@@ -99,19 +99,27 @@ const HeroSection = () => {
         
         {/* Feature badges */}
         <div className="flex flex-wrap justify-center gap-4">
-          <FeatureBadge number="50+" label="SPECIALTIES" className="min-w-[130px]" />
-          <FeatureBadge number="200+" label="VERIFIED CLINICS" className="min-w-[130px]" />
+          <FeatureBadge 
+            number="50+" 
+            label="SPECIALTIES" 
+            className="w-[45%] max-w-[150px] sm:w-auto sm:min-w-[130px]" 
+          />
+          <FeatureBadge 
+            number="200+" 
+            label="VERIFIED CLINICS" 
+            className="w-[45%] max-w-[150px] sm:w-auto sm:min-w-[130px]" 
+          />
           <FeatureBadge 
             number="1000+" 
             label="EXPERT PRACTITIONERS" 
             icon="star" 
             highlight 
-            className="min-w-[130px]" 
+            className="w-[45%] max-w-[150px] sm:w-auto sm:min-w-[130px]" 
           />
           <FeatureBadge 
             number="24/7" 
             label="PATIENT CARE" 
-            className="min-w-[130px]" 
+            className="w-[45%] max-w-[150px] sm:w-auto sm:min-w-[130px]" 
           />
         </div>
         
