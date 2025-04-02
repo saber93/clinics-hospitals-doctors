@@ -1,12 +1,12 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, Bandage } from 'lucide-react';
+import { Search, Bandage, ShoppingCart } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
 import ProductSidebar from '@/components/products/ProductSidebar';
 import { Input } from "@/components/ui/input";
+import { toast } from "@/hooks/use-toast";
 import { 
   Select,
   SelectContent,
@@ -64,6 +64,15 @@ const Products = () => {
     return 0;
   });
 
+  const handleAddToCart = (e: React.MouseEvent, product: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toast({
+      title: "Added to cart",
+      description: `${product.name} added to your cart.`,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 mt-16">
       <div className="w-full h-48 relative overflow-hidden">
@@ -74,7 +83,6 @@ const Products = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-primary/60" />
         
-        {/* Cover content - enhanced visibility */}
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <div className="max-w-7xl mx-auto text-center px-4 sm:px-6 lg:px-8 bg-black/30 py-6 rounded-lg">
             <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tracking-wide">Zames Products</h1>
@@ -171,7 +179,14 @@ const Products = () => {
                           <p className="text-sm text-gray-500 mt-1 line-clamp-2">{product.description || "No description available"}</p>
                           <div className="mt-4 flex items-center justify-between">
                             <span className="text-lg font-semibold">${product.price.toFixed(2)}</span>
-                            <Button size="sm">View Details</Button>
+                            <Button 
+                              size="sm" 
+                              onClick={(e) => handleAddToCart(e, product)}
+                              className="flex items-center"
+                            >
+                              <ShoppingCart className="mr-1 h-4 w-4" />
+                              Add to Cart
+                            </Button>
                           </div>
                         </CardContent>
                       </Card>
