@@ -24,7 +24,7 @@ const AboutSection = () => {
           </div>
         </div>
         
-        <div className="lg:w-1/2">
+        <div className="lg:w-1/2 pl-5">
           <div className="mb-2 text-gray-500 uppercase tracking-wider font-medium">CORPORATE SERVICE</div>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-8">
             We help you achieve sustainable growth
