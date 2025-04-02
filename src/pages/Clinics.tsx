@@ -32,7 +32,7 @@ const clinicsData = [
     rating: 4.9,
     reviews: 215,
     offerPercentage: 0,
-    imageUrl: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=500&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&w=500&auto=format&fit=crop',
     specialties: ['Facials', 'Chemical Peels', 'Microdermabrasion'],
     featured: true
   },
@@ -46,7 +46,7 @@ const clinicsData = [
     rating: 4.7,
     reviews: 96,
     offerPercentage: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?q=80&w=500&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?q=80&w=500&auto=format&fit=crop',
     specialties: ['Anti-Aging', 'Skin Tightening', 'Laser Treatments'],
     featured: false
   },
@@ -60,7 +60,7 @@ const clinicsData = [
     rating: 4.5,
     reviews: 84,
     offerPercentage: 20,
-    imageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=500&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?q=80&w=500&auto=format&fit=crop',
     specialties: ['Skin Rejuvenation', 'Microblading', 'Laser Hair Removal'],
     featured: false
   },
@@ -74,7 +74,7 @@ const clinicsData = [
     rating: 4.6,
     reviews: 107,
     offerPercentage: 0,
-    imageUrl: 'https://images.unsplash.com/photo-1516962215378-7fa2e137ae93?q=80&w=500&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1518005020951-eccb494ad742?q=80&w=500&auto=format&fit=crop',
     specialties: ['Custom Facials', 'LED Therapy', 'Hydrafacial'],
     featured: false
   },
