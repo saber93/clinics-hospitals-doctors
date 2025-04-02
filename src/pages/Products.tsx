@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ShoppingBag, Search, Bandage } from 'lucide-react';
+import { Search, Bandage } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
 import ProductSidebar from '@/components/products/ProductSidebar';
 import { Input } from "@/components/ui/input";
@@ -73,17 +73,9 @@ const Products = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">Medical Supplies</h1>
-            <p className="mt-2 text-sm text-gray-600">Browse our selection of health and first aid products</p>
-          </div>
-          <div className="mt-4 sm:mt-0">
-            <Button variant="default">
-              <ShoppingBag className="mr-2 h-4 w-4" />
-              View Cart
-            </Button>
-          </div>
+        <div className="mb-8">
+          <h1 className="text-xl font-bold text-gray-900">Medical Supplies</h1>
+          <p className="mt-2 text-sm text-gray-600">Browse our selection of health and first aid products</p>
         </div>
 
         {/* Top search and sort bar */}
@@ -91,7 +83,7 @@ const Products = () => {
           <div className="relative flex-grow">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search medications..."
+              placeholder="Search medical supplies..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 pr-4 w-full"

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Menu } from 'lucide-react';
+import { Menu, ShoppingCart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavbar } from './navbar/useNavbar';
 import NavLogo from './navbar/NavLogo';
@@ -8,6 +8,7 @@ import DesktopNav from './navbar/DesktopNav';
 import MobileMenu from './navbar/MobileMenu';
 import UserDropdownMenu from './navbar/UserDropdownMenu';
 import AuthButtons from './navbar/AuthButtons';
+import { Button } from '@/components/ui/button';
 
 const GlassyNavbar = () => {
   const { isOpen, scrolled, user, filteredLinks, handleToggleMenu, handleLogout } = useNavbar();
@@ -26,7 +27,14 @@ const GlassyNavbar = () => {
         <DesktopNav filteredLinks={filteredLinks} session={user} />
 
         {/* Auth Buttons / User Menu - Make logout button more visible */}
-        <div className="hidden md:flex items-center space-x-2">
+        <div className="hidden md:flex items-center space-x-3">
+          <Button variant="ghost" size="icon" className="relative">
+            <ShoppingCart size={20} />
+            <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center">
+              0
+            </span>
+          </Button>
+          
           {user ? (
             <UserDropdownMenu handleLogout={handleLogout} />
           ) : (
@@ -34,13 +42,22 @@ const GlassyNavbar = () => {
           )}
         </div>
 
-        <button
-          onClick={handleToggleMenu}
-          className="md:hidden text-foreground"
-          aria-label="Toggle menu"
-        >
-          {isOpen ? null : <Menu size={24} />}
-        </button>
+        <div className="md:hidden flex items-center space-x-2">
+          <Button variant="ghost" size="icon" className="relative">
+            <ShoppingCart size={20} />
+            <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center">
+              0
+            </span>
+          </Button>
+          
+          <button
+            onClick={handleToggleMenu}
+            className="text-foreground"
+            aria-label="Toggle menu"
+          >
+            {isOpen ? null : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       <MobileMenu 
