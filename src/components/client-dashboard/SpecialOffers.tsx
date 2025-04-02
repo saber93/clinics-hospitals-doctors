@@ -2,19 +2,14 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import OfferItem, { Offer } from "./OfferItem";
-import { formatDate } from "./utils/formatting";
+import OfferCard from "@/components/offers/OfferCard";
+import { mockOffers } from "@/data/offersData";
 
 const SpecialOffers = () => {
   const navigate = useNavigate();
   
-  const specialOffers: Offer[] = [
-    { id: 1, title: "30% Off First Massage", provider: "Wellness Spa", validUntil: "2023-12-31" },
-    { id: 2, title: "Buy 3 Sessions, Get 1 Free", provider: "Fitness Studio", validUntil: "2023-11-30" },
-    { id: 3, title: "Free Consultation", provider: "Beauty Clinic", validUntil: "2023-12-15" },
-    { id: 4, title: "Holiday Package Discount", provider: "Health Center", validUntil: "2023-12-25" },
-    { id: 5, title: "Refer a Friend - 20% Off", provider: "Yoga Studio", validUntil: "2023-11-20" },
-  ];
+  // Get a preview of just the first 3 offers for the dashboard
+  const previewOffers = mockOffers.slice(0, 3);
   
   return (
     <Card className="col-span-1">
@@ -24,12 +19,8 @@ const SpecialOffers = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {specialOffers.map((offer) => (
-            <OfferItem 
-              key={offer.id} 
-              offer={offer} 
-              formatDate={formatDate} 
-            />
+          {previewOffers.map((offer) => (
+            <OfferCard key={offer.id} offer={offer} />
           ))}
         </div>
       </CardContent>
