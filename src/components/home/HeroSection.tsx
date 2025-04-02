@@ -11,7 +11,7 @@ const HeroSection = () => {
   return (
     <section className="py-16 md:py-24 px-4">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center">
-        <div className="md:w-1/2 mb-10 md:mb-0 pr-0 md:pr-8">
+        <div className="md:w-3/5 mb-10 md:mb-0 pr-0 md:pr-8">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
             Your Marketing Deserves
             <span className="text-primary block mt-2">Expert Care</span>
@@ -45,7 +45,7 @@ const HeroSection = () => {
             </div>
           </div>
         </div>
-        <div className="md:w-1/2 relative md:-ml-10">
+        <div className="md:w-2/5 relative">
           <div className="rounded-2xl overflow-hidden shadow-2xl max-w-lg mx-auto">
             <img 
               src="/lovable-uploads/f538345f-52aa-4960-a4a2-c377edde5280.png" 
@@ -53,7 +53,7 @@ const HeroSection = () => {
               className="w-full h-[450px] md:h-[500px] object-cover"
             />
           </div>
-          <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-lg hidden md:block">
+          <div className="absolute -bottom-6 -right-6 bg-white p-4 rounded-xl shadow-lg hidden md:block">
             <div className="flex items-center">
               <div className="bg-green-100 p-2 rounded-full">
                 <Shield className="h-6 w-6 text-green-600" />
