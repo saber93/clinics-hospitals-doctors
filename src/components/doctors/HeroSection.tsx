@@ -81,20 +81,20 @@ const HeroSection = () => {
       {/* Main content */}
       <div className="container mx-auto px-4 h-full flex flex-col justify-center items-center text-center py-16 relative z-20">
         <div className="flex items-center gap-1 sm:gap-2 mb-6">
-          <div className="text-white text-3xl sm:text-4xl md:text-5xl font-bold">SKIN</div>
+          <div className="text-white text-3xl sm:text-4xl md:text-5xl font-bold">MEDICAL</div>
           <div className="bg-white p-1 rounded-lg">
             <div className="text-primary text-3xl sm:text-4xl md:text-5xl font-bold">SPECIALISTS</div>
           </div>
         </div>
         
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-          Expert Dermatologists
+          Expert Doctors
           <br />
-          For Your Skin Health
+          In Every Specialty
         </h1>
         
         <p className="text-white text-lg md:text-xl mb-12 max-w-2xl">
-          Connect with board-certified dermatologists and skin specialists who provide personalized treatment plans for all your skin concerns
+          Connect with board-certified specialists across all medical fields who provide personalized treatment plans for your health needs
         </p>
         
         {/* Feature badges */}
@@ -105,8 +105,8 @@ const HeroSection = () => {
             className="w-[45%] max-w-[150px] sm:w-auto sm:min-w-[130px]" 
           />
           <FeatureBadge 
-            number="150+" 
-            label="DERMATOLOGISTS" 
+            number="500+" 
+            label="SPECIALISTS" 
             className="w-[45%] max-w-[150px] sm:w-auto sm:min-w-[130px]" 
           />
           <FeatureBadge 
@@ -117,14 +117,14 @@ const HeroSection = () => {
             className="w-[45%] max-w-[150px] sm:w-auto sm:min-w-[130px]" 
           />
           <FeatureBadge 
-            number="10K+" 
+            number="50K+" 
             label="SATISFIED PATIENTS" 
             className="w-[45%] max-w-[150px] sm:w-auto sm:min-w-[130px]" 
           />
         </div>
         
         <p className="text-white text-lg mt-12">
-          Your journey to healthier skin starts with the right specialist
+          Your journey to better health starts with the right specialist
         </p>
       </div>
     </div>
