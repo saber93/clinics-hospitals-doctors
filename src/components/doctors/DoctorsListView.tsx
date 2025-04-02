@@ -7,8 +7,8 @@ import { Doctor } from '@/types/doctor';
 interface DoctorsListViewProps {
   visibleDoctors: Doctor[];
   filteredDoctors: Doctor[];
-  viewMode: string;
-  setViewMode: (mode: string) => void;
+  viewMode: 'grid' | 'list';
+  setViewMode: (mode: 'grid' | 'list') => void;
   clearFilters: () => void;
   hasMore: boolean;
   loadMoreDoctors: () => void;

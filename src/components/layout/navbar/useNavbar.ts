@@ -1,27 +1,27 @@
 
-import { useState, useEffect } from 'react';
-import { LucideIcon, Home, Info, Phone, Building2, Heart, User, Stethoscope } from 'lucide-react';
+import { useState, useEffect, ReactNode } from 'react';
+import { Home, Info, Phone, Building2, Heart, User, Stethoscope } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { logoutUser } from '@/utils/auth';
 
-interface NavLink {
+export interface NavLinkType {
   name: string;
   path: string;
-  icon?: LucideIcon;
+  icon?: ReactNode;
   roles?: string[];
 }
 
 export const useNavbar = () => {
-  const { session } = useAuth();
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  const links: NavLink[] = [
-    { name: 'Home', path: '/', icon: Home },
-    { name: 'Clinics', path: '/clinics', icon: Building2 },
-    { name: 'Doctors', path: '/doctors', icon: Stethoscope },
-    { name: 'About', path: '/about', icon: Info },
-    { name: 'Contact', path: '/contact', icon: Phone },
+  const links: NavLinkType[] = [
+    { name: 'Home', path: '/', icon: <Home size={18} /> },
+    { name: 'Clinics', path: '/clinics', icon: <Building2 size={18} /> },
+    { name: 'Doctors', path: '/doctors', icon: <Stethoscope size={18} /> },
+    { name: 'About', path: '/about', icon: <Info size={18} /> },
+    { name: 'Contact', path: '/contact', icon: <Phone size={18} /> },
   ];
 
   const handleScrollListener = () => {
@@ -49,9 +49,9 @@ export const useNavbar = () => {
   // Filter links based on user roles if needed
   const filteredLinks = links.filter(link => {
     if (!link.roles) return true;
-    if (!session) return false;
+    if (!user) return false;
     
-    const userRole = session.user?.user_metadata?.role || 'client';
+    const userRole = user.user_metadata?.role || 'client';
     return link.roles.includes(userRole);
   });
 
@@ -59,7 +59,7 @@ export const useNavbar = () => {
     isOpen,
     scrolled,
     filteredLinks,
-    session,
+    user,
     handleToggleMenu,
     handleLogout
   };

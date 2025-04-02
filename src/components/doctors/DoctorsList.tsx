@@ -3,11 +3,12 @@ import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DoctorCard from './DoctorCard';
 import NoResultsFound from '../clinics/NoResultsFound';
+import { Doctor } from '@/types/doctor';
 
 interface DoctorsListProps {
-  filteredDoctors: any[];
-  viewMode: string;
-  setViewMode: (mode: string) => void;
+  filteredDoctors: Doctor[];
+  viewMode: 'grid' | 'list';
+  setViewMode: (mode: 'grid' | 'list') => void;
   clearFilters: () => void;
 }
 
@@ -18,7 +19,7 @@ const DoctorsList: React.FC<DoctorsListProps> = ({
   clearFilters
 }) => {
   return (
-    <Tabs defaultValue={viewMode} onValueChange={setViewMode} className="mb-6">
+    <Tabs defaultValue={viewMode} onValueChange={(value) => setViewMode(value as 'grid' | 'list')} className="mb-6">
       <div className="flex items-center justify-between">
         <TabsList>
           <TabsTrigger value="grid">Grid View</TabsTrigger>
