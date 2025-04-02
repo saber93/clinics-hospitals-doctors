@@ -15,7 +15,7 @@ const AboutSection = () => {
             alt="Team collaborating on marketing strategy" 
             className="rounded-lg shadow-xl object-cover h-[500px] w-full"
           />
-          <div className="absolute bottom-0 right-0 transform translate-y-1/4 translate-x-0 lg:translate-x-1/4 bg-black text-white p-8 rounded-lg shadow-xl max-w-[300px]">
+          <div className="absolute bottom-0 right-0 transform translate-y-1/4 translate-x-0 lg:translate-x-1/4 bg-black text-white p-8 rounded-lg shadow-xl inline-block">
             <h3 className="text-2xl md:text-3xl font-bold mb-2">Guarantees Measurable Success</h3>
           </div>
         </div>
