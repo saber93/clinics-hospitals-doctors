@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -53,8 +52,8 @@ const HeroSection = () => {
         {/* Top right image */}
         <div className="w-32 h-32 pointer-events-none absolute right-40 top-24">
           <img 
-            src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=300&auto=format&fit=crop&q=80" 
-            alt="Modern wellness clinic" 
+            src="https://images.unsplash.com/photo-1587351021355-a479a299d2f9?w=300&auto=format&fit=crop&q=80" 
+            alt="Modern healthcare center" 
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
         </div>
@@ -62,8 +61,8 @@ const HeroSection = () => {
         {/* Middle right image - moved 32px more to the right */}
         <div className="w-40 h-40 pointer-events-none absolute right-16 top-96">
           <img 
-            src="https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=300&auto=format&fit=crop&q=80" 
-            alt="Medical center building" 
+            src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=300&auto=format&fit=crop&q=80" 
+            alt="Medical clinic exterior" 
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
         </div>
@@ -71,8 +70,8 @@ const HeroSection = () => {
         {/* Bottom right image - moved 32px more to the right (changed from right-16 to right-[48px]) */}
         <div className="w-32 h-32 pointer-events-none absolute right-[48px] top-60">
           <img 
-            src="https://images.unsplash.com/photo-1524230572899-a752b3835840?w=300&auto=format&fit=crop&q=80" 
-            alt="Healthcare facility" 
+            src="https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=300&auto=format&fit=crop&q=80" 
+            alt="Health center building" 
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
         </div>
