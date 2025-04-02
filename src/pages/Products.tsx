@@ -2,9 +2,17 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ShoppingBag } from 'lucide-react';
+import { ShoppingBag, Search } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
 import ProductSidebar from '@/components/products/ProductSidebar';
+import { Input } from "@/components/ui/input";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const Products = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -77,12 +85,36 @@ const Products = () => {
           </div>
         </div>
 
+        {/* Top search and sort bar */}
+        <div className="mb-6 flex flex-col sm:flex-row gap-4">
+          <div className="relative flex-grow">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search products..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 w-full"
+            />
+          </div>
+          <div className="w-full sm:w-64">
+            <Select value={sortOrder} onValueChange={setSortOrder}>
+              <SelectTrigger>
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="featured">Featured</SelectItem>
+                <SelectItem value="price-low">Price: Low to High</SelectItem>
+                <SelectItem value="price-high">Price: High to Low</SelectItem>
+                <SelectItem value="name">Name</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
         <div className="flex flex-col md:flex-row gap-6">
           {/* Sidebar */}
           <div className="md:w-1/4 lg:w-1/5">
             <ProductSidebar
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
               priceRange={priceRange}
               setPriceRange={setPriceRange}
               categoryFilter={categoryFilter}
@@ -91,8 +123,6 @@ const Products = () => {
               setOnlyAvailable={setOnlyAvailable}
               onlyDiscounted={onlyDiscounted}
               setOnlyDiscounted={setOnlyDiscounted}
-              sortOrder={sortOrder}
-              setSortOrder={setSortOrder}
               categories={categories}
               maxPrice={maxProductPrice}
               clearFilters={clearFilters}
