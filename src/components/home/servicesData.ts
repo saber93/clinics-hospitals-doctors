@@ -12,7 +12,8 @@ import {
   WebDesignIcon,
   ExhibitionsIcon,
   PRCampaignIcon,
-  VideoMarketingIcon
+  VideoMarketingIcon,
+  MedicalMarketingIcon
 } from './ServiceIcons';
 
 export interface ServiceItem {
@@ -81,5 +82,10 @@ export const services: ServiceItem[] = [
     title: "Video Marketing and Media Production",
     description: "read more",
     icon: VideoMarketingIcon,
+  },
+  {
+    title: "Marketing and Promotion of Medical Products and Services",
+    description: "read more",
+    icon: MedicalMarketingIcon,
   },
 ];
