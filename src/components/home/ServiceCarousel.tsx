@@ -24,10 +24,11 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = ({ services, api, setApi
         setApi={setApi} 
         opts={{ 
           align: "start",
-          containScroll: false
+          containScroll: false,
+          gap: 16  // Setting the gap to exactly 16px
         }}
       >
-        <CarouselContent>
+        <CarouselContent className="-ml-4">
           {services.map((service, index) => (
             <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
               <ServiceCard
