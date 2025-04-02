@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ShoppingBag, Search } from 'lucide-react';
+import { ShoppingBag, Search, Pill } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
 import ProductSidebar from '@/components/products/ProductSidebar';
 import { Input } from "@/components/ui/input";
@@ -74,8 +74,8 @@ const Products = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Products</h1>
-            <p className="mt-2 text-sm text-gray-600">Explore our collection of quality products</p>
+            <h1 className="text-xl font-bold text-gray-900">Pharmacy Products</h1>
+            <p className="mt-2 text-sm text-gray-600">Browse our selection of medications and health products</p>
           </div>
           <div className="mt-4 sm:mt-0">
             <Button variant="default">
@@ -90,7 +90,7 @@ const Products = () => {
           <div className="relative flex-grow">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search products..."
+              placeholder="Search medications..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 pr-4 w-full"
@@ -146,8 +146,8 @@ const Products = () => {
               </div>
             ) : sortedProducts.length === 0 ? (
               <div className="text-center py-12">
-                <ShoppingBag className="mx-auto h-12 w-12 text-gray-400" />
-                <h3 className="mt-4 text-lg font-medium text-gray-900">No products found</h3>
+                <Pill className="mx-auto h-12 w-12 text-gray-400" />
+                <h3 className="mt-4 text-lg font-medium text-gray-900">No medications found</h3>
                 <p className="mt-1 text-gray-500">Try adjusting your search or filter to find what you're looking for.</p>
               </div>
             ) : (
@@ -163,7 +163,7 @@ const Products = () => {
                         />
                       ) : (
                         <div className="h-full w-full bg-gray-100 flex items-center justify-center">
-                          <ShoppingBag className="h-12 w-12 text-gray-400" />
+                          <Pill className="h-12 w-12 text-gray-400" />
                         </div>
                       )}
                       {product.discount_percentage && (
