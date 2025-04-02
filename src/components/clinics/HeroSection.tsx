@@ -25,8 +25,8 @@ const HeroSection = () => {
           />
         </div>
         
-        {/* Third left image - adjusted position to be more to the right */}
-        <div className="w-40 h-40 pointer-events-none absolute left-[-40px] top-60">
+        {/* Third left image - adjusted position to be even more to the right */}
+        <div className="w-40 h-40 pointer-events-none absolute left-[-20px] top-60">
           <img 
             src="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=300&auto=format&fit=crop&q=80" 
             alt="Medical procedure" 
