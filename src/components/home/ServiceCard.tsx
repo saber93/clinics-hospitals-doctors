@@ -5,11 +5,11 @@ import { ChevronRight } from 'lucide-react';
 interface ServiceCardProps {
   title: string;
   description: string;
-  icon: React.ReactNode;
+  icon: React.FC;
   isActive?: boolean;
 }
 
-const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon, isActive = false }) => {
+const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon: Icon, isActive = false }) => {
   const [isHovered, setIsHovered] = useState(false);
   
   return (
@@ -20,7 +20,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon, isA
     >
       <div>
         <div className="mb-6 text-4xl">
-          {icon}
+          <Icon />
         </div>
         <h3 className="text-2xl font-semibold mb-3">{title}</h3>
       </div>
