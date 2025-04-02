@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 
@@ -27,7 +26,7 @@ const HeroSection = () => {
         </div>
         
         {/* Third left image - repositioned to overlap with bottom image */}
-        <div className="w-40 h-40 pointer-events-none absolute left-[70px] top-[180px] z-10">
+        <div className="w-40 h-40 pointer-events-none absolute left-[70px] top-[280px] z-10">
           <img 
             src="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=300&auto=format&fit=crop&q=80" 
             alt="Medical procedure" 
