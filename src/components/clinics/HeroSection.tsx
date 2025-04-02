@@ -55,8 +55,8 @@ const HeroSection = () => {
           />
         </div>
         
-        {/* Middle right image */}
-        <div className="w-40 h-40 pointer-events-none absolute right-48 top-96">
+        {/* Middle right image - moved 32px more to the right */}
+        <div className="w-40 h-40 pointer-events-none absolute right-16 top-96">
           <img 
             src="https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=300&auto=format&fit=crop&q=80" 
             alt="Medical products" 
@@ -64,8 +64,8 @@ const HeroSection = () => {
           />
         </div>
         
-        {/* Bottom right image */}
-        <div className="w-32 h-32 pointer-events-none absolute right-16 top-60">
+        {/* Bottom right image - moved 32px more to the right (changed from right-16 to right-[48px]) */}
+        <div className="w-32 h-32 pointer-events-none absolute right-[48px] top-60">
           <img 
             src="https://images.unsplash.com/photo-1603912699214-92627f304eb6?w=300&auto=format&fit=crop&q=80" 
             alt="Medical procedure" 
