@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Menu, ShoppingCart } from 'lucide-react';
+import { Menu, ShoppingCart, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavbar } from './navbar/useNavbar';
 import NavLogo from './navbar/NavLogo';
@@ -9,9 +9,15 @@ import MobileMenu from './navbar/MobileMenu';
 import UserDropdownMenu from './navbar/UserDropdownMenu';
 import AuthButtons from './navbar/AuthButtons';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 const GlassyNavbar = () => {
   const { isOpen, scrolled, user, filteredLinks, handleToggleMenu, handleLogout } = useNavbar();
+  const navigate = useNavigate();
+
+  const handleAccountClick = () => {
+    navigate('/dashboard');
+  };
 
   return (
     <header
@@ -35,6 +41,10 @@ const GlassyNavbar = () => {
             </span>
           </Button>
           
+          <Button variant="ghost" size="icon" onClick={handleAccountClick}>
+            <User size={20} />
+          </Button>
+          
           {user ? (
             <UserDropdownMenu handleLogout={handleLogout} />
           ) : (
@@ -48,6 +58,10 @@ const GlassyNavbar = () => {
             <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center">
               0
             </span>
+          </Button>
+          
+          <Button variant="ghost" size="icon" onClick={handleAccountClick}>
+            <User size={20} />
           </Button>
           
           <button
