@@ -6,19 +6,19 @@ export const sellerNavLinks: NavLinkType[] = [
   {
     name: "Dashboard",
     path: "/seller-dashboard",
-    icon: <LayoutDashboard size={16} />,
+    icon: LayoutDashboard,
     auth: true,
   },
   {
     name: "Products",
     path: "/products",
-    icon: <ShoppingBag size={16} />,
+    icon: ShoppingBag,
     auth: true,
   },
   {
     name: "Vouchers",
     path: "/seller-vouchers",
-    icon: <Tag size={16} />,
+    icon: Tag,
     auth: true,
   }
 ];

@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 interface NavLinkProps {
   name: string;
   path: string;
-  icon?: React.ElementType | ReactNode;
+  icon?: React.ElementType | React.ReactNode;
   className?: string;
 }
 
@@ -22,12 +22,12 @@ const NavLink = ({ name, path, icon, className }: NavLinkProps) => {
         className
       )}
     >
-      {icon && typeof icon === 'function' ? (
-        // If icon is a component/function (like a Lucide icon component), render it with props
-        React.createElement(icon as React.ElementType, { size: 18, className: "mr-1" })
-      ) : icon ? (
-        // If icon is already a ReactNode, render it directly
+      {icon && React.isValidElement(icon) ? (
+        // If icon is already a ReactElement, render it directly
         <span className="mr-1">{icon}</span>
+      ) : icon && typeof icon === 'function' ? (
+        // If icon is a component/function (like a Lucide icon component), render it
+        React.createElement(icon as React.ElementType, { size: 18, className: "mr-1" })
       ) : null}
       {name}
     </Link>

@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
-import { Home, Info, Phone, Building2, Heart, User, Stethoscope } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { Home, Info, Phone, Building2, Stethoscope } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import { logoutUser } from '@/utils/auth';
 
 export interface NavLinkType {
@@ -12,7 +12,7 @@ export interface NavLinkType {
 }
 
 export const useNavbar = () => {
-  const { user } = useAuth();
+  const { user, session } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -58,7 +58,7 @@ export const useNavbar = () => {
     isOpen,
     scrolled,
     filteredLinks,
-    user,
+    user: user || session,
     handleToggleMenu,
     handleLogout
   };
