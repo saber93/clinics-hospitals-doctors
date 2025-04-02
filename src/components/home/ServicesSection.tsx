@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowRight, ArrowLeft, ChevronRight } from 'lucide-react';
 import { 
@@ -8,7 +7,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { useCarousel } from "@/components/ui/carousel";
 
 interface ServiceCardProps {
   title: string;
@@ -40,7 +38,6 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon, isA
   );
 };
 
-// Custom icons for the service cards
 const CreativeIcon = () => (
   <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M24 12L36 24L24 36L12 24L24 12Z" stroke="currentColor" strokeWidth="2" />
@@ -94,29 +91,22 @@ const ServicesSection = () => {
     },
   ];
 
-  const [api, setApi] = React.useState<ReturnType<typeof useCarousel>["api"] | null>(null);
+  const [api, setApi] = React.useState<any>(null);
 
-  // Function to handle manual navigation with the custom arrows
   const scrollPrev = React.useCallback(() => api?.scrollPrev(), [api]);
   const scrollNext = React.useCallback(() => api?.scrollNext(), [api]);
 
   return (
     <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-start mb-12">
-          <div className="mb-8 md:mb-0">
-            <h4 className="text-sm uppercase font-medium tracking-wider text-gray-700 mb-3">MAIN DIRECTIONS</h4>
-            <h2 className="text-5xl font-bold">Services</h2>
-          </div>
-          
-          <div className="max-w-xl">
-            <p className="text-lg text-gray-600">
-              Dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit 
-              aspernaturaut odit aut fugit, sed quia consequuntur. Dicta sunt 
-              explicabo. Nemo enim ipsam voluptatem quia voluptas.
-            </p>
-            
-            <div className="hidden md:flex items-center space-x-4 mt-6">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-12">
+          <div className="flex flex-col md:flex-row md:items-center gap-6 mb-8 md:mb-0">
+            <div>
+              <h4 className="text-sm uppercase font-medium tracking-wider text-gray-700 mb-3">MAIN DIRECTIONS</h4>
+              <h2 className="text-5xl font-bold">Services</h2>
+            </div>
+
+            <div className="hidden md:flex items-center space-x-4">
               <button 
                 onClick={scrollPrev}
                 className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
@@ -130,6 +120,14 @@ const ServicesSection = () => {
                 <ArrowRight className="w-5 h-5" />
               </button>
             </div>
+          </div>
+          
+          <div className="max-w-xl">
+            <p className="text-lg text-gray-600">
+              Dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit 
+              aspernaturaut odit aut fugit, sed quia consequuntur. Dicta sunt 
+              explicabo. Nemo enim ipsam voluptatem quia voluptas.
+            </p>
           </div>
         </div>
 
@@ -150,7 +148,6 @@ const ServicesSection = () => {
           </div>
         </div>
         
-        {/* Desktop view as carousel */}
         <Carousel className="w-full" setApi={setApi}>
           <CarouselContent className="-ml-4">
             {services.map((service, index) => (
