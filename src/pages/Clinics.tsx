@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,6 +5,7 @@ import HeroSection from '@/components/clinics/HeroSection';
 import ClinicFilters from '@/components/clinics/ClinicFilters';
 import ClinicsList from '@/components/clinics/ClinicsList';
 import ClinicFeatures from '@/components/clinics/ClinicFeatures';
+import TestimonialsSection from '@/components/clinics/TestimonialsSection';
 
 // Demo clinic data with enhanced details
 const clinicsData = [
@@ -188,8 +188,9 @@ const Clinics = () => {
         />
       </div>
       
-      {/* Moved ClinicFeatures here to appear just above the footer */}
+      {/* Features and Testimonials sections */}
       <ClinicFeatures />
+      <TestimonialsSection />
     </div>
   );
 };
