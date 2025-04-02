@@ -6,7 +6,8 @@ import {
   RebrandingIcon, 
   CorporateIcon,
   KpiMarketingIcon,
-  ConferenceIcon
+  ConferenceIcon,
+  HospitalSolutionsIcon
 } from './ServiceIcons';
 
 export interface ServiceItem {
@@ -45,5 +46,10 @@ export const services: ServiceItem[] = [
     title: "Organizing Medical Conferences and Specialized Events",
     description: "read more",
     icon: ConferenceIcon,
+  },
+  {
+    title: "Customized Solutions for Hospitals and Medical Centers",
+    description: "read more",
+    icon: HospitalSolutionsIcon,
   },
 ];
