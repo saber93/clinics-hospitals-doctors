@@ -1,6 +1,14 @@
 
 import React from 'react';
-import { QuoteIcon } from 'lucide-react';
+import { QuoteIcon, ArrowRight } from 'lucide-react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import useIntersectionAnimation from '@/hooks/useIntersectionAnimation';
 
 // Testimonial data
 const testimonials = [
@@ -24,14 +32,33 @@ const testimonials = [
     author: "Emma Rodriguez",
     role: "Regular Client",
     imageUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=150&auto=format&fit=crop"
+  },
+  {
+    id: 4,
+    quote: "The specialist I found through Zames provided exceptional care for my eczema. Within weeks, I saw dramatic improvement that other treatments couldn't achieve.",
+    author: "David Thompson",
+    role: "Long-term Patient",
+    imageUrl: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=150&auto=format&fit=crop"
+  },
+  {
+    id: 5,
+    quote: "As a dermatologist, joining Zames has allowed me to reach many more patients who need specialized care. The platform's focus on quality has elevated my practice.",
+    author: "Dr. Amelia Rodriguez",
+    role: "Dermatology Specialist",
+    imageUrl: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=150&auto=format&fit=crop"
   }
 ];
 
 const TestimonialsSection = () => {
+  const { fadeRefsRef } = useIntersectionAnimation(1);
+  
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="text-center mb-12">
+        <div 
+          className="text-center mb-12 fade-in-up"
+          ref={el => fadeRefsRef.current[0] = el}
+        >
           <h2 className="text-3xl md:text-4xl font-bold">
             What People Say About <span className="text-primary">Zames</span>
           </h2>
@@ -40,36 +67,50 @@ const TestimonialsSection = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-          {testimonials.map((testimonial) => (
-            <div key={testimonial.id} className="bg-gray-50 p-8 rounded-xl shadow-sm relative">
-              <QuoteIcon className="text-primary/20 h-12 w-12 absolute top-6 right-6" />
-              
-              <p className="text-gray-700 mb-6 relative z-10">
-                "{testimonial.quote}"
-              </p>
-              
-              <div className="flex items-center mt-6">
-                <img 
-                  src={testimonial.imageUrl} 
-                  alt={testimonial.author} 
-                  className="w-12 h-12 rounded-full object-cover mr-4"
-                />
-                <div>
-                  <h4 className="font-semibold text-gray-800">{testimonial.author}</h4>
-                  <p className="text-gray-600 text-sm">{testimonial.role}</p>
-                </div>
-              </div>
+        <div className="mt-12">
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-2 md:-ml-4">
+              {testimonials.map((testimonial) => (
+                <CarouselItem key={testimonial.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
+                  <div className="h-full testimonial-card bg-gray-50 p-8 rounded-xl shadow-sm relative">
+                    <QuoteIcon className="text-primary/20 h-12 w-12 absolute top-6 right-6" />
+                    
+                    <p className="text-gray-700 mb-6 relative z-10">
+                      "{testimonial.quote}"
+                    </p>
+                    
+                    <div className="flex items-center mt-6">
+                      <img 
+                        src={testimonial.imageUrl} 
+                        alt={testimonial.author} 
+                        className="w-12 h-12 rounded-full object-cover mr-4"
+                      />
+                      <div>
+                        <h4 className="font-semibold text-gray-800">{testimonial.author}</h4>
+                        <p className="text-gray-600 text-sm">{testimonial.role}</p>
+                      </div>
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <div className="flex justify-center gap-2 mt-8">
+              <CarouselPrevious className="relative inset-0 translate-y-0 h-10 w-10" />
+              <CarouselNext className="relative inset-0 translate-y-0 h-10 w-10" />
             </div>
-          ))}
+          </Carousel>
         </div>
         
         <div className="text-center mt-12">
           <a href="#" className="text-primary font-medium hover:underline inline-flex items-center">
             See more testimonials
-            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            <ArrowRight className="w-4 h-4 ml-2" />
           </a>
         </div>
       </div>
