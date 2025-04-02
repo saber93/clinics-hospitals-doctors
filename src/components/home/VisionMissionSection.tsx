@@ -54,42 +54,23 @@ const VisionMissionSection = () => {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="grid gap-4">
-              <div className="relative h-72 md:h-96">
-                <img 
-                  src="public/lovable-uploads/92eca1af-a6f8-4f2a-a524-a8a0d601ba17.png"
-                  alt="Team collaboration and strategy session"
-                  className="rounded-lg object-cover w-full h-full"
-                />
-                <div className="absolute inset-0 bg-black/20 rounded-lg"></div>
-              </div>
-              <div className="relative h-72 md:h-96 hidden sm:block">
-                <img 
-                  src="public/lovable-uploads/96b7f889-8783-4072-b164-abacb94bc958.png"
-                  alt="Business meeting discussion"
-                  className="rounded-lg object-cover w-full h-full"
-                />
-                <div className="absolute inset-0 bg-black/20 rounded-lg"></div>
-              </div>
+          <div className="relative h-[600px] mt-8 md:mt-0">
+            {/* Large background image */}
+            <div className="absolute right-0 top-0 w-[80%] h-[80%]">
+              <img 
+                src="public/lovable-uploads/da11f43c-4176-4142-a47d-140f21300c1d.png"
+                alt="Team collaborating on strategic vision"
+                className="rounded-lg object-cover w-full h-full"
+              />
             </div>
-            <div className="grid gap-4">
-              <div className="relative h-72 md:h-96 hidden sm:block">
-                <img 
-                  src="public/lovable-uploads/da11f43c-4176-4142-a47d-140f21300c1d.png"
-                  alt="Team collaborating on strategic vision"
-                  className="rounded-lg object-cover w-full h-full"
-                />
-                <div className="absolute inset-0 bg-black/20 rounded-lg"></div>
-              </div>
-              <div className="relative h-72 md:h-96">
-                <img 
-                  src="public/lovable-uploads/9b620d87-47a0-41af-b2a9-6118424081e8.png"
-                  alt="Digital collaboration meeting"
-                  className="rounded-lg object-cover w-full h-full"
-                />
-                <div className="absolute inset-0 bg-black/20 rounded-lg"></div>
-              </div>
+            
+            {/* Overlapping smaller image */}
+            <div className="absolute left-0 bottom-0 w-[75%] h-[75%] shadow-xl">
+              <img 
+                src="public/lovable-uploads/92eca1af-a6f8-4f2a-a524-a8a0d601ba17.png"
+                alt="Business strategy meeting"
+                className="rounded-lg object-cover w-full h-full border-4 border-white"
+              />
             </div>
           </div>
         </div>
