@@ -34,15 +34,15 @@ const GlassyNavbar = () => {
 
         {/* Auth Buttons / User Menu - Make logout button more visible */}
         <div className="hidden md:flex items-center space-x-3">
+          <Button variant="ghost" size="icon" onClick={handleAccountClick}>
+            <User size={20} />
+          </Button>
+          
           <Button variant="ghost" size="icon" className="relative">
             <ShoppingCart size={20} />
             <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center">
               0
             </span>
-          </Button>
-          
-          <Button variant="ghost" size="icon" onClick={handleAccountClick}>
-            <User size={20} />
           </Button>
           
           {user ? (
@@ -53,15 +53,15 @@ const GlassyNavbar = () => {
         </div>
 
         <div className="md:hidden flex items-center space-x-2">
+          <Button variant="ghost" size="icon" onClick={handleAccountClick}>
+            <User size={20} />
+          </Button>
+          
           <Button variant="ghost" size="icon" className="relative">
             <ShoppingCart size={20} />
             <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center">
               0
             </span>
-          </Button>
-          
-          <Button variant="ghost" size="icon" onClick={handleAccountClick}>
-            <User size={20} />
           </Button>
           
           <button
