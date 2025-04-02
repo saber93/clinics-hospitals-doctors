@@ -29,7 +29,7 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = ({ services, api, setApi
           dragFree: false
         }}
       >
-        <CarouselContent className="-ml-1 gap-[10px]">
+        <CarouselContent className="-ml-1 gap-[-10px]">
           {services.map((service, index) => (
             <CarouselItem key={index} className="pl-1 md:basis-1/3 lg:basis-1/4">
               <ServiceCard
