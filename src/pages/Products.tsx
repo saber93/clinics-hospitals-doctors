@@ -71,12 +71,12 @@ const Products = () => {
           alt="Clearance Sale on Sports Nutrition" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/70 to-primary/50" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-primary/60" />
         
-        {/* Cover content - improved visibility */}
+        {/* Cover content - enhanced visibility */}
         <div className="absolute inset-0 flex items-center justify-center z-10">
-          <div className="max-w-7xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">Zames Products</h1>
+          <div className="max-w-7xl mx-auto text-center px-4 sm:px-6 lg:px-8 bg-black/30 py-6 rounded-lg">
+            <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tracking-wide">Zames Products</h1>
             <p className="mt-3 text-xl text-white drop-shadow-md">Quality healthcare products for your needs</p>
           </div>
         </div>
