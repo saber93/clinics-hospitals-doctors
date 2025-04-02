@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ProductImageWithFallback from '@/components/products/ProductImageWithFallback';
+import { PaginationControl } from '@/components/ui/pagination-control';
 
 const Products = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -22,6 +24,8 @@ const Products = () => {
   const [sortOrder, setSortOrder] = useState('featured');
   const [onlyAvailable, setOnlyAvailable] = useState(false);
   const [onlyDiscounted, setOnlyDiscounted] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(6);
   const { products, loading } = useProducts();
   
   const maxProductPrice = Math.max(...products.map(p => p.price), 200);
@@ -40,6 +44,7 @@ const Products = () => {
     setPriceRange([0, maxProductPrice]);
     setOnlyAvailable(false);
     setOnlyDiscounted(false);
+    setCurrentPage(1);
   };
 
   const filteredProducts = products.filter(product => {
@@ -63,6 +68,18 @@ const Products = () => {
     if (sortOrder === 'name') return a.name.localeCompare(b.name);
     return 0;
   });
+
+  // Get current products for pagination
+  const indexOfLastProduct = currentPage * itemsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+  const currentProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    // Scroll to top of products section
+    window.scrollTo({ top: document.querySelector('.products-grid')?.offsetTop || 0, behavior: 'smooth' });
+  };
 
   const handleAddToCart = (e: React.MouseEvent, product: any) => {
     e.preventDefault();
@@ -156,42 +173,57 @@ const Products = () => {
                   <p className="mt-1 text-gray-500">Try adjusting your search or filter to find what you're looking for.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {sortedProducts.map((product, index) => (
-                    <Link to={`/product/${product.id}`} key={product.id}>
-                      <Card className="overflow-hidden transition-all duration-200 hover:shadow-lg">
-                        <div className="relative h-48 overflow-hidden">
-                          <ProductImageWithFallback
-                            imageUrl={product.image_url || ""}
-                            productName={product.name}
-                            productId={product.id}
-                            index={index}
-                            className="h-full w-full object-cover"
-                          />
-                          {product.discount_percentage && (
-                            <div className="absolute top-2 right-2 bg-primary text-white px-2 py-1 rounded-full text-xs font-semibold">
-                              {product.discount_percentage}% OFF
-                            </div>
-                          )}
-                        </div>
-                        <CardContent className="p-4">
-                          <h3 className="font-medium truncate">{product.name}</h3>
-                          <p className="text-sm text-gray-500 mt-1 line-clamp-2">{product.description || "No description available"}</p>
-                          <div className="mt-4 flex items-center justify-between">
-                            <span className="text-lg font-semibold">${product.price.toFixed(2)}</span>
-                            <Button 
-                              size="sm" 
-                              onClick={(e) => handleAddToCart(e, product)}
-                              className="flex items-center"
-                            >
-                              <ShoppingCart className="mr-1 h-4 w-4" />
-                              Add to Cart
-                            </Button>
+                <div className="space-y-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 products-grid">
+                    {currentProducts.map((product, index) => (
+                      <Link to={`/product/${product.id}`} key={product.id}>
+                        <Card className="overflow-hidden transition-all duration-200 hover:shadow-lg">
+                          <div className="relative h-48 overflow-hidden">
+                            <ProductImageWithFallback
+                              imageUrl={product.image_url || ""}
+                              productName={product.name}
+                              productId={product.id}
+                              index={index}
+                              className="h-full w-full object-cover"
+                            />
+                            {product.discount_percentage && (
+                              <div className="absolute top-2 right-2 bg-primary text-white px-2 py-1 rounded-full text-xs font-semibold">
+                                {product.discount_percentage}% OFF
+                              </div>
+                            )}
                           </div>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  ))}
+                          <CardContent className="p-4">
+                            <h3 className="font-medium truncate">{product.name}</h3>
+                            <p className="text-sm text-gray-500 mt-1 line-clamp-2">{product.description || "No description available"}</p>
+                            <div className="mt-4 flex items-center justify-between">
+                              <span className="text-lg font-semibold">${product.price.toFixed(2)}</span>
+                              <Button 
+                                size="sm" 
+                                onClick={(e) => handleAddToCart(e, product)}
+                                className="flex items-center"
+                              >
+                                <ShoppingCart className="mr-1 h-4 w-4" />
+                                Add to Cart
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    ))}
+                  </div>
+                  
+                  {/* Pagination controls */}
+                  {totalPages > 1 && (
+                    <div className="mt-8">
+                      <PaginationControl
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                        showFirstLast={true}
+                        maxVisiblePages={5}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
             </div>

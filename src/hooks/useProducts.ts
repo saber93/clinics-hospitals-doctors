@@ -72,6 +72,40 @@ const demoProducts: Product[] = [
     is_available: true,
     category: "Medical Devices",
     seller_id: "demo"
+  },
+  {
+    id: "7",
+    name: "Pain Relief Gel",
+    description: "Fast-acting topical gel for muscle and joint pain relief",
+    price: 12.49,
+    image_url: "https://images.unsplash.com/photo-1583947581924-860bda6a26df?auto=format&fit=crop&w=500&q=80",
+    stock_quantity: 42,
+    is_available: true,
+    category: "Pain Relief",
+    seller_id: "demo"
+  },
+  {
+    id: "8",
+    name: "Pulse Oximeter",
+    description: "Monitor your blood oxygen levels and pulse rate with this digital device",
+    price: 34.95,
+    image_url: "https://images.unsplash.com/photo-1612452787714-d235e15697e9?auto=format&fit=crop&w=500&q=80",
+    stock_quantity: 18,
+    is_available: true,
+    category: "Medical Devices",
+    seller_id: "demo",
+    discount_percentage: 10
+  },
+  {
+    id: "9",
+    name: "Humidifier",
+    description: "Ultrasonic cool mist humidifier for better breathing and sleeping",
+    price: 39.99,
+    image_url: "https://images.unsplash.com/photo-1590856300127-96a3ddbb0c63?auto=format&fit=crop&w=500&q=80",
+    stock_quantity: 12,
+    is_available: true,
+    category: "Wellness",
+    seller_id: "demo"
   }
 ];
 
