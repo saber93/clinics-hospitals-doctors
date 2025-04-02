@@ -8,7 +8,8 @@ import {
   KpiMarketingIcon,
   ConferenceIcon,
   HospitalSolutionsIcon,
-  MarketingConsultingIcon
+  MarketingConsultingIcon,
+  WebDesignIcon
 } from './ServiceIcons';
 
 export interface ServiceItem {
@@ -57,5 +58,10 @@ export const services: ServiceItem[] = [
     title: "Marketing Consulting to Enhance Branding and Increase Sales",
     description: "read more",
     icon: MarketingConsultingIcon,
+  },
+  {
+    title: "Website Design and Development Services",
+    description: "read more",
+    icon: WebDesignIcon,
   },
 ];
