@@ -39,7 +39,7 @@ const VisionMissionSection = () => {
               growth.
             </p>
 
-            <div className="mt-16">
+            <div className="mt-8">
               <h2 className="text-5xl md:text-6xl font-bold mb-8">Objectives</h2>
               <div className="space-y-6">
                 {objectives.map((objective, index) => (
