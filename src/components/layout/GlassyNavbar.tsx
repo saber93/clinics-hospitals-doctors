@@ -15,8 +15,8 @@ const GlassyNavbar = () => {
       className={cn(
         'fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out border-b',
         scrolled 
-          ? 'py-3 backdrop-blur-xl bg-white/30 dark:bg-black/30 shadow-lg border-white/10 dark:border-white/5' 
-          : 'py-5 backdrop-blur-md bg-white/10 dark:bg-black/10 border-transparent'
+          ? 'py-2 backdrop-blur-xl bg-white/30 dark:bg-black/30 shadow-lg border-white/10 dark:border-white/5' 
+          : 'py-3 backdrop-blur-md bg-white/10 dark:bg-black/10 border-transparent'
       )}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between">

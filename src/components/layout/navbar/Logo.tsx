@@ -8,7 +8,7 @@ const Logo: React.FC = () => {
       <img 
         src="/lovable-uploads/96b7f889-8783-4072-b164-abacb94bc958.png" 
         alt="Zamos Marketing Management" 
-        className="h-12 md:h-14 object-contain"
+        className="h-10 md:h-12 object-contain"
       />
     </Link>
   );
