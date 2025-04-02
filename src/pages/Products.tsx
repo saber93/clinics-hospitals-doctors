@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -74,7 +73,7 @@ const Products = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Products</h1>
+            <h1 className="text-xl font-bold text-gray-900">Products</h1>
             <p className="mt-2 text-sm text-gray-600">Explore our collection of quality products</p>
           </div>
           <div className="mt-4 sm:mt-0">
