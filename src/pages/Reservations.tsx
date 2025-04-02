@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { getUserReservations, getAvailableServices, createReservation } from "@/utils/reservations";
 import { Button } from "@/components/ui/button";
-import { List } from "lucide-react";
+import { List, ArrowLeft } from "lucide-react";
 import ServiceSelection from "@/components/reservations/ServiceSelection";
 import DateTimePicker from "@/components/reservations/DateTimePicker";
 import BookingsList from "@/components/reservations/BookingsList";
@@ -161,9 +161,20 @@ const Reservations = () => {
     <div className="min-h-screen bg-gray-50 py-8 pt-24 pb-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold">
-            {clinicName ? `Book at ${clinicName}` : "Book an Appointment"}
-          </h1>
+          <div className="flex items-center">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => navigate('/dashboard')}
+              className="mr-4 flex items-center"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Dashboard
+            </Button>
+            <h1 className="text-3xl font-bold">
+              {clinicName ? `Book at ${clinicName}` : "Book an Appointment"}
+            </h1>
+          </div>
           <Button 
             variant="outline" 
             onClick={() => navigate('/all-bookings')}
