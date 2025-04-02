@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowRight, ArrowLeft, ChevronRight } from 'lucide-react';
 import { 
@@ -86,7 +85,7 @@ const ServicesSection = () => {
       icon: <RebrandingIcon />,
     },
     {
-      title: "Corporate Identity",
+      title: "Digital Reputation Management for Clinics and Hospitals",
       description: "read more",
       icon: <CorporateIcon />,
     },
