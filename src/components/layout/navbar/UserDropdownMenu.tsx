@@ -62,7 +62,7 @@ const UserDropdownMenu: React.FC<UserDropdownMenuProps> = ({ handleLogout }) => 
         </DropdownMenuItem>
         
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onLogout}>
+        <DropdownMenuItem onClick={onLogout} className="text-red-500 font-medium">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>

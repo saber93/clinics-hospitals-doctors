@@ -58,7 +58,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
         {session && (
           <button
             onClick={onLogout}
-            className="text-lg text-gray-600 hover:text-primary py-2 transition-colors flex items-center gap-2"
+            className="text-lg text-red-500 font-medium py-2 transition-colors flex items-center gap-2"
           >
             <LogOut size={18} />
             Log out

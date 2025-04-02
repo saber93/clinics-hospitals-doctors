@@ -7,7 +7,7 @@ import NavLogo from './navbar/NavLogo';
 import DesktopNav from './navbar/DesktopNav';
 import MobileMenu from './navbar/MobileMenu';
 import UserDropdownMenu from './navbar/UserDropdownMenu';
-import AuthButtons from './navbar/AuthButtons'; 
+import AuthButtons from './navbar/AuthButtons';
 
 const GlassyNavbar = () => {
   const { isOpen, scrolled, session, filteredLinks, handleToggleMenu, handleLogout } = useNavbar();
@@ -25,7 +25,7 @@ const GlassyNavbar = () => {
         <NavLogo />
         <DesktopNav filteredLinks={filteredLinks} session={session} />
 
-        {/* Auth Buttons / User Menu */}
+        {/* Auth Buttons / User Menu - Make logout button more visible */}
         <div className="hidden md:flex items-center space-x-2">
           {session ? (
             <UserDropdownMenu handleLogout={handleLogout} />
