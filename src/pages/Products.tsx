@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -64,10 +65,20 @@ const Products = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 mt-16">
-      <div className="w-full h-64 bg-gradient-to-r from-primary/90 to-primary/70 flex items-center justify-center mb-8">
-        <div className="max-w-7xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-white">Zames Products</h1>
-          <p className="mt-2 text-lg text-white/80">Quality healthcare products for your needs</p>
+      <div className="w-full h-64 relative overflow-hidden">
+        {/* Background image with gradient overlay */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center" 
+          style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1612452787715-f6626c2c1c7a?auto=format&fit=crop&w=1500&q=80)' }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary/70" />
+        
+        {/* Cover content */}
+        <div className="relative h-full flex items-center justify-center">
+          <div className="max-w-7xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            <h1 className="text-3xl md:text-4xl font-bold text-white">Zames Products</h1>
+            <p className="mt-2 text-lg text-white/80">Quality healthcare products for your needs</p>
+          </div>
         </div>
       </div>
 
