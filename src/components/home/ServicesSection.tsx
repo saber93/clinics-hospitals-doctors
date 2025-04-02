@@ -8,6 +8,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { useCarousel } from "@/components/ui/carousel";
 
 interface ServiceCardProps {
   title: string;
@@ -93,6 +94,12 @@ const ServicesSection = () => {
     },
   ];
 
+  const [api, setApi] = React.useState<ReturnType<typeof useCarousel>["api"] | null>(null);
+
+  // Function to handle manual navigation with the custom arrows
+  const scrollPrev = React.useCallback(() => api?.scrollPrev(), [api]);
+  const scrollNext = React.useCallback(() => api?.scrollNext(), [api]);
+
   return (
     <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4">
@@ -110,10 +117,16 @@ const ServicesSection = () => {
             </p>
             
             <div className="hidden md:flex items-center space-x-4 mt-6">
-              <button className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors">
+              <button 
+                onClick={scrollPrev}
+                className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+              >
                 <ArrowLeft className="w-5 h-5" />
               </button>
-              <button className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors">
+              <button 
+                onClick={scrollNext}
+                className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+              >
                 <ArrowRight className="w-5 h-5" />
               </button>
             </div>
@@ -122,49 +135,40 @@ const ServicesSection = () => {
 
         <div className="block md:hidden mb-6">
           <div className="flex justify-center space-x-4">
-            <button className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors">
+            <button 
+              onClick={scrollPrev}
+              className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+            >
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <button className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors">
+            <button 
+              onClick={scrollNext}
+              className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+            >
               <ArrowRight className="w-5 h-5" />
             </button>
           </div>
         </div>
         
-        {/* Desktop view */}
-        <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((service, index) => (
-            <ServiceCard
-              key={index}
-              title={service.title}
-              description={service.description}
-              icon={service.icon}
-              isActive={index === 1}
-            />
-          ))}
-        </div>
-        
-        {/* Mobile carousel */}
-        <div className="md:hidden">
-          <Carousel className="w-full">
-            <CarouselContent>
-              {services.map((service, index) => (
-                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                  <ServiceCard
-                    title={service.title}
-                    description={service.description}
-                    icon={service.icon}
-                    isActive={index === 1}
-                  />
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <div className="hidden mt-4">
-              <CarouselPrevious />
-              <CarouselNext />
-            </div>
-          </Carousel>
-        </div>
+        {/* Desktop view as carousel */}
+        <Carousel className="w-full" setApi={setApi}>
+          <CarouselContent className="-ml-4">
+            {services.map((service, index) => (
+              <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/4">
+                <ServiceCard
+                  title={service.title}
+                  description={service.description}
+                  icon={service.icon}
+                  isActive={index === 1}
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <div className="hidden">
+            <CarouselPrevious />
+            <CarouselNext />
+          </div>
+        </Carousel>
       </div>
     </section>
   );
