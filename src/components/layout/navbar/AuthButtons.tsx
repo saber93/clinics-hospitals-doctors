@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { AuthButtonsProps } from './types';
 import { LogOut } from 'lucide-react';
 import { logoutUser } from '@/utils/auth';
+import { supabase } from '@/integrations/supabase/client';
 
 const AuthButtons: React.FC<AuthButtonsProps> = ({ session }) => {
   const navigate = useNavigate();

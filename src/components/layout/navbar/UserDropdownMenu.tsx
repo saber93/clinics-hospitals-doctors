@@ -11,16 +11,33 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAuth } from '@/contexts/AuthContext';
 import { logoutUser } from '@/utils/auth';
+import { supabase } from '@/integrations/supabase/client';
+import { useEffect, useState } from 'react';
 
 interface UserDropdownMenuProps {
   handleLogout?: () => void;
 }
 
 const UserDropdownMenu: React.FC<UserDropdownMenuProps> = ({ handleLogout }) => {
-  const { user } = useAuth();
   const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
+  
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data.user);
+    };
+    
+    getUser();
+    
+    // Listen for user changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      getUser();
+    });
+    
+    return () => subscription.unsubscribe();
+  }, []);
   
   const onLogout = () => {
     if (handleLogout) {
@@ -29,6 +46,8 @@ const UserDropdownMenu: React.FC<UserDropdownMenuProps> = ({ handleLogout }) => 
       logoutUser(); // Use the centralized logout function as fallback
     }
   };
+
+  if (!user) return null;
 
   return (
     <DropdownMenu>

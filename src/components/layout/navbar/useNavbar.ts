@@ -1,8 +1,8 @@
 
 import { useState, useEffect } from 'react';
 import { Home, Info, Phone, Building2, Stethoscope, Hospital, ShoppingBag } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
 import { logoutUser } from '@/utils/auth';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface NavLinkType {
   name: string;
@@ -12,9 +12,9 @@ export interface NavLinkType {
 }
 
 export const useNavbar = () => {
-  const { user, session } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [session, setSession] = useState<any>(null);
 
   const links: NavLinkType[] = [
     { name: 'Home', path: '/', icon: Home },
@@ -25,6 +25,23 @@ export const useNavbar = () => {
     { name: 'About', path: '/about', icon: Info },
     { name: 'Contact', path: '/contact', icon: Phone },
   ];
+
+  useEffect(() => {
+    // Check current auth status
+    const getSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session);
+    };
+    
+    getSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+      setSession(currentSession);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleScrollListener = () => {
     if (window.scrollY > 10) {
@@ -50,9 +67,9 @@ export const useNavbar = () => {
 
   const filteredLinks = links.filter(link => {
     if (!link.roles) return true;
-    if (!user) return false;
+    if (!session) return false;
     
-    const userRole = user.user_metadata?.role || 'client';
+    const userRole = session.user?.user_metadata?.role || 'client';
     return link.roles.includes(userRole);
   });
 
@@ -60,7 +77,7 @@ export const useNavbar = () => {
     isOpen,
     scrolled,
     filteredLinks,
-    user: user || session,
+    session,
     handleToggleMenu,
     handleLogout
   };

@@ -11,14 +11,34 @@ import AuthButtons from './navbar/AuthButtons';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useEffect, useState } from 'react';
 
 const GlassyNavbar = () => {
-  const { isOpen, scrolled, user, filteredLinks, handleToggleMenu, handleLogout } = useNavbar();
+  const { isOpen, scrolled, filteredLinks, handleToggleMenu, handleLogout } = useNavbar();
   const navigate = useNavigate();
   const { totalItems } = useCart();
+  const [session, setSession] = useState<any>(null);
 
-  // Determine if user is authenticated - use user as the primary check
-  const isAuthenticated = !!user;
+  useEffect(() => {
+    // Check current auth status
+    const getSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session);
+    };
+    
+    getSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+      setSession(currentSession);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Determine if user is authenticated
+  const isAuthenticated = !!session;
 
   const handleAccountClick = () => {
     if (isAuthenticated) {
@@ -43,7 +63,7 @@ const GlassyNavbar = () => {
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between">
         <NavLogo />
-        <DesktopNav filteredLinks={filteredLinks} session={user} />
+        <DesktopNav filteredLinks={filteredLinks} session={session} />
 
         {/* Auth Buttons / User Menu - Make logout button more visible */}
         <div className="hidden md:flex items-center space-x-3">
@@ -61,7 +81,7 @@ const GlassyNavbar = () => {
           {isAuthenticated ? (
             <UserDropdownMenu handleLogout={handleLogout} />
           ) : (
-            <AuthButtons session={user} />
+            <AuthButtons session={session} />
           )}
         </div>
 
@@ -90,7 +110,7 @@ const GlassyNavbar = () => {
       <MobileMenu 
         isOpen={isOpen} 
         filteredLinks={filteredLinks} 
-        session={user} 
+        session={session} 
         onClose={handleToggleMenu}
         handleLogout={handleLogout}
       />
