@@ -2,7 +2,6 @@
 import React, { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { LucideIcon } from 'lucide-react';
 
 interface NavLinkProps {
   name: string;
@@ -26,10 +25,10 @@ const NavLink = ({ name, path, icon, className }: NavLinkProps) => {
       {icon && typeof icon === 'function' ? (
         // If icon is a component/function (like a Lucide icon component), render it with props
         React.createElement(icon as React.ElementType, { size: 18, className: "mr-1" })
-      ) : (
+      ) : icon ? (
         // If icon is already a ReactNode, render it directly
-        icon && <span className="mr-1">{icon}</span>
-      )}
+        <span className="mr-1">{icon}</span>
+      ) : null}
       {name}
     </Link>
   );

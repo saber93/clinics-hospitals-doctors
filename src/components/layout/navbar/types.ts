@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 export interface NavLinkType {
   name: string;
   path: string;
-  icon?: React.ElementType | ReactNode;
+  icon?: React.ElementType;
   auth?: boolean;
   role?: string;
   protected?: boolean;

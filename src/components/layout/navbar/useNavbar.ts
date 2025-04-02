@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Home, Info, Phone, Building2, Heart, User, Stethoscope } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -11,7 +12,7 @@ export interface NavLinkType {
 }
 
 export const useNavbar = () => {
-  const { isLoading, loginError, setLoginError, handleLogin, handleRegister, handleLogout: authLogout } = useAuth();
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -44,8 +45,6 @@ export const useNavbar = () => {
     setIsOpen(false);
     await logoutUser();
   };
-
-  const user = null;
 
   const filteredLinks = links.filter(link => {
     if (!link.roles) return true;
