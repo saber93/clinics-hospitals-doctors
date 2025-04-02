@@ -17,8 +17,7 @@ const HeroSection = () => {
             <span className="text-primary">Expert Care</span>
           </h1>
           <p className="mt-5 text-lg text-gray-600 max-w-xl">
-            Connect with top-rated dermatology clinics and skincare specialists. 
-            Book appointments, manage treatments, and achieve your best skin ever.
+            At Zams Marketing Management Company, we bring a unique & innovative experience to the UAE market. Our approach centers on building strategic partnerships that create mutual value & sustainable growth. Through our extensive customer & influencer network, we connect businesses with their ideal audience, amplifying their market presence & enhancing their competitive edge.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4">
             <Button 
