@@ -15,10 +15,10 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-purple-800/95 to-blue-900/95"></div>
       </div>
 
-      {/* Left side images - positioned with vertical spacing */}
+      {/* Left side images - repositioned to be more centered between edge and content */}
       <div className="absolute left-0 top-0 w-1/3 h-full hidden md:block z-10">
         {/* Medical clinic image - top left */}
-        <div className="w-36 h-36 pointer-events-none absolute left-16 top-20">
+        <div className="w-36 h-36 pointer-events-none absolute left-[80px] top-20">
           <img 
             src="https://images.unsplash.com/photo-1624727828489-a1e03b79bba8?w=300&auto=format&fit=crop&q=80"
             alt="Medical clinic reception" 
@@ -26,8 +26,8 @@ const HeroSection = () => {
           />
         </div>
         
-        {/* Third left image - adjusted position to be even more to the right */}
-        <div className="w-40 h-40 pointer-events-none absolute left-30 top-60">
+        {/* Third left image - middle position */}
+        <div className="w-40 h-40 pointer-events-none absolute left-[100px] top-60">
           <img 
             src="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=300&auto=format&fit=crop&q=80" 
             alt="Medical procedure" 
@@ -36,7 +36,7 @@ const HeroSection = () => {
         </div>
         
         {/* Second left image - bottom */}
-        <div className="w-28 h-28 pointer-events-none absolute left-[16px] top-[420px]">
+        <div className="w-28 h-28 pointer-events-none absolute left-[90px] top-[420px]">
           <img 
             src="https://images.unsplash.com/photo-1600443271879-5378a3e0dedc?w=300&auto=format&fit=crop&q=80" 
             alt="Medical consultation" 
