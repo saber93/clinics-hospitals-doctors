@@ -96,6 +96,8 @@ const AppRoutes = () => {
           <Route path="/categories" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
           <Route path="/categories/new" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />
           <Route path="/categories/:id/edit" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />
+          
+          {/* Update this route to use AllBookings for both admin and regular users */}
           <Route path="/all-bookings" element={<ProtectedRoute><AllBookings /></ProtectedRoute>} />
           
           {/* Role-specific dashboard routes */}

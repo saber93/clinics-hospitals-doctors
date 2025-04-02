@@ -51,7 +51,7 @@ const StatsCards = () => {
           <p className="text-xs text-muted-foreground">+8% from last week</p>
         </CardContent>
         <CardFooter>
-          <Button variant="outline" size="sm" className="w-full" onClick={() => navigate("/reservations")}>
+          <Button variant="outline" size="sm" className="w-full" onClick={() => navigate("/all-bookings")}>
             View all bookings
           </Button>
         </CardFooter>

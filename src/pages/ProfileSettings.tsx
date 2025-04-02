@@ -79,7 +79,7 @@ const ProfileSettings = () => {
         .from('profiles')
         .update({
           name: formValues.name,
-          updated_at: new Date(),
+          updated_at: new Date().toISOString(),
         })
         .eq('id', user.id);
       
