@@ -148,8 +148,8 @@ const Clinics = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Removed padding-top to eliminate the gap between navbar and hero section */}
-      <div>
+      {/* Added margin-top to push hero section below the navbar */}
+      <div className="mt-16">
         <HeroSection />
       </div>
       
