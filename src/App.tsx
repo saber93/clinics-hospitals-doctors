@@ -3,6 +3,7 @@ import { useAppAuth } from "./hooks/useAppAuth";
 import AppProviders from "./components/providers/AppProviders";
 import AppRoutes from "./components/routing/AppRoutes";
 import GlassyNavbar from "./components/layout/GlassyNavbar";
+import ModernFooter from "./components/layout/ModernFooter";
 
 const App = () => {
   const { loading } = useAppAuth();
@@ -17,12 +18,12 @@ const App = () => {
 
   return (
     <AppProviders>
-      <div className="min-h-screen">
+      <div className="min-h-screen flex flex-col">
         <GlassyNavbar />
-        {/* Remove padding for clinics page as the hero section should touch the navbar */}
-        <div>
+        <div className="flex-grow">
           <AppRoutes />
         </div>
+        <ModernFooter />
       </div>
     </AppProviders>
   );
