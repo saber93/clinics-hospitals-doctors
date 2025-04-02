@@ -1,4 +1,3 @@
-
 export type ProductVoucherType = {
   productName: string;
   description: string;
@@ -7,3 +6,11 @@ export type ProductVoucherType = {
   imageUrl?: string;
   additionalImages?: string[];
 };
+
+export interface ClinicCardBaseProps {
+  clinic: Clinic;
+  handleClinicSelect: () => void;
+  handleBooking: (e: React.MouseEvent) => void;
+  handleFavoriteToggle: (e: React.MouseEvent) => void;
+  isFavorite: boolean;
+}
