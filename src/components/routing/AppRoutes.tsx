@@ -29,6 +29,7 @@ const Hospitals = lazy(() => import('@/pages/Hospitals'));
 const ClinicDetails = lazy(() => import('@/pages/ClinicDetails'));
 const Reservations = lazy(() => import('@/pages/Reservations'));
 const MyReservations = lazy(() => import('@/pages/MyReservations'));
+const Vouchers = lazy(() => import('@/pages/Vouchers'));
 const About = lazy(() => import('@/pages/About'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const AllBookings = lazy(() => import('@/pages/AllBookings'));
@@ -68,6 +69,7 @@ const AppRoutes = () => {
           {/* Protected routes */}
           <Route path="/reservations" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />
           <Route path="/my-reservations" element={<ProtectedRoute><MyReservations /></ProtectedRoute>} />
+          <Route path="/vouchers" element={<ProtectedRoute><Vouchers /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           
           {/* Product routes */}
