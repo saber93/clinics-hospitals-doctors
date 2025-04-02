@@ -11,7 +11,8 @@ import {
   MarketingConsultingIcon,
   WebDesignIcon,
   ExhibitionsIcon,
-  PRCampaignIcon
+  PRCampaignIcon,
+  VideoMarketingIcon
 } from './ServiceIcons';
 
 export interface ServiceItem {
@@ -75,5 +76,10 @@ export const services: ServiceItem[] = [
     title: "Public Relations Campaign Management",
     description: "read more",
     icon: PRCampaignIcon,
+  },
+  {
+    title: "Video Marketing and Media Production",
+    description: "read more",
+    icon: VideoMarketingIcon,
   },
 ];
