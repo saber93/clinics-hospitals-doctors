@@ -10,13 +10,19 @@ import UserDropdownMenu from './navbar/UserDropdownMenu';
 import AuthButtons from './navbar/AuthButtons';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { useCart } from '@/contexts/CartContext';
 
 const GlassyNavbar = () => {
   const { isOpen, scrolled, user, filteredLinks, handleToggleMenu, handleLogout } = useNavbar();
   const navigate = useNavigate();
+  const { totalItems } = useCart();
 
   const handleAccountClick = () => {
     navigate('/dashboard');
+  };
+
+  const handleCartClick = () => {
+    navigate('/cart');
   };
 
   return (
@@ -38,10 +44,10 @@ const GlassyNavbar = () => {
             <User size={20} />
           </Button>
           
-          <Button variant="ghost" size="icon" className="relative">
+          <Button variant="ghost" size="icon" className="relative" onClick={handleCartClick}>
             <ShoppingCart size={20} />
             <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center">
-              0
+              {totalItems}
             </span>
           </Button>
           
@@ -57,10 +63,10 @@ const GlassyNavbar = () => {
             <User size={20} />
           </Button>
           
-          <Button variant="ghost" size="icon" className="relative">
+          <Button variant="ghost" size="icon" className="relative" onClick={handleCartClick}>
             <ShoppingCart size={20} />
             <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center">
-              0
+              {totalItems}
             </span>
           </Button>
           

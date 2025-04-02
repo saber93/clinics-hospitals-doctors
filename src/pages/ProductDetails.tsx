@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ShoppingCart, Heart, Share2, AlertTriangle, Star } from 'lucide-react';
@@ -7,15 +6,16 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import LoadingSpinner from "@/components/ui/loading-spinner";
-import { toast } from "@/hooks/use-toast";
 import { useProducts } from '@/hooks/useProducts';
 import { Product } from '@/types/product';
 import ProductImageCarousel from '@/components/products/ProductImageCarousel';
 import ProductReviews from '@/components/products/ProductReviews';
+import { useCart } from '@/contexts/CartContext';
 
 const ProductDetails = () => {
   const { id } = useParams<{ id: string }>();
   const { products, loading } = useProducts();
+  const { addToCart } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState<"left" | "right" | null>(null);
@@ -53,10 +53,9 @@ const ProductDetails = () => {
   };
 
   const handleAddToCart = () => {
-    toast({
-      title: "Added to cart",
-      description: `${quantity} x ${product?.name} added to your cart.`,
-    });
+    if (product) {
+      addToCart(product, quantity);
+    }
   };
 
   const handleQuantityChange = (change: number) => {

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,6 @@ import { Search, Bandage, ShoppingCart } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
 import ProductSidebar from '@/components/products/ProductSidebar';
 import { Input } from "@/components/ui/input";
-import { toast } from "@/hooks/use-toast";
 import { 
   Select,
   SelectContent,
@@ -17,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import ProductImageWithFallback from '@/components/products/ProductImageWithFallback';
 import { PaginationControl } from '@/components/ui/pagination-control';
+import { useCart } from '@/contexts/CartContext';
 
 const Products = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -27,6 +26,7 @@ const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(6);
   const { products, loading } = useProducts();
+  const { addToCart } = useCart();
   
   const maxProductPrice = Math.max(...products.map(p => p.price), 200);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, maxProductPrice]);
@@ -90,10 +90,7 @@ const Products = () => {
   const handleAddToCart = (e: React.MouseEvent, product: any) => {
     e.preventDefault();
     e.stopPropagation();
-    toast({
-      title: "Added to cart",
-      description: `${product.name} added to your cart.`,
-    });
+    addToCart(product, 1);
   };
 
   return (
