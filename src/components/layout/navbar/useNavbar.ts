@@ -1,13 +1,13 @@
 
 import { useState, useEffect } from 'react';
-import { useAppAuth } from '@/hooks/useAppAuth';
+import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
+import { logoutUser } from '@/utils/auth';
 
 export const useNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const auth = useAppAuth();
+  const auth = useAuth();
   const { session } = auth;
   const navigate = useNavigate();
 
@@ -37,13 +37,10 @@ export const useNavbar = () => {
   };
 
   // Handle logout
-  const handleLogout = () => {
-    // Use Supabase directly for signOut since useAppAuth doesn't expose signOut
-    supabase.auth.signOut().then(() => {
-      navigate('/');
-    }).catch(error => {
-      console.error('Error signing out:', error);
-    });
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate('/');
+    setIsOpen(false);
   };
 
   // Handle scrolling

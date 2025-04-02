@@ -1,8 +1,9 @@
 
 import React from 'react';
-import { X } from 'lucide-react';
+import { X, LogOut } from 'lucide-react';
 import NavLink from './NavLink';
 import { MobileMenuProps } from './types';
+import { logoutUser } from '@/utils/auth';
 
 const MobileMenu: React.FC<MobileMenuProps> = ({ 
   isOpen, 
@@ -21,6 +22,15 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
     } else if (toggleMobileMenu) {
       toggleMobileMenu();
     }
+  };
+  
+  const onLogout = () => {
+    if (handleLogout) {
+      handleLogout();
+    } else {
+      logoutUser();
+    }
+    closeMenu();
   };
 
   return (
@@ -45,14 +55,12 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
           />
         ))}
         
-        {session && handleLogout && (
+        {session && (
           <button
-            onClick={() => {
-              handleLogout();
-              closeMenu();
-            }}
-            className="text-lg text-gray-600 hover:text-primary py-2 transition-colors"
+            onClick={onLogout}
+            className="text-lg text-gray-600 hover:text-primary py-2 transition-colors flex items-center gap-2"
           >
+            <LogOut size={18} />
             Log out
           </button>
         )}

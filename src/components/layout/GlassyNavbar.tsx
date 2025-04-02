@@ -6,6 +6,8 @@ import { useNavbar } from './navbar/useNavbar';
 import NavLogo from './navbar/NavLogo';
 import DesktopNav from './navbar/DesktopNav';
 import MobileMenu from './navbar/MobileMenu';
+import UserDropdownMenu from './navbar/UserDropdownMenu';
+import AuthButtons from './navbar/AuthButtons'; 
 
 const GlassyNavbar = () => {
   const { isOpen, scrolled, session, filteredLinks, handleToggleMenu, handleLogout } = useNavbar();
@@ -22,6 +24,15 @@ const GlassyNavbar = () => {
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between">
         <NavLogo />
         <DesktopNav filteredLinks={filteredLinks} session={session} />
+
+        {/* Auth Buttons / User Menu */}
+        <div className="hidden md:flex items-center space-x-2">
+          {session ? (
+            <UserDropdownMenu handleLogout={handleLogout} />
+          ) : (
+            <AuthButtons session={session} />
+          )}
+        </div>
 
         <button
           onClick={handleToggleMenu}

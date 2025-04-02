@@ -11,21 +11,30 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { logoutUser } from '@/utils/auth';
 
 interface UserDropdownMenuProps {
-  handleLogout: () => void;
+  handleLogout?: () => void;
 }
 
 const UserDropdownMenu: React.FC<UserDropdownMenuProps> = ({ handleLogout }) => {
-  const { user, isClient, isVendor } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
+  
+  const onLogout = () => {
+    if (handleLogout) {
+      handleLogout();
+    } else {
+      logoutUser(); // Use the centralized logout function as fallback
+    }
+  };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="flex items-center space-x-2">
-          <span>Hi, {user?.name?.split(' ')[0]}</span>
+          <span>Hi, {user?.user_metadata?.name?.split(' ')[0] || 'User'}</span>
           <ChevronDown size={16} />
         </Button>
       </DropdownMenuTrigger>
@@ -37,19 +46,10 @@ const UserDropdownMenu: React.FC<UserDropdownMenuProps> = ({ handleLogout }) => 
           <span>Profile</span>
         </DropdownMenuItem>
         
-        {isClient() && (
-          <DropdownMenuItem onClick={() => navigate('/reservations')}>
-            <Calendar className="mr-2 h-4 w-4" />
-            <span>My Reservations</span>
-          </DropdownMenuItem>
-        )}
-        
-        {isVendor() && (
-          <DropdownMenuItem onClick={() => navigate('/dashboard')}>
-            <Calendar className="mr-2 h-4 w-4" />
-            <span>Vendor Dashboard</span>
-          </DropdownMenuItem>
-        )}
+        <DropdownMenuItem onClick={() => navigate('/reservations')}>
+          <Calendar className="mr-2 h-4 w-4" />
+          <span>My Reservations</span>
+        </DropdownMenuItem>
         
         <DropdownMenuItem onClick={() => navigate('/vouchers')}>
           <Ticket className="mr-2 h-4 w-4" />
@@ -62,7 +62,7 @@ const UserDropdownMenu: React.FC<UserDropdownMenuProps> = ({ handleLogout }) => 
         </DropdownMenuItem>
         
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleLogout}>
+        <DropdownMenuItem onClick={onLogout}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>

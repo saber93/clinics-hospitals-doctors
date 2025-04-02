@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { logoutUser } from '@/utils/auth';
 import Logo from './navbar/Logo';
 import DesktopMenu from './navbar/DesktopMenu';
 import MobileMenu from './navbar/MobileMenu';
@@ -10,7 +11,7 @@ import UserDropdownMenu from './navbar/UserDropdownMenu';
 import AuthButtons from './navbar/AuthButtons';
 
 const Navbar: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, session } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -18,8 +19,8 @@ const Navbar: React.FC = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logoutUser();
     navigate('/');
   };
 
@@ -42,10 +43,10 @@ const Navbar: React.FC = () => {
 
           {/* Auth Buttons / User Menu */}
           <div className="hidden md:flex items-center space-x-2">
-            {user ? (
+            {session ? (
               <UserDropdownMenu handleLogout={handleLogout} />
             ) : (
-              <AuthButtons session={user} />
+              <AuthButtons session={session} />
             )}
           </div>
 
@@ -65,7 +66,7 @@ const Navbar: React.FC = () => {
           isOpen={mobileMenuOpen} 
           toggleMobileMenu={toggleMobileMenu} 
           filteredLinks={filteredLinks}
-          session={user}
+          session={session}
           handleLogout={handleLogout}
         />
       </div>
