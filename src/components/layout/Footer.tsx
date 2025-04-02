@@ -99,11 +99,11 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               <li className="flex items-center text-muted-foreground">
                 <Mail size={18} className="mr-2" />
-                <span>info@zames.com</span>
+                <span>info@zames.marketing</span>
               </li>
               <li className="flex items-center text-muted-foreground">
                 <Phone size={18} className="mr-2" />
-                <span>+1 (555) 123-4567</span>
+                <span>+971 56 910 2909</span>
               </li>
               <li className="mt-4">
                 <Link to="/contact" className="text-primary hover:underline">

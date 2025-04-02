@@ -91,19 +91,19 @@ const ModernFooter = () => {
               <li className="flex items-start">
                 <MapPin className="h-5 w-5 text-primary mr-3 mt-0.5 flex-shrink-0" />
                 <span className="text-gray-600 dark:text-gray-400">
-                  123 Beauty Street, Skincare City, SC 12345
+                  UAE —15h Street, Office 478 - Dubai, B.O. 81566
                 </span>
               </li>
               <li className="flex items-center">
                 <Phone className="h-5 w-5 text-primary mr-3 flex-shrink-0" />
-                <a href="tel:+11234567890" className="text-gray-600 dark:text-gray-400 hover:text-primary">
-                  (123) 456-7890
+                <a href="tel:+97156910290" className="text-gray-600 dark:text-gray-400 hover:text-primary">
+                  +971 56 910 2909
                 </a>
               </li>
               <li className="flex items-center">
                 <Mail className="h-5 w-5 text-primary mr-3 flex-shrink-0" />
-                <a href="mailto:info@zames.com" className="text-gray-600 dark:text-gray-400 hover:text-primary">
-                  info@zames.com
+                <a href="mailto:info@zames.marketing" className="text-gray-600 dark:text-gray-400 hover:text-primary">
+                  info@zames.marketing
                 </a>
               </li>
             </ul>
