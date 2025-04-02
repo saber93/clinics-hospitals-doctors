@@ -14,7 +14,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon: Ico
   
   return (
     <div 
-      className={`p-8 rounded-sm transition-all duration-300 h-full flex flex-col justify-between max-w-[300px] mx-auto ${isHovered ? 'bg-black text-white' : 'bg-white text-black'}`}
+      className={`p-8 rounded-sm transition-all duration-300 h-full flex flex-col justify-between w-full max-w-[300px] mx-auto ${isHovered ? 'bg-black text-white' : 'bg-white text-black'}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
