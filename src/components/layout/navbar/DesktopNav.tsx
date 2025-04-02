@@ -1,7 +1,6 @@
 
 import React from 'react';
 import NavLink from './NavLink';
-import AuthButtons from './AuthButtons';
 import { DesktopNavProps } from './types';
 
 const DesktopNav = ({ filteredLinks, session }: DesktopNavProps) => {
@@ -15,8 +14,6 @@ const DesktopNav = ({ filteredLinks, session }: DesktopNavProps) => {
           icon={link.icon}
         />
       ))}
-      
-      <AuthButtons session={session} />
     </nav>
   );
 };
