@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
@@ -145,7 +144,7 @@ const ClinicDirectory = () => {
               setSelectedSubCategory={setSelectedSubCategory}
               categories={categories}
               clearFilters={clearFilters}
-              showClearButton={showClearFilters}
+              showClearButton={Boolean(showClearFilters)}
             />
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
@@ -175,7 +174,7 @@ const ClinicDirectory = () => {
                   setSelectedSubCategory={setSelectedSubCategory}
                   categories={categories}
                   clearFilters={clearFilters}
-                  showClearButton={showClearFilters}
+                  showClearButton={Boolean(showClearFilters)}
                 />
               </div>
 

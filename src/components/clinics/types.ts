@@ -1,3 +1,6 @@
+
+import { Clinic } from '@/types/clinic';
+
 export type ProductVoucherType = {
   productName: string;
   description: string;
@@ -14,3 +17,4 @@ export interface ClinicCardBaseProps {
   handleFavoriteToggle: (e: React.MouseEvent) => void;
   isFavorite: boolean;
 }
+
