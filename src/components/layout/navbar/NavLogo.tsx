@@ -6,7 +6,7 @@ const NavLogo = () => {
   return (
     <Link to="/" className="flex items-center">
       <img 
-        src="/lovable-uploads/26800541-dedb-4ee8-b47c-4788a924d1d6.png" 
+        src="/lovable-uploads/96b7f889-8783-4072-b164-abacb94bc958.png" 
         alt="Zamos Marketing Management" 
         className="h-10 md:h-12 object-contain"
       />
