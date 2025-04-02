@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 
@@ -35,8 +34,8 @@ const HeroSection = () => {
           />
         </div>
         
-        {/* Second left image - bottom - moved further to the right */}
-        <div className="w-28 h-28 pointer-events-none absolute left-[144px] top-[420px] z-20">
+        {/* Second left image - bottom - moved further to the right and up */}
+        <div className="w-28 h-28 pointer-events-none absolute left-[144px] top-[396px] z-20">
           <img 
             src="https://images.unsplash.com/photo-1487252665478-49b61b47f302?w=300&auto=format&fit=crop&q=80" 
             alt="Medical consultation" 
