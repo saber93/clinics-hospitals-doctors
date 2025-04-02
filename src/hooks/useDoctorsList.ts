@@ -11,7 +11,7 @@ export const useDoctorsList = ({ doctorsData }: UseDoctorListProps) => {
   const [specialtyFilter, setSpecialtyFilter] = useState('all');
   const [offerFilter, setOfferFilter] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
-  const [viewMode, setViewMode] = useState('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [filteredDoctors, setFilteredDoctors] = useState(doctorsData);
   const [visibleDoctors, setVisibleDoctors] = useState<Doctor[]>([]);
   const [visibleCount, setVisibleCount] = useState(6);

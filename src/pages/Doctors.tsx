@@ -54,7 +54,7 @@ const Doctors = () => {
         <DoctorsListView
           visibleDoctors={visibleDoctors}
           filteredDoctors={filteredDoctors}
-          viewMode={viewMode}
+          viewMode={viewMode as 'grid' | 'list'}
           setViewMode={setViewMode}
           clearFilters={clearFilters}
           hasMore={hasMore}

@@ -1,5 +1,4 @@
-
-import { useState, useEffect, ReactNode } from 'react';
+import { useState, useEffect } from 'react';
 import { Home, Info, Phone, Building2, Heart, User, Stethoscope } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { logoutUser } from '@/utils/auth';
@@ -7,16 +6,15 @@ import { logoutUser } from '@/utils/auth';
 export interface NavLinkType {
   name: string;
   path: string;
-  icon?: ReactNode;
+  icon?: React.ElementType;
   roles?: string[];
 }
 
 export const useNavbar = () => {
-  const { user } = useAuth();
+  const { isLoading, loginError, setLoginError, handleLogin, handleRegister, handleLogout: authLogout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Use icon components without JSX syntax in .ts file
   const links: NavLinkType[] = [
     { name: 'Home', path: '/', icon: Home },
     { name: 'Clinics', path: '/clinics', icon: Building2 },
@@ -47,7 +45,8 @@ export const useNavbar = () => {
     await logoutUser();
   };
 
-  // Filter links based on user roles if needed
+  const user = null;
+
   const filteredLinks = links.filter(link => {
     if (!link.roles) return true;
     if (!user) return false;
