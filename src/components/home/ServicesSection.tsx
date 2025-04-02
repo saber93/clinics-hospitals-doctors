@@ -164,10 +164,17 @@ const ServicesSection = () => {
           </div>
         </div>
         
-        <Carousel className="w-full" setApi={setApi} opts={{ align: "start" }}>
+        <Carousel 
+          className="w-full overflow-visible" 
+          setApi={setApi} 
+          opts={{ 
+            align: "start",
+            containScroll: false
+          }}
+        >
           <CarouselContent className="-ml-4">
             {services.map((service, index) => (
-              <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+              <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
                 <ServiceCard
                   title={service.title}
                   description={service.description}
