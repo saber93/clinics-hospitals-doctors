@@ -10,23 +10,23 @@ export const getTestCredentialsForRole = (role: string): { email: string; passwo
   
   switch(role) {
     case "admin":
-      email = "admin@skinnect.com";
+      email = "admin@zames.com";
       password = "Admin123!";
       break;
     case "vendor":
-      email = "vendor@skinnect.com";
+      email = "vendor@zames.com";
       password = "Vendor123!";
       break;
     case "center":
-      email = "center@skinnect.com";
+      email = "center@zames.com";
       password = "Center123!";
       break;
     case "doctor":
-      email = "dr.skin@skinnect.com";
+      email = "dr.skin@zames.com";
       password = "Doctor123!";
       break;
     case "client":
-      email = "client@skinnect.com";
+      email = "client@zames.com";
       password = "Client123!";
       break;
     default:

@@ -25,11 +25,11 @@ export const useTestAccountCreation = (
       // Use a different email format for doctor
       let email;
       if (role === 'doctor') {
-        email = `dr.skin@skinnect.com`; // More professional doctor email
+        email = `dr.skin@zames.com`; // More professional doctor email
       } else if (role === 'center') {
-        email = `center@skinnect.com`; // Specific email for center
+        email = `center@zames.com`; // Specific email for center
       } else {
-        email = `${role}@skinnect.com`;
+        email = `${role}@zames.com`;
       }
       
       const password = `${capitalizeFirstLetter(role)}123!`;

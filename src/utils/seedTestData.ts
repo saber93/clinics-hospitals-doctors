@@ -30,11 +30,11 @@ export const seedTestData = async (): Promise<SeedDataResult> => {
     
     // Create accounts for all roles
     const accounts = [
-      { email: 'admin@skinnect.com', password: 'Admin123!', role: 'admin', name: 'Admin User' },
-      { email: 'dr.skin@skinnect.com', password: 'Doctor123!', role: 'doctor', name: 'Dr. Skin (Demo)' },
-      { email: 'client@skinnect.com', password: 'Client123!', role: 'client', name: 'Client User' },
-      { email: 'vendor@skinnect.com', password: 'Vendor123!', role: 'vendor', name: 'Vendor Business' },
-      { email: 'center@skinnect.com', password: 'Center123!', role: 'center', name: 'Medical Center' }
+      { email: 'admin@zames.com', password: 'Admin123!', role: 'admin', name: 'Admin User' },
+      { email: 'dr.skin@zames.com', password: 'Doctor123!', role: 'doctor', name: 'Dr. Skin (Demo)' },
+      { email: 'client@zames.com', password: 'Client123!', role: 'client', name: 'Client User' },
+      { email: 'vendor@zames.com', password: 'Vendor123!', role: 'vendor', name: 'Vendor Business' },
+      { email: 'center@zames.com', password: 'Center123!', role: 'center', name: 'Medical Center' }
     ];
     
     const results: Record<string, string | undefined> = {};

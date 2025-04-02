@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
           {/* Logo and Tagline */}
           <div className="col-span-1">
             <Link to="/" className="flex items-center">
-              <span className="text-2xl font-bold text-primary">Skinnect</span>
+              <span className="text-2xl font-bold text-primary">Zames</span>
             </Link>
             <p className="mt-4 text-muted-foreground">
               Connect with the best skin and body care specialists in your area.
@@ -99,7 +99,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               <li className="flex items-center text-muted-foreground">
                 <Mail size={18} className="mr-2" />
-                <span>info@skinnect.com</span>
+                <span>info@zames.com</span>
               </li>
               <li className="flex items-center text-muted-foreground">
                 <Phone size={18} className="mr-2" />
@@ -123,7 +123,7 @@ const Footer: React.FC = () => {
         <div className="border-t mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-muted-foreground text-sm">
-              &copy; {new Date().getFullYear()} Skinnect. All rights reserved.
+              &copy; {new Date().getFullYear()} Zames. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary">

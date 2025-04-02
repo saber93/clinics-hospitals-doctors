@@ -102,8 +102,8 @@ const ModernFooter = () => {
               </li>
               <li className="flex items-center">
                 <Mail className="h-5 w-5 text-primary mr-3 flex-shrink-0" />
-                <a href="mailto:info@skinnect.com" className="text-gray-600 dark:text-gray-400 hover:text-primary">
-                  info@skinnect.com
+                <a href="mailto:info@zames.com" className="text-gray-600 dark:text-gray-400 hover:text-primary">
+                  info@zames.com
                 </a>
               </li>
             </ul>
@@ -116,7 +116,7 @@ const ModernFooter = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-600 dark:text-gray-400 text-sm">
-              © {currentYear} Skinnect. All rights reserved.
+              © {currentYear} Zames. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary">

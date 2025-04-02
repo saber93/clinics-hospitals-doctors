@@ -40,7 +40,7 @@ const Contact = () => {
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold">Contact Us</h1>
-        <p className="mt-4 text-gray-600">We'd love to hear from you. Get in touch with the Skinnect team.</p>
+        <p className="mt-4 text-gray-600">We'd love to hear from you. Get in touch with the Zames team.</p>
         
         <Separator className="my-8" />
         
@@ -121,7 +121,7 @@ const Contact = () => {
                     <MapPin className="h-5 w-5 text-primary mr-3 mt-0.5" />
                     <div>
                       <p className="font-medium">Headquarters</p>
-                      <p className="text-gray-600">123 Skinnect Avenue, Beauty District, CA 90210</p>
+                      <p className="text-gray-600">123 Zames Avenue, Beauty District, CA 90210</p>
                     </div>
                   </li>
                   <li className="flex items-start">
@@ -135,7 +135,7 @@ const Contact = () => {
                     <Mail className="h-5 w-5 text-primary mr-3 mt-0.5" />
                     <div>
                       <p className="font-medium">Email</p>
-                      <p className="text-gray-600">support@skinnect.com</p>
+                      <p className="text-gray-600">support@zames.com</p>
                     </div>
                   </li>
                   <li className="flex items-start">
@@ -158,7 +158,7 @@ const Contact = () => {
                   If you're a clinic or skincare professional interested in joining our platform:
                 </p>
                 <p className="text-primary font-bold mt-1">
-                  partners@skinnect.com
+                  partners@zames.com
                 </p>
               </div>
             </div>
