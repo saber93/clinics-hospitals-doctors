@@ -1,58 +1,169 @@
 
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Calendar, Star, Clock } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowRight, ArrowLeft, ChevronRight } from 'lucide-react';
+import { 
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+
+interface ServiceCardProps {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  isActive?: boolean;
+}
+
+const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon, isActive = false }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  return (
+    <div 
+      className={`p-8 rounded-sm transition-all duration-300 h-full flex flex-col justify-between ${isHovered ? 'bg-black text-white' : 'bg-white text-black'}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div>
+        <div className="mb-6 text-4xl">
+          {icon}
+        </div>
+        <h3 className="text-2xl font-semibold mb-3">{title}</h3>
+        <p className="text-base mb-8">{description}</p>
+      </div>
+      <div>
+        <ChevronRight className={`w-6 h-6 transition-all duration-300 ${isHovered ? 'text-white' : 'text-black'}`} />
+      </div>
+    </div>
+  );
+};
+
+// Custom icons for the service cards
+const CreativeIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M24 12L36 24L24 36L12 24L24 12Z" stroke="currentColor" strokeWidth="2" />
+  </svg>
+);
+
+const ProductionIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="24" cy="24" r="12" stroke="currentColor" strokeWidth="2" />
+    <rect x="20" y="12" width="16" height="16" stroke="currentColor" strokeWidth="2" />
+  </svg>
+);
+
+const RebrandingIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M24 12C18.4772 12 14 16.4772 14 22C14 27.5228 18.4772 32 24 32" stroke="currentColor" strokeWidth="2" />
+    <path d="M28 24L36 24" stroke="currentColor" strokeWidth="2" />
+    <path d="M32 20L36 24L32 28" stroke="currentColor" strokeWidth="2" />
+  </svg>
+);
+
+const CorporateIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="12" y="16" width="8" height="8" stroke="currentColor" strokeWidth="2" />
+    <rect x="28" y="16" width="8" height="8" stroke="currentColor" strokeWidth="2" />
+    <rect x="20" y="24" width="8" height="8" stroke="currentColor" strokeWidth="2" />
+  </svg>
+);
 
 const ServicesSection = () => {
+  const services = [
+    {
+      title: "Creative Vision",
+      description: "Consectetur adipiscing elit",
+      icon: <CreativeIcon />,
+    },
+    {
+      title: "Unique Production",
+      description: "Consectetur adipiscing elit",
+      icon: <ProductionIcon />,
+    },
+    {
+      title: "Rebranding",
+      description: "Consectetur adipiscing elit",
+      icon: <RebrandingIcon />,
+    },
+    {
+      title: "Corporate Identity",
+      description: "Consectetur adipiscing elit",
+      icon: <CorporateIcon />,
+    },
+  ];
+
   return (
-    <section className="py-16 px-4 bg-gradient-to-br from-primary/5 to-primary/10">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold">Our Services</h2>
-          <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
-            Comprehensive skincare solutions for all your needs
-          </p>
+    <section className="py-20 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex flex-col md:flex-row justify-between items-start mb-12">
+          <div className="mb-8 md:mb-0">
+            <h4 className="text-sm uppercase font-medium tracking-wider text-gray-700 mb-3">MAIN DIRECTIONS</h4>
+            <h2 className="text-5xl font-bold">Services</h2>
+          </div>
+          
+          <div className="max-w-xl">
+            <p className="text-lg text-gray-600">
+              Dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit 
+              aspernaturaut odit aut fugit, sed quia consequuntur. Dicta sunt 
+              explicabo. Nemo enim ipsam voluptatem quia voluptas.
+            </p>
+            
+            <div className="hidden md:flex items-center space-x-4 mt-6">
+              <button className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors">
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+              <button className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors">
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <Card className="bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 border-none">
-            <CardContent className="p-6">
-              <div className="mb-4 bg-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center">
-                <Calendar className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="text-lg font-medium mb-2">Easy Bookings</h3>
-              <p className="text-gray-600">
-                Schedule appointments with skincare specialists at your convenience, 24/7.
-                No more waiting on hold or dealing with complicated scheduling systems.
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 border-none">
-            <CardContent className="p-6">
-              <div className="mb-4 bg-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center">
-                <Star className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="text-lg font-medium mb-2">Verified Specialists</h3>
-              <p className="text-gray-600">
-                Connect with certified dermatologists and skincare professionals who have been thoroughly vetted.
-                Your skin deserves only the best care.
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 border-none">
-            <CardContent className="p-6">
-              <div className="mb-4 bg-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center">
-                <Clock className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="text-lg font-medium mb-2">Flexible Hours</h3>
-              <p className="text-gray-600">
-                Many of our partner clinics offer extended hours and weekend appointments to fit your busy schedule.
-                Skincare that works around your life.
-              </p>
-            </CardContent>
-          </Card>
+        <div className="block md:hidden mb-6">
+          <div className="flex justify-center space-x-4">
+            <button className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <button className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors">
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+        
+        {/* Desktop view */}
+        <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {services.map((service, index) => (
+            <ServiceCard
+              key={index}
+              title={service.title}
+              description={service.description}
+              icon={service.icon}
+              isActive={index === 1}
+            />
+          ))}
+        </div>
+        
+        {/* Mobile carousel */}
+        <div className="md:hidden">
+          <Carousel className="w-full">
+            <CarouselContent>
+              {services.map((service, index) => (
+                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                  <ServiceCard
+                    title={service.title}
+                    description={service.description}
+                    icon={service.icon}
+                    isActive={index === 1}
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <div className="hidden mt-4">
+              <CarouselPrevious />
+              <CarouselNext />
+            </div>
+          </Carousel>
         </div>
       </div>
     </section>
