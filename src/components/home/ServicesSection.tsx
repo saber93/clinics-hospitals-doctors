@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ArrowRight, ArrowLeft, ChevronRight } from 'lucide-react';
 import { 
@@ -70,7 +71,7 @@ const CorporateIcon = () => (
 const ServicesSection = () => {
   const services = [
     {
-      title: "Creative Vision",
+      title: "Strategic Business Development Partnerships",
       description: "read more",
       icon: <CreativeIcon />,
     },
