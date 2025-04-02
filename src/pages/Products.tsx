@@ -66,10 +66,10 @@ const Products = () => {
   return (
     <div className="min-h-screen bg-gray-50 mt-16">
       <div className="w-full h-64 relative overflow-hidden">
-        {/* Background image with gradient overlay - updated with more reliable URL */}
+        {/* Background image with gradient overlay - updated to show health supplements */}
         <div 
           className="absolute inset-0 bg-cover bg-center" 
-          style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1471864190281-a93a3070b6de?auto=format&fit=crop&w=1500&q=80)' }}
+          style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?auto=format&fit=crop&w=1500&q=80)' }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary/60" />
         
