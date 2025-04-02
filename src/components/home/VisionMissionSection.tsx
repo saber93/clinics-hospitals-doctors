@@ -54,13 +54,43 @@ const VisionMissionSection = () => {
             </div>
           </div>
           
-          <div className="relative">
-            <img 
-              src="public/lovable-uploads/da11f43c-4176-4142-a47d-140f21300c1d.png"
-              alt="Team collaborating on strategic vision"
-              className="rounded-lg object-cover w-full h-[600px]"
-            />
-            <div className="absolute bottom-0 left-0 right-0 h-2/3 bg-gradient-to-t from-black/20 to-transparent rounded-b-lg"></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid gap-4">
+              <div className="relative h-72 md:h-96">
+                <img 
+                  src="public/lovable-uploads/92eca1af-a6f8-4f2a-a524-a8a0d601ba17.png"
+                  alt="Team collaboration and strategy session"
+                  className="rounded-lg object-cover w-full h-full"
+                />
+                <div className="absolute inset-0 bg-black/20 rounded-lg"></div>
+              </div>
+              <div className="relative h-72 md:h-96 hidden sm:block">
+                <img 
+                  src="public/lovable-uploads/96b7f889-8783-4072-b164-abacb94bc958.png"
+                  alt="Business meeting discussion"
+                  className="rounded-lg object-cover w-full h-full"
+                />
+                <div className="absolute inset-0 bg-black/20 rounded-lg"></div>
+              </div>
+            </div>
+            <div className="grid gap-4">
+              <div className="relative h-72 md:h-96 hidden sm:block">
+                <img 
+                  src="public/lovable-uploads/da11f43c-4176-4142-a47d-140f21300c1d.png"
+                  alt="Team collaborating on strategic vision"
+                  className="rounded-lg object-cover w-full h-full"
+                />
+                <div className="absolute inset-0 bg-black/20 rounded-lg"></div>
+              </div>
+              <div className="relative h-72 md:h-96">
+                <img 
+                  src="public/lovable-uploads/9b620d87-47a0-41af-b2a9-6118424081e8.png"
+                  alt="Digital collaboration meeting"
+                  className="rounded-lg object-cover w-full h-full"
+                />
+                <div className="absolute inset-0 bg-black/20 rounded-lg"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
