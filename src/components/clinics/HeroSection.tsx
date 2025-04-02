@@ -99,19 +99,19 @@ const HeroSection = () => {
         
         {/* Feature badges */}
         <div className="flex flex-wrap justify-center gap-4">
-          <FeatureBadge number="50+" label="SPECIALTIES" />
-          <FeatureBadge number="200+" label="VERIFIED CLINICS" />
+          <FeatureBadge number="50+" label="SPECIALTIES" className="min-w-[130px]" />
+          <FeatureBadge number="200+" label="VERIFIED CLINICS" className="min-w-[130px]" />
           <FeatureBadge 
             number="1000+" 
             label="EXPERT PRACTITIONERS" 
             icon="star" 
             highlight 
-            className="min-w-[140px] max-w-[140px] sm:min-w-[140px]" 
+            className="min-w-[130px]" 
           />
           <FeatureBadge 
             number="24/7" 
             label="PATIENT CARE" 
-            className="min-w-[100px] max-w-[100px] sm:min-w-[140px]" 
+            className="min-w-[130px]" 
           />
         </div>
         
@@ -133,7 +133,7 @@ interface FeatureBadgeProps {
 
 const FeatureBadge = ({ number, label, highlight = false, icon, className }: FeatureBadgeProps) => {
   return (
-    <div className={`flex flex-col items-center justify-center p-4 rounded-md ${highlight ? 'bg-purple-800' : 'bg-white/20 backdrop-blur-sm'} ${className || 'min-w-[140px]'}`}>
+    <div className={`flex flex-col items-center justify-center p-4 rounded-md ${highlight ? 'bg-purple-800' : 'bg-white/20 backdrop-blur-sm'} ${className}`}>
       <div className="text-2xl font-bold text-white">{number}</div>
       <div className="text-xs font-medium text-white mt-1">{label}</div>
       {icon === 'star' && (
