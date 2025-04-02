@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -120,21 +121,21 @@ const Contact = () => {
                     <MapPin className="h-5 w-5 text-primary mr-3 mt-0.5" />
                     <div>
                       <p className="font-medium">Headquarters</p>
-                      <p className="text-gray-600">123 Zames Avenue, Beauty District, CA 90210</p>
+                      <p className="text-gray-600">UAE —15h Street, Office 478 - Dubai, B.O. 81566</p>
                     </div>
                   </li>
                   <li className="flex items-start">
                     <Phone className="h-5 w-5 text-primary mr-3 mt-0.5" />
                     <div>
                       <p className="font-medium">Support Hotline</p>
-                      <p className="text-gray-600">+1 (800) 123-4567</p>
+                      <p className="text-gray-600">+971 56 910 2909</p>
                     </div>
                   </li>
                   <li className="flex items-start">
                     <Mail className="h-5 w-5 text-primary mr-3 mt-0.5" />
                     <div>
                       <p className="font-medium">Email</p>
-                      <p className="text-gray-600">support@zames.com</p>
+                      <p className="text-gray-600">info@zames.marketing</p>
                     </div>
                   </li>
                   <li className="flex items-start">
@@ -157,7 +158,7 @@ const Contact = () => {
                   If you're a clinic or skincare professional interested in joining our platform:
                 </p>
                 <p className="text-primary font-bold mt-1">
-                  partners@zames.com
+                  partners@zames.marketing
                 </p>
               </div>
             </div>
@@ -169,7 +170,7 @@ const Contact = () => {
                   For urgent medical concerns, please contact:
                 </p>
                 <p className="text-primary font-bold mt-1">
-                  +1 (800) 999-8888
+                  +971 56 910 2909
                 </p>
               </div>
             </div>
