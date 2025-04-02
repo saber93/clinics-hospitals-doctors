@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 
@@ -17,7 +16,7 @@ const HeroSection = () => {
 
       {/* Left side images - positioned with vertical spacing */}
       <div className="absolute left-0 top-0 w-1/3 h-full hidden md:block z-10">
-        {/* Medical clinic image - moved back to the left by changing left-28 to left-16 */}
+        {/* Medical clinic image - top left */}
         <div className="w-36 h-36 pointer-events-none absolute left-16 top-20">
           <img 
             src="https://images.unsplash.com/photo-1624727828489-a1e03b79bba8?w=300&auto=format&fit=crop&q=80"
@@ -26,20 +25,20 @@ const HeroSection = () => {
           />
         </div>
         
-        {/* Second left image - moved 50px to the left by reducing left-16 to left-[-34] */}
-        <div className="w-28 h-28 pointer-events-none absolute left-[-34px] top-[420px]">
+        {/* Third left image - moved much further to the left (-84px) */}
+        <div className="w-40 h-40 pointer-events-none absolute left-[-84px] top-60">
           <img 
-            src="https://images.unsplash.com/photo-1600443271879-5378a3e0dedc?w=300&auto=format&fit=crop&q=80" 
-            alt="Medical consultation" 
+            src="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=300&auto=format&fit=crop&q=80" 
+            alt="Medical procedure" 
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
         </div>
         
-        {/* Third left image */}
-        <div className="w-40 h-40 pointer-events-none absolute left-56 top-60">
+        {/* Second left image - bottom */}
+        <div className="w-28 h-28 pointer-events-none absolute left-[-34px] top-[420px]">
           <img 
-            src="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=300&auto=format&fit=crop&q=80" 
-            alt="Medical procedure" 
+            src="https://images.unsplash.com/photo-1600443271879-5378a3e0dedc?w=300&auto=format&fit=crop&q=80" 
+            alt="Medical consultation" 
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
         </div>
