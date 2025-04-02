@@ -32,7 +32,8 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon, isA
         <h3 className="text-2xl font-semibold mb-3">{title}</h3>
         <p className="text-base mb-8">{description}</p>
       </div>
-      <div>
+      <div className="flex items-center">
+        <p className="text-sm mr-2">read more</p>
         <ChevronRight className={`w-6 h-6 transition-all duration-300 ${isHovered ? 'text-white' : 'text-black'}`} />
       </div>
     </div>
@@ -72,22 +73,22 @@ const ServicesSection = () => {
   const services = [
     {
       title: "Creative Vision",
-      description: "Consectetur adipiscing elit",
+      description: "read more",
       icon: <CreativeIcon />,
     },
     {
       title: "Unique Production",
-      description: "Consectetur adipiscing elit",
+      description: "read more",
       icon: <ProductionIcon />,
     },
     {
       title: "Rebranding",
-      description: "Consectetur adipiscing elit",
+      description: "read more",
       icon: <RebrandingIcon />,
     },
     {
       title: "Corporate Identity",
-      description: "Consectetur adipiscing elit",
+      description: "read more",
       icon: <CorporateIcon />,
     },
   ];
