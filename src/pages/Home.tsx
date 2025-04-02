@@ -2,6 +2,7 @@
 import React from 'react';
 import HeroSection from '@/components/home/HeroSection';
 import AboutSection from '@/components/home/AboutSection';
+import VisionMissionSection from '@/components/home/VisionMissionSection';
 import FeaturedClinicsSection from '@/components/home/FeaturedClinicsSection';
 import ServicesSection from '@/components/home/ServicesSection';
 import CTASection from '@/components/home/CTASection';
@@ -14,6 +15,9 @@ const Home = () => {
 
       {/* About Section */}
       <AboutSection />
+      
+      {/* Vision Mission Section */}
+      <VisionMissionSection />
 
       {/* Featured Clinics Section */}
       <FeaturedClinicsSection />
