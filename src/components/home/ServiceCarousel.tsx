@@ -24,7 +24,7 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = ({ services, api, setApi
         setApi={setApi} 
         opts={{
           align: "start",
-          containScroll: false,
+          containScroll: "trimSnaps",
           loop: false,
           dragFree: false
         }}
