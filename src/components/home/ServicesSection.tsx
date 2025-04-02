@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowRight, ArrowLeft, ChevronRight } from 'lucide-react';
 import { 
@@ -30,7 +29,6 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon, isA
           {icon}
         </div>
         <h3 className="text-2xl font-semibold mb-3">{title}</h3>
-        <p className="text-base mb-8">{description}</p>
       </div>
       <div className="flex items-center">
         <p className="text-sm mr-2">read more</p>
