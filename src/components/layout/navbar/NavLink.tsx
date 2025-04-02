@@ -24,7 +24,7 @@ const NavLink = ({ name, path, icon, className }: NavLinkProps) => {
       )}
     >
       {icon && typeof icon === 'function' ? (
-        // If icon is a component/function (LucideIcon), render it with props
+        // If icon is a component/function (like a Lucide icon component), render it with props
         React.createElement(icon as React.ElementType, { size: 18, className: "mr-1" })
       ) : (
         // If icon is already a ReactNode, render it directly
