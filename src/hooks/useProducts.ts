@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Product } from "@/types";
@@ -32,7 +33,7 @@ const demoProducts: Product[] = [
     name: "Compression Bandage",
     description: "Elasticated support bandage for sprains and muscle injuries",
     price: 8.49,
-    image_url: null,
+    image_url: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=500&q=80",
     stock_quantity: 85,
     is_available: true,
     category: "First Aid",
@@ -43,7 +44,7 @@ const demoProducts: Product[] = [
     name: "Antibacterial Hand Sanitizer",
     description: "Kills 99.9% of germs without water, with moisturizing aloe vera",
     price: 4.99,
-    image_url: null,
+    image_url: "https://images.unsplash.com/photo-1585000177405-5930b17ad2cd?auto=format&fit=crop&w=500&q=80",
     stock_quantity: 150,
     is_available: true,
     category: "Hygiene",
@@ -54,7 +55,7 @@ const demoProducts: Product[] = [
     name: "Ice Pack",
     description: "Reusable cooling pack for injuries and pain relief",
     price: 6.95,
-    image_url: null,
+    image_url: "https://images.unsplash.com/photo-1584308074634-d6c5e9a19b2f?auto=format&fit=crop&w=500&q=80",
     stock_quantity: 60,
     is_available: true,
     category: "Medical Supplies",
@@ -66,7 +67,7 @@ const demoProducts: Product[] = [
     name: "Digital Blood Pressure Monitor",
     description: "Easy-to-use home blood pressure monitoring device with large display",
     price: 42.99,
-    image_url: null,
+    image_url: "https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?auto=format&fit=crop&w=500&q=80",
     stock_quantity: 25,
     is_available: true,
     category: "Medical Devices",

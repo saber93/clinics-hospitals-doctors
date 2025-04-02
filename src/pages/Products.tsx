@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import ProductImageWithFallback from '@/components/products/ProductImageWithFallback';
 
 const Products = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -152,20 +153,16 @@ const Products = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {sortedProducts.map(product => (
+                {sortedProducts.map((product, index) => (
                   <Card key={product.id} className="overflow-hidden transition-all duration-200 hover:shadow-lg">
                     <div className="relative h-48 overflow-hidden">
-                      {product.image_url ? (
-                        <img 
-                          src={product.image_url} 
-                          alt={product.name} 
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <div className="h-full w-full bg-gray-100 flex items-center justify-center">
-                          <Bandage className="h-12 w-12 text-gray-400" />
-                        </div>
-                      )}
+                      <ProductImageWithFallback
+                        imageUrl={product.image_url || ""}
+                        productName={product.name}
+                        productId={product.id}
+                        index={index}
+                        className="h-full w-full object-cover"
+                      />
                       {product.discount_percentage && (
                         <div className="absolute top-2 right-2 bg-primary text-white px-2 py-1 rounded-full text-xs font-semibold">
                           {product.discount_percentage}% OFF
