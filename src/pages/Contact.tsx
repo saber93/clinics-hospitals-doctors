@@ -23,17 +23,16 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
-      // Submit form data to Supabase
+      // Using executeRaw to insert data without type checking
+      // This allows us to insert into tables not defined in the TypeScript types
       const { error } = await supabase
         .from('contact_submissions')
-        .insert([
-          { 
-            name,
-            email,
-            subject, 
-            message
-          }
-        ]);
+        .insert({
+          name,
+          email,
+          subject,
+          message
+        } as any);
       
       if (error) {
         throw error;
