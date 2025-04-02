@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -147,8 +148,8 @@ const Clinics = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* HeroSection positioned to touch the bottom of the navbar */}
-      <div className="pt-16">
+      {/* Removed padding-top to eliminate the gap between navbar and hero section */}
+      <div>
         <HeroSection />
       </div>
       

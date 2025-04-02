@@ -19,7 +19,8 @@ const App = () => {
     <AppProviders>
       <div className="min-h-screen">
         <GlassyNavbar />
-        <div className="pt-24">
+        {/* Remove padding for clinics page as the hero section should touch the navbar */}
+        <div>
           <AppRoutes />
         </div>
       </div>
