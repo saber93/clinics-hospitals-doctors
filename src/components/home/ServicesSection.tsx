@@ -165,31 +165,33 @@ const ServicesSection = () => {
         </div>
         
         <div className="relative w-full overflow-visible">
-          <Carousel 
-            className="w-full overflow-visible" 
-            setApi={setApi} 
-            opts={{ 
-              align: "start",
-              containScroll: false
-            }}
-          >
-            <CarouselContent className="-ml-4">
-              {services.map((service, index) => (
-                <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                  <ServiceCard
-                    title={service.title}
-                    description={service.description}
-                    icon={service.icon}
-                    isActive={index === 1}
-                  />
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <div className="hidden">
-              <CarouselPrevious />
-              <CarouselNext />
-            </div>
-          </Carousel>
+          <div className="w-full -mr-4 md:-mr-8 lg:-mr-16 overflow-visible">
+            <Carousel 
+              className="w-full overflow-visible" 
+              setApi={setApi} 
+              opts={{ 
+                align: "start",
+                containScroll: false
+              }}
+            >
+              <CarouselContent className="-ml-4">
+                {services.map((service, index) => (
+                  <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                    <ServiceCard
+                      title={service.title}
+                      description={service.description}
+                      icon={service.icon}
+                      isActive={index === 1}
+                    />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <div className="hidden">
+                <CarouselPrevious />
+                <CarouselNext />
+              </div>
+            </Carousel>
+          </div>
         </div>
       </div>
     </section>
