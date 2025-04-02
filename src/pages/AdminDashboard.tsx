@@ -41,12 +41,12 @@ const AdminDashboard = () => {
   };
   
   return (
-    <div className="p-6 pt-20">
-      <h2 className="text-2xl font-bold mb-4">Admin Dashboard</h2>
+    <div className="p-6 pt-24 pb-10">
+      <h2 className="text-2xl font-bold mb-6">Admin Dashboard</h2>
       
       <StatsCards />
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 mt-6">
         <VendorGrowthChart vendorStats={vendorStats} />
         <ServiceCategoriesChart categoryData={categoryData} colors={COLORS} />
       </div>
