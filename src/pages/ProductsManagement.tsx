@@ -19,7 +19,7 @@ const ProductsManagement = () => {
   );
 
   return (
-    <div className="p-6">
+    <div className="p-6 pt-20">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
         <div className="flex items-center gap-2">
           <Button 

@@ -14,7 +14,7 @@ const VendorDashboard = () => {
   
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-[70vh] mt-16 sm:mt-20"> {/* Added top margin */}
+      <div className="flex items-center justify-center h-[70vh] pt-20">
         <div className="text-center">
           <Loader className="h-16 w-16 mx-auto animate-spin text-primary" />
           <p className="mt-4 text-lg">Loading dashboard data...</p>
@@ -24,7 +24,7 @@ const VendorDashboard = () => {
   }
   
   return (
-    <div className="p-6 mt-16 sm:mt-20"> {/* Added top margin */}
+    <div className="p-6 pt-20">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
         <h2 className="text-2xl font-bold">Vendor Dashboard</h2>
         

@@ -46,7 +46,7 @@ const Dashboard = () => {
 
   if (loading || profileLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 py-12 pt-20 flex items-center justify-center">
         <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
       </div>
     );
@@ -54,7 +54,7 @@ const Dashboard = () => {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12">
+      <div className="min-h-screen bg-gray-50 py-12 pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-3xl font-bold">Please Log In</h1>
@@ -72,7 +72,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50 py-12 pt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold">Dashboard</h1>
         <p className="mt-4">Welcome to your dashboard, {profile?.name || user?.email}.</p>
