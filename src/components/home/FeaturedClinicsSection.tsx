@@ -24,14 +24,14 @@ const FeaturedClinicsSection = () => {
           {featuredClinics.map((clinic) => (
             <Card key={clinic.id} className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer"
                   onClick={() => navigate(`/clinics/${clinic.id}`)}>
-              <div className="h-48 overflow-hidden">
+              <div className="h-48 overflow-hidden relative">
                 <img 
                   src={clinic.imageUrl} 
                   alt={clinic.name}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
                 {clinic.discount > 0 && (
-                  <div className="absolute top-2 right-2">
+                  <div className="absolute top-2 left-2">
                     <Badge className="bg-primary text-white">
                       {clinic.discount}% OFF
                     </Badge>
