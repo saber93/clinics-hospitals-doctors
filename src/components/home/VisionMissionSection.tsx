@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { target, handshake, award, flag } from 'lucide-react';
+import { Target, Handshake, Award, Flag } from 'lucide-react';
 
 const VisionMissionSection = () => {
   const objectives = [
