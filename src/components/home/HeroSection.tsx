@@ -45,12 +45,12 @@ const HeroSection = () => {
             </div>
           </div>
         </div>
-        <div className="md:w-1/2 relative">
-          <div className="rounded-2xl overflow-hidden shadow-2xl max-w-md mx-auto">
+        <div className="md:w-1/2 relative md:-ml-10">
+          <div className="rounded-2xl overflow-hidden shadow-2xl max-w-lg mx-auto">
             <img 
               src="/lovable-uploads/f538345f-52aa-4960-a4a2-c377edde5280.png" 
               alt="Team collaborating on healthcare planning" 
-              className="w-full h-[400px] object-cover"
+              className="w-full h-[450px] md:h-[500px] object-cover"
             />
           </div>
           <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-lg hidden md:block">
