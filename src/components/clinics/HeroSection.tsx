@@ -11,8 +11,8 @@ const HeroSection = () => {
       {/* Background image with overlay */}
       <div className="absolute inset-0 w-full h-full">
         <img 
-          src="https://images.unsplash.com/photo-1584982751601-97dcc096659c?w=1920&auto=format&fit=crop&q=80"
-          alt="Modern medical clinic setting" 
+          src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=1920&auto=format&fit=crop&q=80"
+          alt="Modern medical clinic building" 
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-purple-800/95 to-blue-900/95"></div>
@@ -23,7 +23,7 @@ const HeroSection = () => {
         {/* Medical clinic image - top left */}
         <div className="w-36 h-36 pointer-events-none absolute left-[80px] top-20">
           <img 
-            src="https://images.unsplash.com/photo-1624727828489-a1e03b79bba8?w=300&auto=format&fit=crop&q=80"
+            src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=300&auto=format&fit=crop&q=80"
             alt="Medical clinic reception" 
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
@@ -32,8 +32,8 @@ const HeroSection = () => {
         {/* Third left image - repositioned to overlap with bottom image */}
         <div className="w-40 h-40 pointer-events-none absolute left-[70px] top-[280px] z-10">
           <img 
-            src="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=300&auto=format&fit=crop&q=80" 
-            alt="Medical procedure" 
+            src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=300&auto=format&fit=crop&q=80" 
+            alt="Central Laser Center" 
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
         </div>
@@ -41,8 +41,8 @@ const HeroSection = () => {
         {/* Second left image - bottom - moved further to the right and up */}
         <div className="w-28 h-28 pointer-events-none absolute left-[144px] top-[396px] z-20">
           <img 
-            src="https://images.unsplash.com/photo-1487252665478-49b61b47f302?w=300&auto=format&fit=crop&q=80" 
-            alt="Medical consultation" 
+            src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=300&auto=format&fit=crop&q=80" 
+            alt="Modern medical building" 
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
         </div>
@@ -53,8 +53,8 @@ const HeroSection = () => {
         {/* Top right image */}
         <div className="w-32 h-32 pointer-events-none absolute right-40 top-24">
           <img 
-            src="https://images.unsplash.com/photo-1624727828489-a1e03b79bba8?w=300&auto=format&fit=crop&q=80" 
-            alt="Medical clinic reception" 
+            src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=300&auto=format&fit=crop&q=80" 
+            alt="Modern wellness clinic" 
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
         </div>
@@ -62,8 +62,8 @@ const HeroSection = () => {
         {/* Middle right image - moved 32px more to the right */}
         <div className="w-40 h-40 pointer-events-none absolute right-16 top-96">
           <img 
-            src="https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=300&auto=format&fit=crop&q=80" 
-            alt="Medical products" 
+            src="https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=300&auto=format&fit=crop&q=80" 
+            alt="Medical center building" 
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
         </div>
@@ -71,8 +71,8 @@ const HeroSection = () => {
         {/* Bottom right image - moved 32px more to the right (changed from right-16 to right-[48px]) */}
         <div className="w-32 h-32 pointer-events-none absolute right-[48px] top-60">
           <img 
-            src="https://images.unsplash.com/photo-1603912699214-92627f304eb6?w=300&auto=format&fit=crop&q=80" 
-            alt="Medical procedure" 
+            src="https://images.unsplash.com/photo-1524230572899-a752b3835840?w=300&auto=format&fit=crop&q=80" 
+            alt="Healthcare facility" 
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
         </div>
