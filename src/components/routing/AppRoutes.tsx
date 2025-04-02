@@ -18,13 +18,14 @@ const VendorDashboard = lazy(() => import('@/pages/VendorDashboard'));
 const CenterDashboard = lazy(() => import('@/pages/CenterDashboard'));
 const ClientDashboard = lazy(() => import('@/pages/ClientDashboard'));
 const Products = lazy(() => import('@/pages/Products'));
+const ProductDetails = lazy(() => import('@/pages/ProductDetails'));
 const ProductForm = lazy(() => import('@/pages/ProductForm'));
 const ProductsManagement = lazy(() => import('@/pages/ProductsManagement'));
 const Categories = lazy(() => import('@/pages/Categories'));
 const CategoryForm = lazy(() => import('@/pages/CategoryForm'));
 const Clinics = lazy(() => import('@/pages/Clinics'));
 const Doctors = lazy(() => import('@/pages/Doctors'));
-const Hospitals = lazy(() => import('@/pages/Hospitals')); // Added import
+const Hospitals = lazy(() => import('@/pages/Hospitals'));
 const ClinicDetails = lazy(() => import('@/pages/ClinicDetails'));
 const Reservations = lazy(() => import('@/pages/Reservations'));
 const About = lazy(() => import('@/pages/About'));
@@ -54,7 +55,7 @@ const AppRoutes = () => {
           <Route path="/clinics/:id" element={<ClinicDetails />} />
           <Route path="/clinics" element={<Clinics />} />
           <Route path="/doctors" element={<Doctors />} />
-          <Route path="/hospitals" element={<Hospitals />} /> {/* Added route */}
+          <Route path="/hospitals" element={<Hospitals />} />
           
           {/* Authentication routes */}
           <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
@@ -65,8 +66,9 @@ const AppRoutes = () => {
           <Route path="/reservations" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           
-          {/* Product management routes */}
-          <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
+          {/* Product routes */}
+          <Route path="/products" element={<Products />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/products/new" element={<ProtectedRoute><ProductForm /></ProtectedRoute>} />
           <Route path="/products/:id/edit" element={<ProtectedRoute><ProductForm /></ProtectedRoute>} />
           <Route path="/add-product" element={<ProtectedRoute><AddProduct /></ProtectedRoute>} />

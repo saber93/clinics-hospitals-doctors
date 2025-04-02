@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Search, Bandage } from 'lucide-react';
@@ -149,30 +150,32 @@ const Products = () => {
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {sortedProducts.map((product, index) => (
-                    <Card key={product.id} className="overflow-hidden transition-all duration-200 hover:shadow-lg">
-                      <div className="relative h-48 overflow-hidden">
-                        <ProductImageWithFallback
-                          imageUrl={product.image_url || ""}
-                          productName={product.name}
-                          productId={product.id}
-                          index={index}
-                          className="h-full w-full object-cover"
-                        />
-                        {product.discount_percentage && (
-                          <div className="absolute top-2 right-2 bg-primary text-white px-2 py-1 rounded-full text-xs font-semibold">
-                            {product.discount_percentage}% OFF
-                          </div>
-                        )}
-                      </div>
-                      <CardContent className="p-4">
-                        <h3 className="font-medium truncate">{product.name}</h3>
-                        <p className="text-sm text-gray-500 mt-1 line-clamp-2">{product.description || "No description available"}</p>
-                        <div className="mt-4 flex items-center justify-between">
-                          <span className="text-lg font-semibold">${product.price.toFixed(2)}</span>
-                          <Button size="sm">Add to Cart</Button>
+                    <Link to={`/product/${product.id}`} key={product.id}>
+                      <Card className="overflow-hidden transition-all duration-200 hover:shadow-lg">
+                        <div className="relative h-48 overflow-hidden">
+                          <ProductImageWithFallback
+                            imageUrl={product.image_url || ""}
+                            productName={product.name}
+                            productId={product.id}
+                            index={index}
+                            className="h-full w-full object-cover"
+                          />
+                          {product.discount_percentage && (
+                            <div className="absolute top-2 right-2 bg-primary text-white px-2 py-1 rounded-full text-xs font-semibold">
+                              {product.discount_percentage}% OFF
+                            </div>
+                          )}
                         </div>
-                      </CardContent>
-                    </Card>
+                        <CardContent className="p-4">
+                          <h3 className="font-medium truncate">{product.name}</h3>
+                          <p className="text-sm text-gray-500 mt-1 line-clamp-2">{product.description || "No description available"}</p>
+                          <div className="mt-4 flex items-center justify-between">
+                            <span className="text-lg font-semibold">${product.price.toFixed(2)}</span>
+                            <Button size="sm">View Details</Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Link>
                   ))}
                 </div>
               )}
