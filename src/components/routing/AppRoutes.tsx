@@ -23,7 +23,8 @@ const ProductsManagement = lazy(() => import('@/pages/ProductsManagement'));
 const Categories = lazy(() => import('@/pages/Categories'));
 const CategoryForm = lazy(() => import('@/pages/CategoryForm'));
 const Clinics = lazy(() => import('@/pages/Clinics'));
-const Doctors = lazy(() => import('@/pages/Doctors')); // Added import
+const Doctors = lazy(() => import('@/pages/Doctors'));
+const Hospitals = lazy(() => import('@/pages/Hospitals')); // Added import
 const ClinicDetails = lazy(() => import('@/pages/ClinicDetails'));
 const Reservations = lazy(() => import('@/pages/Reservations'));
 const About = lazy(() => import('@/pages/About'));
@@ -52,7 +53,8 @@ const AppRoutes = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/clinics/:id" element={<ClinicDetails />} />
           <Route path="/clinics" element={<Clinics />} />
-          <Route path="/doctors" element={<Doctors />} /> {/* Added route */}
+          <Route path="/doctors" element={<Doctors />} />
+          <Route path="/hospitals" element={<Hospitals />} /> {/* Added route */}
           
           {/* Authentication routes */}
           <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
