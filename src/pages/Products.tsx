@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -172,7 +173,7 @@ const Products = () => {
                       )}
                     </div>
                     <CardContent className="p-4">
-                      <h3 className="font-medium line-clamp-1">{product.name}</h3>
+                      <h3 className="font-medium truncate">{product.name}</h3>
                       <p className="text-sm text-gray-500 mt-1 line-clamp-2">{product.description || "No description available"}</p>
                       <div className="mt-4 flex items-center justify-between">
                         <span className="text-lg font-semibold">${product.price.toFixed(2)}</span>
