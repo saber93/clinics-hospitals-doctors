@@ -19,10 +19,11 @@ const CenterDashboard = lazy(() => import('@/pages/CenterDashboard'));
 const ClientDashboard = lazy(() => import('@/pages/ClientDashboard'));
 const Products = lazy(() => import('@/pages/Products'));
 const ProductForm = lazy(() => import('@/pages/ProductForm'));
-const ProductsManagement = lazy(() => import('@/pages/ProductsManagement')); // Added import
+const ProductsManagement = lazy(() => import('@/pages/ProductsManagement'));
 const Categories = lazy(() => import('@/pages/Categories'));
 const CategoryForm = lazy(() => import('@/pages/CategoryForm'));
 const Clinics = lazy(() => import('@/pages/Clinics'));
+const Doctors = lazy(() => import('@/pages/Doctors')); // Added import
 const ClinicDetails = lazy(() => import('@/pages/ClinicDetails'));
 const Reservations = lazy(() => import('@/pages/Reservations'));
 const About = lazy(() => import('@/pages/About'));
@@ -37,8 +38,8 @@ const ChatSettings = lazy(() => import('@/pages/ChatSettings'));
 const SellerVouchers = lazy(() => import('@/pages/VoucherManagement'));
 const VoucherForm = lazy(() => import('@/pages/AddVoucher'));
 const EditVoucherPage = lazy(() => import('@/pages/EditVoucher'));
-const AddProduct = lazy(() => import('@/pages/AddProduct')); // Added import
-const EditProduct = lazy(() => import('@/pages/EditProduct')); // Added import
+const AddProduct = lazy(() => import('@/pages/AddProduct'));
+const EditProduct = lazy(() => import('@/pages/EditProduct'));
 
 const AppRoutes = () => {
   return (
@@ -51,6 +52,7 @@ const AppRoutes = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/clinics/:id" element={<ClinicDetails />} />
           <Route path="/clinics" element={<Clinics />} />
+          <Route path="/doctors" element={<Doctors />} /> {/* Added route */}
           
           {/* Authentication routes */}
           <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />

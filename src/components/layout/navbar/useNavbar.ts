@@ -1,68 +1,65 @@
 
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { LucideIcon, Home, Info, Phone, Building2, Heart, User, Stethoscope } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 import { logoutUser } from '@/utils/auth';
 
+interface NavLink {
+  name: string;
+  path: string;
+  icon?: LucideIcon;
+  roles?: string[];
+}
+
 export const useNavbar = () => {
+  const { session } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const auth = useAuth();
-  const { session } = auth;
-  const navigate = useNavigate();
 
-  // Define all nav links
-  const allLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Clinics', path: '/clinics' },
-    { name: 'About', path: '/about' },
-    { name: 'Contact', path: '/contact' },
-    { name: 'Dashboard', path: '/dashboard', protected: true },
-    { name: 'Reservations', path: '/reservations', protected: true },
-    { name: 'Products', path: '/products', protected: true },
-    { name: 'My Bookings', path: '/all-bookings', protected: true },
+  const links: NavLink[] = [
+    { name: 'Home', path: '/', icon: Home },
+    { name: 'Clinics', path: '/clinics', icon: Building2 },
+    { name: 'Doctors', path: '/doctors', icon: Stethoscope },
+    { name: 'About', path: '/about', icon: Info },
+    { name: 'Contact', path: '/contact', icon: Phone },
   ];
 
-  // Filter links based on authentication
-  const filteredLinks = allLinks.filter(link => {
-    if (link.protected) {
-      return session !== null;
+  const handleScrollListener = () => {
+    if (window.scrollY > 10) {
+      setScrolled(true);
+    } else {
+      setScrolled(false);
     }
-    return true;
-  });
+  };
 
-  // Handle menu toggle
+  useEffect(() => {
+    window.addEventListener('scroll', handleScrollListener);
+    return () => window.removeEventListener('scroll', handleScrollListener);
+  }, []);
+
   const handleToggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  // Handle logout
   const handleLogout = async () => {
-    await logoutUser();
-    navigate('/');
     setIsOpen(false);
+    await logoutUser();
   };
 
-  // Handle scrolling
-  useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 10;
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [scrolled]);
+  // Filter links based on user roles if needed
+  const filteredLinks = links.filter(link => {
+    if (!link.roles) return true;
+    if (!session) return false;
+    
+    const userRole = session.user?.user_metadata?.role || 'client';
+    return link.roles.includes(userRole);
+  });
 
   return {
     isOpen,
     scrolled,
-    session,
     filteredLinks,
+    session,
     handleToggleMenu,
     handleLogout
   };
