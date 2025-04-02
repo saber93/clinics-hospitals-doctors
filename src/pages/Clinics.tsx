@@ -106,7 +106,7 @@ const Clinics = () => {
   const [filteredClinics, setFilteredClinics] = useState(clinicsData);
   const [visibleClinics, setVisibleClinics] = useState<typeof clinicsData>([]);
   const [visibleCount, setVisibleCount] = useState(6);
-  const [hasMore, setHasMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true); // Initialize as true and let the useEffect determine the real value
   
   const categories = ['all', ...new Set(clinicsData.map(clinic => clinic.category))];
 
@@ -148,7 +148,12 @@ const Clinics = () => {
   useEffect(() => {
     // Update visible clinics whenever the filtered clinics change or visibleCount changes
     setVisibleClinics(filteredClinics.slice(0, visibleCount));
+    // Check if there are more clinics to show
     setHasMore(filteredClinics.length > visibleCount);
+    
+    console.log('Filtered clinics:', filteredClinics.length);
+    console.log('Visible count:', visibleCount);
+    console.log('Has more:', filteredClinics.length > visibleCount);
   }, [filteredClinics, visibleCount]);
 
   const clearFilters = () => {
@@ -201,11 +206,18 @@ const Clinics = () => {
           clearFilters={clearFilters}
         />
 
+        {/* Always show the debugging info */}
+        <div className="mt-4 text-sm text-gray-500">
+          Total: {filteredClinics.length}, Showing: {visibleClinics.length}, Has more: {hasMore ? 'Yes' : 'No'}
+        </div>
+
+        {/* Ensure button is visible when hasMore is true */}
         {hasMore && (
           <div className="mt-8 text-center">
             <Button 
               onClick={loadMoreClinics}
               className="px-6"
+              variant="default"
               size="lg"
             >
               See More Clinics
