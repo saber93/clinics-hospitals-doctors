@@ -77,8 +77,14 @@ const Products = () => {
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
-    // Scroll to top of products section
-    window.scrollTo({ top: document.querySelector('.products-grid')?.offsetTop || 0, behavior: 'smooth' });
+    // Scroll to top of products section - fixed TypeScript error here
+    const productsGrid = document.querySelector('.products-grid');
+    if (productsGrid) {
+      window.scrollTo({ 
+        top: (productsGrid as HTMLElement).offsetTop || 0, 
+        behavior: 'smooth' 
+      });
+    }
   };
 
   const handleAddToCart = (e: React.MouseEvent, product: any) => {
