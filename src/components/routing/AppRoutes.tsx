@@ -1,3 +1,4 @@
+
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -46,6 +47,7 @@ const AddProduct = lazy(() => import('@/pages/AddProduct'));
 const EditProduct = lazy(() => import('@/pages/EditProduct'));
 const Cart = lazy(() => import('@/pages/Cart'));
 const Profile = lazy(() => import('@/pages/Profile'));
+const ProfileSettings = lazy(() => import('@/pages/ProfileSettings'));
 
 const AppRoutes = () => {
   return (
@@ -74,6 +76,7 @@ const AppRoutes = () => {
           <Route path="/vouchers" element={<ProtectedRoute><Vouchers /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
           
           {/* Product routes */}
           <Route path="/products" element={<Products />} />

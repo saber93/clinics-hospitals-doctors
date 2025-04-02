@@ -1,10 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { Settings } from "lucide-react";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -62,7 +63,17 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8 pt-24 pb-10">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold mb-8">My Profile</h1>
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl font-bold">My Profile</h1>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => navigate('/settings')}
+            className="flex items-center gap-2"
+          >
+            <Settings className="h-4 w-4" /> Edit Settings
+          </Button>
+        </div>
         
         <Card>
           <CardHeader>
