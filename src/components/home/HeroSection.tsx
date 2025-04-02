@@ -9,7 +9,7 @@ const HeroSection = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="py-16 md:py-24 px-4">
+    <section className="py-16 md:py-24 px-4 bg-white">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center">
         <div className="md:w-3/5 mb-10 md:mb-0 pr-0 md:pr-8">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
