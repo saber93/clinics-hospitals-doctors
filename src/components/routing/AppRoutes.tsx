@@ -30,6 +30,7 @@ const ClinicDetails = lazy(() => import('@/pages/ClinicDetails'));
 const Reservations = lazy(() => import('@/pages/Reservations'));
 const MyReservations = lazy(() => import('@/pages/MyReservations'));
 const Vouchers = lazy(() => import('@/pages/Vouchers'));
+const Offers = lazy(() => import('@/pages/Offers'));
 const About = lazy(() => import('@/pages/About'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const AllBookings = lazy(() => import('@/pages/AllBookings'));
@@ -60,6 +61,7 @@ const AppRoutes = () => {
           <Route path="/doctors" element={<Doctors />} />
           <Route path="/hospitals" element={<Hospitals />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/offers" element={<Offers />} />
           
           {/* Authentication routes */}
           <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
