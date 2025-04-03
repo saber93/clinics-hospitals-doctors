@@ -1,4 +1,3 @@
-
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Outlet } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -57,6 +56,7 @@ const ServicesPage = lazy(() => import('@/pages/admin/ServicesPage'));
 const ServiceFormPage = lazy(() => import('@/pages/admin/ServiceFormPage'));
 const ContactMessagesPage = lazy(() => import('@/pages/admin/ContactMessagesPage'));
 const AnalyticsPage = lazy(() => import('@/pages/admin/AnalyticsPage'));
+const SettingsPage = lazy(() => import('@/pages/admin/SettingsPage'));
 
 const AppRoutes = () => {
   return (
@@ -127,6 +127,7 @@ const AppRoutes = () => {
             <Route path="services/new" element={<ServiceFormPage />} />
             <Route path="services/:id" element={<ServiceFormPage />} />
             <Route path="contact-messages" element={<ContactMessagesPage />} />
+            <Route path="settings" element={<SettingsPage />} />
           </Route>
           
           <Route path="*" element={<NotFound />} />
