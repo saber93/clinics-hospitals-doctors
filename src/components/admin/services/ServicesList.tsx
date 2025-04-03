@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircle, Edit, Trash2 } from 'lucide-react';
@@ -70,11 +69,11 @@ export default function ServicesList() {
   
   const toggleActiveMutation = useMutation({
     mutationFn: async ({ id, isActive }: { id: string, isActive: boolean }) => {
-      // When updating, we need to use name field in the database instead of title
       const { error } = await supabase
         .from('services')
         .update({ 
-          is_active: isActive
+          name: (await supabase.from('services').select('name').eq('id', id).single()).data?.name || '',
+          updated_at: new Date().toISOString()
         })
         .eq('id', id);
         

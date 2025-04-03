@@ -26,10 +26,10 @@ interface DatabaseService {
 export default function ServicesSection() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false });
 
-  // Use the explicitly defined DatabaseService type to avoid TypeScript errors
+  // Explicitly define the return type to avoid type instantiation issues
   const { data: services, isLoading } = useQuery({
     queryKey: ['services'],
-    queryFn: async () => {
+    queryFn: async (): Promise<Service[]> => {
       const { data, error } = await supabase
         .from('services')
         .select('*')
@@ -38,7 +38,7 @@ export default function ServicesSection() {
       
       if (error) throw error;
       
-      // Convert database format to our CMS format
+      // Convert database format to our CMS format with explicit typing
       return (data as DatabaseService[]).map(service => adaptDatabaseService(service));
     },
     enabled: true,
