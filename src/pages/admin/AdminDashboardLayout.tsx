@@ -15,7 +15,7 @@ import {
   SidebarGroupContent,
   SidebarTrigger 
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, FileText, Layers, Users, MessageSquare, Settings, BarChart4 } from 'lucide-react';
+import { LayoutDashboard, FileText, Layers, Users, MessageSquare, Settings, BarChart4, Palette } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
 interface AdminDashboardLayoutProps {
@@ -94,6 +94,17 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
                         </NavLink>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <NavLink 
+                          to="/admin/themes" 
+                          className={({ isActive }) => isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
+                        >
+                          <Palette className="h-4 w-4" />
+                          <span>Theme Management</span>
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
                   </SidebarMenu>
                 </SidebarGroupContent>
               </SidebarGroup>
@@ -169,6 +180,7 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
               {location.pathname === "/admin-dashboard" && "Dashboard Overview"}
               {location.pathname === "/admin/blogs" && "Blog Management"}
               {location.pathname === "/admin/services" && "Services Management"}
+              {location.pathname === "/admin/themes" && "Theme Management"}
               {location.pathname === "/admin/contact-messages" && "Contact Messages"}
               {location.pathname === "/admin/settings" && "Admin Settings"}
               {location.pathname === "/vendors" && "Vendor Management"}
