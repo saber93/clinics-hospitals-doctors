@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -43,7 +42,6 @@ export function useBlogForm() {
     },
   });
   
-  // Generate slug from title
   const generateSlug = (title: string) => {
     return title
       .toLowerCase()
@@ -51,7 +49,6 @@ export function useBlogForm() {
       .replace(/\s+/g, '-');
   };
   
-  // Auto-generate slug when title changes
   useEffect(() => {
     const subscription = form.watch((value, { name }) => {
       if (name === 'title' && value.title && !form.getValues('slug')) {
@@ -62,7 +59,6 @@ export function useBlogForm() {
     return () => subscription.unsubscribe();
   }, [form]);
 
-  // Fetch blog details if in edit mode
   const { isLoading: isFetchingBlog } = useQuery({
     queryKey: ['blog', id],
     queryFn: async () => {
@@ -82,7 +78,6 @@ export function useBlogForm() {
       if (data) {
         const blogData = data as Blog;
         
-        // Populate the form with the fetched data
         form.reset({
           title: blogData.title,
           slug: blogData.slug,
@@ -101,10 +96,8 @@ export function useBlogForm() {
     enabled: isEditMode,
   });
   
-  // Create/Edit mutation
   const mutation = useMutation({
     mutationFn: async (values: BlogFormValues) => {
-      // Ensure user is authenticated
       if (!session?.user) {
         throw new Error('You must be logged in to create or edit blogs');
       }
@@ -116,11 +109,11 @@ export function useBlogForm() {
         excerpt: values.excerpt,
         content: values.content,
         image_url: values.image_url || null,
-        is_published: values.is_published
+        is_published: values.is_published,
+        user_id: session.user.id
       };
 
       if (isEditMode) {
-        // Update existing blog
         const { data, error } = await supabase
           .from('blogs')
           .update({
@@ -133,7 +126,6 @@ export function useBlogForm() {
         if (error) throw new Error(error.message);
         return data?.[0] as Blog;
       } else {
-        // Create new blog
         const { data, error } = await supabase
           .from('blogs')
           .insert({
