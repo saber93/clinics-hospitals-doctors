@@ -11,6 +11,7 @@ import MarketingSection from '@/components/home/MarketingSection';
 import MarketingJourneySection from '@/components/home/MarketingJourneySection';
 import DoctorsSection from '@/components/home/DoctorsSection';
 import BlogSection from '@/components/home/BlogSection';
+import ContactSection from '@/components/home/ContactSection';
 
 const Home = () => {
   return (
@@ -44,6 +45,9 @@ const Home = () => {
 
       {/* Featured Clinics Section */}
       <FeaturedClinicsSection />
+      
+      {/* Contact Section */}
+      <ContactSection />
 
       {/* CTA Section */}
       <CTASection />
