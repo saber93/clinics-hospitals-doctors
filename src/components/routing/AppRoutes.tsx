@@ -49,6 +49,14 @@ const Cart = lazy(() => import('@/pages/Cart'));
 const Profile = lazy(() => import('@/pages/Profile'));
 const ProfileSettings = lazy(() => import('@/pages/ProfileSettings'));
 
+// Admin CMS Pages
+const AdminDashboardLayout = lazy(() => import('@/pages/admin/AdminDashboardLayout'));
+const BlogsPage = lazy(() => import('@/pages/admin/BlogsPage'));
+const BlogFormPage = lazy(() => import('@/pages/admin/BlogFormPage'));
+const ServicesPage = lazy(() => import('@/pages/admin/ServicesPage'));
+const ServiceFormPage = lazy(() => import('@/pages/admin/ServiceFormPage'));
+const ContactMessagesPage = lazy(() => import('@/pages/admin/ContactMessagesPage'));
+
 const AppRoutes = () => {
   return (
     <AuthProvider>
@@ -116,6 +124,17 @@ const AppRoutes = () => {
           <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
           <Route path="/vendors" element={<ProtectedRoute><TotalVendors /></ProtectedRoute>} />
           <Route path="/clients" element={<ProtectedRoute><TotalClients /></ProtectedRoute>} />
+          
+          {/* Admin CMS routes */}
+          <Route path="/admin" element={<ProtectedRoute><AdminDashboardLayout /></ProtectedRoute>}>
+            <Route path="blogs" element={<BlogsPage />} />
+            <Route path="blogs/new" element={<BlogFormPage />} />
+            <Route path="blogs/:id" element={<BlogFormPage />} />
+            <Route path="services" element={<ServicesPage />} />
+            <Route path="services/new" element={<ServiceFormPage />} />
+            <Route path="services/:id" element={<ServiceFormPage />} />
+            <Route path="contact-messages" element={<ContactMessagesPage />} />
+          </Route>
           
           {/* 404 Page */}
           <Route path="*" element={<NotFound />} />
