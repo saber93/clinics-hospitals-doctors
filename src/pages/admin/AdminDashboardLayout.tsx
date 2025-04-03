@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { 
@@ -157,24 +158,28 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
           </SidebarContent>
         </Sidebar>
 
-        <div className="w-full pt-16">
-          <div className="fixed top-0 left-0 right-0 bg-white z-10 flex items-center p-4 border-b">
-            <SidebarTrigger />
-            <h1 className="text-xl font-semibold ml-4">
-              {location.pathname === "/admin-dashboard" && "Dashboard Overview"}
-              {location.pathname === "/admin/blogs" && "Blog Management"}
-              {location.pathname === "/admin/services" && "Services Management"}
-              {location.pathname === "/admin/contact-messages" && "Contact Messages"}
-              {location.pathname === "/admin/settings" && "Admin Settings"}
-              {location.pathname === "/vendors" && "Vendor Management"}
-              {location.pathname === "/clients" && "Client Management"}
-              {location.pathname === "/admin/analytics" && "Analytics Dashboard"}
-            </h1>
-          </div>
+        <div className="w-full">
+          {/* Fixed header with proper z-index */}
+          <header className="fixed top-0 left-0 right-0 z-40 bg-white border-b h-16">
+            <div className="flex items-center h-full px-4">
+              <SidebarTrigger />
+              <h1 className="text-xl font-semibold ml-4">
+                {location.pathname === "/admin-dashboard" && "Dashboard Overview"}
+                {location.pathname === "/admin/blogs" && "Blog Management"}
+                {location.pathname === "/admin/services" && "Services Management"}
+                {location.pathname === "/admin/contact-messages" && "Contact Messages"}
+                {location.pathname === "/admin/settings" && "Admin Settings"}
+                {location.pathname === "/vendors" && "Vendor Management"}
+                {location.pathname === "/clients" && "Client Management"}
+                {location.pathname === "/admin/analytics" && "Analytics Dashboard"}
+              </h1>
+            </div>
+          </header>
 
-          <div className="p-6">
+          {/* Content area with proper padding to account for the fixed header */}
+          <main className="pt-16 p-6">
             {children || <Outlet />}
-          </div>
+          </main>
         </div>
       </div>
     </SidebarProvider>
