@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { 
@@ -158,8 +157,8 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
           </SidebarContent>
         </Sidebar>
 
-        <div className="w-full">
-          <div className="flex items-center p-4 border-b mt-16">
+        <div className="w-full pt-16">
+          <div className="fixed top-0 left-0 right-0 bg-white z-10 flex items-center p-4 border-b">
             <SidebarTrigger />
             <h1 className="text-xl font-semibold ml-4">
               {location.pathname === "/admin-dashboard" && "Dashboard Overview"}
@@ -173,7 +172,7 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
             </h1>
           </div>
 
-          <div className="p-6 mt-4">
+          <div className="p-6">
             {children || <Outlet />}
           </div>
         </div>
