@@ -14,12 +14,10 @@ export default function ServiceForm() {
   // Get all available Lucide icon names
   const availableIcons = Object.keys(Icons).filter(
     (key) => {
-      // More strict filtering to ensure only icon components are included
-      const icon = Icons[key as keyof typeof Icons];
-      return typeof icon === 'function' && 
-             key !== 'createLucideIcon' && 
-             key !== 'default' &&
-             key !== 'createElement';
+      // Check if the key refers to a function and is not one of the utility functions
+      const excludedNames = ['createLucideIcon', 'default', 'createElement', 'Icon'];
+      return typeof Icons[key as keyof typeof Icons] === 'function' && 
+             !excludedNames.includes(key);
     }
   );
   

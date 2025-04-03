@@ -28,13 +28,14 @@ export default function ServiceDetailsSection({
   
   // Create a properly typed icon component
   const renderIcon = () => {
-    if (!selectedIconName || typeof selectedIconName !== 'string') return null;
+    if (!selectedIconName) return null;
     
-    // Safely access the icon component with proper type assertions
-    const IconComponent = (Icons as Record<string, React.ComponentType<LucideProps>>)[selectedIconName];
+    // Use type assertion with unknown as intermediate step
+    const LucideIcons = Icons as unknown as Record<string, React.ComponentType<LucideProps>>;
+    const IconComponent = LucideIcons[selectedIconName];
     
-    if (IconComponent) {
-      return <IconComponent className="w-6 h-6 text-primary" />;
+    if (IconComponent && typeof IconComponent === 'function') {
+      return React.createElement(IconComponent, { className: "w-6 h-6 text-primary" });
     }
     
     return null;
@@ -119,10 +120,11 @@ export default function ServiceDetailsSection({
                         <ScrollArea className="h-[300px] p-2">
                           <div className="grid grid-cols-4 gap-2">
                             {filteredIcons.map((iconName) => {
-                              // Get the actual icon component with proper typing
-                              const IconComponent = (Icons as Record<string, React.ComponentType<LucideProps>>)[iconName];
+                              // Use type assertion with unknown as intermediate step
+                              const LucideIcons = Icons as unknown as Record<string, React.ComponentType<LucideProps>>;
+                              const IconComponent = LucideIcons[iconName];
                               
-                              if (!IconComponent) return null;
+                              if (!IconComponent || typeof IconComponent !== 'function') return null;
                               
                               return (
                                 <Button
@@ -135,7 +137,7 @@ export default function ServiceDetailsSection({
                                     setIconSearchTerm('');
                                   }}
                                 >
-                                  <IconComponent className="h-6 w-6" />
+                                  {React.createElement(IconComponent, { className: "h-6 w-6" })}
                                   <span className="truncate max-w-full">{iconName}</span>
                                 </Button>
                               );
