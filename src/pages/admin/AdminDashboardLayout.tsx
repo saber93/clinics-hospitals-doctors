@@ -163,7 +163,7 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
 
         <div className="flex flex-col flex-1 overflow-hidden">
           {/* Header - z-index lower than sidebar but higher than content */}
-          <header className="sticky top-0 z-30 bg-white border-b h-16 flex items-center px-4 shrink-0">
+          <header className="sticky top-0 z-30 bg-white border-b h-16 flex items-center px-6 shrink-0">
             <SidebarTrigger />
             <h1 className="text-xl font-semibold ml-4">
               {location.pathname === "/admin-dashboard" && "Dashboard Overview"}
@@ -178,7 +178,7 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
           </header>
 
           {/* Content - lowest z-index */}
-          <main className="flex-1 overflow-auto p-6 pt-8 z-0">
+          <main className="flex-1 overflow-auto z-0">
             {children || <Outlet />}
           </main>
         </div>
