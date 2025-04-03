@@ -8,13 +8,28 @@ import ServiceHeader from './ServiceHeader';
 import useEmblaCarousel from 'embla-carousel-react';
 import { services as mockServices } from './servicesData';
 
+// Define the raw service type from the database
+interface DatabaseService {
+  id: string;
+  name: string;
+  description: string | null;
+  duration: number;
+  price: number;
+  vendor_id: string | null;
+  created_at: string;
+  updated_at: string;
+  icon_name?: string;
+  display_order?: number;
+  is_active?: boolean;
+}
+
 export default function ServicesSection() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false });
 
-  // Explicitly define the return type for the queryFn to avoid infinite type instantiation
-  const { data: services, isLoading } = useQuery<Service[]>({
+  // Use the explicitly defined DatabaseService type to avoid TypeScript errors
+  const { data: services, isLoading } = useQuery({
     queryKey: ['services'],
-    queryFn: async (): Promise<Service[]> => {
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('services')
         .select('*')
@@ -22,8 +37,9 @@ export default function ServicesSection() {
         .order('display_order', { ascending: true });
       
       if (error) throw error;
+      
       // Convert database format to our CMS format
-      return data.map(service => adaptDatabaseService(service));
+      return (data as DatabaseService[]).map(service => adaptDatabaseService(service));
     },
     enabled: true,
   });

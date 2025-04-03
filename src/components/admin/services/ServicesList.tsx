@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircle, Edit, Trash2 } from 'lucide-react';
@@ -14,6 +15,21 @@ import { toast } from 'sonner';
 import * as Icons from 'lucide-react';
 import { Service, adaptDatabaseService } from '@/types/cms';
 
+// Define the database service type to match Supabase's schema
+interface DatabaseService {
+  id: string;
+  name: string;
+  description: string | null;
+  duration: number;
+  price: number;
+  vendor_id: string | null;
+  created_at: string;
+  updated_at: string;
+  icon_name?: string;
+  display_order?: number;
+  is_active?: boolean;
+}
+
 export default function ServicesList() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -29,7 +45,7 @@ export default function ServicesList() {
       if (error) {
         throw new Error(error.message);
       }
-      return data.map(service => adaptDatabaseService(service));
+      return (data as DatabaseService[]).map(service => adaptDatabaseService(service));
     }
   });
   
@@ -54,11 +70,11 @@ export default function ServicesList() {
   
   const toggleActiveMutation = useMutation({
     mutationFn: async ({ id, isActive }: { id: string, isActive: boolean }) => {
+      // When updating, we need to use name field in the database instead of title
       const { error } = await supabase
         .from('services')
         .update({ 
-          is_active: isActive,
-          name: undefined
+          is_active: isActive
         })
         .eq('id', id);
         
