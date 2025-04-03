@@ -18,6 +18,7 @@ export interface Doctor {
   experience?: number;
   languages?: string[];
   consultationFee?: number;
+  theme?: any;
 }
 
 export interface Specialty {

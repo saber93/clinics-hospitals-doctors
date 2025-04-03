@@ -19,7 +19,28 @@ export const useClinicDetails = (id: string | undefined) => {
       const idParts = id.split('-');
       const numericId = idParts.length > 1 ? idParts[1] : id;
       
-      // First try to find the clinic by direct ID match
+      // Try to fetch from Supabase first
+      try {
+        const { data: clinicData, error } = await supabase
+          .from('clinics')
+          .select('*')
+          .eq('id', id)
+          .maybeSingle();
+          
+        if (clinicData) {
+          // Format data from Supabase to match our front-end model
+          return {
+            ...clinicData,
+            imageUrl: clinicData.image_url,
+            hasReservation: false // We'll check this separately below
+          } as Clinic;
+        }
+      } catch (err) {
+        console.log("Error fetching from Supabase:", err);
+        // Continue with mock data if Supabase fetch fails
+      }
+      
+      // Fallback to mock data
       let mockClinic = mockClinics.find(c => c.id === id);
       
       // If not found, try to find by numeric part of ID

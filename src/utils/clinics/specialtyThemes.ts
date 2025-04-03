@@ -95,8 +95,21 @@ const specialtyThemes: Record<string, SpecialtyTheme> = {
   }
 };
 
-// Function to determine theme based on category and subcategory
-export const getSpecialtyTheme = (category?: string, subCategory?: string): SpecialtyTheme => {
+// Function to determine theme based on database theme field, category and subcategory
+export const getSpecialtyTheme = (category?: string, subCategory?: string, dbTheme?: any): SpecialtyTheme => {
+  // If there's a custom theme from the database, use it
+  if (dbTheme && typeof dbTheme === 'object') {
+    // Ensure all required fields are present, fill in with defaults if not
+    return {
+      primaryColor: dbTheme.primaryColor || defaultTheme.primaryColor,
+      secondaryColor: dbTheme.secondaryColor || defaultTheme.secondaryColor,
+      accentColor: dbTheme.accentColor || defaultTheme.accentColor,
+      gradientStyle: dbTheme.gradientStyle || defaultTheme.gradientStyle,
+      icon: dbTheme.icon || defaultTheme.icon,
+      cardStyle: dbTheme.cardStyle || defaultTheme.cardStyle
+    };
+  }
+  
   if (!category) return defaultTheme;
   
   // Try to match by category first

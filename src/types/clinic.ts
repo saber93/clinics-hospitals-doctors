@@ -14,6 +14,7 @@ export interface Clinic {
   featured?: boolean;
   hasReservation?: boolean;
   favorite?: boolean;
+  theme?: any;
   productsVoucher?: Array<{
     productName: string;
     description: string;

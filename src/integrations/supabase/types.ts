@@ -235,6 +235,7 @@ export type Database = {
           offer_percentage: number
           products_voucher: Json[] | null
           sub_category: string
+          theme: Json | null
           updated_at: string | null
         }
         Insert: {
@@ -248,6 +249,7 @@ export type Database = {
           offer_percentage?: number
           products_voucher?: Json[] | null
           sub_category: string
+          theme?: Json | null
           updated_at?: string | null
         }
         Update: {
@@ -261,6 +263,7 @@ export type Database = {
           offer_percentage?: number
           products_voucher?: Json[] | null
           sub_category?: string
+          theme?: Json | null
           updated_at?: string | null
         }
         Relationships: []
@@ -319,6 +322,87 @@ export type Database = {
           offers_free_consultation?: boolean
           session_price?: number | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      doctors: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: string
+          image_url: string | null
+          location: string
+          name: string
+          offer_percentage: number | null
+          specialty: string
+          sub_specialty: string
+          theme: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id?: string
+          image_url?: string | null
+          location: string
+          name: string
+          offer_percentage?: number | null
+          specialty: string
+          sub_specialty: string
+          theme?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: string
+          image_url?: string | null
+          location?: string
+          name?: string
+          offer_percentage?: number | null
+          specialty?: string
+          sub_specialty?: string
+          theme?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      hospitals: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string
+          id: string
+          image_url: string | null
+          location: string
+          name: string
+          offer_percentage: number | null
+          theme: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description: string
+          id?: string
+          image_url?: string | null
+          location: string
+          name: string
+          offer_percentage?: number | null
+          theme?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          image_url?: string | null
+          location?: string
+          name?: string
+          offer_percentage?: number | null
+          theme?: Json | null
+          updated_at?: string | null
         }
         Relationships: []
       }

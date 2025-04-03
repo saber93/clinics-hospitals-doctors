@@ -53,8 +53,9 @@ const ClinicDetails = () => {
     ? clinic.productsVoucher 
     : getDefaultVouchers();
     
-  // Get specialty theme based on clinic's category or subcategory
-  const specialtyTheme = getSpecialtyTheme(clinic.category, clinic.subCategory);
+  // Get specialty theme based on clinic data
+  // First check for custom theme from database, then fallback to category/subcategory matching
+  const specialtyTheme = getSpecialtyTheme(clinic.category, clinic.subCategory, clinic.theme);
 
   return (
     <ClinicDetailsLayout 
