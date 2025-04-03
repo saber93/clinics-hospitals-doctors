@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { SidebarTrigger } from '@/components/ui/sidebar';
@@ -32,7 +31,7 @@ const PageHeader: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-30 bg-white border-b h-16 flex items-center px-6 shrink-0">
+    <header className="bg-white border-b h-16 flex items-center px-6 shrink-0">
       <SidebarTrigger />
       <h1 className="text-xl font-semibold ml-4">{getPageTitle()}</h1>
     </header>

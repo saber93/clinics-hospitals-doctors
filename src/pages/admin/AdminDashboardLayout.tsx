@@ -26,13 +26,14 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
         </div>
 
         <div className="flex flex-col flex-1 overflow-hidden">
-          {/* Header */}
-          <PageHeader />
-
-          {/* Breadcrumb */}
-          <AdminBreadcrumb />
+          {/* Header - Fixed position with proper z-index */}
+          <div className="sticky top-0 z-40">
+            <PageHeader />
+            {/* Breadcrumb */}
+            <AdminBreadcrumb />
+          </div>
           
-          {/* Content - lowest z-index */}
+          {/* Content - Add proper padding to avoid overlap with fixed header */}
           <main className="flex-1 overflow-auto z-0">
             {children || <Outlet />}
           </main>
