@@ -34,7 +34,7 @@ const DoctorDetails = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen pt-24 flex items-center justify-center">
         <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
       </div>
     );
@@ -42,7 +42,7 @@ const DoctorDetails = () => {
 
   if (!doctor) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen pt-24 flex flex-col items-center justify-center p-4">
         <h1 className="text-3xl font-bold mb-4">Doctor Not Found</h1>
         <p className="text-gray-600 mb-8">The doctor you are looking for does not exist or has been removed.</p>
         <Button onClick={() => navigate('/doctors')}>
@@ -57,7 +57,7 @@ const DoctorDetails = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50 py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Doctor Header */}
         <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">
