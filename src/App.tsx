@@ -5,9 +5,18 @@ import AppRoutes from "./components/routing/AppRoutes";
 import GlassyNavbar from "./components/layout/GlassyNavbar";
 import ModernFooter from "./components/layout/ModernFooter";
 import { CartProvider } from "./contexts/CartContext";
+import { useLocation } from "react-router-dom";
 
 const App = () => {
   const { loading } = useAppAuth();
+  const location = useLocation();
+
+  // Check if current route is an admin route to hide footer
+  const isAdminRoute = 
+    location.pathname.startsWith('/admin') || 
+    location.pathname === '/admin-dashboard' ||
+    location.pathname === '/vendors' ||
+    location.pathname === '/clients';
 
   if (loading) {
     return (
@@ -25,7 +34,7 @@ const App = () => {
           <div className="flex-grow">
             <AppRoutes />
           </div>
-          <ModernFooter />
+          {!isAdminRoute && <ModernFooter />}
         </div>
       </CartProvider>
     </AppProviders>
