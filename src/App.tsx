@@ -1,6 +1,5 @@
 
 import { useAppAuth } from "./hooks/useAppAuth";
-import AppProviders from "./components/providers/AppProviders";
 import AppRoutes from "./components/routing/AppRoutes";
 import GlassyNavbar from "./components/layout/GlassyNavbar";
 import ModernFooter from "./components/layout/ModernFooter";
@@ -27,17 +26,15 @@ const App = () => {
   }
 
   return (
-    <AppProviders>
-      <CartProvider>
-        <div className="min-h-screen flex flex-col">
-          <GlassyNavbar />
-          <div className="flex-grow">
-            <AppRoutes />
-          </div>
-          {!isAdminRoute && <ModernFooter />}
+    <CartProvider>
+      <div className="min-h-screen flex flex-col">
+        <GlassyNavbar />
+        <div className="flex-grow">
+          <AppRoutes />
         </div>
-      </CartProvider>
-    </AppProviders>
+        {!isAdminRoute && <ModernFooter />}
+      </div>
+    </CartProvider>
   );
 };
 
