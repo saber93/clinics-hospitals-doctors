@@ -16,10 +16,8 @@ export default function ServiceForm() {
     (key) => typeof Icons[key as keyof typeof Icons] === 'function'
   );
   
-  // Preview the selected icon
-  const selectedIcon = form.watch('icon_name');
-  // This was causing the error - storing the component instead of rendering it
-  const IconComponent = selectedIcon ? (Icons as any)[selectedIcon] : null;
+  // Preview the selected icon - store the icon name, not the component
+  const selectedIconName = form.watch('icon_name');
   
   return (
     <div>
@@ -38,7 +36,7 @@ export default function ServiceForm() {
               <ServiceDetailsSection 
                 form={form}
                 availableIcons={availableIcons}
-                IconComponent={IconComponent}
+                selectedIconName={selectedIconName}
               />
             </Card>
             

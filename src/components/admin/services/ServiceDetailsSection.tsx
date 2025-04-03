@@ -6,14 +6,22 @@ import { CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { UseFormReturn } from 'react-hook-form';
 import { ServiceFormValues } from '@/hooks/useServiceForm';
+import * as Icons from 'lucide-react';
 
 interface ServiceDetailsSectionProps {
   form: UseFormReturn<ServiceFormValues>;
   availableIcons: string[];
-  IconComponent: React.ComponentType<any> | null; // Change this to ComponentType instead of FC
+  selectedIconName: string | null;
 }
 
-export default function ServiceDetailsSection({ form, availableIcons, IconComponent }: ServiceDetailsSectionProps) {
+export default function ServiceDetailsSection({ 
+  form, 
+  availableIcons,
+  selectedIconName 
+}: ServiceDetailsSectionProps) {
+  // Dynamically render the selected icon component if one is selected
+  const IconComponent = selectedIconName ? Icons[selectedIconName as keyof typeof Icons] : null;
+
   return (
     <CardContent className="pt-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -64,8 +72,7 @@ export default function ServiceDetailsSection({ form, availableIcons, IconCompon
                     />
                     {IconComponent && (
                       <div className="flex items-center justify-center w-10 h-10 bg-primary/5 rounded">
-                        {/* Properly render the component using JSX */}
-                        <IconComponent className="w-6 h-6 text-primary" />
+                        {React.createElement(IconComponent, { className: "w-6 h-6 text-primary" })}
                       </div>
                     )}
                   </div>
