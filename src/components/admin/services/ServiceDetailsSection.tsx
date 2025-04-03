@@ -24,7 +24,7 @@ export default function ServiceDetailsSection({
     if (!selectedIconName || typeof selectedIconName !== 'string') return null;
     
     // Check if the icon name exists in the Icons object
-    const IconComponent = Icons[selectedIconName as keyof typeof Icons];
+    const IconComponent = (Icons as Record<string, React.FC<{ className?: string }>>)[selectedIconName];
     
     // Only render if it's a valid icon component
     if (IconComponent && typeof IconComponent === 'function') {
