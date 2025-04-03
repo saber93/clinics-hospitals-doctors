@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Mail, Phone, User, Search } from "lucide-react";
+import { Mail, Phone, User, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 interface ClientProfile {
@@ -16,7 +14,6 @@ interface ClientProfile {
 }
 
 const TotalClients = () => {
-  const navigate = useNavigate();
   const [clients, setClients] = useState<ClientProfile[]>([]);
   const [filteredClients, setFilteredClients] = useState<ClientProfile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -105,16 +102,7 @@ const TotalClients = () => {
 
   return (
     <div>
-      <div className="flex items-center mb-6">
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={() => navigate('/admin-dashboard')}
-          className="mr-4"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Dashboard
-        </Button>
+      <div className="mb-6">
         <h2 className="text-2xl font-bold">Total Clients ({filteredClients.length})</h2>
       </div>
 
