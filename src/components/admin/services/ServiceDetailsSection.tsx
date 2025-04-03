@@ -26,16 +26,20 @@ export default function ServiceDetailsSection({
 }: ServiceDetailsSectionProps) {
   const [iconSearchTerm, setIconSearchTerm] = useState('');
   
-  // Create a properly typed icon component
+  // Create a dynamic icon component
   const renderIcon = () => {
     if (!selectedIconName) return null;
     
-    // Use type assertion with unknown as intermediate step
-    const LucideIcons = Icons as unknown as Record<string, React.ComponentType<LucideProps>>;
-    const IconComponent = LucideIcons[selectedIconName];
+    // Exclude non-icon entries
+    const excludedNames = ['createLucideIcon', 'default', 'createElement', 'Icon'];
+    if (excludedNames.includes(selectedIconName)) return null;
     
-    if (IconComponent && typeof IconComponent === 'function') {
-      return React.createElement(IconComponent, { className: "w-6 h-6 text-primary" });
+    // Use the dynamic approach
+    const IconComponent = Icons[selectedIconName as keyof typeof Icons];
+    
+    if (typeof IconComponent === 'function') {
+      // @ts-ignore - This is a workaround for TypeScript issues
+      return <IconComponent className="w-6 h-6 text-primary" />;
     }
     
     return null;
@@ -120,11 +124,16 @@ export default function ServiceDetailsSection({
                         <ScrollArea className="h-[300px] p-2">
                           <div className="grid grid-cols-4 gap-2">
                             {filteredIcons.map((iconName) => {
-                              // Use type assertion with unknown as intermediate step
-                              const LucideIcons = Icons as unknown as Record<string, React.ComponentType<LucideProps>>;
-                              const IconComponent = LucideIcons[iconName];
+                              // Skip non-icon entries
+                              const excludedNames = ['createLucideIcon', 'default', 'createElement', 'Icon'];
+                              if (excludedNames.includes(iconName)) return null;
                               
-                              if (!IconComponent || typeof IconComponent !== 'function') return null;
+                              const IconComponent = Icons[iconName as keyof typeof Icons];
+                              
+                              if (typeof IconComponent !== 'function') return null;
+                              
+                              // Use JSX syntax with type assertion
+                              const DynamicIcon = IconComponent as React.ComponentType<any>;
                               
                               return (
                                 <Button
@@ -137,7 +146,7 @@ export default function ServiceDetailsSection({
                                     setIconSearchTerm('');
                                   }}
                                 >
-                                  {React.createElement(IconComponent, { className: "h-6 w-6" })}
+                                  <DynamicIcon className="h-6 w-6" />
                                   <span className="truncate max-w-full">{iconName}</span>
                                 </Button>
                               );
