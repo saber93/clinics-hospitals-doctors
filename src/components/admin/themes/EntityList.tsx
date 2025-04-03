@@ -14,6 +14,31 @@ interface EntityListProps {
   onEditTheme: (id: string) => void;
 }
 
+// Define entity type interfaces to solve TypeScript errors
+interface BaseEntity {
+  id: string;
+  name: string;
+  location: string;
+  theme: any | null;
+}
+
+interface ClinicEntity extends BaseEntity {
+  category: string;
+  sub_category: string;
+}
+
+interface DoctorEntity extends BaseEntity {
+  specialty: string;
+  sub_specialty: string;
+}
+
+interface HospitalEntity extends BaseEntity {
+  category: string;
+  sub_category: string;
+}
+
+type Entity = ClinicEntity | DoctorEntity | HospitalEntity;
+
 const EntityList: React.FC<EntityListProps> = ({ entityType, title, onEditTheme }) => {
   const [searchTerm, setSearchTerm] = useState('');
   
@@ -36,7 +61,7 @@ const EntityList: React.FC<EntityListProps> = ({ entityType, title, onEditTheme 
 
   const filteredEntities = entities?.filter(entity => 
     entity.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ) as Entity[];
 
   return (
     <div className="space-y-4">
@@ -83,8 +108,8 @@ const EntityList: React.FC<EntityListProps> = ({ entityType, title, onEditTheme 
                   <TableCell className="font-medium">{entity.name}</TableCell>
                   <TableCell>
                     {entityType === 'doctors' 
-                      ? entity.specialty || 'N/A' 
-                      : entity.category || 'N/A'}
+                      ? (entity as DoctorEntity).specialty || 'N/A' 
+                      : (entity as ClinicEntity | HospitalEntity).category || 'N/A'}
                   </TableCell>
                   <TableCell>{entity.location}</TableCell>
                   <TableCell>

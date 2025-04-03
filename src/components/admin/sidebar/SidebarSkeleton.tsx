@@ -2,14 +2,22 @@
 import React from 'react';
 import SidebarSectionSkeleton from './SidebarSectionSkeleton';
 
-const SidebarSkeleton: React.FC = () => {
+interface SidebarSkeletonProps {
+  sectionCount?: number;
+}
+
+const SidebarSkeleton: React.FC<SidebarSkeletonProps> = ({ sectionCount = 5 }) => {
+  // Create an array with varying item counts to simulate the real sidebar structure
+  const sectionItemCounts = [3, 3, 4, 1, 1];
+  
   return (
-    <div className="w-full md:w-64 border-r bg-card p-4 space-y-6">
-      <SidebarSectionSkeleton itemCount={2} />
-      <SidebarSectionSkeleton itemCount={3} />
-      <SidebarSectionSkeleton itemCount={4} />
-      <SidebarSectionSkeleton itemCount={1} />
-      <SidebarSectionSkeleton itemCount={1} />
+    <div className="w-full space-y-6 animate-pulse">
+      {Array(sectionCount).fill(0).map((_, index) => (
+        <SidebarSectionSkeleton 
+          key={index} 
+          itemCount={sectionItemCounts[index % sectionItemCounts.length]} 
+        />
+      ))}
     </div>
   );
 };
