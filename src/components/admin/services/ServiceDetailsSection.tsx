@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { CardContent } from '@/components/ui/card';
@@ -8,6 +8,10 @@ import { UseFormReturn } from 'react-hook-form';
 import { ServiceFormValues } from '@/hooks/useServiceForm';
 import * as Icons from 'lucide-react';
 import { LucideIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Search } from 'lucide-react';
 
 interface ServiceDetailsSectionProps {
   form: UseFormReturn<ServiceFormValues>;
@@ -20,6 +24,8 @@ export default function ServiceDetailsSection({
   availableIcons,
   selectedIconName 
 }: ServiceDetailsSectionProps) {
+  const [iconSearchTerm, setIconSearchTerm] = useState('');
+  
   // Create a properly typed icon component
   const renderIcon = () => {
     if (!selectedIconName || typeof selectedIconName !== 'string') return null;
@@ -34,6 +40,11 @@ export default function ServiceDetailsSection({
     
     return null;
   };
+
+  // Filter icons based on search term
+  const filteredIcons = availableIcons.filter(
+    (name) => name.toLowerCase().includes(iconSearchTerm.toLowerCase())
+  );
 
   return (
     <CardContent className="pt-6">
@@ -77,24 +88,65 @@ export default function ServiceDetailsSection({
                 <FormLabel>Icon</FormLabel>
                 <FormControl>
                   <div className="flex space-x-2">
-                    <Input 
-                      list="iconNames" 
-                      placeholder="Select an icon name" 
-                      {...field} 
-                      className="flex-grow"
-                    />
-                    {selectedIconName && (
-                      <div className="flex items-center justify-center w-10 h-10 bg-primary/5 rounded">
-                        {renderIcon()}
-                      </div>
-                    )}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-between"
+                          role="combobox"
+                        >
+                          <div className="flex items-center">
+                            {field.value && (
+                              <div className="mr-2">
+                                {renderIcon()}
+                              </div>
+                            )}
+                            {field.value || "Select an icon"}
+                          </div>
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[300px] p-0" align="start">
+                        <div className="p-2 border-b">
+                          <div className="flex items-center gap-2 mb-1">
+                            <Search className="h-4 w-4 opacity-50 flex-shrink-0" />
+                            <Input
+                              placeholder="Search icons..."
+                              value={iconSearchTerm}
+                              onChange={(e) => setIconSearchTerm(e.target.value)}
+                              className="h-9 border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                            />
+                          </div>
+                        </div>
+                        <ScrollArea className="h-[300px] p-2">
+                          <div className="grid grid-cols-4 gap-2">
+                            {filteredIcons.map((iconName) => {
+                              // Get the actual icon component
+                              const IconComponent = Icons[iconName as keyof typeof Icons] as LucideIcon | undefined;
+                              
+                              if (!IconComponent || typeof IconComponent !== 'function') return null;
+                              
+                              return (
+                                <Button
+                                  key={iconName}
+                                  variant="ghost"
+                                  size="sm"
+                                  className="flex flex-col items-center justify-center h-20 py-2 gap-1 text-xs"
+                                  onClick={() => {
+                                    field.onChange(iconName);
+                                    setIconSearchTerm('');
+                                  }}
+                                >
+                                  <IconComponent className="h-6 w-6" />
+                                  <span className="truncate max-w-full">{iconName}</span>
+                                </Button>
+                              );
+                            })}
+                          </div>
+                        </ScrollArea>
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </FormControl>
-                <datalist id="iconNames">
-                  {availableIcons.map((name) => (
-                    <option key={name} value={name} />
-                  ))}
-                </datalist>
                 <FormMessage />
               </FormItem>
             )}
