@@ -1,6 +1,5 @@
 
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, 
   Users, 
@@ -13,126 +12,102 @@ import {
   Ticket,
   Palette
 } from 'lucide-react';
+import SidebarSection from './sidebar/SidebarSection';
+import SidebarSkeleton from './sidebar/SidebarSkeleton';
 
-interface SidebarItemProps {
-  to: string;
-  icon: React.ReactNode;
-  label: string;
-}
-
-const SidebarItem = ({ to, icon, label }: SidebarItemProps) => (
-  <NavLink
-    to={to}
-    className={({ isActive }) =>
-      `flex items-center px-3 py-2 rounded-lg text-sm ${
-        isActive
-          ? 'bg-primary text-primary-foreground'
-          : 'hover:bg-muted transition-colors'
-      }`
+const AdminSidebar: React.FC = () => {
+  const [loading, setLoading] = useState(true);
+  
+  // Simulate loading for demo purposes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
+  if (loading) {
+    return <SidebarSkeleton />;
+  }
+  
+  const dashboardItems = [
+    { 
+      to: "/admin-dashboard", 
+      icon: LayoutDashboard, 
+      label: "Overview" 
+    },
+    { 
+      to: "/admin/analytics", 
+      icon: BarChart4, 
+      label: "Analytics" 
     }
-  >
-    <span className="mr-3">{icon}</span>
-    {label}
-  </NavLink>
-);
+  ];
 
-const AdminSidebar = () => {
+  const contentItems = [
+    { 
+      to: "/admin/blogs", 
+      icon: FileText, 
+      label: "Blog Posts" 
+    },
+    { 
+      to: "/admin/services", 
+      icon: Layers, 
+      label: "Services" 
+    },
+    { 
+      to: "/admin/themes", 
+      icon: Palette, 
+      label: "Theme Management" 
+    }
+  ];
+
+  const usersProductsItems = [
+    { 
+      to: "/vendors", 
+      icon: Users, 
+      label: "Vendors" 
+    },
+    { 
+      to: "/clients", 
+      icon: Users, 
+      label: "Clients" 
+    },
+    { 
+      to: "/products-management", 
+      icon: ShoppingBag, 
+      label: "Products" 
+    },
+    { 
+      to: "/seller-vouchers", 
+      icon: Ticket, 
+      label: "Vouchers" 
+    }
+  ];
+  
+  const communicationItems = [
+    { 
+      to: "/admin/contact-messages", 
+      icon: MessageSquare, 
+      label: "Contact Messages" 
+    }
+  ];
+
+  const systemItems = [
+    { 
+      to: "/admin/settings", 
+      icon: Settings, 
+      label: "Settings" 
+    }
+  ];
+
   return (
     <div className="w-full md:w-64 border-r bg-card p-4 space-y-6">
-      <div className="py-2">
-        <h2 className="font-semibold px-3 mb-2 text-muted-foreground text-xs tracking-wider uppercase">
-          Dashboard
-        </h2>
-        <nav className="space-y-1">
-          <SidebarItem 
-            to="/admin-dashboard" 
-            icon={<LayoutDashboard className="h-4 w-4" />} 
-            label="Overview" 
-          />
-          <SidebarItem 
-            to="/admin/analytics" 
-            icon={<BarChart4 className="h-4 w-4" />} 
-            label="Analytics" 
-          />
-        </nav>
-      </div>
-
-      <div className="py-2">
-        <h2 className="font-semibold px-3 mb-2 text-muted-foreground text-xs tracking-wider uppercase">
-          Content
-        </h2>
-        <nav className="space-y-1">
-          <SidebarItem 
-            to="/admin/blogs" 
-            icon={<FileText className="h-4 w-4" />} 
-            label="Blog Posts" 
-          />
-          <SidebarItem 
-            to="/admin/services" 
-            icon={<Layers className="h-4 w-4" />} 
-            label="Services" 
-          />
-          <SidebarItem 
-            to="/admin/themes" 
-            icon={<Palette className="h-4 w-4" />} 
-            label="Theme Management" 
-          />
-        </nav>
-      </div>
-
-      <div className="py-2">
-        <h2 className="font-semibold px-3 mb-2 text-muted-foreground text-xs tracking-wider uppercase">
-          Users & Products
-        </h2>
-        <nav className="space-y-1">
-          <SidebarItem 
-            to="/vendors" 
-            icon={<Users className="h-4 w-4" />} 
-            label="Vendors" 
-          />
-          <SidebarItem 
-            to="/clients" 
-            icon={<Users className="h-4 w-4" />} 
-            label="Clients" 
-          />
-          <SidebarItem 
-            to="/products-management" 
-            icon={<ShoppingBag className="h-4 w-4" />} 
-            label="Products" 
-          />
-          <SidebarItem 
-            to="/seller-vouchers" 
-            icon={<Ticket className="h-4 w-4" />} 
-            label="Vouchers" 
-          />
-        </nav>
-      </div>
-      
-      <div className="py-2">
-        <h2 className="font-semibold px-3 mb-2 text-muted-foreground text-xs tracking-wider uppercase">
-          Communication
-        </h2>
-        <nav className="space-y-1">
-          <SidebarItem 
-            to="/admin/contact-messages" 
-            icon={<MessageSquare className="h-4 w-4" />} 
-            label="Contact Messages" 
-          />
-        </nav>
-      </div>
-
-      <div className="py-2">
-        <h2 className="font-semibold px-3 mb-2 text-muted-foreground text-xs tracking-wider uppercase">
-          System
-        </h2>
-        <nav className="space-y-1">
-          <SidebarItem 
-            to="/admin/settings" 
-            icon={<Settings className="h-4 w-4" />} 
-            label="Settings" 
-          />
-        </nav>
-      </div>
+      <SidebarSection title="Dashboard" items={dashboardItems} />
+      <SidebarSection title="Content" items={contentItems} />
+      <SidebarSection title="Users & Products" items={usersProductsItems} />
+      <SidebarSection title="Communication" items={communicationItems} />
+      <SidebarSection title="System" items={systemItems} />
     </div>
   );
 };

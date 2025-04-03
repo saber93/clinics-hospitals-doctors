@@ -4,6 +4,7 @@ import AdminSidebar from './AdminSidebar';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate, Outlet } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
+import SidebarSkeleton from './sidebar/SidebarSkeleton';
 
 const AdminLayout = () => {
   const { user, loading } = useAuth();
@@ -11,8 +12,14 @@ const AdminLayout = () => {
   // Show loading state
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div className="flex min-h-screen">
+        <div className="hidden md:block">
+          <SidebarSkeleton />
+        </div>
+        
+        <div className="flex-1 overflow-auto flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
       </div>
     );
   }
