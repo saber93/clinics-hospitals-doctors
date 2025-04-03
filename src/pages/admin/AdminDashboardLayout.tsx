@@ -18,7 +18,11 @@ import {
 import { LayoutDashboard, FileText, Layers, Users, MessageSquare, Settings, BarChart4 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
-const AdminDashboardLayout = () => {
+interface AdminDashboardLayoutProps {
+  children: React.ReactNode;
+}
+
+const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
   const location = useLocation();
 
   return (
@@ -167,7 +171,7 @@ const AdminDashboardLayout = () => {
           </div>
 
           <div className="p-6">
-            <Outlet />
+            {children}
           </div>
         </div>
       </div>

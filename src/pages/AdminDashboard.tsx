@@ -42,26 +42,21 @@ const AdminDashboard = () => {
     }
   };
   
-  // The dashboard content is now wrapped with the AdminDashboardLayout
-  const DashboardContent = () => (
-    <div className="space-y-6">
-      <StatsCards />
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <VendorGrowthChart vendorStats={vendorStats} />
-        <ServiceCategoriesChart categoryData={categoryData} colors={COLORS} />
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <RecentActivityPanel />
-        <SystemStatusPanel handleSeedData={handleSeedData} />
-      </div>
-    </div>
-  );
-
   return (
     <AdminDashboardLayout>
-      <DashboardContent />
+      <div className="space-y-6">
+        <StatsCards />
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <VendorGrowthChart vendorStats={vendorStats} />
+          <ServiceCategoriesChart categoryData={categoryData} colors={COLORS} />
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <RecentActivityPanel />
+          <SystemStatusPanel handleSeedData={handleSeedData} />
+        </div>
+      </div>
     </AdminDashboardLayout>
   );
 };
