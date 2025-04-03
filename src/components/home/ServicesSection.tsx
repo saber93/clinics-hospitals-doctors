@@ -8,50 +8,31 @@ import ServiceHeader from './ServiceHeader';
 import useEmblaCarousel from 'embla-carousel-react';
 import { services as mockServices } from './servicesData';
 
-// Define a database service type with only the required fields
-type DatabaseService = {
-  id: string;
-  name: string;
-  description: string | null;
-  duration: number;
-  price: number;
-  vendor_id: string | null;
-  created_at: string;
-  updated_at: string;
-  icon_name?: string;
-  display_order?: number;
-  is_active?: boolean;
-};
-
 export default function ServicesSection() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false });
 
-  // Completely restructured fetch function to avoid type inference issues
-  const fetchServices = async () => {
+  // Simplified fetch function that removes the non-existent is_active filter
+  const fetchServices = async (): Promise<Service[]> => {
     try {
       const { data, error } = await supabase
         .from('services')
         .select('*')
-        .eq('is_active', true)
+        // Removing the is_active filter as it doesn't exist in the database
         .order('display_order', { ascending: true });
       
       if (error) throw error;
       
       if (!data || !Array.isArray(data)) return [];
       
-      // Use a simpler approach to map the data without complex type inference
-      const result: Service[] = [];
-      for (const item of data) {
-        result.push(adaptDatabaseService(item));
-      }
-      return result;
+      // Convert to array of services without complex type inference
+      return data.map(item => adaptDatabaseService(item));
     } catch (error) {
       console.error('Error fetching services:', error);
       return [];
     }
   };
 
-  // Use the query with the simplified fetch function
+  // Use the query with the fixed fetch function
   const { data: services, isLoading } = useQuery({
     queryKey: ['services'],
     queryFn: fetchServices
