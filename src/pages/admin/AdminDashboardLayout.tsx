@@ -159,8 +159,8 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
         </Sidebar>
 
         <div className="w-full flex flex-col">
-          {/* Fixed header with proper z-index */}
-          <header className="fixed top-0 left-0 right-0 z-40 bg-white border-b h-16 flex items-center">
+          {/* Increased header height and ensured it's fixed properly */}
+          <header className="fixed top-0 left-0 right-0 z-40 bg-white border-b h-18 flex items-center">
             <div className="flex items-center h-full px-4 w-full">
               <SidebarTrigger />
               <h1 className="text-xl font-semibold ml-4">
@@ -176,8 +176,8 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
             </div>
           </header>
 
-          {/* Content area with increased padding to prevent overlap */}
-          <main className="flex-1 pt-24 px-6 pb-6">
+          {/* Further increased padding to prevent content overlap */}
+          <main className="flex-1 pt-28 px-6 pb-6">
             {children || <Outlet />}
           </main>
         </div>
