@@ -53,42 +53,27 @@ const BlogSection = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* First blog post with hover effect */}
-          <div 
-            className="group cursor-pointer relative overflow-hidden"
-            onClick={() => handleBlogClick(blogPosts[0].slug)}
-          >
-            <div className="relative h-full">
-              <img 
-                src={blogPosts[0].imageUrl} 
-                alt={blogPosts[0].title}
-                className="h-full w-full object-cover rounded-lg"
-              />
-              <div className="absolute inset-0 bg-black/50 rounded-lg p-8 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center mb-2">
-                    <span className="text-white font-semibold">{blogPosts[0].category}</span>
-                    <span className="mx-2 text-white/70">•</span>
-                    <span className="text-white/70">{blogPosts[0].date}</span>
-                  </div>
-                  <h3 className="text-white text-2xl font-bold mb-4">{blogPosts[0].title}</h3>
-                  <p className="text-white/80">{blogPosts[0].excerpt}</p>
-                </div>
-                <div className="mt-6 flex items-center text-white group-hover:text-primary transition-colors">
-                  <span className="mr-2">Read More</span>
-                  <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Second and third blog posts */}
-          {blogPosts.slice(1).map((post) => (
+          {/* Blog cards with uniform style and hover effects */}
+          {blogPosts.map((post) => (
             <Card 
               key={post.id}
-              className="border-none overflow-hidden hover:shadow-lg transition-shadow cursor-pointer bg-white"
+              className="border-none overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer bg-white"
               onClick={() => handleBlogClick(post.slug)}
             >
+              <div className="relative h-56 group">
+                <img 
+                  src={post.imageUrl} 
+                  alt={post.title}
+                  className="h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                  <div className="mt-auto flex items-center text-white">
+                    <span className="mr-2">Read More</span>
+                    <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+              </div>
+              
               <CardContent className="p-6">
                 <div className="flex items-center mb-2">
                   <span className="text-gray-800 font-semibold">{post.category}</span>
@@ -97,9 +82,6 @@ const BlogSection = () => {
                 </div>
                 <h3 className="text-2xl font-bold mb-4">{post.title}</h3>
                 <p className="text-gray-600 mb-6">{post.excerpt}</p>
-                <div className="mt-auto flex justify-start">
-                  <ArrowRight className="h-5 w-5 text-gray-400 hover:text-primary transition-colors" />
-                </div>
               </CardContent>
             </Card>
           ))}
