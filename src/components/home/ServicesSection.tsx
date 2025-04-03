@@ -8,8 +8,8 @@ import ServiceHeader from './ServiceHeader';
 import useEmblaCarousel from 'embla-carousel-react';
 import { services as mockServices } from './servicesData';
 
-// Define a simpler interface for raw database services
-interface DatabaseService {
+// Define a database service type with only the required fields
+type DatabaseService = {
   id: string;
   name: string;
   description: string | null;
@@ -21,13 +21,13 @@ interface DatabaseService {
   icon_name?: string;
   display_order?: number;
   is_active?: boolean;
-}
+};
 
 export default function ServicesSection() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false });
 
-  // Define a standalone fetch function to avoid deep type inference
-  const fetchServices = async () => {
+  // Define a fetch function with explicit type handling to avoid deep inference
+  const fetchServices = async (): Promise<Service[]> => {
     const { data, error } = await supabase
       .from('services')
       .select('*')
@@ -36,16 +36,13 @@ export default function ServicesSection() {
     
     if (error) throw error;
     
-    // Use type annotations to avoid deep inference
-    const services: Service[] = [];
+    if (!data) return [];
     
-    if (data) {
-      for (const item of data) {
-        services.push(adaptDatabaseService(item as DatabaseService));
-      }
-    }
-    
-    return services;
+    // Convert the raw data to Services without complex type operations
+    return data.map((item) => {
+      const dbService = item as unknown as DatabaseService;
+      return adaptDatabaseService(dbService);
+    });
   };
 
   // Use the query with the simplified fetch function
