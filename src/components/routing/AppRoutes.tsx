@@ -1,3 +1,4 @@
+
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -23,6 +24,7 @@ const Categories = lazy(() => import('@/pages/Categories'));
 const CategoryForm = lazy(() => import('@/pages/CategoryForm'));
 const Clinics = lazy(() => import('@/pages/Clinics'));
 const Doctors = lazy(() => import('@/pages/Doctors'));
+const DoctorDetails = lazy(() => import('@/pages/DoctorDetails'));
 const Hospitals = lazy(() => import('@/pages/Hospitals'));
 const ClinicDetails = lazy(() => import('@/pages/ClinicDetails'));
 const Reservations = lazy(() => import('@/pages/Reservations'));
@@ -69,6 +71,7 @@ const AppRoutes = () => {
           <Route path="/clinics/:id" element={<ClinicDetails />} />
           <Route path="/clinics" element={<Clinics />} />
           <Route path="/doctors" element={<Doctors />} />
+          <Route path="/doctors/:id" element={<DoctorDetails />} />
           <Route path="/hospitals" element={<Hospitals />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/offers" element={<Offers />} />
