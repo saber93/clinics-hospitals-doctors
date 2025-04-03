@@ -72,7 +72,8 @@ export default function ServiceDetailsSection({
                     />
                     {IconComponent && (
                       <div className="flex items-center justify-center w-10 h-10 bg-primary/5 rounded">
-                        {React.createElement(IconComponent, { className: "w-6 h-6 text-primary" })}
+                        {/* Use JSX to render the icon component directly instead of createElement */}
+                        <IconComponent className="w-6 h-6 text-primary" />
                       </div>
                     )}
                   </div>
