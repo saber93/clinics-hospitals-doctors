@@ -7,7 +7,7 @@ import ClinicDescription from "./ClinicDescription";
 import ProductVouchers from "./ProductVouchers";
 import ReservationCard from "./ReservationCard";
 import { SpecialtyTheme } from "@/utils/clinics/specialtyThemes";
-import { Eye, Scissors, Zap, Star, Heart, Sparkles, Activity, Stethoscope } from "lucide-react";
+import * as LucideIcons from 'lucide-react';
 
 interface ClinicDetailsLayoutProps {
   clinic: Clinic;
@@ -23,26 +23,16 @@ const ClinicDetailsLayout = ({
   specialtyTheme 
 }: ClinicDetailsLayoutProps) => {
 
-  // Map theme icon name to Lucide component
+  // Get the appropriate icon component
   const getSpecialtyIcon = () => {
-    switch (specialtyTheme.icon) {
-      case 'eye':
-        return <Eye className="h-6 w-6 text-white" />;
-      case 'tooth':
-        return <Stethoscope className="h-6 w-6 text-white" />; // Replaced Tooth with Stethoscope
-      case 'scissors':
-        return <Scissors className="h-6 w-6 text-white" />;
-      case 'zap':
-        return <Zap className="h-6 w-6 text-white" />;
-      case 'star':
-        return <Star className="h-6 w-6 text-white" />;
-      case 'heart':
-        return <Heart className="h-6 w-6 text-white" />;
-      case 'sparkles':
-        return <Sparkles className="h-6 w-6 text-white" />;
-      default:
-        return <Activity className="h-6 w-6 text-white" />;
-    }
+    const iconName = specialtyTheme.icon;
+    // Convert first letter to uppercase for Lucide
+    const formattedIconName = iconName.charAt(0).toUpperCase() + iconName.slice(1);
+    
+    // Get the icon component from Lucide
+    const IconComponent = (LucideIcons as any)[formattedIconName] || LucideIcons.Activity;
+    
+    return <IconComponent className="h-6 w-6 text-white" />;
   };
 
   return (

@@ -26,18 +26,18 @@ export const lucideIcons = [
   'Cigarette',
   'Cross',
   'FirstAid',
-  'Dumbbell', // renamed from 'Fitness'
+  'Dumbbell', 
   'Flame',
-  'Flower', // renamed from 'FlowerSun'
+  'Flower', 
   'Glasses',
   'Hand',
-  'Building2', // renamed from 'Hospital'
+  'Building2',
   'Spa',
   'Stethoscope',
   'Thermometer',
   'User',
   'Users',
-  'Syringe', // renamed from 'Vaccine'
-  'Droplets', // renamed from 'Drop'
+  'Syringe',
+  'Droplets',
   'Activity'
 ];

@@ -14,8 +14,17 @@ interface ThemePreviewProps {
 }
 
 const ThemePreview: React.FC<ThemePreviewProps> = ({ theme, entityType, entity }) => {
-  // Get the icon component by name
-  const IconComponent = (LucideIcons as any)[theme.icon] || LucideIcons.Activity;
+  // Safely get the icon component by name, fallback to Activity if not found
+  const getIconComponent = () => {
+    const iconName = theme.icon;
+    // For icons with lowercase names in our system, convert first letter to uppercase for Lucide
+    const formattedIconName = iconName.charAt(0).toUpperCase() + iconName.slice(1);
+    
+    // Get the icon component from Lucide
+    return (LucideIcons as any)[formattedIconName] || LucideIcons.Activity;
+  };
+  
+  const IconComponent = getIconComponent();
   
   return (
     <div className="space-y-6">

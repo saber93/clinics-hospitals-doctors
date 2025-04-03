@@ -121,10 +121,13 @@ const ThemeEditor: React.FC<ThemeEditorProps> = ({ theme, onChange }) => {
               </SelectTrigger>
               <SelectContent>
                 {lucideIcons.map((iconName) => (
-                  <SelectItem key={iconName} value={iconName}>{iconName}</SelectItem>
+                  <SelectItem key={iconName.toLowerCase()} value={iconName.toLowerCase()}>{iconName}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            <p className="text-xs text-muted-foreground mt-1">
+              Select an icon for your theme
+            </p>
           </div>
         </CardContent>
       </Card>
