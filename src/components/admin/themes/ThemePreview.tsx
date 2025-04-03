@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Clinic } from '@/types/clinic';
 import { Doctor } from '@/types/doctor';
 import { Star, MapPin, Users } from 'lucide-react';
-import { getIconByName } from '@/utils/clinics/iconOptions';
+import * as LucideIcons from 'lucide-react';
 
 interface ThemePreviewProps {
   theme: SpecialtyTheme;
@@ -14,7 +14,8 @@ interface ThemePreviewProps {
 }
 
 const ThemePreview: React.FC<ThemePreviewProps> = ({ theme, entityType, entity }) => {
-  const Icon = getIconByName(theme.icon);
+  // Get the icon component by name
+  const IconComponent = (LucideIcons as any)[theme.icon] || LucideIcons.Activity;
   
   return (
     <div className="space-y-6">
@@ -29,7 +30,7 @@ const ThemePreview: React.FC<ThemePreviewProps> = ({ theme, entityType, entity }
               <div 
                 className={`${theme.gradientStyle} flex items-center justify-center rounded-lg w-16 h-16 shrink-0 text-white`}
               >
-                <Icon className="h-8 w-8" />
+                <IconComponent className="h-8 w-8" />
               </div>
               
               <div className="space-y-1">
@@ -56,7 +57,7 @@ const ThemePreview: React.FC<ThemePreviewProps> = ({ theme, entityType, entity }
             <button
               className={`w-full py-2 px-4 ${theme.gradientStyle} text-white rounded-md flex items-center justify-center gap-2`}
             >
-              <Icon className="h-4 w-4" />
+              <IconComponent className="h-4 w-4" />
               Book Now
             </button>
             
@@ -83,7 +84,7 @@ const ThemePreview: React.FC<ThemePreviewProps> = ({ theme, entityType, entity }
         <h3 className="text-sm font-medium mb-3">Header Style</h3>
         <div className={`${theme.gradientStyle} p-6 rounded-lg text-white`}>
           <div className="flex items-center gap-3 mb-2">
-            <Icon className="h-6 w-6" />
+            <IconComponent className="h-6 w-6" />
             <h2 className="text-xl font-bold">{entity.name}</h2>
           </div>
           <p className="max-w-md">{entity.description}</p>
