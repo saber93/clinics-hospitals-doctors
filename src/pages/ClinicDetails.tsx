@@ -19,7 +19,7 @@ const ClinicDetails = () => {
   const navigate = useNavigate();
   
   // Fetch clinic details and check if user has reservations
-  const { data: clinic, isLoading, error } = useClinicDetails(id);
+  const { clinic, isLoading, error } = useClinicDetails(id);
 
   const handleReservation = () => {
     // Check if user is authenticated
