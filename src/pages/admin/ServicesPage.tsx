@@ -4,7 +4,7 @@ import ServicesList from '@/components/admin/services/ServicesList';
 
 const ServicesPage = () => {
   return (
-    <div className="p-6 pt-24 pb-16">
+    <div className="p-6 pt-20 pb-16">
       <ServicesList />
     </div>
   );
