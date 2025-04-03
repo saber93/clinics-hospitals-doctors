@@ -1,12 +1,10 @@
 
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import TestCredentialsPanel from "./TestCredentialsPanel";
 
@@ -67,119 +65,102 @@ const LoginForm = () => {
   };
 
   return (
-    <Card className="w-full max-w-md shadow-lg">
-      <CardHeader className="space-y-1 text-center">
-        <CardTitle className="text-2xl font-bold">
-          {mode === "login" ? "Welcome Back" : "Create an account"}
-        </CardTitle>
-        <CardDescription>
-          {mode === "login" 
-            ? "Sign in to access your account" 
-            : "Fill in your details to create an account"}
-        </CardDescription>
-      </CardHeader>
-      
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {mode === "register" && (
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input
-                id="name"
-                name="name"
-                type="text"
-                placeholder="Enter your full name"
-                value={formData.name}
-                onChange={handleChange}
-                disabled={isLoading}
-              />
-            </div>
-          )}
-          
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="Enter your email address"
-              value={formData.email}
-              onChange={handleChange}
-              disabled={isLoading}
-              autoComplete="email"
-            />
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="Enter your password"
-              value={formData.password}
-              onChange={handleChange}
-              disabled={isLoading}
-              autoComplete={mode === "login" ? "current-password" : "new-password"}
-            />
-          </div>
-          
-          {mode === "register" && (
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                placeholder="Confirm your password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                disabled={isLoading}
-                autoComplete="new-password"
-              />
-            </div>
-          )}
-          
-          {loginError && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm">
-              <p>{loginError}</p>
-            </div>
-          )}
-          
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Processing..." : mode === "login" ? "Sign In" : "Create Account"}
-          </Button>
-        </form>
-        
-        {mode === "login" && (
-          <TestCredentialsPanel 
-            mode={mode}
-            onFillCredentials={handleFillCredentials} 
-            isLoading={isLoading}
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {mode === "register" && (
+        <div className="space-y-2">
+          <Label htmlFor="name">Full Name</Label>
+          <Input
+            id="name"
+            name="name"
+            type="text"
+            placeholder="Enter your full name"
+            value={formData.name}
+            onChange={handleChange}
+            disabled={isLoading}
           />
-        )}
-      </CardContent>
-      
-      <CardFooter className="flex justify-center">
-        <div className="text-center text-sm">
-          {mode === "login" ? (
-            <p>
-              Don't have an account?{" "}
-              <Link to="/auth?mode=register" className="text-primary hover:underline font-medium">
-                Create one here
-              </Link>
-            </p>
-          ) : (
-            <p>
-              Already have an account?{" "}
-              <Link to="/auth?mode=login" className="text-primary hover:underline font-medium">
-                Sign in here
-              </Link>
-            </p>
-          )}
         </div>
-      </CardFooter>
-    </Card>
+      )}
+      
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          placeholder="Enter your email address"
+          value={formData.email}
+          onChange={handleChange}
+          disabled={isLoading}
+          autoComplete="email"
+        />
+      </div>
+      
+      <div className="space-y-2">
+        <Label htmlFor="password">Password</Label>
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Enter your password"
+          value={formData.password}
+          onChange={handleChange}
+          disabled={isLoading}
+          autoComplete={mode === "login" ? "current-password" : "new-password"}
+        />
+      </div>
+      
+      {mode === "register" && (
+        <div className="space-y-2">
+          <Label htmlFor="confirmPassword">Confirm Password</Label>
+          <Input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            placeholder="Confirm your password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            disabled={isLoading}
+            autoComplete="new-password"
+          />
+        </div>
+      )}
+      
+      {loginError && (
+        <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm">
+          <p>{loginError}</p>
+        </div>
+      )}
+      
+      <Button type="submit" className="w-full" disabled={isLoading}>
+        {isLoading ? "Processing..." : mode === "login" ? "Sign In" : "Create Account"}
+      </Button>
+      
+      {mode === "login" && (
+        <TestCredentialsPanel 
+          mode={mode}
+          onFillCredentials={handleFillCredentials} 
+          isLoading={isLoading}
+        />
+      )}
+      
+      <div className="text-center text-sm">
+        {mode === "login" ? (
+          <p>
+            Don't have an account?{" "}
+            <Link to="/auth?mode=register" className="text-primary hover:underline font-medium">
+              Create one here
+            </Link>
+          </p>
+        ) : (
+          <p>
+            Already have an account?{" "}
+            <Link to="/auth?mode=login" className="text-primary hover:underline font-medium">
+              Sign in here
+            </Link>
+          </p>
+        )}
+      </div>
+    </form>
   );
 };
 

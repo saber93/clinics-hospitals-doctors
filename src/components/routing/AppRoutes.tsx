@@ -1,6 +1,5 @@
-
 import React, { lazy, Suspense } from 'react';
-import { Routes, Route, Outlet } from 'react-router-dom';
+import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { ProtectedRoute } from './ProtectedRoute';
 import { PublicRoute } from './PublicRoute';
@@ -11,8 +10,6 @@ import AdminDashboardLayout from '@/pages/admin/AdminDashboardLayout';
 // Lazy load pages to improve performance
 const Home = lazy(() => import('@/pages/Home'));
 const Auth = lazy(() => import('@/pages/Auth'));
-const Login = lazy(() => import('@/pages/Login'));
-const Register = lazy(() => import('@/pages/Register'));
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
 const DoctorDashboard = lazy(() => import('@/pages/DoctorDashboard'));
 const VendorDashboard = lazy(() => import('@/pages/VendorDashboard'));
@@ -77,8 +74,8 @@ const AppRoutes = () => {
           <Route path="/offers" element={<Offers />} />
           
           <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
-          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-          <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+          <Route path="/login" element={<PublicRoute><Navigate to="/auth?mode=login" replace /></PublicRoute>} />
+          <Route path="/register" element={<PublicRoute><Navigate to="/auth?mode=register" replace /></PublicRoute>} />
           
           <Route path="/reservations" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />
           <Route path="/my-reservations" element={<ProtectedRoute><MyReservations /></ProtectedRoute>} />
@@ -116,7 +113,6 @@ const AppRoutes = () => {
           <Route path="/chat-sessions" element={<ProtectedRoute><ChatSessions /></ProtectedRoute>} />
           <Route path="/chat-settings" element={<ProtectedRoute><ChatSettings /></ProtectedRoute>} />
           
-          {/* Admin routes - all wrapped in AdminDashboardLayout which has no footer */}
           <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboardLayout><AdminDashboard /></AdminDashboardLayout></ProtectedRoute>} />
           <Route path="/vendors" element={<ProtectedRoute><AdminDashboardLayout><TotalVendors /></AdminDashboardLayout></ProtectedRoute>} />
           <Route path="/clients" element={<ProtectedRoute><AdminDashboardLayout><TotalClients /></AdminDashboardLayout></ProtectedRoute>} />

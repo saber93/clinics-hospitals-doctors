@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import LoginForm from "@/components/auth/LoginForm";
+import { cleanupInvalidAuth } from "@/utils/authCleanup";
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -12,6 +13,9 @@ const Auth = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Clean up any invalid auth tokens first
+    cleanupInvalidAuth();
+    
     // Check current auth status
     const checkSession = async () => {
       try {
