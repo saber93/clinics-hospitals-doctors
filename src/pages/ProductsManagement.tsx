@@ -1,11 +1,11 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, ArrowLeft } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import ProductGrid from "@/components/products/ProductGrid";
 import { useProducts } from "@/hooks/useProducts";
+import { useNavigate } from "react-router-dom";
 
 const ProductsManagement = () => {
   const navigate = useNavigate();
@@ -21,16 +21,7 @@ const ProductsManagement = () => {
   return (
     <div className="p-6 pt-20">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-        <div className="flex items-center gap-2">
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={() => navigate("/vendor-dashboard")}
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <h2 className="text-2xl font-bold">Products Management</h2>
-        </div>
+        <h2 className="text-2xl font-bold">Products Management</h2>
         
         <div className="flex gap-2 mt-4 sm:mt-0 w-full sm:w-auto">
           <Button 

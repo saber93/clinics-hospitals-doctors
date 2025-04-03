@@ -1,11 +1,8 @@
-
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Mail, MapPin, Phone, Store, Search } from "lucide-react";
+import { Mail, MapPin, Phone, Store, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 interface VendorProfile {
@@ -18,7 +15,6 @@ interface VendorProfile {
 }
 
 const TotalVendors = () => {
-  const navigate = useNavigate();
   const [vendors, setVendors] = useState<VendorProfile[]>([]);
   const [filteredVendors, setFilteredVendors] = useState<VendorProfile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -114,16 +110,7 @@ const TotalVendors = () => {
 
   return (
     <div className="h-full w-full pt-2">
-      <div className="flex items-center mb-6">
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={() => navigate('/admin-dashboard')}
-          className="mr-4"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Dashboard
-        </Button>
+      <div className="mb-6">
         <h2 className="text-2xl font-bold">Total Vendors ({filteredVendors.length})</h2>
       </div>
 

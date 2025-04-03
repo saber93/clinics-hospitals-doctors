@@ -1,7 +1,5 @@
 
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { 
   Card, 
   CardContent, 
@@ -9,7 +7,6 @@ import {
   CardHeader, 
   CardTitle 
 } from "@/components/ui/card";
-import { ArrowLeft } from "lucide-react";
 import { useBookings } from "@/hooks/useBookings";
 import BookingsTable from "@/components/bookings/BookingsTable";
 import BookingsLoading from "@/components/bookings/BookingsLoading";
@@ -17,7 +14,6 @@ import BookingsEmpty from "@/components/bookings/BookingsEmpty";
 import BookingsTabs from "@/components/bookings/BookingsTabs";
 
 const MyReservations = () => {
-  const navigate = useNavigate();
   const {
     filteredReservations,
     loading,
@@ -31,16 +27,8 @@ const MyReservations = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8 pt-24 pb-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-6">
+        <div className="mb-6">
           <h1 className="text-3xl font-bold">My Reservations</h1>
-          <Button 
-            variant="outline" 
-            onClick={() => navigate(-1)}
-            className="flex items-center"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
-          </Button>
         </div>
         
         <Card>
