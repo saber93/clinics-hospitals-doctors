@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ThemeEditor from '@/components/admin/themes/ThemeEditor';
 import ThemePreview from '@/components/admin/themes/ThemePreview';
@@ -18,8 +18,25 @@ const ThemeEditorTabs: React.FC<ThemeEditorTabsProps> = ({
   entity,
   onThemeChange
 }) => {
+  // Initialize with a default tab, but we'll try to load from localStorage
+  const [activeTab, setActiveTab] = useState<string>('editor');
+
+  // Load the active tab from localStorage when the component mounts
+  useEffect(() => {
+    const savedTab = localStorage.getItem('theme-editor-active-tab');
+    if (savedTab) {
+      setActiveTab(savedTab);
+    }
+  }, []);
+
+  // Save the active tab to localStorage whenever it changes
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    localStorage.setItem('theme-editor-active-tab', value);
+  };
+
   return (
-    <Tabs defaultValue="editor" className="w-full">
+    <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
       <TabsList>
         <TabsTrigger value="editor">Editor</TabsTrigger>
         <TabsTrigger value="preview">Preview</TabsTrigger>
