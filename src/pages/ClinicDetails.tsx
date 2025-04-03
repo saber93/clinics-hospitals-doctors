@@ -12,6 +12,7 @@ import ClinicDetailsError from "@/components/clinics/ClinicDetailsError";
 // Hooks and utilities
 import { useClinicDetails } from "@/hooks/useClinicDetails";
 import { getDefaultVouchers } from "@/utils/clinics/voucherUtils";
+import { getSpecialtyTheme } from "@/utils/clinics/specialtyThemes";
 
 const ClinicDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -51,12 +52,16 @@ const ClinicDetails = () => {
   const vouchers = clinic.productsVoucher && clinic.productsVoucher.length > 0 
     ? clinic.productsVoucher 
     : getDefaultVouchers();
+    
+  // Get specialty theme based on clinic's category or subcategory
+  const specialtyTheme = getSpecialtyTheme(clinic.category, clinic.subCategory);
 
   return (
     <ClinicDetailsLayout 
       clinic={clinic} 
       vouchers={vouchers} 
-      onReservation={handleReservation} 
+      onReservation={handleReservation}
+      specialtyTheme={specialtyTheme}
     />
   );
 };

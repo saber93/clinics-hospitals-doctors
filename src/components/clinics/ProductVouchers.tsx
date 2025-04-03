@@ -5,14 +5,21 @@ import { Separator } from "@/components/ui/separator";
 import VoucherCard from "./vouchers/VoucherCard";
 import VoucherPreviewDialog from "./vouchers/VoucherPreviewDialog";
 import { ProductVoucherType } from "./types";
+import { SpecialtyTheme } from "@/utils/clinics/specialtyThemes";
 
 interface ProductVouchersProps {
   vouchers: ProductVoucherType[];
   hasReservation: boolean;
   onReservation: () => void;
+  specialtyTheme: SpecialtyTheme;
 }
 
-const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVouchersProps) => {
+const ProductVouchers = ({ 
+  vouchers, 
+  hasReservation, 
+  onReservation,
+  specialtyTheme 
+}: ProductVouchersProps) => {
   const [selectedProduct, setSelectedProduct] = useState<ProductVoucherType | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -60,10 +67,10 @@ const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVou
 
   return (
     <>
-      <Separator className="my-6" />
+      <Separator className={`my-6 bg-${specialtyTheme.primaryColor}/30`} />
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <Gift className="h-5 w-5 text-primary" />
+          <Gift className={`h-5 w-5 text-${specialtyTheme.primaryColor}`} />
           <h2 className="text-xl font-semibold">
             {hasReservation 
               ? "Your Available Product Vouchers" 
@@ -78,6 +85,7 @@ const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVou
               hasReservation={hasReservation}
               onPreview={handleProductPreview}
               index={index}
+              specialtyTheme={specialtyTheme}
             />
           ))}
         </div>
@@ -92,6 +100,7 @@ const ProductVouchers = ({ vouchers, hasReservation, onReservation }: ProductVou
         onPrevImage={handlePrevImage}
         onNextImage={handleNextImage}
         allImages={allImages}
+        specialtyTheme={specialtyTheme}
       />
     </>
   );

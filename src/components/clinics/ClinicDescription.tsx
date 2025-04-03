@@ -1,20 +1,17 @@
 
 import React from "react";
-import { Separator } from "@/components/ui/separator";
+import { SpecialtyTheme } from "@/utils/clinics/specialtyThemes";
 
-type ClinicDescriptionProps = {
+interface ClinicDescriptionProps {
   description: string;
-};
+  specialtyTheme: SpecialtyTheme;
+}
 
-const ClinicDescription = ({ description }: ClinicDescriptionProps) => {
+const ClinicDescription: React.FC<ClinicDescriptionProps> = ({ description, specialtyTheme }) => {
   return (
-    <>
-      <Separator className="my-6" />
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold">About this Clinic</h2>
-        <p className="text-muted-foreground">{description}</p>
-      </div>
-    </>
+    <div className={`prose prose-sm max-w-none text-${specialtyTheme.secondaryColor}`}>
+      <p>{description}</p>
+    </div>
   );
 };
 

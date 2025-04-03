@@ -5,12 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, ArrowLeft } from "lucide-react";
 import { Clinic } from "@/types/clinic";
+import { SpecialtyTheme } from "@/utils/clinics/specialtyThemes";
 
 type ClinicDetailHeaderProps = {
   clinic: Clinic;
+  specialtyTheme: SpecialtyTheme;
 };
 
-const ClinicDetailHeader = ({ clinic }: ClinicDetailHeaderProps) => {
+const ClinicDetailHeader = ({ clinic, specialtyTheme }: ClinicDetailHeaderProps) => {
   const navigate = useNavigate();
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
@@ -36,7 +38,7 @@ const ClinicDetailHeader = ({ clinic }: ClinicDetailHeaderProps) => {
         <ArrowLeft className="h-4 w-4" /> Back to Clinics
       </Button>
 
-      <div className="relative rounded-lg overflow-hidden h-64 md:h-96 mb-6">
+      <div className={`relative rounded-lg overflow-hidden h-64 md:h-96 mb-6 border-2 ${specialtyTheme.cardStyle}`}>
         <img
           src={getImageUrl()}
           alt={clinic.name}
@@ -45,14 +47,16 @@ const ClinicDetailHeader = ({ clinic }: ClinicDetailHeaderProps) => {
         />
         {clinic.offerPercentage > 0 && (
           <div className="absolute top-0 right-0 m-4">
-            <Badge className="bg-primary text-primary-foreground px-3 py-1.5 text-sm font-bold">
+            <Badge className={`${specialtyTheme.gradientStyle} text-white px-3 py-1.5 text-sm font-bold border-0`}>
               {clinic.offerPercentage}% OFF
             </Badge>
           </div>
         )}
       </div>
 
-      <h1 className="text-3xl font-bold tracking-tight mb-2">{clinic.name}</h1>
+      <h1 className={`text-3xl font-bold tracking-tight mb-2 text-${specialtyTheme.primaryColor}`}>
+        {clinic.name}
+      </h1>
       
       <div className="flex items-center text-muted-foreground mb-4">
         <MapPin className="h-4 w-4 mr-1" />
@@ -60,8 +64,12 @@ const ClinicDetailHeader = ({ clinic }: ClinicDetailHeaderProps) => {
       </div>
 
       <div className="flex flex-wrap gap-2 mb-6">
-        <Badge variant="secondary">{clinic.category}</Badge>
-        <Badge variant="outline">{clinic.subCategory}</Badge>
+        <Badge className={`${specialtyTheme.gradientStyle} text-white border-0`}>
+          {clinic.category}
+        </Badge>
+        <Badge variant="outline" className={`border-${specialtyTheme.primaryColor} text-${specialtyTheme.primaryColor}`}>
+          {clinic.subCategory}
+        </Badge>
       </div>
     </>
   );
