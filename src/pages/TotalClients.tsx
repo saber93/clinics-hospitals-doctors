@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -27,7 +26,6 @@ const TotalClients = () => {
     const fetchClients = async () => {
       try {
         setLoading(true);
-        // Get all profiles with 'client' role
         const { data, error } = await supabase
           .from('profiles')
           .select('id, name, created_at')
@@ -35,10 +33,8 @@ const TotalClients = () => {
 
         if (error) throw error;
 
-        // If no data is returned, create mock data for demo
         const clientData = data && data.length > 0 ? data : generateMockClients();
 
-        // Add mock email and phone for demonstration
         const clientsWithContactInfo = clientData.map(client => ({
           ...client,
           email: `client${client.id.substring(0, 4)}@example.com`,
@@ -51,7 +47,6 @@ const TotalClients = () => {
         console.error("Error fetching clients:", error);
         toast.error("Failed to load clients");
         
-        // If error, still show mock data
         const mockData = generateMockClients();
         setClients(mockData);
         setFilteredClients(mockData);
@@ -63,7 +58,6 @@ const TotalClients = () => {
     fetchClients();
   }, []);
 
-  // Generate mock client data
   const generateMockClients = (): ClientProfile[] => {
     const mockNames = [
       "John Smith", "Sarah Johnson", "Michael Brown", "Emma Davis", 
@@ -110,7 +104,7 @@ const TotalClients = () => {
   };
 
   return (
-    <div className="p-6">
+    <div>
       <div className="flex items-center mb-6">
         <Button 
           variant="outline" 

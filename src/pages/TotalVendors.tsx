@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -112,7 +113,7 @@ const TotalVendors = () => {
   };
 
   return (
-    <div className="p-6">
+    <div>
       <div className="flex items-center mb-6">
         <Button 
           variant="outline" 

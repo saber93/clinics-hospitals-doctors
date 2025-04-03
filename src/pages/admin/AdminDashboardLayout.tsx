@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { 
@@ -27,7 +26,7 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full pt-20"> {/* Increased padding-top to 20 (pt-20) */}
+      <div className="flex min-h-screen w-full pt-20 mt-4">
         <Sidebar>
           <SidebarHeader>
             <div className="px-4 py-3">
