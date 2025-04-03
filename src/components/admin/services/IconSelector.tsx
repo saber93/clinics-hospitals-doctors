@@ -50,20 +50,19 @@ export function IconSelector({ value, onChange, availableIcons }: IconSelectorPr
             />
           </div>
         </div>
-        <ScrollArea className="h-[300px] p-2">
-          <div className="grid grid-cols-4 gap-2">
+        <ScrollArea className="h-[300px]">
+          <div className="p-1">
             {filteredIcons.map((iconName) => (
               <Button
                 key={iconName}
                 variant="ghost"
-                size="sm"
-                className="flex flex-col items-center justify-center h-20 py-2 gap-1 text-xs"
+                className="w-full justify-start h-9 px-2 mb-1 text-left"
                 onClick={() => {
                   onChange(iconName);
                   setIconSearchTerm('');
                 }}
               >
-                <span className="text-xs text-center truncate max-w-full">{iconName}</span>
+                <span className="text-sm truncate">{iconName}</span>
               </Button>
             ))}
           </div>
