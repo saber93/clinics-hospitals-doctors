@@ -26,8 +26,8 @@ interface DatabaseService {
 export default function ServicesSection() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false });
 
-  // Fix the typing to avoid excessive type instantiation
-  const fetchServices = async (): Promise<Service[]> => {
+  // Define the fetchServices function with explicit return type to avoid deep type instantiation
+  const fetchServices = async () => {
     const { data, error } = await supabase
       .from('services')
       .select('*')
@@ -36,12 +36,11 @@ export default function ServicesSection() {
     
     if (error) throw error;
     
-    // Use type assertion and explicitly return the mapped data
-    const dbServices = data as DatabaseService[];
-    return dbServices.map(service => adaptDatabaseService(service));
+    // Use a simpler type assertion approach
+    return (data || []).map(service => adaptDatabaseService(service as DatabaseService));
   };
 
-  // Use the extracted function with explicit return type
+  // Use the query with the correct type annotations
   const { data: services, isLoading } = useQuery({
     queryKey: ['services'],
     queryFn: fetchServices
