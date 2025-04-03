@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -29,20 +28,17 @@ const MarketingJourneySection = () => {
           
           <div className="space-y-8 md:col-span-2">
             <div>
-              <p className="text-lg text-gray-700 mb-8">
+              <p className="text-lg text-gray-700 mb-4">
                 From overcoming marketing failures to leading in performance-based strategies, we 
                 transformed our challenges into success. At ZAMES, we redefine marketing by focusing 
                 on real, measurable growth—ensuring businesses thrive without financial risks.
-              </p>
-              
-              <div className="flex justify-end">
                 <button 
-                  className="flex items-center text-gray-900 font-medium hover:text-primary transition-colors"
+                  className="inline-flex items-center text-gray-900 font-medium hover:text-primary transition-colors ml-2"
                   onClick={handleReadMoreClick}
                 >
                   Read More <ArrowRight className="ml-2 h-5 w-5" />
                 </button>
-              </div>
+              </p>
               
               <div className="border-t border-gray-200 mt-8 pt-4"></div>
             </div>
