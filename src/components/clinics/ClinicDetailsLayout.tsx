@@ -7,7 +7,7 @@ import ClinicDescription from "./ClinicDescription";
 import ProductVouchers from "./ProductVouchers";
 import ReservationCard from "./ReservationCard";
 import { SpecialtyTheme } from "@/utils/clinics/specialtyThemes";
-import { Eye, Tooth, Scissors, Zap, Star, Heart, Sparkles, Activity } from "lucide-react";
+import { Eye, Scissors, Zap, Star, Heart, Sparkles, Activity, Stethoscope } from "lucide-react";
 
 interface ClinicDetailsLayoutProps {
   clinic: Clinic;
@@ -29,7 +29,7 @@ const ClinicDetailsLayout = ({
       case 'eye':
         return <Eye className="h-6 w-6 text-white" />;
       case 'tooth':
-        return <Tooth className="h-6 w-6 text-white" />;
+        return <Stethoscope className="h-6 w-6 text-white" />; // Replaced Tooth with Stethoscope
       case 'scissors':
         return <Scissors className="h-6 w-6 text-white" />;
       case 'zap':

@@ -42,7 +42,7 @@ const specialtyThemes: Record<string, SpecialtyTheme> = {
     secondaryColor: 'sky-400',
     accentColor: 'sky-300',
     gradientStyle: 'bg-gradient-to-r from-sky-500 to-blue-500',
-    icon: 'tooth',
+    icon: 'tooth', // This still refers to 'tooth' for theme identification purposes
     cardStyle: 'border-sky-500 bg-sky-50/30'
   },
   'Ophthalmologist': {
