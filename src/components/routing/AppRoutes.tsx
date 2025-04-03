@@ -5,6 +5,7 @@ import { ProtectedRoute } from './ProtectedRoute';
 import { PublicRoute } from './PublicRoute';
 import Loading from '@/components/ui/Loading';
 import NotFound from '@/pages/NotFound';
+import AdminDashboardLayout from '@/pages/admin/AdminDashboardLayout';
 
 // Lazy load pages to improve performance
 const Home = lazy(() => import('@/pages/Home'));
@@ -47,13 +48,6 @@ const EditProduct = lazy(() => import('@/pages/EditProduct'));
 const Cart = lazy(() => import('@/pages/Cart'));
 const Profile = lazy(() => import('@/pages/Profile'));
 const ProfileSettings = lazy(() => import('@/pages/ProfileSettings'));
-
-const AdminDashboardLayout = lazy(() => import('@/pages/admin/AdminDashboardLayout'));
-const BlogsPage = lazy(() => import('@/pages/admin/BlogsPage'));
-const BlogFormPage = lazy(() => import('@/pages/admin/BlogFormPage'));
-const ServicesPage = lazy(() => import('@/pages/admin/ServicesPage'));
-const ServiceFormPage = lazy(() => import('@/pages/admin/ServiceFormPage'));
-const ContactMessagesPage = lazy(() => import('@/pages/admin/ContactMessagesPage'));
 
 const AppRoutes = () => {
   return (
@@ -110,9 +104,9 @@ const AppRoutes = () => {
           <Route path="/chat-sessions" element={<ProtectedRoute><ChatSessions /></ProtectedRoute>} />
           <Route path="/chat-settings" element={<ProtectedRoute><ChatSettings /></ProtectedRoute>} />
           
-          <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-          <Route path="/vendors" element={<ProtectedRoute><TotalVendors /></ProtectedRoute>} />
-          <Route path="/clients" element={<ProtectedRoute><TotalClients /></ProtectedRoute>} />
+          <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboardLayout><AdminDashboard /></AdminDashboardLayout></ProtectedRoute>} />
+          <Route path="/vendors" element={<ProtectedRoute><AdminDashboardLayout><TotalVendors /></AdminDashboardLayout></ProtectedRoute>} />
+          <Route path="/clients" element={<ProtectedRoute><AdminDashboardLayout><TotalClients /></AdminDashboardLayout></ProtectedRoute>} />
           
           <Route path="/admin" element={<ProtectedRoute><AdminDashboardLayout><Outlet /></AdminDashboardLayout></ProtectedRoute>}>
             <Route path="blogs" element={<BlogsPage />} />

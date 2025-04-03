@@ -7,7 +7,6 @@ import VendorGrowthChart from "@/components/admin/VendorGrowthChart";
 import ServiceCategoriesChart from "@/components/admin/ServiceCategoriesChart";
 import RecentActivityPanel from "@/components/admin/RecentActivityPanel";
 import SystemStatusPanel from "@/components/admin/SystemStatusPanel";
-import AdminDashboardLayout from "@/pages/admin/AdminDashboardLayout";
 
 const AdminDashboard = () => {
   const vendorStats = [
@@ -43,21 +42,19 @@ const AdminDashboard = () => {
   };
   
   return (
-    <AdminDashboardLayout>
-      <div className="space-y-6">
-        <StatsCards />
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <VendorGrowthChart vendorStats={vendorStats} />
-          <ServiceCategoriesChart categoryData={categoryData} colors={COLORS} />
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <RecentActivityPanel />
-          <SystemStatusPanel handleSeedData={handleSeedData} />
-        </div>
+    <div className="space-y-6">
+      <StatsCards />
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <VendorGrowthChart vendorStats={vendorStats} />
+        <ServiceCategoriesChart categoryData={categoryData} colors={COLORS} />
       </div>
-    </AdminDashboardLayout>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <RecentActivityPanel />
+        <SystemStatusPanel handleSeedData={handleSeedData} />
+      </div>
+    </div>
   );
 };
 
