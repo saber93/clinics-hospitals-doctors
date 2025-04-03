@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Instagram, Facebook, Search, ArrowBigUp, MessageCircle } from 'lucide-react';
+import { Instagram, Facebook, Search, ArrowUp, MessageCircle } from 'lucide-react';
 
 const MarketingSection = () => {
   return (
@@ -28,9 +28,9 @@ const MarketingSection = () => {
           
           {/* SEO */}
           <div className="flex flex-col items-center gap-2">
-            <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center bg-white rounded-full shadow-md p-2">
+            <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center bg-white rounded-full shadow-md p-2 relative">
               <Search className="w-3/4 h-3/4" />
-              <ArrowBigUp className="w-1/3 h-1/3 absolute -top-1 -right-1 text-green-500" />
+              <ArrowUp className="w-1/3 h-1/3 absolute -top-1 -right-1 text-green-500" />
             </div>
             <span className="text-sm text-gray-600">SEO</span>
           </div>
@@ -87,24 +87,26 @@ const MarketingSection = () => {
         </div>
       </div>
       
-      <style jsx>{`
-        .ghost-shape {
-          width: 60%;
-          height: 60%;
-          border-radius: 40% 40% 0 0;
-          position: relative;
-        }
-        .ghost-shape:before {
-          content: '';
-          position: absolute;
-          width: 30%;
-          height: 30%;
-          background: black;
-          border-radius: 50%;
-          top: 25%;
-          left: 25%;
-        }
-      `}</style>
+      <style>
+        {`
+          .ghost-shape {
+            width: 60%;
+            height: 60%;
+            border-radius: 40% 40% 0 0;
+            position: relative;
+          }
+          .ghost-shape:before {
+            content: '';
+            position: absolute;
+            width: 30%;
+            height: 30%;
+            background: black;
+            border-radius: 50%;
+            top: 25%;
+            left: 25%;
+          }
+        `}
+      </style>
     </section>
   );
 };
