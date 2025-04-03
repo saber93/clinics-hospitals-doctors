@@ -28,7 +28,7 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
-        <Sidebar>
+        <Sidebar className="z-50">
           <SidebarHeader>
             <div className="px-4 py-3">
               <h2 className="text-lg font-semibold">Admin Portal</h2>
@@ -177,7 +177,7 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
           </header>
 
           {/* Content area with proper padding to account for the fixed header */}
-          <main className="pt-16 p-6">
+          <main className="pt-20 p-6">
             {children || <Outlet />}
           </main>
         </div>
