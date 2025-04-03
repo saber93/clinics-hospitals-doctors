@@ -3,7 +3,6 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 import { Loader2 } from 'lucide-react';
-import * as Icons from 'lucide-react';
 import { useServiceForm } from '@/hooks/useServiceForm';
 import ServiceDetailsSection from './ServiceDetailsSection';
 import ServiceFormActions from './ServiceFormActions';
