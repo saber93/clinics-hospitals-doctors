@@ -10,6 +10,7 @@ import StrategicPartnershipSection from '@/components/home/StrategicPartnershipS
 import MarketingSection from '@/components/home/MarketingSection';
 import MarketingJourneySection from '@/components/home/MarketingJourneySection';
 import DoctorsSection from '@/components/home/DoctorsSection';
+import BlogSection from '@/components/home/BlogSection';
 
 const Home = () => {
   return (
@@ -37,6 +38,9 @@ const Home = () => {
       
       {/* Doctors Section */}
       <DoctorsSection />
+
+      {/* Blog Section */}
+      <BlogSection />
 
       {/* Featured Clinics Section */}
       <FeaturedClinicsSection />
