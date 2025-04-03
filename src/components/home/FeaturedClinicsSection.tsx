@@ -11,11 +11,14 @@ const FeaturedClinicsSection = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold">Our Featured Skincare Clinics</h2>
-          <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
+        <div className="text-center mb-16">
+          <p className="text-lg uppercase tracking-wider text-gray-700 mb-4">OUR FEATURED CLINICS</p>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            Our Featured Clinics
+          </h2>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
             Browse through our network of top-rated dermatology and skincare clinics
           </p>
         </div>
