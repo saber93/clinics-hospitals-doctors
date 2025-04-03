@@ -9,6 +9,7 @@ import CTASection from '@/components/home/CTASection';
 import StrategicPartnershipSection from '@/components/home/StrategicPartnershipSection';
 import MarketingSection from '@/components/home/MarketingSection';
 import MarketingJourneySection from '@/components/home/MarketingJourneySection';
+import DoctorsSection from '@/components/home/DoctorsSection';
 
 const Home = () => {
   return (
@@ -31,11 +32,14 @@ const Home = () => {
       {/* Marketing Section */}
       <MarketingSection />
 
-      {/* Featured Clinics Section */}
-      <FeaturedClinicsSection />
-      
       {/* Marketing Journey Section */}
       <MarketingJourneySection />
+      
+      {/* Doctors Section */}
+      <DoctorsSection />
+
+      {/* Featured Clinics Section */}
+      <FeaturedClinicsSection />
 
       {/* CTA Section */}
       <CTASection />
