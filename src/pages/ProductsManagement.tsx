@@ -19,7 +19,7 @@ const ProductsManagement = () => {
   );
 
   return (
-    <div className="p-6 pt-20">
+    <div className="h-full w-full">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
         <h2 className="text-2xl font-bold">Products Management</h2>
         
@@ -35,7 +35,7 @@ const ProductsManagement = () => {
       </div>
 
       <div className="mb-6">
-        <div className="relative">
+        <div className="relative max-w-md">
           <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
           <Input
             placeholder="Search products..."

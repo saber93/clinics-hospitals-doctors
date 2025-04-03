@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -101,7 +102,7 @@ const TotalClients = () => {
   };
 
   return (
-    <div>
+    <div className="h-full w-full">
       <div className="mb-6">
         <h2 className="text-2xl font-bold">Total Clients ({filteredClients.length})</h2>
       </div>

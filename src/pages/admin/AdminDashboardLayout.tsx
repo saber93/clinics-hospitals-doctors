@@ -28,9 +28,10 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
   return (
     <SidebarProvider>
       <div className="flex h-screen w-full">
-        <div className="relative">
-          <Sidebar className="z-50">
-            <SidebarHeader className="bg-background z-50 relative">
+        {/* Sidebar - Higher z-index than header */}
+        <div className="relative z-50">
+          <Sidebar>
+            <SidebarHeader className="bg-background relative">
               <div className="px-4 py-3">
                 <h2 className="text-lg font-semibold">Admin Portal</h2>
                 <p className="text-xs text-muted-foreground">Manage your application</p>
@@ -161,7 +162,8 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
         </div>
 
         <div className="flex flex-col flex-1 overflow-hidden">
-          <header className="sticky top-0 z-40 bg-white border-b h-16 flex items-center px-4 shrink-0">
+          {/* Header - z-index lower than sidebar but higher than content */}
+          <header className="sticky top-0 z-30 bg-white border-b h-16 flex items-center px-4 shrink-0">
             <SidebarTrigger />
             <h1 className="text-xl font-semibold ml-4">
               {location.pathname === "/admin-dashboard" && "Dashboard Overview"}
@@ -175,7 +177,8 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
             </h1>
           </header>
 
-          <main className="flex-1 overflow-auto p-6">
+          {/* Content - lowest z-index */}
+          <main className="flex-1 overflow-auto p-6 pt-8 z-0">
             {children || <Outlet />}
           </main>
         </div>

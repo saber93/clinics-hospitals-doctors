@@ -25,41 +25,39 @@ const MyReservations = () => {
   } = useBookings();
   
   return (
-    <div className="min-h-screen bg-gray-50 py-8 pt-24 pb-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold">My Reservations</h1>
-        </div>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>My Reservations</CardTitle>
-            <CardDescription>View and manage your upcoming appointments</CardDescription>
-          </CardHeader>
-          
-          <div className="px-6">
-            <BookingsTabs 
-              activeTab={activeFilter} 
-              onTabChange={setActiveFilter}
-            >
-              <CardContent className="p-0">
-                {loading ? (
-                  <BookingsLoading />
-                ) : filteredReservations.length === 0 ? (
-                  <BookingsEmpty activeTab={activeFilter} />
-                ) : (
-                  <BookingsTable 
-                    bookings={filteredReservations}
-                    userRole={userRole}
-                    formatDate={formatDate}
-                    handleUpdateStatus={handleUpdateStatus}
-                  />
-                )}
-              </CardContent>
-            </BookingsTabs>
-          </div>
-        </Card>
+    <div className="h-full w-full">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold">My Reservations</h1>
       </div>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle>My Reservations</CardTitle>
+          <CardDescription>View and manage your upcoming appointments</CardDescription>
+        </CardHeader>
+        
+        <div className="px-6">
+          <BookingsTabs 
+            activeTab={activeFilter} 
+            onTabChange={setActiveFilter}
+          >
+            <CardContent className="p-0">
+              {loading ? (
+                <BookingsLoading />
+              ) : filteredReservations.length === 0 ? (
+                <BookingsEmpty activeTab={activeFilter} />
+              ) : (
+                <BookingsTable 
+                  bookings={filteredReservations}
+                  userRole={userRole}
+                  formatDate={formatDate}
+                  handleUpdateStatus={handleUpdateStatus}
+                />
+              )}
+            </CardContent>
+          </BookingsTabs>
+        </div>
+      </Card>
     </div>
   );
 };
