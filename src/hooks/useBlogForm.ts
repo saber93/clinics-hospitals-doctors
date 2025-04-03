@@ -118,11 +118,11 @@ export function useBlogForm() {
         // Create new blog
         const { data, error } = await supabase
           .from('blogs')
-          .insert([{
+          .insert({
             ...values,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
-          }])
+          })
           .select();
           
         if (error) throw new Error(error.message);

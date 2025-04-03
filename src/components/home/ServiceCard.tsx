@@ -1,35 +1,34 @@
 
-import React, { useState } from 'react';
-import { ChevronRight } from 'lucide-react';
+import React from 'react';
+import * as Icons from 'lucide-react';
 
 interface ServiceCardProps {
   title: string;
   description: string;
-  icon: React.FC;
-  isActive?: boolean;
+  icon?: React.FC;  // For legacy support
+  iconName?: string; // New approach using icon name
 }
 
-const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon: Icon, isActive = false }) => {
-  const [isHovered, setIsHovered] = useState(false);
+export default function ServiceCard({ title, description, icon: Icon, iconName }: ServiceCardProps) {
+  // Use the icon name to get the component if provided
+  const LucideIcon = iconName ? (Icons as any)[iconName] : null;
   
   return (
-    <div 
-      className={`p-8 rounded-sm transition-all duration-300 h-full flex flex-col justify-between w-full max-w-[300px] mx-auto ${isHovered ? 'bg-black text-white' : 'bg-white text-black'}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div>
-        <div className="mb-6">
-          <Icon />
+    <div className="h-full p-6 bg-white border rounded-xl shadow-sm transition-all hover:shadow-md hover:border-primary/20">
+      <div className="flex justify-between items-start mb-4">
+        <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+          {LucideIcon ? (
+            <LucideIcon className="h-6 w-6" />
+          ) : Icon ? (
+            <Icon />
+          ) : (
+            <div className="h-6 w-6" />
+          )}
         </div>
-        <h3 className="text-2xl font-semibold mb-3">{title}</h3>
       </div>
-      <div className="flex items-center">
-        <p className="text-sm">read more</p>
-        <ChevronRight className={`w-6 h-6 transition-all duration-300 ${isHovered ? 'text-white' : 'text-black'}`} />
-      </div>
+      
+      <h3 className="text-lg font-bold mb-2">{title}</h3>
+      <p className="text-sm text-gray-500">{description}</p>
     </div>
   );
-};
-
-export default ServiceCard;
+}

@@ -1,14 +1,18 @@
-import React from 'react';
+
+import React, { useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Service } from '@/types/cms';
 import ServiceCard from './ServiceCard';
 import ServiceHeader from './ServiceHeader';
-import { Skeleton } from '@/components/ui/skeleton';
+import useEmblaCarousel from 'embla-carousel-react';
+import { services as mockServices } from './servicesData';
 
 export default function ServicesSection() {
-  const { data: services, isLoading, error } = useQuery({
-    queryKey: ['homepage-services'],
+  const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false });
+
+  const { data: services, isLoading } = useQuery({
+    queryKey: ['services'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('services')
@@ -18,37 +22,43 @@ export default function ServicesSection() {
       
       if (error) throw error;
       return data as Service[];
-    }
+    },
+    enabled: true,
   });
 
-  if (isLoading) {
-    return (
-      <section className="py-12">
-        <ServiceHeader />
-        <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="space-y-3">
-              <Skeleton className="h-6 w-full" />
-              <Skeleton className="h-4 w-3/4" />
-              <Skeleton className="h-24 w-full" />
-            </div>
-          ))}
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return <div className="text-red-500">Error loading services.</div>;
-  }
+  const scrollPrev = () => emblaApi && emblaApi.scrollPrev();
+  const scrollNext = () => emblaApi && emblaApi.scrollNext();
 
   return (
-    <section className="py-12">
-      <ServiceHeader />
-      <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {services?.map((service) => (
-          <ServiceCard key={service.id} service={service} />
-        ))}
+    <section id="services" className="py-16 bg-white">
+      <div className="container">
+        <ServiceHeader 
+          scrollPrev={scrollPrev}
+          scrollNext={scrollNext}
+        />
+
+        <div className="overflow-hidden" ref={emblaRef}>
+          <div className="flex">
+            {isLoading || !services ? (
+              // Use mock services as fallback when loading
+              mockServices.map((mockService, index) => (
+                <div key={index} className="flex-[0_0_90%] md:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0 px-4">
+                  <ServiceCard title={mockService.title} description={mockService.description} icon={mockService.icon} />
+                </div>
+              ))
+            ) : (
+              services.map((service) => (
+                <div key={service.id} className="flex-[0_0_90%] md:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0 px-4">
+                  <ServiceCard 
+                    title={service.title} 
+                    description={service.description} 
+                    iconName={service.icon_name}
+                  />
+                </div>
+              ))
+            )}
+          </div>
+        </div>
       </div>
     </section>
   );
