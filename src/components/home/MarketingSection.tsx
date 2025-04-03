@@ -37,7 +37,7 @@ const MarketingSection = () => {
           
           {/* Instagram */}
           <div className="flex flex-col items-center gap-2">
-            <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center bg-gradient-to-tr from-purple-500 via-pink-500 to-orange-400 rounded-lg">
+            <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center bg-gradient-to-tr from-purple-500 via-pink-500 to-orange-400 rounded-full shadow-md">
               <Instagram className="w-3/4 h-3/4 text-white" />
             </div>
             <span className="text-sm text-gray-600">Instagram</span>
@@ -45,7 +45,7 @@ const MarketingSection = () => {
           
           {/* TikTok */}
           <div className="flex flex-col items-center gap-2">
-            <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center bg-black rounded-lg relative">
+            <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center bg-black rounded-full shadow-md relative">
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-8 h-8 md:w-10 md:h-10 relative">
                   <div className="absolute inset-0 bg-cyan-400 rounded-full transform -translate-x-2"></div>
@@ -61,7 +61,7 @@ const MarketingSection = () => {
           
           {/* Snapchat */}
           <div className="flex flex-col items-center gap-2">
-            <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center bg-yellow-300 rounded-lg">
+            <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center bg-yellow-300 rounded-full shadow-md">
               <div className="w-3/4 h-3/4 bg-white rounded-full flex items-center justify-center">
                 <div className="ghost-shape bg-white"></div>
               </div>
@@ -71,7 +71,7 @@ const MarketingSection = () => {
           
           {/* Facebook */}
           <div className="flex flex-col items-center gap-2">
-            <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center bg-blue-600 rounded-lg">
+            <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center bg-blue-600 rounded-full shadow-md">
               <Facebook className="w-3/4 h-3/4 text-white" />
             </div>
             <span className="text-sm text-gray-600">Facebook</span>
