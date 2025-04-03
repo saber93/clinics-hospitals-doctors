@@ -26,8 +26,8 @@ type DatabaseService = {
 export default function ServicesSection() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false });
 
-  // Define a fetch function with explicit type handling to avoid deep inference
-  const fetchServices = async (): Promise<Service[]> => {
+  // Define a fetch function with simplified type handling
+  const fetchServices = async () => {
     const { data, error } = await supabase
       .from('services')
       .select('*')
@@ -38,11 +38,8 @@ export default function ServicesSection() {
     
     if (!data) return [];
     
-    // Convert the raw data to Services without complex type operations
-    return data.map((item) => {
-      const dbService = item as unknown as DatabaseService;
-      return adaptDatabaseService(dbService);
-    });
+    // Convert the raw data to Services with direct casting to avoid deep type inference
+    return data.map((item: any) => adaptDatabaseService(item));
   };
 
   // Use the query with the simplified fetch function
