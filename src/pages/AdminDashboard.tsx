@@ -7,6 +7,7 @@ import VendorGrowthChart from "@/components/admin/VendorGrowthChart";
 import ServiceCategoriesChart from "@/components/admin/ServiceCategoriesChart";
 import RecentActivityPanel from "@/components/admin/RecentActivityPanel";
 import SystemStatusPanel from "@/components/admin/SystemStatusPanel";
+import AdminDashboardLayout from "@/pages/admin/AdminDashboardLayout";
 
 const AdminDashboard = () => {
   const vendorStats = [
@@ -41,7 +42,8 @@ const AdminDashboard = () => {
     }
   };
   
-  return (
+  // The dashboard content is now wrapped with the AdminDashboardLayout
+  const DashboardContent = () => (
     <div className="space-y-6">
       <StatsCards />
       
@@ -55,6 +57,12 @@ const AdminDashboard = () => {
         <SystemStatusPanel handleSeedData={handleSeedData} />
       </div>
     </div>
+  );
+
+  return (
+    <AdminDashboardLayout>
+      <DashboardContent />
+    </AdminDashboardLayout>
   );
 };
 
