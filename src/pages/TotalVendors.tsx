@@ -113,7 +113,7 @@ const TotalVendors = () => {
   };
 
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full pt-2">
       <div className="flex items-center mb-6">
         <Button 
           variant="outline" 

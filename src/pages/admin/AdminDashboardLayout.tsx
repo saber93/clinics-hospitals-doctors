@@ -27,139 +27,141 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
 
   return (
     <SidebarProvider>
-      <div className="flex h-screen w-full overflow-hidden">
-        <Sidebar className="z-40">
-          <SidebarHeader>
-            <div className="px-4 py-3">
-              <h2 className="text-lg font-semibold">Admin Portal</h2>
-              <p className="text-xs text-muted-foreground">Manage your application</p>
-            </div>
-          </SidebarHeader>
-          <SidebarContent>
-            <SidebarGroup>
-              <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <NavLink 
-                        to="/admin-dashboard" 
-                        className={({ isActive }) => isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
-                      >
-                        <LayoutDashboard className="h-4 w-4" />
-                        <span>Overview</span>
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <NavLink 
-                        to="/admin/analytics" 
-                        className={({ isActive }) => isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
-                      >
-                        <BarChart4 className="h-4 w-4" />
-                        <span>Analytics</span>
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
+      <div className="flex h-screen w-full">
+        <div className="relative">
+          <Sidebar className="z-50">
+            <SidebarHeader className="bg-background z-50 relative">
+              <div className="px-4 py-3">
+                <h2 className="text-lg font-semibold">Admin Portal</h2>
+                <p className="text-xs text-muted-foreground">Manage your application</p>
+              </div>
+            </SidebarHeader>
+            <SidebarContent>
+              <SidebarGroup>
+                <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <NavLink 
+                          to="/admin-dashboard" 
+                          className={({ isActive }) => isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
+                        >
+                          <LayoutDashboard className="h-4 w-4" />
+                          <span>Overview</span>
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <NavLink 
+                          to="/admin/analytics" 
+                          className={({ isActive }) => isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
+                        >
+                          <BarChart4 className="h-4 w-4" />
+                          <span>Analytics</span>
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
 
-            <SidebarGroup>
-              <SidebarGroupLabel>Content</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <NavLink 
-                        to="/admin/blogs" 
-                        className={({ isActive }) => isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
-                      >
-                        <FileText className="h-4 w-4" />
-                        <span>Blog Posts</span>
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <NavLink 
-                        to="/admin/services" 
-                        className={({ isActive }) => isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
-                      >
-                        <Layers className="h-4 w-4" />
-                        <span>Services</span>
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
+              <SidebarGroup>
+                <SidebarGroupLabel>Content</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <NavLink 
+                          to="/admin/blogs" 
+                          className={({ isActive }) => isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
+                        >
+                          <FileText className="h-4 w-4" />
+                          <span>Blog Posts</span>
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <NavLink 
+                          to="/admin/services" 
+                          className={({ isActive }) => isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
+                        >
+                          <Layers className="h-4 w-4" />
+                          <span>Services</span>
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
 
-            <SidebarGroup>
-              <SidebarGroupLabel>Users & Communication</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <NavLink 
-                        to="/vendors" 
-                        className={({ isActive }) => isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
-                      >
-                        <Users className="h-4 w-4" />
-                        <span>Vendors</span>
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <NavLink 
-                        to="/clients" 
-                        className={({ isActive }) => isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
-                      >
-                        <Users className="h-4 w-4" />
-                        <span>Clients</span>
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <NavLink 
-                        to="/admin/contact-messages" 
-                        className={({ isActive }) => isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
-                      >
-                        <MessageSquare className="h-4 w-4" />
-                        <span>Contact Messages</span>
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
+              <SidebarGroup>
+                <SidebarGroupLabel>Users & Communication</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <NavLink 
+                          to="/vendors" 
+                          className={({ isActive }) => isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
+                        >
+                          <Users className="h-4 w-4" />
+                          <span>Vendors</span>
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <NavLink 
+                          to="/clients" 
+                          className={({ isActive }) => isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
+                        >
+                          <Users className="h-4 w-4" />
+                          <span>Clients</span>
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <NavLink 
+                          to="/admin/contact-messages" 
+                          className={({ isActive }) => isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
+                        >
+                          <MessageSquare className="h-4 w-4" />
+                          <span>Contact Messages</span>
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
 
-            <SidebarGroup>
-              <SidebarGroupLabel>System</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <NavLink 
-                        to="/admin/settings" 
-                        className={({ isActive }) => isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
-                      >
-                        <Settings className="h-4 w-4" />
-                        <span>Settings</span>
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </SidebarContent>
-        </Sidebar>
+              <SidebarGroup>
+                <SidebarGroupLabel>System</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <NavLink 
+                          to="/admin/settings" 
+                          className={({ isActive }) => isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
+                        >
+                          <Settings className="h-4 w-4" />
+                          <span>Settings</span>
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            </SidebarContent>
+          </Sidebar>
+        </div>
 
         <div className="flex flex-col flex-1 overflow-hidden">
-          <header className="sticky top-0 z-30 bg-white border-b h-16 flex items-center px-4 shrink-0">
+          <header className="sticky top-0 z-40 bg-white border-b h-16 flex items-center px-4 shrink-0">
             <SidebarTrigger />
             <h1 className="text-xl font-semibold ml-4">
               {location.pathname === "/admin-dashboard" && "Dashboard Overview"}
