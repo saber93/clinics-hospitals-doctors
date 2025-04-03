@@ -26,8 +26,14 @@ const MyReservations = () => {
   
   return (
     <div className="h-full w-full">
-      <div className="mb-6">
+      <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">My Reservations</h1>
+        
+        <BookingsTabs 
+          activeTab={activeFilter} 
+          onTabChange={setActiveFilter}
+          className="max-w-fit"
+        />
       </div>
       
       <Card>
@@ -36,27 +42,20 @@ const MyReservations = () => {
           <CardDescription>View and manage your upcoming appointments</CardDescription>
         </CardHeader>
         
-        <div className="px-6">
-          <BookingsTabs 
-            activeTab={activeFilter} 
-            onTabChange={setActiveFilter}
-          >
-            <CardContent className="p-0">
-              {loading ? (
-                <BookingsLoading />
-              ) : filteredReservations.length === 0 ? (
-                <BookingsEmpty activeTab={activeFilter} />
-              ) : (
-                <BookingsTable 
-                  bookings={filteredReservations}
-                  userRole={userRole}
-                  formatDate={formatDate}
-                  handleUpdateStatus={handleUpdateStatus}
-                />
-              )}
-            </CardContent>
-          </BookingsTabs>
-        </div>
+        <CardContent className="p-0">
+          {loading ? (
+            <BookingsLoading />
+          ) : filteredReservations.length === 0 ? (
+            <BookingsEmpty activeTab={activeFilter} />
+          ) : (
+            <BookingsTable 
+              bookings={filteredReservations}
+              userRole={userRole}
+              formatDate={formatDate}
+              handleUpdateStatus={handleUpdateStatus}
+            />
+          )}
+        </CardContent>
       </Card>
     </div>
   );

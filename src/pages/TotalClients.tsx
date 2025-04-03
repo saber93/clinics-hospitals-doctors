@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -103,12 +102,10 @@ const TotalClients = () => {
 
   return (
     <div className="h-full w-full">
-      <div className="mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
         <h2 className="text-2xl font-bold">Total Clients ({filteredClients.length})</h2>
-      </div>
-
-      <div className="mb-6 relative max-w-md">
-        <div className="relative">
+        
+        <div className="relative max-w-md mt-4 sm:mt-0">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input
             type="text"
