@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { 
@@ -158,10 +157,9 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
           </SidebarContent>
         </Sidebar>
 
-        <div className="w-full flex flex-col">
-          {/* Increased header height and ensured it's fixed properly */}
-          <header className="fixed top-0 left-0 right-0 z-40 bg-white border-b h-18 flex items-center">
-            <div className="flex items-center h-full px-4 w-full">
+        <div className="w-full flex flex-col relative">
+          <header className="sticky top-0 left-0 w-full z-40 bg-white border-b h-16">
+            <div className="flex items-center h-full px-4">
               <SidebarTrigger />
               <h1 className="text-xl font-semibold ml-4">
                 {location.pathname === "/admin-dashboard" && "Dashboard Overview"}
@@ -176,8 +174,7 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
             </div>
           </header>
 
-          {/* Further increased padding to prevent content overlap */}
-          <main className="flex-1 pt-28 px-6 pb-6">
+          <main className="flex-1 px-6 py-6">
             {children || <Outlet />}
           </main>
         </div>

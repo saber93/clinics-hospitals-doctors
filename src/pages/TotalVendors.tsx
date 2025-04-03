@@ -113,7 +113,7 @@ const TotalVendors = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full py-2"> {/* Added vertical padding to ensure space */}
       <div className="flex items-center mb-6">
         <Button 
           variant="outline" 
