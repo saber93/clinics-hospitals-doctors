@@ -7,6 +7,7 @@ import { Switch } from '@/components/ui/switch';
 import { UseFormReturn } from 'react-hook-form';
 import { ServiceFormValues } from '@/hooks/useServiceForm';
 import * as Icons from 'lucide-react';
+import { LucideIcon } from 'lucide-react';
 
 interface ServiceDetailsSectionProps {
   form: UseFormReturn<ServiceFormValues>;
@@ -23,8 +24,8 @@ export default function ServiceDetailsSection({
   const renderIcon = () => {
     if (!selectedIconName || typeof selectedIconName !== 'string') return null;
     
-    // Check if the icon name exists in the Icons object
-    const IconComponent = (Icons as Record<string, React.FC<{ className?: string }>>)[selectedIconName];
+    // Properly type the dynamic icon component access
+    const IconComponent = Icons[selectedIconName as keyof typeof Icons] as LucideIcon | undefined;
     
     // Only render if it's a valid icon component
     if (IconComponent && typeof IconComponent === 'function') {
