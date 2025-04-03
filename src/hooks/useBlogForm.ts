@@ -8,6 +8,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Blog } from '@/types/cms';
+import { useAuth } from '@/contexts/AuthContext';
 
 // Define the form schema
 export const blogFormSchema = z.object({
@@ -27,6 +28,7 @@ export function useBlogForm() {
   const { id } = useParams<{ id: string }>();
   const isEditMode = Boolean(id);
   const queryClient = useQueryClient();
+  const { session } = useAuth();
   
   const form = useForm<BlogFormValues>({
     resolver: zodResolver(blogFormSchema),
@@ -102,6 +104,11 @@ export function useBlogForm() {
   // Create/Edit mutation
   const mutation = useMutation({
     mutationFn: async (values: BlogFormValues) => {
+      // Ensure user is authenticated
+      if (!session?.user) {
+        throw new Error('You must be logged in to create or edit blogs');
+      }
+
       const blogData = {
         title: values.title,
         slug: values.slug,
@@ -114,16 +121,17 @@ export function useBlogForm() {
 
       if (isEditMode) {
         // Update existing blog
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('blogs')
           .update({
             ...blogData,
             updated_at: new Date().toISOString(),
           })
-          .eq('id', id);
+          .eq('id', id)
+          .select();
           
         if (error) throw new Error(error.message);
-        return { ...values, id } as Blog;
+        return data?.[0] as Blog;
       } else {
         // Create new blog
         const { data, error } = await supabase
@@ -148,6 +156,7 @@ export function useBlogForm() {
       navigate('/admin/blogs');
     },
     onError: (error: Error) => {
+      console.error('Error in blog operation:', error);
       toast.error(`Failed to ${isEditMode ? 'update' : 'create'} blog: ${error.message}`);
     },
   });
