@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { SpecialtyTheme, getSpecialtyTheme } from '@/utils/clinics/specialtyThemes';
 
 interface UseThemeEditorProps {
-  entityType?: string;
+  entityType?: 'clinics' | 'doctors' | 'hospitals';
   id?: string;
   entity: any | null;
 }

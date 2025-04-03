@@ -82,7 +82,9 @@ const EntityList: React.FC<EntityListProps> = ({ entityType, title, onEditTheme 
                 <TableRow key={entity.id}>
                   <TableCell className="font-medium">{entity.name}</TableCell>
                   <TableCell>
-                    {entityType === 'doctors' ? entity.specialty : entity.category}
+                    {entityType === 'doctors' 
+                      ? entity.specialty || 'N/A' 
+                      : entity.category || 'N/A'}
                   </TableCell>
                   <TableCell>{entity.location}</TableCell>
                   <TableCell>

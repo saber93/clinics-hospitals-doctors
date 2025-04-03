@@ -12,7 +12,7 @@ import ThemeEntityNotFound from '@/components/admin/themes/ThemeEntityNotFound';
 import { useThemeEditor } from '@/hooks/useThemeEditor';
 
 const ThemeEditorPage = () => {
-  const { entityType, id } = useParams<{entityType: string; id: string}>();
+  const { entityType, id } = useParams<{entityType?: string; id?: string}>();
   const navigate = useNavigate();
   const { user } = useAuth();
   
@@ -25,11 +25,16 @@ const ThemeEditorPage = () => {
     }
   }, [isAdmin, navigate]);
 
+  // Type guard to ensure entityType is one of the allowed values
+  const validEntityType = (type?: string): type is 'clinics' | 'doctors' | 'hospitals' => {
+    return type === 'clinics' || type === 'doctors' || type === 'hospitals';
+  };
+
   // Fetch entity data
   const { data: entity, isLoading } = useQuery({
-    queryKey: [`${entityType}`, id],
+    queryKey: [entityType, id],
     queryFn: async () => {
-      if (!entityType || !id) return null;
+      if (!validEntityType(entityType) || !id) return null;
       
       const { data, error } = await supabase
         .from(entityType)
@@ -44,8 +49,10 @@ const ThemeEditorPage = () => {
       
       return data;
     },
-    enabled: !!entityType && !!id && isAdmin
+    enabled: !!entityType && !!id && isAdmin && validEntityType(entityType)
   });
+
+  const validatedEntityType = validEntityType(entityType) ? entityType : 'clinics';
 
   const {
     editedTheme,
@@ -54,7 +61,11 @@ const ThemeEditorPage = () => {
     handleThemeChange,
     handleResetToDefault,
     handleSaveTheme
-  } = useThemeEditor({ entityType, id, entity });
+  } = useThemeEditor({ 
+    entityType: validatedEntityType, 
+    id, 
+    entity 
+  });
 
   if (isLoading) {
     return (
@@ -79,7 +90,7 @@ const ThemeEditorPage = () => {
     <AdminDashboardLayout>
       <div className="container py-6 space-y-6">
         <ThemeEditorHeader 
-          entityName={entity.name}
+          entityName={entity.name || ''}
           entityTypeTitle={entityTypeTitle}
           hasChanges={hasChanges}
           isUpdating={isUpdating}
@@ -89,7 +100,7 @@ const ThemeEditorPage = () => {
         
         <ThemeEditorTabs 
           theme={editedTheme}
-          entityType={entityType as 'clinics' | 'doctors' | 'hospitals'}
+          entityType={validatedEntityType}
           entity={entity}
           onThemeChange={handleThemeChange}
         />
