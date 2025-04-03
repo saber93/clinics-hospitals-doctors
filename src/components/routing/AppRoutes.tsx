@@ -49,6 +49,13 @@ const Cart = lazy(() => import('@/pages/Cart'));
 const Profile = lazy(() => import('@/pages/Profile'));
 const ProfileSettings = lazy(() => import('@/pages/ProfileSettings'));
 
+// Admin pages
+const BlogsPage = lazy(() => import('@/pages/admin/BlogsPage'));
+const BlogFormPage = lazy(() => import('@/pages/admin/BlogFormPage'));
+const ServicesPage = lazy(() => import('@/pages/admin/ServicesPage'));
+const ServiceFormPage = lazy(() => import('@/pages/admin/ServiceFormPage'));
+const ContactMessagesPage = lazy(() => import('@/pages/admin/ContactMessagesPage'));
+
 const AppRoutes = () => {
   return (
     <AuthProvider>
