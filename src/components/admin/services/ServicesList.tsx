@@ -13,17 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import * as Icons from 'lucide-react';
-
-interface Service {
-  id: string;
-  title: string;
-  description: string;
-  icon_name: string;
-  display_order: number;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-}
+import { Service } from '@/types/cms';
 
 export default function ServicesList() {
   const navigate = useNavigate();

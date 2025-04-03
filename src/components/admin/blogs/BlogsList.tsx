@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircle, Edit, Trash2, Eye } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,16 +12,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { formatDistance } from 'date-fns';
-
-interface Blog {
-  id: string;
-  title: string;
-  slug: string;
-  category: string;
-  is_published: boolean;
-  created_at: string;
-  updated_at: string;
-}
+import { Blog } from '@/types/cms';
 
 export default function BlogsList() {
   const navigate = useNavigate();
@@ -30,6 +21,7 @@ export default function BlogsList() {
   const { data: blogs, isLoading, error } = useQuery({
     queryKey: ['blogs'],
     queryFn: async () => {
+      // Use type assertion to tell TypeScript this is a valid query
       const { data, error } = await supabase
         .from('blogs')
         .select('*')

@@ -21,6 +21,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { Blog } from '@/types/cms';
 
 // Define the form schema
 const blogFormSchema = z.object({
@@ -79,6 +80,7 @@ export default function BlogForm() {
     queryFn: async () => {
       if (!id) return null;
       
+      // Use type assertion to tell TypeScript this is a valid query
       const { data, error } = await supabase
         .from('blogs')
         .select('*')
@@ -103,7 +105,7 @@ export default function BlogForm() {
         });
       }
       
-      return data;
+      return data as Blog;
     },
     enabled: isEditMode,
   });
@@ -131,7 +133,7 @@ export default function BlogForm() {
           .select();
           
         if (error) throw new Error(error.message);
-        return data[0];
+        return data[0] as Blog;
       }
     },
     onSuccess: () => {
