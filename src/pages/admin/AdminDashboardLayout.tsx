@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { 
@@ -26,8 +27,8 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <Sidebar className="z-50">
+      <div className="flex h-screen w-full overflow-hidden">
+        <Sidebar className="z-40">
           <SidebarHeader>
             <div className="px-4 py-3">
               <h2 className="text-lg font-semibold">Admin Portal</h2>
@@ -157,24 +158,22 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
           </SidebarContent>
         </Sidebar>
 
-        <div className="w-full flex flex-col relative">
-          <header className="sticky top-0 left-0 w-full z-40 bg-white border-b h-16">
-            <div className="flex items-center h-full px-4">
-              <SidebarTrigger />
-              <h1 className="text-xl font-semibold ml-4">
-                {location.pathname === "/admin-dashboard" && "Dashboard Overview"}
-                {location.pathname === "/admin/blogs" && "Blog Management"}
-                {location.pathname === "/admin/services" && "Services Management"}
-                {location.pathname === "/admin/contact-messages" && "Contact Messages"}
-                {location.pathname === "/admin/settings" && "Admin Settings"}
-                {location.pathname === "/vendors" && "Vendor Management"}
-                {location.pathname === "/clients" && "Client Management"}
-                {location.pathname === "/admin/analytics" && "Analytics Dashboard"}
-              </h1>
-            </div>
+        <div className="flex flex-col flex-1 overflow-hidden">
+          <header className="sticky top-0 z-30 bg-white border-b h-16 flex items-center px-4 shrink-0">
+            <SidebarTrigger />
+            <h1 className="text-xl font-semibold ml-4">
+              {location.pathname === "/admin-dashboard" && "Dashboard Overview"}
+              {location.pathname === "/admin/blogs" && "Blog Management"}
+              {location.pathname === "/admin/services" && "Services Management"}
+              {location.pathname === "/admin/contact-messages" && "Contact Messages"}
+              {location.pathname === "/admin/settings" && "Admin Settings"}
+              {location.pathname === "/vendors" && "Vendor Management"}
+              {location.pathname === "/clients" && "Client Management"}
+              {location.pathname === "/admin/analytics" && "Analytics Dashboard"}
+            </h1>
           </header>
 
-          <main className="flex-1 px-6 py-6">
+          <main className="flex-1 overflow-auto p-6">
             {children || <Outlet />}
           </main>
         </div>
