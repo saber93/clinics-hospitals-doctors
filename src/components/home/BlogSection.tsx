@@ -1,22 +1,30 @@
-
 import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Blog } from '@/types/cms';
+import { Skeleton } from '@/components/ui/skeleton';
 
-interface BlogCardProps {
-  blog: Blog;
+interface BlogProps {
+  title: string;
+  excerpt: string;
+  date: string;
+  slug: string;
+  imageUrl?: string;
 }
 
-const BlogCard = ({ blog }: BlogCardProps) => {
+const BlogCard = ({ title, excerpt, date, slug, imageUrl }: BlogProps) => {
+  const formattedDate = formatDistanceToNow(new Date(date), { addSuffix: true });
+  
   return (
     <div className="group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-      {blog.image_url ? (
+      {imageUrl ? (
         <img 
-          src={blog.image_url} 
-          alt={blog.title} 
+          src={imageUrl} 
+          alt={title} 
           className="w-full h-48 object-cover"
         />
       ) : (
@@ -26,16 +34,16 @@ const BlogCard = ({ blog }: BlogCardProps) => {
       )}
       <div className="p-5">
         <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">
-          {blog.category}
+          {title}
         </span>
         <h3 className="mt-2 text-xl font-bold group-hover:text-blue-600 transition-colors">
-          {blog.title}
+          {title}
         </h3>
         <p className="mt-2 text-gray-600 line-clamp-3">
-          {blog.excerpt}
+          {excerpt}
         </p>
         <Link 
-          to={`/blog/${blog.slug}`} 
+          to={`/blog/${slug}`} 
           className="mt-4 inline-block text-blue-600 font-medium hover:text-blue-800"
         >
           Read more →
@@ -47,9 +55,8 @@ const BlogCard = ({ blog }: BlogCardProps) => {
 
 const BlogSection = () => {
   const { data: blogs, isLoading, error } = useQuery({
-    queryKey: ['featured-blogs'],
+    queryKey: ['homepage-blogs'],
     queryFn: async () => {
-      // Use type assertion for Supabase query
       const { data, error } = await supabase
         .from('blogs')
         .select('*')
@@ -91,7 +98,7 @@ const BlogSection = () => {
         ) : blogs && blogs.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {blogs.map(blog => (
-              <BlogCard key={blog.id} blog={blog} />
+              <BlogCard key={blog.id} title={blog.title} excerpt={blog.excerpt} date={blog.created_at} slug={blog.slug} imageUrl={blog.image_url} />
             ))}
           </div>
         ) : (

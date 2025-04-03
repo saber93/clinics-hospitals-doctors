@@ -108,7 +108,7 @@ export default function ServiceForm() {
           .eq('id', id);
           
         if (error) throw new Error(error.message);
-        return { ...values, id };
+        return { ...values, id } as Service;
       } else {
         // Create new service
         const { data, error } = await supabase

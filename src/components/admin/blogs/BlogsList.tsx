@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircle, Edit, Trash2, Eye } from 'lucide-react';
@@ -21,7 +20,6 @@ export default function BlogsList() {
   const { data: blogs, isLoading, error } = useQuery({
     queryKey: ['blogs'],
     queryFn: async () => {
-      // Use type assertion to tell TypeScript this is a valid query
       const { data, error } = await supabase
         .from('blogs')
         .select('*')

@@ -127,7 +127,7 @@ export default function BlogForm() {
           .eq('id', id);
           
         if (error) throw new Error(error.message);
-        return { ...values, id };
+        return { ...values, id } as Blog;
       } else {
         // Create new blog
         const { data, error } = await supabase
