@@ -2,7 +2,7 @@
 import React, { useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Service } from '@/types/cms';
+import { Service, adaptDatabaseService } from '@/types/cms';
 import ServiceCard from './ServiceCard';
 import ServiceHeader from './ServiceHeader';
 import useEmblaCarousel from 'embla-carousel-react';
@@ -21,7 +21,8 @@ export default function ServicesSection() {
         .order('display_order', { ascending: true });
       
       if (error) throw error;
-      return data as Service[];
+      // Convert database format to our CMS format
+      return data.map(service => adaptDatabaseService(service));
     },
     enabled: true,
   });

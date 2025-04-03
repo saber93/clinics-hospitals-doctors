@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircle, Edit, Trash2 } from 'lucide-react';
@@ -13,7 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import * as Icons from 'lucide-react';
-import { Service } from '@/types/cms';
+import { Service, adaptDatabaseService } from '@/types/cms';
 
 export default function ServicesList() {
   const navigate = useNavigate();
@@ -30,7 +29,7 @@ export default function ServicesList() {
       if (error) {
         throw new Error(error.message);
       }
-      return data as Service[];
+      return data.map(service => adaptDatabaseService(service));
     }
   });
   
@@ -85,7 +84,6 @@ export default function ServicesList() {
     });
   };
   
-  // Dynamically display the icon if it exists in Lucide
   const IconComponent = ({ name }: { name: string }) => {
     const LucideIcon = (Icons as any)[name];
     

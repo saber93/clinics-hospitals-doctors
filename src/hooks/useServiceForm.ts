@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Service } from '@/types/cms';
+import { Service, adaptDatabaseService } from '@/types/cms';
 
 // Define the form schema
 export const serviceFormSchema = z.object({
@@ -55,7 +55,8 @@ export function useServiceForm() {
       }
       
       if (data) {
-        const serviceData = data as Service;
+        // Convert database format to our CMS format
+        const serviceData = adaptDatabaseService(data);
         
         // Populate the form with the fetched data
         form.reset({
@@ -82,7 +83,11 @@ export function useServiceForm() {
         const { error } = await supabase
           .from('services')
           .update({
-            ...values,
+            name: values.title, // Map to database field
+            description: values.description,
+            icon_name: values.icon_name,
+            display_order: values.display_order,
+            is_active: values.is_active,
             updated_at: new Date().toISOString(),
           })
           .eq('id', id);
@@ -94,14 +99,21 @@ export function useServiceForm() {
         const { data, error } = await supabase
           .from('services')
           .insert([{
-            ...values,
+            name: values.title, // Map to database field
+            description: values.description,
+            icon_name: values.icon_name,
+            display_order: values.display_order,
+            is_active: values.is_active,
+            // Adding required fields for the services table
+            duration: 0, // Default value
+            price: 0, // Default value
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           }])
           .select();
           
         if (error) throw new Error(error.message);
-        return data[0] as Service;
+        return adaptDatabaseService(data[0]);
       }
     },
     onSuccess: () => {

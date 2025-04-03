@@ -102,12 +102,22 @@ export function useBlogForm() {
   // Create/Edit mutation
   const mutation = useMutation({
     mutationFn: async (values: BlogFormValues) => {
+      const blogData = {
+        title: values.title,
+        slug: values.slug,
+        category: values.category,
+        excerpt: values.excerpt,
+        content: values.content,
+        image_url: values.image_url || null,
+        is_published: values.is_published
+      };
+
       if (isEditMode) {
         // Update existing blog
         const { error } = await supabase
           .from('blogs')
           .update({
-            ...values,
+            ...blogData,
             updated_at: new Date().toISOString(),
           })
           .eq('id', id);
@@ -119,7 +129,7 @@ export function useBlogForm() {
         const { data, error } = await supabase
           .from('blogs')
           .insert({
-            ...values,
+            ...blogData,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           })
