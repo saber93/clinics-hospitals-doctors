@@ -18,7 +18,8 @@ export default function ServiceForm() {
   
   // Preview the selected icon
   const selectedIcon = form.watch('icon_name');
-  const IconPreview = selectedIcon ? (Icons as any)[selectedIcon] : null;
+  // This was causing the error - storing the component instead of rendering it
+  const IconComponent = selectedIcon ? (Icons as any)[selectedIcon] : null;
   
   return (
     <div>
@@ -37,7 +38,7 @@ export default function ServiceForm() {
               <ServiceDetailsSection 
                 form={form}
                 availableIcons={availableIcons}
-                IconPreview={IconPreview}
+                IconComponent={IconComponent}
               />
             </Card>
             

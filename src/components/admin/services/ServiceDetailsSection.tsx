@@ -10,10 +10,10 @@ import { ServiceFormValues } from '@/hooks/useServiceForm';
 interface ServiceDetailsSectionProps {
   form: UseFormReturn<ServiceFormValues>;
   availableIcons: string[];
-  IconPreview: React.FC<any> | null; // Allow for dynamic icon component
+  IconComponent: React.ComponentType<any> | null; // Change this to ComponentType instead of FC
 }
 
-export default function ServiceDetailsSection({ form, availableIcons, IconPreview }: ServiceDetailsSectionProps) {
+export default function ServiceDetailsSection({ form, availableIcons, IconComponent }: ServiceDetailsSectionProps) {
   return (
     <CardContent className="pt-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -62,9 +62,10 @@ export default function ServiceDetailsSection({ form, availableIcons, IconPrevie
                       {...field} 
                       className="flex-grow"
                     />
-                    {IconPreview && (
+                    {IconComponent && (
                       <div className="flex items-center justify-center w-10 h-10 bg-primary/5 rounded">
-                        <IconPreview className="w-6 h-6 text-primary" />
+                        {/* Properly render the component using JSX */}
+                        <IconComponent className="w-6 h-6 text-primary" />
                       </div>
                     )}
                   </div>
