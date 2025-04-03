@@ -13,6 +13,7 @@ import { SpecialtyTheme } from '@/utils/clinics/specialtyThemes';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { lucideIcons } from '@/utils/clinics/iconOptions';
 import ColorPicker from './ColorPicker';
+import * as LucideIcons from 'lucide-react';
 
 interface ThemeEditorProps {
   theme: SpecialtyTheme;
@@ -25,6 +26,13 @@ const ThemeEditor: React.FC<ThemeEditorProps> = ({ theme, onChange }) => {
       ...theme,
       [field]: value
     });
+  };
+
+  // Helper function to render icon in dropdown item
+  const getIconComponent = (iconName: string) => {
+    const formattedIconName = iconName.charAt(0).toUpperCase() + iconName.slice(1);
+    const IconComponent = (LucideIcons as any)[formattedIconName];
+    return IconComponent ? <IconComponent className="mr-2 h-4 w-4" /> : null;
   };
   
   return (
@@ -117,11 +125,27 @@ const ThemeEditor: React.FC<ThemeEditorProps> = ({ theme, onChange }) => {
               onValueChange={(value) => handleColorChange('icon', value)}
             >
               <SelectTrigger id="icon" className="mt-1">
-                <SelectValue placeholder="Select an icon" />
+                <SelectValue>
+                  {theme.icon && (
+                    <div className="flex items-center">
+                      {getIconComponent(theme.icon)}
+                      <span>{theme.icon}</span>
+                    </div>
+                  )}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {lucideIcons.map((iconName) => (
-                  <SelectItem key={iconName.toLowerCase()} value={iconName.toLowerCase()}>{iconName}</SelectItem>
+                  <SelectItem 
+                    key={iconName.toLowerCase()} 
+                    value={iconName.toLowerCase()}
+                    className="flex items-center"
+                  >
+                    <div className="flex items-center">
+                      {getIconComponent(iconName.toLowerCase())}
+                      <span>{iconName}</span>
+                    </div>
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>

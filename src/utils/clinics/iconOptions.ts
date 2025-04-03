@@ -26,9 +26,9 @@ export const lucideIcons = [
   'Cigarette',
   'Cross',
   'FirstAid',
-  'Dumbbell', 
+  'Dumbbell',
   'Flame',
-  'Flower', 
+  'Flower',
   'Glasses',
   'Hand',
   'Building2',
@@ -38,6 +38,5 @@ export const lucideIcons = [
   'User',
   'Users',
   'Syringe',
-  'Droplets',
-  'Activity'
+  'Droplets'
 ];

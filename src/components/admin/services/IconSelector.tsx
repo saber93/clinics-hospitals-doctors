@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import * as LucideIcons from 'lucide-react';
 
 interface IconSelectorProps {
   value: string | null;
@@ -20,6 +21,25 @@ export function IconSelector({ value, onChange, availableIcons }: IconSelectorPr
     (name) => name.toLowerCase().includes(iconSearchTerm.toLowerCase())
   );
 
+  // Get icon component from name
+  const getIconComponent = (iconName: string) => {
+    const formattedIconName = iconName.charAt(0).toUpperCase() + iconName.slice(1);
+    const IconComponent = (LucideIcons as any)[formattedIconName];
+    return IconComponent ? <IconComponent className="h-5 w-5 mr-2" /> : null;
+  };
+
+  // Format selected value display
+  const formatSelectedValue = () => {
+    if (!value) return "Select an icon";
+    
+    return (
+      <div className="flex items-center">
+        {getIconComponent(value)}
+        <span>{value}</span>
+      </div>
+    );
+  };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -28,13 +48,8 @@ export function IconSelector({ value, onChange, availableIcons }: IconSelectorPr
           className="w-full justify-between"
           role="combobox"
         >
-          <div className="flex items-center">
-            {value && (
-              <span className="mr-2 flex items-center gap-2">
-                {value}
-              </span>
-            )}
-            {!value && "Select an icon"}
+          <div className="flex items-center justify-start w-full">
+            {formatSelectedValue()}
           </div>
         </Button>
       </PopoverTrigger>
@@ -52,19 +67,25 @@ export function IconSelector({ value, onChange, availableIcons }: IconSelectorPr
         </div>
         <ScrollArea className="h-[300px]">
           <div className="p-1">
-            {filteredIcons.map((iconName) => (
-              <Button
-                key={iconName}
-                variant="ghost"
-                className="w-full justify-start h-9 px-2 mb-1 text-left"
-                onClick={() => {
-                  onChange(iconName);
-                  setIconSearchTerm('');
-                }}
-              >
-                <span className="text-sm truncate">{iconName}</span>
-              </Button>
-            ))}
+            {filteredIcons.map((iconName) => {
+              const formattedName = iconName.toLowerCase();
+              return (
+                <Button
+                  key={iconName}
+                  variant="ghost"
+                  className="w-full justify-start h-9 px-2 mb-1 text-left"
+                  onClick={() => {
+                    onChange(formattedName);
+                    setIconSearchTerm('');
+                  }}
+                >
+                  <div className="flex items-center">
+                    {getIconComponent(formattedName)}
+                    <span className="text-sm">{iconName}</span>
+                  </div>
+                </Button>
+              );
+            })}
           </div>
         </ScrollArea>
       </PopoverContent>
