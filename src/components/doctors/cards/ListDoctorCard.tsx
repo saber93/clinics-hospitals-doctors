@@ -3,9 +3,14 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Star, MapPin, GraduationCap, Languages, Clock } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import FavoriteButton from '../../clinics/badges/FavoriteButton';
 import { Doctor } from '@/types/doctor';
+import DoctorRatingDisplay from '../display/DoctorRatingDisplay';
+import DoctorLocationDisplay from '../display/DoctorLocationDisplay';
+import DoctorEducation from '../display/DoctorEducation';
+import DoctorLanguages from '../display/DoctorLanguages';
+import DoctorSpecialties from '../display/DoctorSpecialties';
 
 interface ListDoctorCardProps {
   doctor: Doctor;
@@ -57,34 +62,23 @@ const ListDoctorCard: React.FC<ListDoctorCardProps> = ({
           <div className="flex justify-between items-start mb-2">
             <div>
               <h3 className="text-lg font-bold">{doctor.name}</h3>
-              <div className="flex items-center text-gray-500 text-sm">
-                <MapPin className="h-4 w-4 mr-1" />
-                <span>{doctor.location}</span>
-              </div>
+              <DoctorLocationDisplay location={doctor.location} />
             </div>
-            <div className="flex items-center">
-              <Star className="h-5 w-5 text-yellow-400 fill-yellow-400 mr-1" />
-              <span className="font-medium">{doctor.rating}</span>
-              <span className="text-gray-500 text-sm ml-1">({doctor.reviews} reviews)</span>
-            </div>
+            <DoctorRatingDisplay rating={doctor.rating || 0} reviews={doctor.reviews || 0} />
           </div>
           
           <p className="text-gray-600 mb-3 line-clamp-2">{doctor.description}</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3">
-            <div className="flex items-center text-sm text-gray-600">
-              <GraduationCap className="h-4 w-4 mr-1" />
-              <span>{doctor.education}</span>
-            </div>
+            {doctor.education && (
+              <DoctorEducation education={doctor.education} />
+            )}
             <div className="flex items-center text-sm text-gray-600">
               <Clock className="h-4 w-4 mr-1" />
               <span>{doctor.experience} years experience</span>
             </div>
             {doctor.languages && (
-              <div className="flex items-center text-sm text-gray-600">
-                <Languages className="h-4 w-4 mr-1" />
-                <span>{doctor.languages.join(', ')}</span>
-              </div>
+              <DoctorLanguages languages={doctor.languages} />
             )}
             {doctor.consultationFee && (
               <div className="flex items-center text-sm font-medium">
@@ -100,11 +94,7 @@ const ListDoctorCard: React.FC<ListDoctorCardProps> = ({
             <Badge variant="secondary" className="bg-gray-100 text-gray-800 border-0">
               {doctor.subSpecialty}
             </Badge>
-            {doctor.specialties?.slice(0, 3).map((specialty, index) => (
-              <Badge key={index} variant="outline" className="text-xs">
-                {specialty}
-              </Badge>
-            ))}
+            {doctor.specialties && <DoctorSpecialties specialties={doctor.specialties} />}
           </div>
           
           <Button 

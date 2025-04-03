@@ -3,9 +3,14 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Star, MapPin, GraduationCap, Languages } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import FavoriteButton from '../../clinics/badges/FavoriteButton';
 import { Doctor } from '@/types/doctor';
+import DoctorRatingDisplay from '../display/DoctorRatingDisplay';
+import DoctorLocationDisplay from '../display/DoctorLocationDisplay';
+import DoctorSpecialties from '../display/DoctorSpecialties';
+import DoctorEducation from '../display/DoctorEducation';
+import DoctorLanguages from '../display/DoctorLanguages';
 
 interface GridDoctorCardProps {
   doctor: Doctor;
@@ -55,36 +60,22 @@ const GridDoctorCard: React.FC<GridDoctorCardProps> = ({
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
           <CardTitle className="text-lg">{doctor.name}</CardTitle>
-          <div className="flex items-center">
-            <Star className="h-4 w-4 text-yellow-400 fill-yellow-400 mr-1" />
-            <span className="text-sm font-medium">{doctor.rating}</span>
-          </div>
+          <DoctorRatingDisplay rating={doctor.rating || 0} reviews={doctor.reviews || 0} compact={true} />
         </div>
-        <div className="flex items-center text-gray-500 text-sm">
-          <MapPin className="h-4 w-4 mr-1" />
-          <span>{doctor.location}</span>
-        </div>
+        <DoctorLocationDisplay location={doctor.location} />
         <CardDescription className="mt-2 line-clamp-2">
           {doctor.description}
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-0 pb-2">
         <div className="flex flex-wrap gap-1 mb-2">
-          {doctor.specialties?.slice(0, 3).map((specialty, index) => (
-            <Badge key={index} variant="outline" className="text-xs">
-              {specialty}
-            </Badge>
-          ))}
+          {doctor.specialties && <DoctorSpecialties specialties={doctor.specialties} />}
         </div>
-        <div className="flex items-center text-sm text-gray-500 mb-1">
-          <GraduationCap className="h-4 w-4 mr-1" />
-          <span>{doctor.education}</span>
+        <div className="mb-1">
+          {doctor.education && <DoctorEducation education={doctor.education} />}
         </div>
         {doctor.languages && (
-          <div className="flex items-center text-sm text-gray-500">
-            <Languages className="h-4 w-4 mr-1" />
-            <span>{doctor.languages.join(', ')}</span>
-          </div>
+          <DoctorLanguages languages={doctor.languages} />
         )}
       </CardContent>
       <CardFooter className="pt-0">
