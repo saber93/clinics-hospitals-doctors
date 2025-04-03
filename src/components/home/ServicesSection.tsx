@@ -26,10 +26,10 @@ interface DatabaseService {
 export default function ServicesSection() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false });
 
-  // Explicitly define the return type to avoid type instantiation issues
-  const { data: services, isLoading } = useQuery({
+  // Use explicit typing for the query function to avoid recursive type issues
+  const { data: services, isLoading } = useQuery<Service[]>({
     queryKey: ['services'],
-    queryFn: async (): Promise<Service[]> => {
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('services')
         .select('*')
@@ -38,10 +38,10 @@ export default function ServicesSection() {
       
       if (error) throw error;
       
-      // Convert database format to our CMS format with explicit typing
-      return (data as DatabaseService[]).map(service => adaptDatabaseService(service));
+      // Use type assertion to ensure we're working with the correct type
+      const dbServices = data as DatabaseService[];
+      return dbServices.map(service => adaptDatabaseService(service));
     },
-    enabled: true,
   });
 
   const scrollPrev = () => emblaApi && emblaApi.scrollPrev();

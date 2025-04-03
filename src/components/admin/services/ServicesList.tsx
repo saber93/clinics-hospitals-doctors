@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircle, Edit, Trash2 } from 'lucide-react';
@@ -33,7 +34,7 @@ export default function ServicesList() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   
-  const { data: services, isLoading, error } = useQuery({
+  const { data: services, isLoading, error } = useQuery<Service[]>({
     queryKey: ['services'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -69,10 +70,24 @@ export default function ServicesList() {
   
   const toggleActiveMutation = useMutation({
     mutationFn: async ({ id, isActive }: { id: string, isActive: boolean }) => {
+      // Get the current service to preserve all fields
+      const { data: serviceData, error: fetchError } = await supabase
+        .from('services')
+        .select('*')
+        .eq('id', id)
+        .single();
+        
+      if (fetchError) throw new Error(fetchError.message);
+      
+      // Now update with all fields including the toggled is_active
       const { error } = await supabase
         .from('services')
         .update({ 
-          name: (await supabase.from('services').select('name').eq('id', id).single()).data?.name || '',
+          name: serviceData.name,
+          description: serviceData.description,
+          duration: serviceData.duration,
+          price: serviceData.price,
+          is_active: isActive,
           updated_at: new Date().toISOString()
         })
         .eq('id', id);
