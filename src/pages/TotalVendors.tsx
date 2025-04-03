@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -28,7 +27,6 @@ const TotalVendors = () => {
     const fetchVendors = async () => {
       try {
         setLoading(true);
-        // Get all profiles with 'vendor' role
         const { data, error } = await supabase
           .from('profiles')
           .select('id, name, created_at')
@@ -36,10 +34,8 @@ const TotalVendors = () => {
 
         if (error) throw error;
 
-        // If no data is returned, create mock data for demo
         const vendorData = data && data.length > 0 ? data : generateMockVendors();
 
-        // Add mock email, location, and phone for demonstration
         const vendorsWithDetails = vendorData.map(vendor => ({
           ...vendor,
           email: `vendor${vendor.id.substring(0, 4)}@example.com`,
@@ -55,7 +51,6 @@ const TotalVendors = () => {
         console.error("Error fetching vendors:", error);
         toast.error("Failed to load vendors");
         
-        // If error, still show mock data
         const mockData = generateMockVendors();
         setVendors(mockData);
         setFilteredVendors(mockData);
@@ -67,7 +62,6 @@ const TotalVendors = () => {
     fetchVendors();
   }, []);
 
-  // Generate mock vendor data
   const generateMockVendors = (): VendorProfile[] => {
     const mockBusinessNames = [
       "Wellness Spa", "Beauty Salon", "Fitness Studio", "Yoga Center", 
@@ -118,7 +112,7 @@ const TotalVendors = () => {
   };
 
   return (
-    <div className="p-6 pt-24 pb-10">
+    <div className="p-6">
       <div className="flex items-center mb-6">
         <Button 
           variant="outline" 

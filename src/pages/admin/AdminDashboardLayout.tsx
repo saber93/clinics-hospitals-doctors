@@ -27,7 +27,7 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full">
+      <div className="flex min-h-screen w-full pt-16"> {/* Added pt-16 for proper spacing below navbar */}
         <Sidebar>
           <SidebarHeader>
             <div className="px-4 py-3">
