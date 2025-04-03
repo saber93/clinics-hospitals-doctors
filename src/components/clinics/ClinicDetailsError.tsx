@@ -7,7 +7,7 @@ const ClinicDetailsError = () => {
   const navigate = useNavigate();
   
   return (
-    <div className="container py-12">
+    <div className="container py-24">
       <div className="text-center space-y-4">
         <h2 className="text-2xl font-bold">Clinic Not Found</h2>
         <p className="text-muted-foreground">

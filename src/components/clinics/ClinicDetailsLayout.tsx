@@ -36,7 +36,7 @@ const ClinicDetailsLayout = ({
   };
 
   return (
-    <div className="container py-8 px-4 md:px-6">
+    <div className="container py-24 px-4 md:px-6">
       {/* Specialty icon and category display */}
       <div className="mb-6 flex items-center gap-3">
         <div className={`p-3 rounded-full ${specialtyTheme.gradientStyle}`}>
