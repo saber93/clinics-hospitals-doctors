@@ -113,6 +113,7 @@ const AppRoutes = () => {
           <Route path="/chat-sessions" element={<ProtectedRoute><ChatSessions /></ProtectedRoute>} />
           <Route path="/chat-settings" element={<ProtectedRoute><ChatSettings /></ProtectedRoute>} />
           
+          {/* Admin routes - all wrapped in AdminDashboardLayout which has no footer */}
           <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboardLayout><AdminDashboard /></AdminDashboardLayout></ProtectedRoute>} />
           <Route path="/vendors" element={<ProtectedRoute><AdminDashboardLayout><TotalVendors /></AdminDashboardLayout></ProtectedRoute>} />
           <Route path="/clients" element={<ProtectedRoute><AdminDashboardLayout><TotalClients /></AdminDashboardLayout></ProtectedRoute>} />

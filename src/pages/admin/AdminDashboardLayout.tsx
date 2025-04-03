@@ -169,6 +169,7 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
               {location.pathname === "/admin/settings" && "Admin Settings"}
               {location.pathname === "/vendors" && "Vendor Management"}
               {location.pathname === "/clients" && "Client Management"}
+              {location.pathname === "/admin/analytics" && "Analytics Dashboard"}
             </h1>
           </div>
 
