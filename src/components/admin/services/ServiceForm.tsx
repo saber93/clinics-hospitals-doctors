@@ -13,9 +13,14 @@ export default function ServiceForm() {
   
   // Get all available Lucide icon names
   const availableIcons = Object.keys(Icons).filter(
-    (key) => typeof Icons[key as keyof typeof Icons] === 'function' && 
-             key !== 'createLucideIcon' && // Filter out non-icon functions
-             key !== 'default'
+    (key) => {
+      // More strict filtering to ensure only icon components are included
+      const icon = Icons[key as keyof typeof Icons];
+      return typeof icon === 'function' && 
+             key !== 'createLucideIcon' && 
+             key !== 'default' &&
+             key !== 'createElement';
+    }
   );
   
   // Preview the selected icon - store the icon name, not the component

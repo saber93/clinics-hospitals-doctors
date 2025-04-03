@@ -30,11 +30,10 @@ export default function ServiceDetailsSection({
   const renderIcon = () => {
     if (!selectedIconName || typeof selectedIconName !== 'string') return null;
     
-    // Properly type the dynamic icon component access
-    const IconComponent = Icons[selectedIconName as keyof typeof Icons] as React.ComponentType<LucideProps>;
+    // Safely access the icon component with proper type assertions
+    const IconComponent = (Icons as Record<string, React.ComponentType<LucideProps>>)[selectedIconName];
     
-    // Only render if it's a valid icon component
-    if (IconComponent && typeof IconComponent === 'function') {
+    if (IconComponent) {
       return <IconComponent className="w-6 h-6 text-primary" />;
     }
     
@@ -120,10 +119,10 @@ export default function ServiceDetailsSection({
                         <ScrollArea className="h-[300px] p-2">
                           <div className="grid grid-cols-4 gap-2">
                             {filteredIcons.map((iconName) => {
-                              // Get the actual icon component
-                              const IconComponent = Icons[iconName as keyof typeof Icons] as React.ComponentType<LucideProps>;
+                              // Get the actual icon component with proper typing
+                              const IconComponent = (Icons as Record<string, React.ComponentType<LucideProps>>)[iconName];
                               
-                              if (!IconComponent || typeof IconComponent !== 'function') return null;
+                              if (!IconComponent) return null;
                               
                               return (
                                 <Button
