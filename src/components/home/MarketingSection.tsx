@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Instagram, Facebook, Search, ArrowUp, MessageCircle } from 'lucide-react';
+import { Instagram, Facebook, Search, ArrowUp } from 'lucide-react';
 
 const MarketingSection = () => {
   return (
@@ -75,14 +75,6 @@ const MarketingSection = () => {
               <Facebook className="w-3/4 h-3/4 text-white" />
             </div>
             <span className="text-sm text-gray-600">Facebook</span>
-          </div>
-
-          {/* Message */}
-          <div className="flex flex-col items-center gap-2">
-            <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center bg-green-500 rounded-lg">
-              <MessageCircle className="w-3/4 h-3/4 text-white" />
-            </div>
-            <span className="text-sm text-gray-600">Live Chat</span>
           </div>
         </div>
       </div>
