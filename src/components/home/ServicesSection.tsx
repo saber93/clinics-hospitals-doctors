@@ -11,10 +11,10 @@ import { services as mockServices } from './servicesData';
 export default function ServicesSection() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false });
 
-  // Fix for the infinite type instantiation error by explicitly typing the result
+  // Explicitly define the return type for the queryFn to avoid infinite type instantiation
   const { data: services, isLoading } = useQuery<Service[]>({
     queryKey: ['services'],
-    queryFn: async () => {
+    queryFn: async (): Promise<Service[]> => {
       const { data, error } = await supabase
         .from('services')
         .select('*')
