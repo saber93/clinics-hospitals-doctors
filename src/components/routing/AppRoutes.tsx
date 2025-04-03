@@ -1,6 +1,5 @@
-
 import React, { lazy, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Outlet } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { ProtectedRoute } from './ProtectedRoute';
 import { PublicRoute } from './PublicRoute';
@@ -49,7 +48,6 @@ const Cart = lazy(() => import('@/pages/Cart'));
 const Profile = lazy(() => import('@/pages/Profile'));
 const ProfileSettings = lazy(() => import('@/pages/ProfileSettings'));
 
-// Admin CMS Pages
 const AdminDashboardLayout = lazy(() => import('@/pages/admin/AdminDashboardLayout'));
 const BlogsPage = lazy(() => import('@/pages/admin/BlogsPage'));
 const BlogFormPage = lazy(() => import('@/pages/admin/BlogFormPage'));
@@ -62,7 +60,6 @@ const AppRoutes = () => {
     <AuthProvider>
       <Suspense fallback={<Loading />}>
         <Routes>
-          {/* Main public routes */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
@@ -73,12 +70,10 @@ const AppRoutes = () => {
           <Route path="/cart" element={<Cart />} />
           <Route path="/offers" element={<Offers />} />
           
-          {/* Authentication routes */}
           <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
           
-          {/* Protected routes */}
           <Route path="/reservations" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />
           <Route path="/my-reservations" element={<ProtectedRoute><MyReservations /></ProtectedRoute>} />
           <Route path="/vouchers" element={<ProtectedRoute><Vouchers /></ProtectedRoute>} />
@@ -86,7 +81,6 @@ const AppRoutes = () => {
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
           
-          {/* Product routes */}
           <Route path="/products" element={<Products />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/products/new" element={<ProtectedRoute><ProductForm /></ProtectedRoute>} />
@@ -95,7 +89,6 @@ const AppRoutes = () => {
           <Route path="/edit-product/:id" element={<ProtectedRoute><EditProduct /></ProtectedRoute>} />
           <Route path="/products-management" element={<ProtectedRoute><ProductsManagement /></ProtectedRoute>} />
           
-          {/* Voucher management routes */}
           <Route path="/seller-vouchers" element={<ProtectedRoute><SellerVouchers /></ProtectedRoute>} />
           <Route path="/seller-vouchers/new" element={<ProtectedRoute><VoucherForm /></ProtectedRoute>} />
           <Route path="/seller-vouchers/:id/edit" element={<ProtectedRoute><EditVoucherPage /></ProtectedRoute>} />
@@ -105,28 +98,23 @@ const AppRoutes = () => {
           <Route path="/categories/new" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />
           <Route path="/categories/:id/edit" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />
           
-          {/* Update this route to use AllBookings for both admin and regular users */}
           <Route path="/all-bookings" element={<ProtectedRoute><AllBookings /></ProtectedRoute>} />
           
-          {/* Role-specific dashboard routes */}
           <Route path="/doctor-dashboard" element={<ProtectedRoute><DoctorDashboard /></ProtectedRoute>} />
           <Route path="/vendor-dashboard" element={<ProtectedRoute><VendorDashboard /></ProtectedRoute>} />
           <Route path="/center-dashboard" element={<ProtectedRoute><CenterDashboard /></ProtectedRoute>} />
           <Route path="/client-dashboard" element={<ProtectedRoute><ClientDashboard /></ProtectedRoute>} />
           
-          {/* Chat system routes */}
           <Route path="/chats/:chatId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
           <Route path="/chats" element={<ProtectedRoute><ChatSessions /></ProtectedRoute>} />
           <Route path="/chat-sessions" element={<ProtectedRoute><ChatSessions /></ProtectedRoute>} />
           <Route path="/chat-settings" element={<ProtectedRoute><ChatSettings /></ProtectedRoute>} />
           
-          {/* Admin routes */}
           <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
           <Route path="/vendors" element={<ProtectedRoute><TotalVendors /></ProtectedRoute>} />
           <Route path="/clients" element={<ProtectedRoute><TotalClients /></ProtectedRoute>} />
           
-          {/* Admin CMS routes */}
-          <Route path="/admin" element={<ProtectedRoute><AdminDashboardLayout /></ProtectedRoute>}>
+          <Route path="/admin" element={<ProtectedRoute><AdminDashboardLayout><Outlet /></AdminDashboardLayout></ProtectedRoute>}>
             <Route path="blogs" element={<BlogsPage />} />
             <Route path="blogs/new" element={<BlogFormPage />} />
             <Route path="blogs/:id" element={<BlogFormPage />} />
@@ -136,7 +124,6 @@ const AppRoutes = () => {
             <Route path="contact-messages" element={<ContactMessagesPage />} />
           </Route>
           
-          {/* 404 Page */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
