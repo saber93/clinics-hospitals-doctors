@@ -19,8 +19,20 @@ export default function ServiceDetailsSection({
   availableIcons,
   selectedIconName 
 }: ServiceDetailsSectionProps) {
-  // Dynamically render the selected icon component if one is selected
-  const IconComponent = selectedIconName ? Icons[selectedIconName as keyof typeof Icons] : null;
+  // Create a properly typed icon component
+  const renderIcon = () => {
+    if (!selectedIconName || typeof selectedIconName !== 'string') return null;
+    
+    // Check if the icon name exists in the Icons object
+    const IconComponent = Icons[selectedIconName as keyof typeof Icons];
+    
+    // Only render if it's a valid icon component
+    if (IconComponent && typeof IconComponent === 'function') {
+      return <IconComponent className="w-6 h-6 text-primary" />;
+    }
+    
+    return null;
+  };
 
   return (
     <CardContent className="pt-6">
@@ -70,10 +82,9 @@ export default function ServiceDetailsSection({
                       {...field} 
                       className="flex-grow"
                     />
-                    {IconComponent && (
+                    {selectedIconName && (
                       <div className="flex items-center justify-center w-10 h-10 bg-primary/5 rounded">
-                        {/* Use JSX to render the icon component directly instead of createElement */}
-                        <IconComponent className="w-6 h-6 text-primary" />
+                        {renderIcon()}
                       </div>
                     )}
                   </div>
