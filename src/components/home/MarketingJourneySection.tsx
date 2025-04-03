@@ -10,7 +10,7 @@ const MarketingJourneySection = () => {
           <p className="text-lg uppercase tracking-wider text-gray-700 mb-4">OUR JOURNEY TO MARKETING EXCELLENCE</p>
         </div>
         
-        <div className="grid md:grid-cols-2 gap-12 items-start">
+        <div className="grid md:grid-cols-3 gap-12 items-start">
           <div>
             <h2 className="text-5xl md:text-6xl font-bold tracking-tight text-gray-900 leading-tight">
               Real<br />
@@ -20,7 +20,7 @@ const MarketingJourneySection = () => {
             </h2>
           </div>
           
-          <div className="space-y-8">
+          <div className="space-y-8 md:col-span-2">
             <div>
               <p className="text-lg text-gray-700 mb-8">
                 From overcoming marketing failures to leading in performance-based strategies, we 
