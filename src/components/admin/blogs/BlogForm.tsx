@@ -80,7 +80,6 @@ export default function BlogForm() {
     queryFn: async () => {
       if (!id) return null;
       
-      // Use type assertion to tell TypeScript this is a valid query
       const { data, error } = await supabase
         .from('blogs')
         .select('*')
@@ -93,19 +92,23 @@ export default function BlogForm() {
       }
       
       if (data) {
+        const blogData = data as Blog;
+        
         // Populate the form with the fetched data
         form.reset({
-          title: data.title,
-          slug: data.slug,
-          category: data.category,
-          excerpt: data.excerpt,
-          content: data.content,
-          image_url: data.image_url || '',
-          is_published: data.is_published,
+          title: blogData.title,
+          slug: blogData.slug,
+          category: blogData.category,
+          excerpt: blogData.excerpt,
+          content: blogData.content,
+          image_url: blogData.image_url || '',
+          is_published: blogData.is_published,
         });
+        
+        return blogData;
       }
       
-      return data as Blog;
+      return null;
     },
     enabled: isEditMode,
   });
@@ -129,7 +132,11 @@ export default function BlogForm() {
         // Create new blog
         const { data, error } = await supabase
           .from('blogs')
-          .insert([values])
+          .insert([{
+            ...values,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }])
           .select();
           
         if (error) throw new Error(error.message);
