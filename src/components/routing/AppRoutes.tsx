@@ -1,3 +1,4 @@
+
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Outlet } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -57,6 +58,8 @@ const ServiceFormPage = lazy(() => import('@/pages/admin/ServiceFormPage'));
 const ContactMessagesPage = lazy(() => import('@/pages/admin/ContactMessagesPage'));
 const AnalyticsPage = lazy(() => import('@/pages/admin/AnalyticsPage'));
 const SettingsPage = lazy(() => import('@/pages/admin/SettingsPage'));
+const ThemeManagementPage = lazy(() => import('@/pages/admin/ThemeManagementPage'));
+const ThemeEditorPage = lazy(() => import('@/pages/admin/ThemeEditorPage'));
 
 const AppRoutes = () => {
   return (
@@ -117,6 +120,8 @@ const AppRoutes = () => {
           <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboardLayout><AdminDashboard /></AdminDashboardLayout></ProtectedRoute>} />
           <Route path="/vendors" element={<ProtectedRoute><AdminDashboardLayout><TotalVendors /></AdminDashboardLayout></ProtectedRoute>} />
           <Route path="/clients" element={<ProtectedRoute><AdminDashboardLayout><TotalClients /></AdminDashboardLayout></ProtectedRoute>} />
+          <Route path="/admin/themes" element={<ProtectedRoute><ThemeManagementPage /></ProtectedRoute>} />
+          <Route path="/admin/themes/:entityType/:id" element={<ProtectedRoute><ThemeEditorPage /></ProtectedRoute>} />
           
           <Route path="/admin" element={<ProtectedRoute><AdminDashboardLayout><Outlet /></AdminDashboardLayout></ProtectedRoute>}>
             <Route path="analytics" element={<AnalyticsPage />} />

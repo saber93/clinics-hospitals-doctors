@@ -10,7 +10,8 @@ import {
   Settings,
   BarChart4,
   MessageSquare,
-  Ticket
+  Ticket,
+  Palette
 } from 'lucide-react';
 
 interface SidebarItemProps {
@@ -70,6 +71,11 @@ const AdminSidebar = () => {
             to="/admin/services" 
             icon={<Layers className="h-4 w-4" />} 
             label="Services" 
+          />
+          <SidebarItem 
+            to="/admin/themes" 
+            icon={<Palette className="h-4 w-4" />} 
+            label="Theme Management" 
           />
         </nav>
       </div>
