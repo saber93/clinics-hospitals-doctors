@@ -14,15 +14,9 @@ export default function ServiceForm() {
   // Get all available Lucide icon names
   const availableIcons = Object.keys(Icons).filter(
     (key) => {
-      // Check if the key refers to a function and exclude utility functions
+      // Exclude utility functions and non-icon entries
       const excludedNames = ['createLucideIcon', 'default', 'createElement', 'Icon', 'icons'];
-      
-      // Additional check to ensure it's actually an icon component
-      const component = Icons[key as keyof typeof Icons];
-      return typeof component === 'function' && 
-             !excludedNames.includes(key) &&
-             // Ensure it's a React component (has a render method or is a function)
-             typeof component === 'function';
+      return !excludedNames.includes(key);
     }
   );
   

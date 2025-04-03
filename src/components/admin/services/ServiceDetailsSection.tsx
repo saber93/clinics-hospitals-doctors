@@ -26,25 +26,6 @@ export default function ServiceDetailsSection({
 }: ServiceDetailsSectionProps) {
   const [iconSearchTerm, setIconSearchTerm] = useState('');
   
-  // Create a dynamic icon component
-  const renderIcon = () => {
-    if (!selectedIconName) return null;
-    
-    // Exclude non-icon entries
-    const excludedNames = ['createLucideIcon', 'default', 'createElement', 'Icon'];
-    if (excludedNames.includes(selectedIconName)) return null;
-    
-    // Use the dynamic approach
-    const IconComponent = Icons[selectedIconName as keyof typeof Icons];
-    
-    if (typeof IconComponent === 'function') {
-      // @ts-ignore - This is a workaround for TypeScript issues
-      return <IconComponent className="w-6 h-6 text-primary" />;
-    }
-    
-    return null;
-  };
-
   // Filter icons based on search term
   const filteredIcons = availableIcons.filter(
     (name) => name.toLowerCase().includes(iconSearchTerm.toLowerCase())
@@ -101,11 +82,11 @@ export default function ServiceDetailsSection({
                         >
                           <div className="flex items-center">
                             {field.value && (
-                              <div className="mr-2">
-                                {renderIcon()}
-                              </div>
+                              <span className="mr-2 flex items-center gap-2">
+                                {field.value}
+                              </span>
                             )}
-                            {field.value || "Select an icon"}
+                            {!field.value && "Select an icon"}
                           </div>
                         </Button>
                       </PopoverTrigger>
@@ -123,34 +104,20 @@ export default function ServiceDetailsSection({
                         </div>
                         <ScrollArea className="h-[300px] p-2">
                           <div className="grid grid-cols-4 gap-2">
-                            {filteredIcons.map((iconName) => {
-                              // Skip non-icon entries
-                              const excludedNames = ['createLucideIcon', 'default', 'createElement', 'Icon'];
-                              if (excludedNames.includes(iconName)) return null;
-                              
-                              const IconComponent = Icons[iconName as keyof typeof Icons];
-                              
-                              if (typeof IconComponent !== 'function') return null;
-                              
-                              // Use JSX syntax with type assertion
-                              const DynamicIcon = IconComponent as React.ComponentType<any>;
-                              
-                              return (
-                                <Button
-                                  key={iconName}
-                                  variant="ghost"
-                                  size="sm"
-                                  className="flex flex-col items-center justify-center h-20 py-2 gap-1 text-xs"
-                                  onClick={() => {
-                                    field.onChange(iconName);
-                                    setIconSearchTerm('');
-                                  }}
-                                >
-                                  <DynamicIcon className="h-6 w-6" />
-                                  <span className="truncate max-w-full">{iconName}</span>
-                                </Button>
-                              );
-                            })}
+                            {filteredIcons.map((iconName) => (
+                              <Button
+                                key={iconName}
+                                variant="ghost"
+                                size="sm"
+                                className="flex flex-col items-center justify-center h-20 py-2 gap-1 text-xs"
+                                onClick={() => {
+                                  field.onChange(iconName);
+                                  setIconSearchTerm('');
+                                }}
+                              >
+                                <span className="text-xs text-center truncate max-w-full">{iconName}</span>
+                              </Button>
+                            ))}
                           </div>
                         </ScrollArea>
                       </PopoverContent>
