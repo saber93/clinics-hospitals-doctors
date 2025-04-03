@@ -26,22 +26,25 @@ interface DatabaseService {
 export default function ServicesSection() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false });
 
-  // Use explicit typing for the query function to avoid recursive type issues
-  const { data: services, isLoading } = useQuery<Service[]>({
+  // Fix the typing to avoid excessive type instantiation
+  const fetchServices = async (): Promise<Service[]> => {
+    const { data, error } = await supabase
+      .from('services')
+      .select('*')
+      .eq('is_active', true)
+      .order('display_order', { ascending: true });
+    
+    if (error) throw error;
+    
+    // Use type assertion and explicitly return the mapped data
+    const dbServices = data as DatabaseService[];
+    return dbServices.map(service => adaptDatabaseService(service));
+  };
+
+  // Use the extracted function with explicit return type
+  const { data: services, isLoading } = useQuery({
     queryKey: ['services'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('services')
-        .select('*')
-        .eq('is_active', true)
-        .order('display_order', { ascending: true });
-      
-      if (error) throw error;
-      
-      // Use type assertion to ensure we're working with the correct type
-      const dbServices = data as DatabaseService[];
-      return dbServices.map(service => adaptDatabaseService(service));
-    },
+    queryFn: fetchServices
   });
 
   const scrollPrev = () => emblaApi && emblaApi.scrollPrev();
