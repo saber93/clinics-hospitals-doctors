@@ -1,5 +1,5 @@
 
-import React, { useRef } from 'react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Service, adaptDatabaseService } from '@/types/cms';
@@ -11,7 +11,8 @@ import { services as mockServices } from './servicesData';
 export default function ServicesSection() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false });
 
-  const { data: services, isLoading } = useQuery({
+  // Fix for the infinite type instantiation error by explicitly typing the result
+  const { data: services, isLoading } = useQuery<Service[]>({
     queryKey: ['services'],
     queryFn: async () => {
       const { data, error } = await supabase

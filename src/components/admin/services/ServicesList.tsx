@@ -56,7 +56,10 @@ export default function ServicesList() {
     mutationFn: async ({ id, isActive }: { id: string, isActive: boolean }) => {
       const { error } = await supabase
         .from('services')
-        .update({ is_active: isActive })
+        .update({ 
+          is_active: isActive,
+          name: undefined
+        })
         .eq('id', id);
         
       if (error) throw new Error(error.message);
