@@ -21,7 +21,7 @@ const StrategicPartnershipSection = () => {
   const isVisible = useIntersectionObserver(sectionRef, { threshold: 0.1 });
   
   return (
-    <section ref={sectionRef} className="py-20 bg-gray-100">
+    <section ref={sectionRef} className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">Our Strategic Partnerships</h2>
