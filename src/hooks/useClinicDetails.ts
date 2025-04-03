@@ -2,7 +2,8 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Clinic, ProductVoucherType } from '@/types/clinic';
+import { Clinic } from '@/types/clinic';
+import { ProductVoucherType } from '@/components/clinics/types';
 
 export function useClinicDetails(id?: string) {
   const [clinic, setClinic] = useState<Clinic | null>(null);
