@@ -15,6 +15,7 @@ interface IconSelectorProps {
 
 export function IconSelector({ value, onChange, availableIcons }: IconSelectorProps) {
   const [iconSearchTerm, setIconSearchTerm] = useState('');
+  const [open, setOpen] = useState(false);
   
   // Filter icons based on search term
   const filteredIcons = availableIcons.filter(
@@ -23,9 +24,10 @@ export function IconSelector({ value, onChange, availableIcons }: IconSelectorPr
 
   // Get icon component from name
   const getIconComponent = (iconName: string) => {
+    // Format icon name to PascalCase for Lucide
     const formattedIconName = iconName.charAt(0).toUpperCase() + iconName.slice(1);
     const IconComponent = (LucideIcons as any)[formattedIconName];
-    return IconComponent ? <IconComponent className="h-5 w-5 mr-2" /> : null;
+    return IconComponent ? <IconComponent className="h-5 w-5" /> : null;
   };
 
   // Format selected value display
@@ -35,13 +37,13 @@ export function IconSelector({ value, onChange, availableIcons }: IconSelectorPr
     return (
       <div className="flex items-center">
         {getIconComponent(value)}
-        <span>{value}</span>
+        <span className="ml-2">{value}</span>
       </div>
     );
   };
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -66,26 +68,32 @@ export function IconSelector({ value, onChange, availableIcons }: IconSelectorPr
           </div>
         </div>
         <ScrollArea className="h-[300px]">
-          <div className="p-1">
-            {filteredIcons.map((iconName) => {
-              const formattedName = iconName.toLowerCase();
-              return (
-                <Button
-                  key={iconName}
-                  variant="ghost"
-                  className="w-full justify-start h-9 px-2 mb-1 text-left"
-                  onClick={() => {
-                    onChange(formattedName);
-                    setIconSearchTerm('');
-                  }}
-                >
-                  <div className="flex items-center">
-                    {getIconComponent(formattedName)}
-                    <span className="text-sm">{iconName}</span>
-                  </div>
-                </Button>
-              );
-            })}
+          <div className="grid grid-cols-2 gap-1 p-2">
+            {filteredIcons.length === 0 ? (
+              <div className="col-span-2 p-4 text-center text-muted-foreground">
+                No icons found
+              </div>
+            ) : (
+              filteredIcons.map((iconName) => {
+                return (
+                  <Button
+                    key={iconName}
+                    variant="ghost"
+                    className="flex items-center justify-start h-10 px-2 py-1 text-left"
+                    onClick={() => {
+                      onChange(iconName.toLowerCase());
+                      setIconSearchTerm('');
+                      setOpen(false);
+                    }}
+                  >
+                    <div className="mr-2">
+                      {getIconComponent(iconName)}
+                    </div>
+                    <span className="text-sm truncate">{iconName}</span>
+                  </Button>
+                );
+              })
+            )}
           </div>
         </ScrollArea>
       </PopoverContent>

@@ -7,18 +7,13 @@ import * as Icons from 'lucide-react';
 import { useServiceForm } from '@/hooks/useServiceForm';
 import ServiceDetailsSection from './ServiceDetailsSection';
 import ServiceFormActions from './ServiceFormActions';
+import { lucideIcons } from '@/utils/clinics/iconOptions';
 
 export default function ServiceForm() {
   const { form, isEditMode, isFetchingService, mutation, onSubmit } = useServiceForm();
   
-  // Get all available Lucide icon names
-  const availableIcons = Object.keys(Icons).filter(
-    (key) => {
-      // Exclude utility functions and non-icon entries
-      const excludedNames = ['createLucideIcon', 'default', 'createElement', 'Icon', 'icons'];
-      return !excludedNames.includes(key);
-    }
-  );
+  // Get all available Lucide icon names - use our predefined list for better control
+  const availableIcons = lucideIcons;
   
   // Preview the selected icon - store the icon name, not the component
   const selectedIconName = form.watch('icon_name');

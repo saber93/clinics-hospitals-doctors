@@ -27,13 +27,11 @@ export function ServiceConfiguration({
           <FormItem>
             <FormLabel>Icon</FormLabel>
             <FormControl>
-              <div className="flex space-x-2">
-                <IconSelector
-                  value={field.value}
-                  onChange={field.onChange}
-                  availableIcons={availableIcons}
-                />
-              </div>
+              <IconSelector
+                value={field.value}
+                onChange={field.onChange}
+                availableIcons={availableIcons}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
