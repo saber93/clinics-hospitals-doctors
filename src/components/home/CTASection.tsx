@@ -10,7 +10,7 @@ const CTASection = () => {
     <section className="py-16 px-4">
       <div className="max-w-5xl mx-auto bg-primary/90 rounded-2xl p-8 md:p-12 text-white shadow-xl">
         <div className="text-center">
-          <h2 className="text-3xl md:text-4xl font-bold">Ready to transform your skincare journey?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold">Ready to transform your healthcare journey?</h2>
           <p className="mt-4 text-primary-foreground/90 max-w-2xl mx-auto">
             Join thousands of happy clients who have found their perfect skincare match through Skinnect.
             Your journey to healthier skin is just a click away.
