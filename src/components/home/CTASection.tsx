@@ -7,7 +7,7 @@ const CTASection = () => {
   const navigate = useNavigate();
   
   return (
-    <section className="py-16 px-4">
+    <section className="py-16 px-4 bg-white">
       <div className="max-w-5xl mx-auto bg-primary/90 rounded-2xl p-8 md:p-12 text-white shadow-xl">
         <div className="text-center">
           <h2 className="text-3xl md:text-4xl font-bold">Ready to transform your healthcare journey?</h2>
