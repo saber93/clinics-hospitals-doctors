@@ -31,11 +31,11 @@ export default function ServiceDetailsSection({
     if (!selectedIconName || typeof selectedIconName !== 'string') return null;
     
     // Properly type the dynamic icon component access
-    const IconComponent = Icons[selectedIconName as keyof typeof Icons];
+    const IconComponent = Icons[selectedIconName as keyof typeof Icons] as React.ComponentType<LucideProps>;
     
     // Only render if it's a valid icon component
     if (IconComponent && typeof IconComponent === 'function') {
-      return React.createElement(IconComponent, { className: "w-6 h-6 text-primary" });
+      return <IconComponent className="w-6 h-6 text-primary" />;
     }
     
     return null;
@@ -121,7 +121,7 @@ export default function ServiceDetailsSection({
                           <div className="grid grid-cols-4 gap-2">
                             {filteredIcons.map((iconName) => {
                               // Get the actual icon component
-                              const IconComponent = Icons[iconName as keyof typeof Icons];
+                              const IconComponent = Icons[iconName as keyof typeof Icons] as React.ComponentType<LucideProps>;
                               
                               if (!IconComponent || typeof IconComponent !== 'function') return null;
                               
@@ -136,7 +136,7 @@ export default function ServiceDetailsSection({
                                     setIconSearchTerm('');
                                   }}
                                 >
-                                  {React.createElement(IconComponent, { className: "h-6 w-6" })}
+                                  <IconComponent className="h-6 w-6" />
                                   <span className="truncate max-w-full">{iconName}</span>
                                 </Button>
                               );
