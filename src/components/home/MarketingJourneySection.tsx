@@ -1,8 +1,15 @@
 
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const MarketingJourneySection = () => {
+  const navigate = useNavigate();
+  
+  const handleReadMoreClick = () => {
+    navigate('/about');
+  };
+  
   return (
     <section className="py-24 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -29,7 +36,10 @@ const MarketingJourneySection = () => {
               </p>
               
               <div className="flex justify-end">
-                <button className="flex items-center text-gray-900 font-medium hover:text-primary transition-colors">
+                <button 
+                  className="flex items-center text-gray-900 font-medium hover:text-primary transition-colors"
+                  onClick={handleReadMoreClick}
+                >
                   Read More <ArrowRight className="ml-2 h-5 w-5" />
                 </button>
               </div>
