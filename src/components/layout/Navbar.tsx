@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
@@ -65,7 +66,8 @@ const Navbar: React.FC = () => {
         {/* Mobile menu */}
         <MobileMenu 
           isOpen={mobileMenuOpen} 
-          toggleMobileMenu={toggleMobileMenu} 
+          onClose={toggleMobileMenu} 
+          toggleMobileMenu={toggleMobileMenu}
           filteredLinks={filteredLinks}
           session={session}
           handleLogout={handleLogout}

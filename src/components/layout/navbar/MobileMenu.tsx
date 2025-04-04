@@ -13,7 +13,8 @@ interface MobileMenuProps {
   isOpen: boolean;
   filteredLinks: NavLinkType[];
   session: any;
-  onClose: () => void;
+  onClose?: () => void;
+  toggleMobileMenu?: () => void;
   handleLogout: () => void;
 }
 
@@ -22,10 +23,14 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
   filteredLinks,
   session,
   onClose,
+  toggleMobileMenu,
   handleLogout
 }) => {
   const { isRTL } = useLanguage();
   const { t } = useTranslation();
+
+  // Use toggleMobileMenu if provided, otherwise fall back to onClose
+  const closeMenu = toggleMobileMenu || onClose || (() => {});
 
   if (!isOpen) return null;
 
@@ -33,7 +38,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
     <div className="md:hidden fixed inset-0 bg-background/95 backdrop-blur-sm z-50 animate-in fade-in">
       <div className="container h-full flex flex-col">
         <div className="flex justify-end py-4">
-          <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close menu">
+          <Button variant="ghost" size="icon" onClick={closeMenu} aria-label="Close menu">
             <X size={24} />
           </Button>
         </div>
@@ -49,7 +54,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                   name={t(`common.${link.name.toLowerCase()}`)} 
                   path={link.path}
                   className="py-2 w-full flex justify-center"
-                  onClick={onClose}
+                  onClick={closeMenu}
                 />
               </li>
             ))}
@@ -62,7 +67,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
               variant="outline" 
               onClick={() => {
                 handleLogout();
-                onClose();
+                closeMenu();
               }}
             >
               {t('common.logout')}

@@ -17,7 +17,7 @@ export interface AuthButtonsProps {
 export interface MobileMenuProps {
   isOpen: boolean;
   onClose?: () => void;
-  toggleMobileMenu?: () => void;
+  toggleMobileMenu?: () => void;  // Added this property to match what's passed in Navbar.tsx
   handleLogout?: () => void;
   filteredLinks: NavLinkType[];
   session: any;
