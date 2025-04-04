@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
@@ -10,9 +9,6 @@ const DesktopMenu: React.FC = () => {
     <div className="hidden md:flex items-center space-x-6">
       {user ? (
         <>
-          <Link to="/" className="text-gray-600 hover:text-primary transition-colors">
-            Home
-          </Link>
           
           {isClient() && (
             <>
@@ -55,9 +51,7 @@ const DesktopMenu: React.FC = () => {
         </>
       ) : (
         <>
-          <Link to="/" className="text-gray-600 hover:text-primary transition-colors">
-            Home
-          </Link>
+          
           <Link to="/offers" className="text-gray-600 hover:text-primary transition-colors">
             Special Offers
           </Link>

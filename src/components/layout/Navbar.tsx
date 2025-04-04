@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
@@ -24,9 +23,8 @@ const Navbar: React.FC = () => {
     navigate('/');
   };
 
-  // Create a filteredLinks array for the mobile menu
+  // Create a filteredLinks array for the mobile menu - removed "Home"
   const filteredLinks = [
-    { name: 'Home', path: '/' },
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' }
   ];

@@ -8,9 +8,10 @@ interface NavLinkProps {
   path: string;
   icon?: React.ElementType | React.ReactNode;
   className?: string;
+  children?: React.ReactNode;
 }
 
-const NavLink = ({ name, path, icon, className }: NavLinkProps) => {
+const NavLink = ({ name, path, icon, className, children }: NavLinkProps) => {
   const location = useLocation();
   
   return (
@@ -23,13 +24,12 @@ const NavLink = ({ name, path, icon, className }: NavLinkProps) => {
       )}
     >
       {icon && React.isValidElement(icon) ? (
-        // If icon is already a ReactElement, render it directly
         <span className="mr-1">{icon}</span>
       ) : icon && typeof icon === 'function' ? (
-        // If icon is a component/function (like a Lucide icon component), render it
         React.createElement(icon as React.ElementType, { size: 18, className: "mr-1" })
       ) : null}
       {name}
+      {children}
     </Link>
   );
 };

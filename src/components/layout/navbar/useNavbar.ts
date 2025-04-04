@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Home, Info, Phone, Building2, Stethoscope, Hospital, ShoppingBag } from 'lucide-react';
+import { Info, Phone, Building2, Stethoscope, Hospital, ShoppingBag } from 'lucide-react';
 import { logoutUser } from '@/utils/auth';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -17,7 +17,7 @@ export const useNavbar = () => {
   const [session, setSession] = useState<any>(null);
 
   const links: NavLinkType[] = [
-    { name: 'Home', path: '/', icon: Home },
+    // Home link removed from here
     { name: 'Clinics', path: '/clinics', icon: Building2 },
     { name: 'Hospitals', path: '/hospitals', icon: Hospital },
     { name: 'Doctors', path: '/doctors', icon: Stethoscope },

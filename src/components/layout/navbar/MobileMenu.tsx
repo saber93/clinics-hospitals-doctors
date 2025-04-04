@@ -46,6 +46,19 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
       </div>
       
       <div className="flex flex-col items-center space-y-6 p-8">
+        {/* Logo for Home navigation in mobile menu */}
+        <NavLink 
+          path="/"
+          name=""
+          className="mb-4"
+        >
+          <img 
+            src="/lovable-uploads/96b7f889-8783-4072-b164-abacb94bc958.png" 
+            alt="Zamos Marketing Management" 
+            className="h-10 object-contain"
+          />
+        </NavLink>
+        
         {filteredLinks.map((link) => (
           <NavLink 
             key={link.path} 
