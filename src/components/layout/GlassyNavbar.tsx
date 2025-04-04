@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Menu, ShoppingCart, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -26,7 +25,6 @@ const GlassyNavbar = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    // Check current auth status
     const getSession = async () => {
       const { data } = await supabase.auth.getSession();
       setSession(data.session);
@@ -34,7 +32,6 @@ const GlassyNavbar = () => {
     
     getSession();
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, currentSession) => {
       setSession(currentSession);
     });
@@ -42,7 +39,6 @@ const GlassyNavbar = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Determine if user is authenticated
   const isAuthenticated = !!session;
 
   const handleAccountClick = () => {
@@ -70,8 +66,7 @@ const GlassyNavbar = () => {
         <NavLogo />
         <DesktopNav filteredLinks={filteredLinks} session={session} />
 
-        {/* Auth Buttons / User Menu - Make logout button more visible */}
-        <div className={`hidden md:flex items-center space-x-3 ${isRTL ? 'space-x-reverse' : ''}`}>
+        <div className={cn("hidden md:flex items-center space-x-3", isRTL && "space-x-reverse")}>
           <LanguageSwitcher />
           
           <Button variant="ghost" size="icon" onClick={handleAccountClick} aria-label={t('common.profile')}>
@@ -80,7 +75,8 @@ const GlassyNavbar = () => {
           
           <Button variant="ghost" size="icon" className="relative" onClick={handleCartClick} aria-label={t('common.cart')}>
             <ShoppingCart size={20} />
-            <span className={`absolute -top-1 ${isRTL ? '-left-1' : '-right-1'} bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center`}>
+            <span className={cn("absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center", 
+                    isRTL && "-left-1 -right-auto")}>
               {totalItems}
             </span>
           </Button>
@@ -92,7 +88,7 @@ const GlassyNavbar = () => {
           )}
         </div>
 
-        <div className={`md:hidden flex items-center space-x-2 ${isRTL ? 'space-x-reverse' : ''}`}>
+        <div className={cn("md:hidden flex items-center space-x-2", isRTL && "space-x-reverse")}>
           <LanguageSwitcher />
           
           <Button variant="ghost" size="icon" onClick={handleAccountClick} aria-label={t('common.profile')}>
@@ -101,7 +97,8 @@ const GlassyNavbar = () => {
           
           <Button variant="ghost" size="icon" className="relative" onClick={handleCartClick} aria-label={t('common.cart')}>
             <ShoppingCart size={20} />
-            <span className={`absolute -top-1 ${isRTL ? '-left-1' : '-right-1'} bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center`}>
+            <span className={cn("absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center",
+                   isRTL && "-left-1 -right-auto")}>
               {totalItems}
             </span>
           </Button>
