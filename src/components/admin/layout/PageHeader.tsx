@@ -3,13 +3,10 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useTranslation } from '@/hooks/useTranslation';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { cn } from '@/lib/utils';
 
 const PageHeader: React.FC = () => {
   const location = useLocation();
   const { t } = useTranslation();
-  const { isRTL } = useLanguage();
 
   const getPageTitle = () => {
     switch (location.pathname) {
@@ -37,9 +34,9 @@ const PageHeader: React.FC = () => {
   };
 
   return (
-    <header className={cn("bg-white border-b h-16 flex items-center px-6 shrink-0 w-full", isRTL && "rtl")}>
+    <header className="bg-white border-b h-16 flex items-center px-6 shrink-0 w-full">
       <SidebarTrigger />
-      <h1 className={cn("text-xl font-semibold", isRTL ? "mr-4" : "ml-4")}>{getPageTitle()}</h1>
+      <h1 className="text-xl font-semibold ml-4">{getPageTitle()}</h1>
     </header>
   );
 };

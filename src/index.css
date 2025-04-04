@@ -1,158 +1,309 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 47.4% 11.2%;
- 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
- 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 47.4% 11.2%;
- 
+    --background: 190 20% 98%;
+    --foreground: 200 10% 20%;
+
     --card: 0 0% 100%;
-    --card-foreground: 222.2 47.4% 11.2%;
- 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
- 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
- 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
- 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
- 
-    --destructive: 0 100% 50%;
+    --card-foreground: 200 10% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 200 10% 20%;
+
+    --primary: 24 96% 49%;
+    --primary-foreground: 180 10% 98%;
+
+    --secondary: 200 30% 95%;
+    --secondary-foreground: 200 10% 20%;
+
+    --muted: 200 10% 94%;
+    --muted-foreground: 200 10% 40%;
+
+    --accent: 180 40% 94%;
+    --accent-foreground: 185 40% 25%;
+
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
- 
-    --ring: 215 20.2% 65.1%;
- 
+
+    --border: 200 15% 90%;
+    --input: 200 15% 90%;
+    --ring: 24 96% 49%;
+
     --radius: 0.5rem;
   }
- 
+
   .dark {
-    --background: 224 71% 4%;
-    --foreground: 213 31% 91%;
- 
-    --muted: 223 47% 11%;
-    --muted-foreground: 215.4 16.3% 56.9%;
- 
-    --popover: 224 71% 4%;
-    --popover-foreground: 215 20.2% 65.1%;
- 
-    --card: 224 71% 4%;
-    --card-foreground: 213 31% 91%;
- 
-    --border: 216 34% 17%;
-    --input: 216 34% 17%;
- 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 1.2%;
- 
-    --secondary: 222.2 47.4% 11.2%;
-    --secondary-foreground: 210 40% 98%;
- 
-    --accent: 216 34% 17%;
-    --accent-foreground: 210 40% 98%;
- 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
- 
-    --ring: 216 34% 17%;
- 
-    --radius: 0.5rem;
+    --background: 200 30% 10%;
+    --foreground: 200 10% 98%;
+
+    --card: 200 30% 12%;
+    --card-foreground: 200 10% 98%;
+
+    --popover: 200 30% 12%;
+    --popover-foreground: 200 10% 98%;
+
+    --primary: 24 96% 49%;
+    --primary-foreground: 180 10% 98%;
+
+    --secondary: 200 30% 20%;
+    --secondary-foreground: 200 10% 98%;
+
+    --muted: 200 30% 20%;
+    --muted-foreground: 200 10% 70%;
+
+    --accent: 180 40% 20%;
+    --accent-foreground: 180 40% 90%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 200 30% 20%;
+    --input: 200 30% 20%;
+    --ring: 24 96% 49%;
   }
-}
- 
-/* RTL Support */
-.rtl {
-  direction: rtl;
-  text-align: right;
-}
-
-.rtl-layout {
-  direction: rtl;
-}
-
-.rtl .ml-2 {
-  margin-left: 0;
-  margin-right: 0.5rem;
-}
-
-.rtl .mr-2 {
-  margin-right: 0;
-  margin-left: 0.5rem;
-}
-
-.rtl .ml-3 {
-  margin-left: 0;
-  margin-right: 0.75rem;
-}
-
-.rtl .mr-3 {
-  margin-right: 0;
-  margin-left: 0.75rem;
-}
-
-.rtl .ml-4 {
-  margin-left: 0;
-  margin-right: 1rem;
-}
-
-.rtl .mr-4 {
-  margin-right: 0;
-  margin-left: 1rem;
-}
-
-/* Flip icons for RTL */
-.rtl svg:not(.no-flip) {
-  transform: scaleX(-1);
-}
-
-/* Additional RTL adjustments for input groups */
-.rtl .input-group-text {
-  border-radius: 0 0.25rem 0.25rem 0;
-  border-right: 1px solid #ced4da;
-  border-left: 0;
-}
-
-.rtl .input-group > .form-control {
-  border-radius: 0.25rem 0 0 0.25rem;
-}
-
-/* Fix dropdown menus in RTL mode */
-.rtl .dropdown-menu {
-  text-align: right;
-  left: auto;
-  right: 0;
-}
-
-.rtl .dropdown-item {
-  text-align: right;
-}
-
-/* Adjust button groups */
-.rtl .btn-group > .btn:first-child {
-  border-radius: 0 0.25rem 0.25rem 0;
-}
-
-.rtl .btn-group > .btn:last-child {
-  border-radius: 0.25rem 0 0 0.25rem;
 }
 
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    @apply bg-background text-foreground antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  h4 {
+    @apply text-xl md:text-2xl;
+  }
+
+  h5 {
+    @apply text-lg md:text-xl;
+  }
+
+  h6 {
+    @apply text-base md:text-lg;
+  }
+  
+  /* RTL Support */
+  html[dir="rtl"] {
+    text-align: right;
+  }
+}
+
+@layer components {
+  .skinnect-card {
+    @apply bg-white rounded-lg shadow-md p-6 transition-all duration-300 hover:shadow-lg border border-gray-100;
+  }
+
+  .skinnect-gradient {
+    @apply bg-gradient-to-r from-mint-500 to-skin-500 text-white;
+  }
+
+  .skinnect-input {
+    @apply rounded-md border border-gray-200 px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all duration-200;
+  }
+
+  .skinnect-button {
+    @apply rounded-md px-4 py-2 font-medium transition-all duration-500 ease-in-out inline-flex items-center justify-center;
+  }
+
+  .skinnect-button-primary {
+    @apply skinnect-button bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+
+  .skinnect-button-secondary {
+    @apply skinnect-button bg-secondary text-secondary-foreground hover:bg-secondary/80;
+  }
+
+  .skinnect-button-outline {
+    @apply skinnect-button border border-input bg-background hover:bg-accent hover:text-accent-foreground;
+  }
+
+  .skinnect-button-ghost {
+    @apply skinnect-button hover:bg-accent hover:text-accent-foreground;
+  }
+
+  /* Enhanced hover effects */
+  .hover-lift {
+    @apply transition-all duration-500 ease-in-out hover:-translate-y-2 hover:shadow-lg;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-500 ease-in-out hover:shadow-[0_0_15px_rgba(15,191,122,0.3)];
+  }
+
+  .hover-scale {
+    @apply transition-all duration-500 ease-in-out hover:scale-105;
+  }
+
+  .hover-rotate {
+    @apply transition-all duration-500 ease-in-out hover:rotate-3;
+  }
+  
+  .hover-brightness {
+    @apply transition-all duration-500 ease-in-out hover:brightness-110;
+  }
+  
+  .card-image-hover {
+    @apply overflow-hidden rounded-t-lg;
+  }
+  
+  .card-image-hover img {
+    @apply transition-all duration-500 hover:scale-110 hover:brightness-110;
+  }
+
+  .card-with-image {
+    @apply overflow-hidden flex flex-col;
+  }
+
+  .button-hover-slide {
+    @apply relative overflow-hidden transition-all duration-500 ease-in-out;
+  }
+  
+  .button-hover-slide:after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-full bg-white/10 transition-all duration-500 ease-in-out;
+  }
+  
+  .button-hover-slide:hover:after {
+    @apply w-full;
+  }
+
+  /* Testimonial card hover effect */
+  .testimonial-card {
+    @apply transition-all duration-500 relative overflow-hidden;
+  }
+  
+  .testimonial-card::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-tl from-primary/5 to-transparent opacity-0 transition-opacity duration-500 z-0;
+  }
+  
+  .testimonial-card:hover {
+    @apply translate-y-[-8px] shadow-xl;
+  }
+  
+  .testimonial-card:hover::before {
+    @apply opacity-100;
+  }
+  
+  .testimonial-card:hover img {
+    @apply scale-110;
+  }
+  
+  .testimonial-card img {
+    @apply transition-all duration-500;
+  }
+
+  /* Enhanced animations */
+  .fade-in-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .fade-in-up.appear {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .fade-in-left {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .fade-in-left.appear {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .fade-in-right {
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .fade-in-right.appear {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .stagger-delay-1 {
+    transition-delay: 0.1s;
+  }
+
+  .stagger-delay-2 {
+    transition-delay: 0.2s;
+  }
+
+  .stagger-delay-3 {
+    transition-delay: 0.3s;
+  }
+
+  .stagger-delay-4 {
+    transition-delay: 0.4s;
+  }
+
+  .stagger-delay-5 {
+    transition-delay: 0.5s;
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    @apply absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-primary animate-bounce;
+  }
+
+  /* Glassmorphism effects */
+  .glass-nav {
+    @apply backdrop-blur-lg bg-white/70 dark:bg-black/50;
+  }
+  
+  .glass-card {
+    @apply backdrop-blur-md bg-white/60 dark:bg-black/60 border border-white/20 dark:border-white/10;
+  }
+
+  /* RTL specific components */
+  .rtl-flip {
+    @apply rtl:-scale-x-100;
+  }
+  
+  .rtl-rotate-180 {
+    @apply rtl:rotate-180;
+  }
+  
+  .rtl-mr {
+    @apply ltr:mr-2 rtl:ml-2;
+  }
+  
+  .rtl-ml {
+    @apply ltr:ml-2 rtl:mr-2;
+  }
+  
+  .rtl-pl {
+    @apply ltr:pl-2 rtl:pr-2;
+  }
+  
+  .rtl-pr {
+    @apply ltr:pr-2 rtl:pl-2;
   }
 }

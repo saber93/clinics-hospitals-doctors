@@ -13,8 +13,6 @@ import BookingsLoading from "@/components/bookings/BookingsLoading";
 import BookingsEmpty from "@/components/bookings/BookingsEmpty";
 import BookingsTabs from "@/components/bookings/BookingsTabs";
 import { useTranslation } from "@/hooks/useTranslation";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { cn } from "@/lib/utils";
 
 const MyReservations = () => {
   const {
@@ -28,10 +26,9 @@ const MyReservations = () => {
   } = useBookings();
   
   const { t } = useTranslation();
-  const { isRTL } = useLanguage();
   
   return (
-    <div className={cn("h-full w-full p-6", isRTL && "rtl")}>
+    <div className="h-full w-full p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">{t('reservations.yourReservations')}</h1>
         

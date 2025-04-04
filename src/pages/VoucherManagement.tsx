@@ -6,8 +6,6 @@ import EmptyVouchersState from "@/components/vouchers/EmptyVouchersState";
 import VouchersTable from "@/components/vouchers/VouchersTable";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useTranslation } from "@/hooks/useTranslation";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { cn } from "@/lib/utils";
 
 const VoucherManagement = () => {
   const { 
@@ -20,10 +18,9 @@ const VoucherManagement = () => {
   } = useVouchers();
   
   const { t } = useTranslation();
-  const { isRTL } = useLanguage();
   
   return (
-    <div className={cn("p-6 pt-20", isRTL && "rtl")}>
+    <div className="p-6 pt-20">
       <VouchersHeader />
       
       <VouchersSearch 

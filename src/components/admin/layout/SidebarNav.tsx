@@ -16,15 +16,12 @@ import {
   Palette 
 } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { cn } from '@/lib/utils';
 
 const SidebarNav: React.FC = () => {
   const { t } = useTranslation();
-  const { isRTL } = useLanguage();
 
   const dashboardNavItems = [
-    { path: "/admin-dashboard", icon: LayoutDashboard, label: t('common.dashboard') },
+    { path: "/admin-dashboard", icon: LayoutDashboard, label: "Overview" },
     { path: "/admin/analytics", icon: BarChart4, label: "Analytics" }
   ];
 
@@ -46,14 +43,14 @@ const SidebarNav: React.FC = () => {
 
   return (
     <>
-      <SidebarHeader className={cn("bg-background relative", isRTL && "rtl")}>
+      <SidebarHeader className="bg-background relative">
         <div className="px-4 py-3">
           <h2 className="text-lg font-semibold">{t('admin.dashboard')}</h2>
           <p className="text-xs text-muted-foreground">Manage your application</p>
         </div>
       </SidebarHeader>
       
-      <SidebarContent className={isRTL ? "rtl" : ""}>
+      <SidebarContent>
         <SidebarNavGroup label={t('common.dashboard')} items={dashboardNavItems} />
         <SidebarNavGroup label="Content" items={contentNavItems} />
         <SidebarNavGroup label={t('admin.manageUsers')} items={usersNavItems} />
