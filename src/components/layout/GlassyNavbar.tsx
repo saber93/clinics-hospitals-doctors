@@ -15,6 +15,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useEffect, useState } from 'react';
 import LanguageSwitcher from './navbar/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/hooks/useTranslation';
 
 const GlassyNavbar = () => {
   const { isOpen, scrolled, filteredLinks, handleToggleMenu, handleLogout } = useNavbar();
@@ -22,6 +23,7 @@ const GlassyNavbar = () => {
   const { totalItems } = useCart();
   const [session, setSession] = useState<any>(null);
   const { isRTL } = useLanguage();
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Check current auth status
@@ -72,11 +74,11 @@ const GlassyNavbar = () => {
         <div className={`hidden md:flex items-center space-x-3 ${isRTL ? 'space-x-reverse' : ''}`}>
           <LanguageSwitcher />
           
-          <Button variant="ghost" size="icon" onClick={handleAccountClick}>
+          <Button variant="ghost" size="icon" onClick={handleAccountClick} aria-label={t('common.profile')}>
             <User size={20} />
           </Button>
           
-          <Button variant="ghost" size="icon" className="relative" onClick={handleCartClick}>
+          <Button variant="ghost" size="icon" className="relative" onClick={handleCartClick} aria-label={t('common.cart')}>
             <ShoppingCart size={20} />
             <span className={`absolute -top-1 ${isRTL ? '-left-1' : '-right-1'} bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center`}>
               {totalItems}
@@ -93,11 +95,11 @@ const GlassyNavbar = () => {
         <div className={`md:hidden flex items-center space-x-2 ${isRTL ? 'space-x-reverse' : ''}`}>
           <LanguageSwitcher />
           
-          <Button variant="ghost" size="icon" onClick={handleAccountClick}>
+          <Button variant="ghost" size="icon" onClick={handleAccountClick} aria-label={t('common.profile')}>
             <User size={20} />
           </Button>
           
-          <Button variant="ghost" size="icon" className="relative" onClick={handleCartClick}>
+          <Button variant="ghost" size="icon" className="relative" onClick={handleCartClick} aria-label={t('common.cart')}>
             <ShoppingCart size={20} />
             <span className={`absolute -top-1 ${isRTL ? '-left-1' : '-right-1'} bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center`}>
               {totalItems}
@@ -107,7 +109,7 @@ const GlassyNavbar = () => {
           <button
             onClick={handleToggleMenu}
             className="text-foreground"
-            aria-label="Toggle menu"
+            aria-label={t('common.toggleMenu')}
           >
             {isOpen ? null : <Menu size={24} />}
           </button>

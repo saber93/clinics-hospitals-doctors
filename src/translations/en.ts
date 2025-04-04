@@ -38,7 +38,9 @@ export default {
     completed: 'Completed',
     cancelled: 'Cancelled',
     error: 'Error',
-    success: 'Success'
+    success: 'Success',
+    cart: 'Cart',
+    toggleMenu: 'Toggle Menu'
   },
   auth: {
     emailPlaceholder: 'Email address',
