@@ -13,12 +13,15 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect, useState } from 'react';
+import LanguageSwitcher from './navbar/LanguageSwitcher';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const GlassyNavbar = () => {
   const { isOpen, scrolled, filteredLinks, handleToggleMenu, handleLogout } = useNavbar();
   const navigate = useNavigate();
   const { totalItems } = useCart();
   const [session, setSession] = useState<any>(null);
+  const { isRTL } = useLanguage();
 
   useEffect(() => {
     // Check current auth status
@@ -66,14 +69,16 @@ const GlassyNavbar = () => {
         <DesktopNav filteredLinks={filteredLinks} session={session} />
 
         {/* Auth Buttons / User Menu - Make logout button more visible */}
-        <div className="hidden md:flex items-center space-x-3">
+        <div className={`hidden md:flex items-center space-x-3 ${isRTL ? 'space-x-reverse' : ''}`}>
+          <LanguageSwitcher />
+          
           <Button variant="ghost" size="icon" onClick={handleAccountClick}>
             <User size={20} />
           </Button>
           
           <Button variant="ghost" size="icon" className="relative" onClick={handleCartClick}>
             <ShoppingCart size={20} />
-            <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center">
+            <span className={`absolute -top-1 ${isRTL ? '-left-1' : '-right-1'} bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center`}>
               {totalItems}
             </span>
           </Button>
@@ -85,14 +90,16 @@ const GlassyNavbar = () => {
           )}
         </div>
 
-        <div className="md:hidden flex items-center space-x-2">
+        <div className={`md:hidden flex items-center space-x-2 ${isRTL ? 'space-x-reverse' : ''}`}>
+          <LanguageSwitcher />
+          
           <Button variant="ghost" size="icon" onClick={handleAccountClick}>
             <User size={20} />
           </Button>
           
           <Button variant="ghost" size="icon" className="relative" onClick={handleCartClick}>
             <ShoppingCart size={20} />
-            <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center">
+            <span className={`absolute -top-1 ${isRTL ? '-left-1' : '-right-1'} bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center`}>
               {totalItems}
             </span>
           </Button>

@@ -1,0 +1,40 @@
+
+export default {
+  common: {
+    home: 'الرئيسية',
+    about: 'نبذة عنا',
+    contact: 'اتصل بنا',
+    services: 'الخدمات',
+    login: 'تسجيل الدخول',
+    register: 'التسجيل',
+    logout: 'تسجيل الخروج',
+    profile: 'الملف الشخصي',
+    dashboard: 'لوحة التحكم',
+    search: 'بحث',
+    settings: 'الإعدادات',
+  },
+  home: {
+    welcome: 'مرحبًا بك في سكينكت',
+    subtitle: 'ربط أخصائيي البشرة والعملاء',
+    getStarted: 'ابدأ الآن',
+    learnMore: 'اكتشف المزيد',
+  },
+  doctors: {
+    findDoctor: 'ابحث عن طبيب',
+    specialties: 'التخصصات',
+    location: 'الموقع',
+    experience: 'الخبرة',
+    education: 'التعليم',
+    languages: 'اللغات',
+    rating: 'التقييم',
+    reviews: 'المراجعات',
+    bookAppointment: 'حجز موعد',
+  },
+  clinics: {
+    findClinic: 'ابحث عن عيادة',
+    services: 'الخدمات',
+    location: 'الموقع',
+    workingHours: 'ساعات العمل',
+    facilities: 'المرافق',
+  },
+};

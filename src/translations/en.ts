@@ -1,0 +1,40 @@
+
+export default {
+  common: {
+    home: 'Home',
+    about: 'About',
+    contact: 'Contact',
+    services: 'Services',
+    login: 'Login',
+    register: 'Register',
+    logout: 'Logout',
+    profile: 'Profile',
+    dashboard: 'Dashboard',
+    search: 'Search',
+    settings: 'Settings',
+  },
+  home: {
+    welcome: 'Welcome to Skinnect',
+    subtitle: 'Connecting Skin Specialists & Clients',
+    getStarted: 'Get Started',
+    learnMore: 'Learn More',
+  },
+  doctors: {
+    findDoctor: 'Find a Doctor',
+    specialties: 'Specialties',
+    location: 'Location',
+    experience: 'Experience',
+    education: 'Education',
+    languages: 'Languages',
+    rating: 'Rating',
+    reviews: 'Reviews',
+    bookAppointment: 'Book Appointment',
+  },
+  clinics: {
+    findClinic: 'Find a Clinic',
+    services: 'Services',
+    location: 'Location',
+    workingHours: 'Working Hours',
+    facilities: 'Facilities',
+  },
+};

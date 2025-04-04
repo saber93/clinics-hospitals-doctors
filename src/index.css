@@ -102,6 +102,11 @@
   h6 {
     @apply text-base md:text-lg;
   }
+  
+  /* RTL Support */
+  html[dir="rtl"] {
+    text-align: right;
+  }
 }
 
 @layer components {
@@ -275,5 +280,30 @@
   
   .glass-card {
     @apply backdrop-blur-md bg-white/60 dark:bg-black/60 border border-white/20 dark:border-white/10;
+  }
+
+  /* RTL specific components */
+  .rtl-flip {
+    @apply rtl:-scale-x-100;
+  }
+  
+  .rtl-rotate-180 {
+    @apply rtl:rotate-180;
+  }
+  
+  .rtl-mr {
+    @apply ltr:mr-2 rtl:ml-2;
+  }
+  
+  .rtl-ml {
+    @apply ltr:ml-2 rtl:mr-2;
+  }
+  
+  .rtl-pl {
+    @apply ltr:pl-2 rtl:pr-2;
+  }
+  
+  .rtl-pr {
+    @apply ltr:pr-2 rtl:pl-2;
   }
 }

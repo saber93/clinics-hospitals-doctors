@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -228,6 +227,10 @@ export default {
 					},
 				},
 			},
+			textDirection: {
+				rtl: 'rtl',
+				ltr: 'ltr',
+			}
 		}
 	},
 	safelist: [
@@ -266,7 +269,7 @@ export default {
 		'bg-rose-500/10',
 		'bg-sky-500/10',
 		'bg-violet-500/10',
-		'bg-amber-500/10', 
+		'bg-amber-500/10',
 		'bg-emerald-500/10',
 		'bg-pink-500/10',
 		'bg-indigo-500/10',
@@ -287,6 +290,22 @@ export default {
 		'bg-pink-500/20',
 		'bg-indigo-500/20',
 		'bg-red-500/20',
+		'rtl:text-right',
+		'rtl:space-x-reverse',
+		'rtl:space-y-reverse',
+		'rtl:flex-row-reverse',
+		'rtl:rotate-180',
+		'rtl:mr-auto',
+		'rtl:ml-0',
+		'rtl:right-auto',
+		'rtl:left-0',
 	],
-	plugins: [require("tailwindcss-animate"), require('@tailwindcss/typography')],
+	plugins: [
+		require("tailwindcss-animate"), 
+		require('@tailwindcss/typography'),
+		({ addVariant }) => {
+			addVariant('rtl', '[dir="rtl"] &');
+			addVariant('ltr', '[dir="ltr"] &');
+		},
+	],
 } satisfies Config;
