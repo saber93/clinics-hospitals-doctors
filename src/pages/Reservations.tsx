@@ -8,11 +8,13 @@ import BookingsList from "@/components/reservations/BookingsList";
 import VendorPanel from "@/components/reservations/VendorPanel";
 import LoadingState from "@/components/reservations/LoadingState";
 import AuthRequiredMessage from "@/components/reservations/AuthRequiredMessage";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const Reservations = () => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const { session, user } = useAuth();
+  const { t } = useTranslation();
   
   const clinicId = location.state?.clinicId;
   const clinicName = location.state?.clinicName;

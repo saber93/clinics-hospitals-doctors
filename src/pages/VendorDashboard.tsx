@@ -7,17 +7,19 @@ import QuickActions from "@/components/vendor/QuickActions";
 import { useVendorDashboardData } from "@/hooks/useVendorDashboardData";
 import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const VendorDashboard = () => {
   const navigate = useNavigate();
   const { stats, loading, salesByMonth, productStatusData } = useVendorDashboardData();
+  const { t } = useTranslation();
   
   if (loading) {
     return (
       <div className="flex items-center justify-center h-[70vh] pt-20">
         <div className="text-center">
           <Loader className="h-16 w-16 mx-auto animate-spin text-primary" />
-          <p className="mt-4 text-lg">Loading dashboard data...</p>
+          <p className="mt-4 text-lg">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -26,7 +28,7 @@ const VendorDashboard = () => {
   return (
     <div className="p-6 pt-20">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-        <h2 className="text-2xl font-bold">Vendor Dashboard</h2>
+        <h2 className="text-2xl font-bold">{t('vendor.dashboard')}</h2>
         
         <div className="mt-2 sm:mt-0">
           <Button 
@@ -34,7 +36,7 @@ const VendorDashboard = () => {
             size="sm"
             onClick={() => navigate("/products-management")}
           >
-            View All Products
+            {t('vendor.viewAllProducts')}
           </Button>
         </div>
       </div>

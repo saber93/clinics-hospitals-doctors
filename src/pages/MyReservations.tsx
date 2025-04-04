@@ -12,6 +12,7 @@ import BookingsTable from "@/components/bookings/BookingsTable";
 import BookingsLoading from "@/components/bookings/BookingsLoading";
 import BookingsEmpty from "@/components/bookings/BookingsEmpty";
 import BookingsTabs from "@/components/bookings/BookingsTabs";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const MyReservations = () => {
   const {
@@ -24,10 +25,12 @@ const MyReservations = () => {
     formatDate
   } = useBookings();
   
+  const { t } = useTranslation();
+  
   return (
     <div className="h-full w-full p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">My Reservations</h1>
+        <h1 className="text-2xl font-bold">{t('reservations.yourReservations')}</h1>
         
         <BookingsTabs 
           activeTab={activeFilter} 
@@ -38,8 +41,8 @@ const MyReservations = () => {
       
       <Card>
         <CardHeader>
-          <CardTitle>My Reservations</CardTitle>
-          <CardDescription>View and manage your upcoming appointments</CardDescription>
+          <CardTitle>{t('reservations.yourReservations')}</CardTitle>
+          <CardDescription>{t('reservations.viewAndManage')}</CardDescription>
         </CardHeader>
         
         <CardContent className="p-0">

@@ -1,16 +1,18 @@
 
 import React, { useEffect, useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Settings } from "lucide-react";
+import { useTranslation } from '@/hooks/useTranslation';
 
 const Profile = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -64,47 +66,47 @@ const Profile = () => {
     <div className="min-h-screen bg-gray-50 py-8 pt-24 pb-10">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold">My Profile</h1>
+          <h1 className="text-3xl font-bold">{t('common.profile')}</h1>
           <Button 
             variant="outline" 
             size="sm" 
             onClick={() => navigate('/settings')}
             className="flex items-center gap-2"
           >
-            <Settings className="h-4 w-4" /> Edit Settings
+            <Settings className="h-4 w-4" /> {t('common.settings')}
           </Button>
         </div>
         
         <Card>
           <CardHeader>
-            <CardTitle>Account Information</CardTitle>
-            <CardDescription>Your personal and account details</CardDescription>
+            <CardTitle>{t('auth.createAccount')}</CardTitle>
+            <CardDescription>{t('auth.enterInformation')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
-                  <div className="mt-1 text-gray-900">{profile?.email || "Not available"}</div>
+                  <label className="block text-sm font-medium text-gray-700">{t('contact.email')}</label>
+                  <div className="mt-1 text-gray-900">{profile?.email || t('common.noResults')}</div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Name</label>
-                  <div className="mt-1 text-gray-900">{profile?.name || "Not set"}</div>
+                  <label className="block text-sm font-medium text-gray-700">{t('contact.fullName')}</label>
+                  <div className="mt-1 text-gray-900">{profile?.name || t('common.noResults')}</div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Role</label>
+                  <label className="block text-sm font-medium text-gray-700">{t('common.dashboard')}</label>
                   <div className="mt-1 text-gray-900 capitalize">{profile?.role || "client"}</div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Member since</label>
                   <div className="mt-1 text-gray-900">
-                    {profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : "Not available"}
+                    {profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : t('common.noResults')}
                   </div>
                 </div>
               </div>
               
               <div className="pt-4">
-                <Button onClick={() => navigate('/dashboard')} variant="outline">Back to Dashboard</Button>
+                <Button onClick={() => navigate('/dashboard')} variant="outline">{t('common.back')} {t('common.dashboard')}</Button>
               </div>
             </div>
           </CardContent>

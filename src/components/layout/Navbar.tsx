@@ -9,11 +9,16 @@ import DesktopMenu from './navbar/DesktopMenu';
 import MobileMenu from './navbar/MobileMenu';
 import UserDropdownMenu from './navbar/UserDropdownMenu';
 import AuthButtons from './navbar/AuthButtons';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/lib/utils';
 
 const Navbar: React.FC = () => {
   const { user, session } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { t } = useTranslation();
+  const { isRTL } = useLanguage();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -44,7 +49,10 @@ const Navbar: React.FC = () => {
           <DesktopMenu />
 
           {/* Auth Buttons / User Menu */}
-          <div className="hidden md:flex items-center space-x-2">
+          <div className={cn(
+            "hidden md:flex items-center space-x-2",
+            isRTL && "space-x-reverse"
+          )}>
             {isAuthenticated ? (
               <UserDropdownMenu handleLogout={handleLogout} />
             ) : (
@@ -57,6 +65,7 @@ const Navbar: React.FC = () => {
             <button
               onClick={toggleMobileMenu}
               className="text-gray-500 hover:text-primary focus:outline-none"
+              aria-label={t('common.toggleMenu')}
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>

@@ -10,7 +10,7 @@ const NavLogo = () => {
     <Link to="/" className="flex items-center" aria-label={t('common.home')}>
       <img 
         src="/lovable-uploads/96b7f889-8783-4072-b164-abacb94bc958.png" 
-        alt={t('about.title')} 
+        alt={t('common.skinnect')} 
         className="h-8 md:h-10 object-contain"
       />
     </Link>

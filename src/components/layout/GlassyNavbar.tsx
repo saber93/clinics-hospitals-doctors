@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Menu, ShoppingCart, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -15,34 +16,18 @@ import { useEffect, useState } from 'react';
 import LanguageSwitcher from './navbar/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useAuth } from '@/contexts/AuthContext';
 
 const GlassyNavbar = () => {
   const { isOpen, scrolled, filteredLinks, handleToggleMenu, handleLogout } = useNavbar();
   const navigate = useNavigate();
   const { totalItems } = useCart();
-  const [session, setSession] = useState<any>(null);
+  const { session } = useAuth();
   const { isRTL } = useLanguage();
   const { t } = useTranslation();
 
-  useEffect(() => {
-    const getSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      setSession(data.session);
-    };
-    
-    getSession();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, currentSession) => {
-      setSession(currentSession);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const isAuthenticated = !!session;
-
   const handleAccountClick = () => {
-    if (isAuthenticated) {
+    if (!!session) {
       navigate('/dashboard');
     } else {
       navigate('/auth?mode=login');
@@ -81,7 +66,7 @@ const GlassyNavbar = () => {
             </span>
           </Button>
           
-          {isAuthenticated ? (
+          {session ? (
             <UserDropdownMenu handleLogout={handleLogout} />
           ) : (
             <AuthButtons session={session} />

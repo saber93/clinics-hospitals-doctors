@@ -38,7 +38,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
     <div className="md:hidden fixed inset-0 bg-background/95 backdrop-blur-sm z-50 animate-in fade-in">
       <div className="container h-full flex flex-col">
         <div className="flex justify-end py-4">
-          <Button variant="ghost" size="icon" onClick={closeMenu} aria-label="Close menu">
+          <Button variant="ghost" size="icon" onClick={closeMenu} aria-label={t('common.toggleMenu')}>
             <X size={24} />
           </Button>
         </div>

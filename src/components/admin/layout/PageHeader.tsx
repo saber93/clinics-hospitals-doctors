@@ -2,24 +2,26 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { useTranslation } from '@/hooks/useTranslation';
 
 const PageHeader: React.FC = () => {
   const location = useLocation();
+  const { t } = useTranslation();
 
   const getPageTitle = () => {
     switch (location.pathname) {
       case "/admin-dashboard":
-        return "Dashboard Overview";
+        return t('admin.dashboard');
       case "/admin/blogs":
         return "Blog Management";
       case "/admin/services":
-        return "Services Management";
+        return t('common.services');
       case "/admin/themes":
         return "Theme Management";
       case "/admin/contact-messages":
         return "Contact Messages";
       case "/admin/settings":
-        return "Admin Settings";
+        return t('common.settings');
       case "/vendors":
         return "Vendor Management";
       case "/clients":
@@ -27,7 +29,7 @@ const PageHeader: React.FC = () => {
       case "/admin/analytics":
         return "Analytics Dashboard";
       default:
-        return "Admin Dashboard";
+        return t('admin.dashboard');
     }
   };
 

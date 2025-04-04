@@ -5,13 +5,15 @@ import ClientOffersGrid from "@/components/offers/ClientOffersGrid";
 import CreateOfferForm from "@/components/offers/CreateOfferForm";
 import VendorOffersPanel from "@/components/offers/VendorOffersPanel";
 import { mockOffers } from "@/data/offersData";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const Offers = () => {
   const [searchParams] = useSearchParams();
   const userType = searchParams.get("userType") || "client";
+  const { t } = useTranslation();
   
   return (
-    <OffersLayout title={userType === "client" ? "Special Offers" : "Manage Special Offers"}>
+    <OffersLayout title={userType === "client" ? t('offers.specialOffers') : t('offers.manageSpecialOffers')}>
       {userType === "client" ? (
         <ClientOffersGrid offers={mockOffers} />
       ) : (
