@@ -40,7 +40,8 @@ export default {
     error: 'Error',
     success: 'Success',
     cart: 'Cart',
-    toggleMenu: 'Toggle Menu'
+    toggleMenu: 'Toggle Menu',
+    skinnect: 'Skinnect'
   },
   auth: {
     emailPlaceholder: 'Email address',
