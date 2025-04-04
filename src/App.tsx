@@ -6,11 +6,24 @@ import ModernFooter from "./components/layout/ModernFooter";
 import { CartProvider } from "./contexts/CartContext";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "./hooks/useTranslation";
+import { useLanguage } from "./contexts/LanguageContext";
+import { cn } from "./lib/utils";
+import { useEffect } from "react";
 
 const App = () => {
   const { loading } = useAppAuth();
   const location = useLocation();
   const { t } = useTranslation();
+  const { isRTL } = useLanguage();
+
+  // Add RTL class to body when language changes
+  useEffect(() => {
+    if (isRTL) {
+      document.body.classList.add('rtl-layout');
+    } else {
+      document.body.classList.remove('rtl-layout');
+    }
+  }, [isRTL]);
 
   // Check if current route is an admin route to hide footer
   const isAdminRoute = 
@@ -21,16 +34,16 @@ const App = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className={cn("min-h-screen flex items-center justify-center", isRTL && "rtl")}>
         <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
-        <span className="ml-2">{t('common.loading')}</span>
+        <span className={cn("ml-2", isRTL && "mr-2 ml-0")}>{t('common.loading')}</span>
       </div>
     );
   }
 
   return (
     <CartProvider>
-      <div className="min-h-screen flex flex-col">
+      <div className={cn("min-h-screen flex flex-col", isRTL && "rtl-layout")}>
         <GlassyNavbar />
         <div className="flex-grow">
           <AppRoutes />

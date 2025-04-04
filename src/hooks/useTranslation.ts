@@ -15,6 +15,7 @@ export function useTranslation() {
     // Traverse the object using the keys
     for (const k of keys) {
       if (!translation || !translation[k]) {
+        console.warn(`Translation missing for key: ${key} in language: ${language}`);
         // Return the key if translation is not found
         return key;
       }
@@ -24,5 +25,5 @@ export function useTranslation() {
     return translation;
   };
   
-  return { t };
+  return { t, language };
 }
