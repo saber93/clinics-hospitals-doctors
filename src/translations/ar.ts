@@ -1,4 +1,3 @@
-
 export default {
   common: {
     home: 'الرئيسية',
@@ -277,5 +276,11 @@ export default {
     title: '404',
     subtitle: 'عذرًا! الصفحة غير موجودة',
     returnHome: 'العودة إلى الصفحة الرئيسية'
+  },
+  footer: {
+    allRightsReserved: 'جميع الحقوق محفوظة.',
+    terms: 'شروط الخدمة',
+    privacy: 'سياسة الخصوصية',
+    cookies: 'سياسة ملفات تعريف الارتباط'
   }
 };

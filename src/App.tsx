@@ -5,10 +5,12 @@ import GlassyNavbar from "./components/layout/GlassyNavbar";
 import ModernFooter from "./components/layout/ModernFooter";
 import { CartProvider } from "./contexts/CartContext";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "./hooks/useTranslation";
 
 const App = () => {
   const { loading } = useAppAuth();
   const location = useLocation();
+  const { t } = useTranslation();
 
   // Check if current route is an admin route to hide footer
   const isAdminRoute = 
@@ -21,6 +23,7 @@ const App = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+        <span className="ml-2">{t('common.loading')}</span>
       </div>
     );
   }

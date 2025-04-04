@@ -1,19 +1,36 @@
 
 import React from 'react';
+import { cn } from '@/lib/utils';
 import NavLink from './NavLink';
-import { DesktopNavProps } from './types';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/hooks/useTranslation';
+import { NavLinkType } from './types';
 
-const DesktopNav = ({ filteredLinks, session }: DesktopNavProps) => {
+interface DesktopNavProps {
+  filteredLinks: NavLinkType[];
+  session: any;
+}
+
+const DesktopNav: React.FC<DesktopNavProps> = ({ filteredLinks, session }) => {
+  const { isRTL } = useLanguage();
+  const { t } = useTranslation();
+  
   return (
-    <nav className="hidden md:flex items-center space-x-8">
-      {filteredLinks.map((link) => (
-        <NavLink 
-          key={link.path}
-          path={link.path}
-          name={link.name}
-          icon={link.icon}
-        />
-      ))}
+    <nav className="hidden md:flex">
+      <ul className={cn(
+        "flex items-center space-x-6", 
+        isRTL && "space-x-reverse"
+      )}>
+        {filteredLinks.map((link) => (
+          <li key={link.path}>
+            <NavLink 
+              name={t(`common.${link.name.toLowerCase()}`)}
+              path={link.path} 
+              icon={link.icon}
+            />
+          </li>
+        ))}
+      </ul>
     </nav>
   );
 };

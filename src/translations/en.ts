@@ -1,4 +1,3 @@
-
 export default {
   common: {
     home: 'Home',
@@ -251,7 +250,7 @@ export default {
     chatSettings: 'Chat Settings',
     doctorSettings: 'Doctor Settings',
     adminSettings: 'Admin Settings',
-    noPermission: 'You don\'t have permission to access chat settings',
+    noPermission: 'You don’t have permission to access chat settings',
     lastActive: 'Last active'
   },
   contact: {
@@ -277,5 +276,11 @@ export default {
     title: '404',
     subtitle: 'Oops! Page not found',
     returnHome: 'Return to Home'
+  },
+  footer: {
+    allRightsReserved: 'All rights reserved.',
+    terms: 'Terms of Service',
+    privacy: 'Privacy Policy',
+    cookies: 'Cookies Policy'
   }
 };

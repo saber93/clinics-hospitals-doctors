@@ -1,99 +1,76 @@
 
 import React from 'react';
-import { X, LogOut } from 'lucide-react';
+import { X } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import NavLink from './NavLink';
-import { MobileMenuProps } from './types';
-import { logoutUser } from '@/utils/auth';
 import { Button } from '@/components/ui/button';
+import AuthButtons from './AuthButtons';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/hooks/useTranslation';
+import { NavLinkType } from './types';
 
-const MobileMenu: React.FC<MobileMenuProps> = ({ 
-  isOpen, 
-  onClose, 
-  toggleMobileMenu,
-  filteredLinks, 
-  session, 
-  handleLogout 
+interface MobileMenuProps {
+  isOpen: boolean;
+  filteredLinks: NavLinkType[];
+  session: any;
+  onClose: () => void;
+  handleLogout: () => void;
+}
+
+const MobileMenu: React.FC<MobileMenuProps> = ({
+  isOpen,
+  filteredLinks,
+  session,
+  onClose,
+  handleLogout
 }) => {
+  const { isRTL } = useLanguage();
+  const { t } = useTranslation();
+
   if (!isOpen) return null;
 
-  // Use the appropriate close function
-  const closeMenu = () => {
-    if (onClose) {
-      onClose();
-    } else if (toggleMobileMenu) {
-      toggleMobileMenu();
-    }
-  };
-  
-  const onLogout = () => {
-    if (handleLogout) {
-      handleLogout();
-    } else {
-      logoutUser();
-    }
-    closeMenu();
-  };
-
   return (
-    <div className="md:hidden fixed inset-0 z-50 bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm">
-      <div className="flex justify-end p-4">
-        <button 
-          onClick={closeMenu} 
-          className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-        >
-          <X size={24} />
-        </button>
-      </div>
-      
-      <div className="flex flex-col items-center space-y-6 p-8">
-        {/* Logo for Home navigation in mobile menu */}
-        <NavLink 
-          path="/"
-          name=""
-          className="mb-4"
-        >
-          <img 
-            src="/lovable-uploads/96b7f889-8783-4072-b164-abacb94bc958.png" 
-            alt="Zamos Marketing Management" 
-            className="h-10 object-contain"
-          />
-        </NavLink>
-        
-        {filteredLinks.map((link) => (
-          <NavLink 
-            key={link.path} 
-            path={link.path} 
-            name={link.name} 
-            icon={link.icon}
-            className="text-lg"
-          />
-        ))}
-        
-        {session && (
-          <Button
-            onClick={onLogout}
-            className="text-lg text-red-500 font-medium py-2 transition-colors flex items-center gap-2"
-            variant="ghost"
-          >
-            <LogOut size={18} />
-            Log out
+    <div className="md:hidden fixed inset-0 bg-background/95 backdrop-blur-sm z-50 animate-in fade-in">
+      <div className="container h-full flex flex-col">
+        <div className="flex justify-end py-4">
+          <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close menu">
+            <X size={24} />
           </Button>
-        )}
+        </div>
         
-        {!session && (
-          <>
-            <NavLink 
-              path="/auth?mode=login"
-              name="Login"
-              className="text-lg"
-            />
-            <NavLink 
-              path="/auth?mode=register"
-              name="Sign Up"
-              className="text-lg font-medium"
-            />
-          </>
-        )}
+        <nav className="flex-1 flex flex-col justify-center">
+          <ul className={cn(
+            "flex flex-col items-center space-y-6 text-xl",
+            isRTL && "space-y-reverse"
+          )}>
+            {filteredLinks.map((link) => (
+              <li key={link.path} className="w-full text-center">
+                <NavLink 
+                  name={t(`common.${link.name.toLowerCase()}`)} 
+                  path={link.path}
+                  className="py-2 w-full flex justify-center"
+                  onClick={onClose}
+                />
+              </li>
+            ))}
+          </ul>
+        </nav>
+        
+        <div className="py-8 flex justify-center">
+          {session ? (
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                handleLogout();
+                onClose();
+              }}
+            >
+              {t('common.logout')}
+            </Button>
+          ) : (
+            <AuthButtons session={session} />
+          )}
+        </div>
       </div>
     </div>
   );

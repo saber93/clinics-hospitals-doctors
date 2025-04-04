@@ -3,9 +3,11 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Languages } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 const LanguageSwitcher: React.FC = () => {
   const { language, setLanguage } = useLanguage();
+  const { t } = useTranslation();
   
   const toggleLanguage = () => {
     setLanguage(language === 'en' ? 'ar' : 'en');

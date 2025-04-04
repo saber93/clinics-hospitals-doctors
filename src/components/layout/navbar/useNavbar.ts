@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Info, Phone, Building2, Stethoscope, Hospital, ShoppingBag } from 'lucide-react';
 import { logoutUser } from '@/utils/auth';
 import { supabase } from '@/integrations/supabase/client';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export interface NavLinkType {
   name: string;
@@ -15,6 +16,7 @@ export const useNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [session, setSession] = useState<any>(null);
+  const { t } = useTranslation();
 
   const links: NavLinkType[] = [
     // Home link removed from here
