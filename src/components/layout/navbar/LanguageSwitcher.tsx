@@ -22,9 +22,10 @@ const LanguageSwitcher: React.FC = () => {
       onClick={toggleLanguage}
       title={language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
       aria-label={language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
+      className="flex items-center gap-1"
     >
       <Languages className="h-5 w-5" />
-      <span className="ml-2 text-xs font-bold">{language === 'en' ? 'AR' : 'EN'}</span>
+      <span className="text-xs font-bold">{language === 'en' ? 'AR' : 'EN'}</span>
     </Button>
   );
 };

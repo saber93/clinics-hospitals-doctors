@@ -8,8 +8,6 @@ const NavLogo = () => {
   const { t } = useTranslation();
   const { language, isRTL } = useLanguage();
   
-  console.log(`NavLogo rendering with language: ${language}, isRTL: ${isRTL}`);
-  
   return (
     <Link to="/" className="flex items-center" aria-label={t('common.home')}>
       <img 
@@ -17,8 +15,6 @@ const NavLogo = () => {
         alt={t('common.skinnect')} 
         className="h-8 md:h-10 object-contain"
       />
-      {/* Optional: display current language for debugging */}
-      <span className="ml-2 text-xs text-muted-foreground">{language}</span>
     </Link>
   );
 };

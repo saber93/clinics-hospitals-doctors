@@ -33,11 +33,11 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     setLanguageState(lang);
     localStorage.setItem('language', lang);
     
-    // Force rerender all components by toggling a class on the document body
-    document.body.classList.add('language-changed');
+    // Force rerender all components that use translations
+    document.documentElement.style.visibility = 'hidden';
     setTimeout(() => {
-      document.body.classList.remove('language-changed');
-    }, 10);
+      document.documentElement.style.visibility = '';
+    }, 50);
   };
   
   useEffect(() => {

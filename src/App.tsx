@@ -33,7 +33,10 @@ const App = () => {
 
   return (
     <CartProvider>
-      <div className={cn("min-h-screen flex flex-col", isRTL && "rtl-content")}>
+      <div 
+        className={cn("min-h-screen flex flex-col", isRTL && "rtl-content")}
+        dir={isRTL ? "rtl" : "ltr"}
+      >
         <GlassyNavbar />
         <div className="flex-grow">
           <AppRoutes />
