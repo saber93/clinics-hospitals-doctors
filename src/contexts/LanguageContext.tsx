@@ -30,14 +30,9 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   const [direction, setDirection] = useState<Direction>('ltr');
   
   const setLanguage = (lang: Language) => {
+    console.log(`Setting language to: ${lang}`);
     setLanguageState(lang);
     localStorage.setItem('language', lang);
-    
-    // Force rerender all components that use translations
-    document.documentElement.style.visibility = 'hidden';
-    setTimeout(() => {
-      document.documentElement.style.visibility = '';
-    }, 50);
   };
   
   useEffect(() => {
