@@ -41,8 +41,8 @@ export function useTranslation() {
             englishTranslation = englishTranslation[fallbackKey];
           }
           
-          if (found && typeof englishTranslation === 'string') {
-            return englishTranslation;
+          if (found) {
+            return typeof englishTranslation === 'string' ? englishTranslation : key;
           }
         }
         
