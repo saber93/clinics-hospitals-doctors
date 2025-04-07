@@ -10,7 +10,9 @@ const LanguageSwitcher: React.FC = () => {
   const { t } = useTranslation();
   
   const toggleLanguage = () => {
-    setLanguage(language === 'en' ? 'ar' : 'en');
+    const newLanguage = language === 'en' ? 'ar' : 'en';
+    console.log(`Switching language from ${language} to ${newLanguage}`);
+    setLanguage(newLanguage);
   };
   
   return (

@@ -5,12 +5,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/lib/utils';
 
 const Register = () => {
   const { t } = useTranslation();
+  const { isRTL } = useLanguage();
   
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+    <div className={cn("flex items-center justify-center min-h-screen bg-gray-50", isRTL && "rtl-content")}>
       <Card className="w-[350px]">
         <CardHeader>
           <CardTitle>{t('auth.createAccount')}</CardTitle>

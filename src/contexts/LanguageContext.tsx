@@ -32,6 +32,12 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem('language', lang);
+    
+    // Force rerender all components by toggling a class on the document body
+    document.body.classList.add('language-changed');
+    setTimeout(() => {
+      document.body.classList.remove('language-changed');
+    }, 10);
   };
   
   useEffect(() => {
@@ -57,6 +63,8 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     } else {
       document.body.classList.remove('rtl');
     }
+    
+    console.log(`Language changed to: ${language}, direction: ${newDirection}`);
   }, [language]);
   
   return (

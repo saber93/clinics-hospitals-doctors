@@ -1,9 +1,16 @@
 
+import { useEffect, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import translations from '@/translations';
 
 export function useTranslation() {
   const { language } = useLanguage();
+  const [currentLanguage, setCurrentLanguage] = useState(language);
+  
+  // Update local state when language changes
+  useEffect(() => {
+    setCurrentLanguage(language);
+  }, [language]);
   
   const t = (key: string) => {
     if (!key) return '';
@@ -12,11 +19,11 @@ export function useTranslation() {
     const keys = key.split('.');
     
     // Start with the language object
-    let translation: any = translations[language as keyof typeof translations];
+    let translation: any = translations[currentLanguage as keyof typeof translations];
     
     if (!translation) {
       // Fallback to English if the selected language doesn't exist
-      console.warn(`Translation for language "${language}" not found, using English as fallback.`);
+      console.warn(`Translation for language "${currentLanguage}" not found, using English as fallback.`);
       translation = translations.en;
     }
     
@@ -24,7 +31,7 @@ export function useTranslation() {
     for (const k of keys) {
       if (!translation || !translation[k]) {
         // First try to find the key in English as fallback
-        if (language !== 'en') {
+        if (currentLanguage !== 'en') {
           let englishTranslation = translations.en;
           let found = true;
           
@@ -41,8 +48,8 @@ export function useTranslation() {
           }
         }
         
-        // If still not found, return the key
-        console.warn(`Translation key "${key}" not found in language "${language}"`);
+        // If still not found, return the key and log a warning
+        console.warn(`Translation key "${key}" not found in language "${currentLanguage}"`);
         return key;
       }
       translation = translation[k];
@@ -51,5 +58,5 @@ export function useTranslation() {
     return translation;
   };
   
-  return { t };
+  return { t, currentLanguage };
 }

@@ -6,11 +6,14 @@ import ModernFooter from "./components/layout/ModernFooter";
 import { CartProvider } from "./contexts/CartContext";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "./hooks/useTranslation";
+import { useLanguage } from "./contexts/LanguageContext";
+import { cn } from "./lib/utils";
 
 const App = () => {
   const { loading } = useAppAuth();
   const location = useLocation();
   const { t } = useTranslation();
+  const { isRTL, language } = useLanguage();
 
   // Check if current route is an admin route to hide footer
   const isAdminRoute = 
@@ -30,7 +33,7 @@ const App = () => {
 
   return (
     <CartProvider>
-      <div className="min-h-screen flex flex-col">
+      <div className={cn("min-h-screen flex flex-col", isRTL && "rtl-content")}>
         <GlassyNavbar />
         <div className="flex-grow">
           <AppRoutes />
