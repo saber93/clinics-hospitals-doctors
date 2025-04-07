@@ -6,16 +6,43 @@ export function useTranslation() {
   const { language } = useLanguage();
   
   const t = (key: string) => {
+    if (!key) return '';
+    
     // Split the key by dots to access nested properties
     const keys = key.split('.');
     
     // Start with the language object
     let translation: any = translations[language as keyof typeof translations];
     
+    if (!translation) {
+      // Fallback to English if the selected language doesn't exist
+      console.warn(`Translation for language "${language}" not found, using English as fallback.`);
+      translation = translations.en;
+    }
+    
     // Traverse the object using the keys
     for (const k of keys) {
       if (!translation || !translation[k]) {
-        // Return the key if translation is not found
+        // First try to find the key in English as fallback
+        if (language !== 'en') {
+          let englishTranslation = translations.en;
+          let found = true;
+          
+          for (const fallbackKey of keys) {
+            if (!englishTranslation || !englishTranslation[fallbackKey]) {
+              found = false;
+              break;
+            }
+            englishTranslation = englishTranslation[fallbackKey];
+          }
+          
+          if (found) {
+            return englishTranslation;
+          }
+        }
+        
+        // If still not found, return the key
+        console.warn(`Translation key "${key}" not found in language "${language}"`);
         return key;
       }
       translation = translation[k];
