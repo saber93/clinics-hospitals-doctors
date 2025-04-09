@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -71,7 +72,7 @@ export default {
 					200: '#baf5d9',
 					300: '#85edc1',
 					400: '#31d795',
-					500: '#fa5d01',
+					500: '#fa5d01', // Restored to orange color
 					600: '#e15500',
 					700: '#c04800',
 					800: '#9c3a00',
