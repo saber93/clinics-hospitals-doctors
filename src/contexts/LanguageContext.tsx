@@ -26,22 +26,22 @@ interface LanguageProviderProps {
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>('en');
-  const [direction, setDirection] = useState<Direction>('ltr');
+  const [language, setLanguageState] = useState<Language>(() => {
+    // Load saved language from localStorage
+    const savedLanguage = localStorage.getItem('language') as Language;
+    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ar')) {
+      return savedLanguage;
+    }
+    return 'en';
+  });
+  
+  const [direction, setDirection] = useState<Direction>(() => language === 'ar' ? 'rtl' : 'ltr');
   
   const setLanguage = (lang: Language) => {
     console.log(`Setting language to: ${lang}`);
     setLanguageState(lang);
     localStorage.setItem('language', lang);
   };
-  
-  useEffect(() => {
-    // Load saved language from localStorage
-    const savedLanguage = localStorage.getItem('language') as Language;
-    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ar')) {
-      setLanguageState(savedLanguage);
-    }
-  }, []);
   
   useEffect(() => {
     // Update direction based on language

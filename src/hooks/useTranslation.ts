@@ -8,6 +8,7 @@ export function useTranslation() {
   const [currentLanguage, setCurrentLanguage] = useState(language);
   
   useEffect(() => {
+    console.log(`useTranslation: Language changed to ${language}`);
     setCurrentLanguage(language);
   }, [language]);
   
