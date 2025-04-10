@@ -17,21 +17,22 @@ const HeroSection = () => {
         <div className={cn("grid md:grid-cols-2 gap-12 items-center", isRTL && "md:grid-flow-col")}>
           <div className={cn("", isRTL && "text-right")}>
             <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">
-              {t('home.heroTitle')}
+              <span className="block">{t('home.marketingDeserves')}</span>
+              <span className="block text-orange-500">{t('home.expertCare')}</span>
             </h1>
-            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8">
-              {t('home.heroSubtitle')}
-            </p>
-            <div className="flex space-x-4 items-center mb-6">
+            <div className="flex items-center mb-6">
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
                   <span key={i} className="text-yellow-500 text-lg">★</span>
                 ))}
               </div>
-              <span className="text-gray-700 dark:text-gray-300">
+              <span className="text-gray-700 dark:text-gray-300 ml-2">
                 {t('home.trustedByPatients')}
               </span>
             </div>
+            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8">
+              {t('home.companyDescription')}
+            </p>
             <div className={cn("flex space-x-4", isRTL && "space-x-reverse")}>
               <Button 
                 size="lg" 

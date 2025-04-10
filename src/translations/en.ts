@@ -68,7 +68,10 @@ export default {
     joinThousands: 'Join thousands of happy clients who have found their perfect skincare match through Skinnect. Your journey to healthier skin is just a click away.',
     getStartedToday: 'Get Started Today',
     ourServices: 'Our Services',
-    servicesDescription: 'We offer a comprehensive range of marketing services tailored to the unique needs of medical practitioners and healthcare facilities.'
+    servicesDescription: 'We offer a comprehensive range of marketing services tailored to the unique needs of medical practitioners and healthcare facilities.',
+    marketingDeserves: 'Your Marketing Deserves',
+    expertCare: 'Expert Care',
+    companyDescription: 'At Zams Marketing Management Company, we bring a unique & innovative experience to the UAE market. Our approach centers on building strategic partnerships that create mutual value & sustainable growth. Through our extensive customer & influencer network, we connect businesses with their ideal audience, amplifying their market presence & enhancing their competitive edge.'
   },
   about: {
     title: 'About Us',
