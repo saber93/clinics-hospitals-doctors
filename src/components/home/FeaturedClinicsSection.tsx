@@ -6,20 +6,25 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Star, MapPin, Heart } from 'lucide-react';
 import { featuredClinics } from '@/data/featuredClinics';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/lib/utils';
 
 const FeaturedClinicsSection = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { isRTL } = useLanguage();
 
   return (
     <section className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className={cn("max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", isRTL && "rtl-content")}>
         <div className="text-center mb-16">
-          <p className="text-lg uppercase tracking-wider text-gray-700 mb-4">OUR FEATURED CLINICS</p>
+          <p className="text-lg uppercase tracking-wider text-gray-700 mb-4">{t('clinics.findPerfectSkinClinic')}</p>
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Our Featured Clinics
+            {t('clinics.findClinic')}
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Browse through our network of top-rated dermatology and skincare clinics
+            {t('clinics.discoverSkincare')}
           </p>
         </div>
 
@@ -35,13 +40,13 @@ const FeaturedClinicsSection = () => {
                 />
                 <div className="absolute top-2 left-2">
                   <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 border border-yellow-300">
-                    Featured
+                    {t('clinics.favorites')}
                   </Badge>
                 </div>
                 {clinic.discount > 0 && (
                   <div className="absolute top-2 left-24">
                     <Badge className="bg-primary text-white">
-                      {clinic.discount}% OFF
+                      {clinic.discount}% {t('offers.discountAmount')}
                     </Badge>
                   </div>
                 )}
@@ -82,7 +87,7 @@ const FeaturedClinicsSection = () => {
         
         <div className="mt-12 text-center">
           <Button onClick={() => navigate('/clinics')} variant="outline" size="lg">
-            View All Clinics
+            {t('clinics.allClinics')}
           </Button>
         </div>
       </div>

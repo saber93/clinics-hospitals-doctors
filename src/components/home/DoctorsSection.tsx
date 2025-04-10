@@ -3,9 +3,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { doctorsData } from '@/data/doctorsData';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/lib/utils';
 
 const DoctorsSection = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { isRTL } = useLanguage();
   const featuredDoctors = doctorsData.filter(doctor => doctor.featured).slice(0, 3);
   
   const handleViewAllDoctors = () => {
@@ -18,15 +23,14 @@ const DoctorsSection = () => {
   
   return (
     <section className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className={cn("max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", isRTL && "rtl-content")}>
         <div className="text-center mb-16">
-          <p className="text-lg uppercase tracking-wider text-gray-700 mb-4">OUR MEDICAL SPECIALISTS</p>
+          <p className="text-lg uppercase tracking-wider text-gray-700 mb-4">{t('doctors.ourMedicalSpecialists')}</p>
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Meet Our Expert Doctors
+            {t('doctors.findAndBook')}
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Our team of board-certified specialists is dedicated to providing exceptional care and 
-            personalized treatment plans for all your healthcare needs.
+            {t('doctors.boardCertifiedDesc')}
           </p>
         </div>
         
@@ -59,7 +63,7 @@ const DoctorsSection = () => {
                       </svg>
                     ))}
                   </div>
-                  <span className="text-sm text-gray-500 ml-2">({doctor.reviews} reviews)</span>
+                  <span className="text-sm text-gray-500 ml-2">({doctor.reviews} {t('doctors.reviews')})</span>
                 </div>
                 <p className="text-gray-600 line-clamp-2 mb-4">{doctor.description}</p>
                 <div className="flex flex-wrap gap-2">
@@ -81,7 +85,7 @@ const DoctorsSection = () => {
             onClick={handleViewAllDoctors}
             className="px-8"
           >
-            View All Doctors
+            {t('doctors.findDoctor')}
           </Button>
         </div>
       </div>

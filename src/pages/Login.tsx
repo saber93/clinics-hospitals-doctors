@@ -8,6 +8,9 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/lib/utils';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,6 +18,8 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
+  const { isRTL } = useLanguage();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +27,7 @@ const Login = () => {
     setIsLoading(true);
 
     if (!email || !password) {
-      setError('Please enter both email and password');
+      setError(t('auth.enterInformation'));
       setIsLoading(false);
       return;
     }
@@ -37,11 +42,11 @@ const Login = () => {
         throw error;
       }
 
-      toast.success('Login successful!');
+      toast.success(t('common.success'));
       navigate('/dashboard');
     } catch (error: any) {
-      setError(error.message || 'Failed to login. Please check your credentials.');
-      toast.error('Login failed. Please check your credentials.');
+      setError(error.message || t('common.error'));
+      toast.error(t('common.error'));
     } finally {
       setIsLoading(false);
     }
@@ -55,22 +60,22 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className={cn("flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-50 to-gray-100", isRTL && "rtl-content")}>
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
+          <CardTitle className="text-2xl font-bold">{t('common.login')}</CardTitle>
           <CardDescription>
-            Sign in to access your account
+            {t('auth.enterInformation')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('contact.email')}</Label>
               <Input 
                 id="email" 
                 type="email" 
-                placeholder="your@email.com" 
+                placeholder={t('auth.emailPlaceholder')} 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -78,9 +83,9 @@ const Login = () => {
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t('auth.passwordPlaceholder')}</Label>
                 <Link to="/forgot-password" className="text-sm text-primary hover:underline">
-                  Forgot password?
+                  {t('auth.forgotPassword')}
                 </Link>
               </div>
               <Input 
@@ -100,7 +105,7 @@ const Login = () => {
             )}
 
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Signing in...' : 'Sign In'}
+              {isLoading ? t('common.loading') : t('common.login')}
             </Button>
           </form>
 
@@ -159,9 +164,9 @@ const Login = () => {
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
           <div className="text-center text-sm">
-            Don't have an account?{' '}
+            {t('auth.dontHaveAccount')}{' '}
             <Link to="/register" className="text-primary hover:underline font-medium">
-              Create one here
+              {t('common.register')}
             </Link>
           </div>
         </CardFooter>

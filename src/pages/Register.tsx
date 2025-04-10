@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
+import { Link } from 'react-router-dom';
 
 const Register = () => {
   const { t } = useTranslation();
@@ -35,6 +36,13 @@ const Register = () => {
                 <Input id="password" type="password" />
               </div>
               <Button className="w-full">{t('common.register')}</Button>
+
+              <div className="text-center text-sm">
+                {t('auth.alreadyHaveAccount')}{' '}
+                <Link to="/login" className="text-primary hover:underline font-medium">
+                  {t('common.login')}
+                </Link>
+              </div>
             </div>
           </form>
         </CardContent>
