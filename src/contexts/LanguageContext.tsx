@@ -9,6 +9,7 @@ interface LanguageContextType {
   direction: Direction;
   setLanguage: (lang: Language) => void;
   isRTL: boolean;
+  toggleLanguage: () => void;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -42,6 +43,11 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     setLanguageState(lang);
     localStorage.setItem('language', lang);
   };
+
+  const toggleLanguage = () => {
+    const newLanguage: Language = language === 'en' ? 'ar' : 'en';
+    setLanguage(newLanguage);
+  };
   
   useEffect(() => {
     // Update direction based on language
@@ -67,7 +73,8 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       language, 
       direction, 
       setLanguage,
-      isRTL: direction === 'rtl'
+      isRTL: direction === 'rtl',
+      toggleLanguage
     }}>
       {children}
     </LanguageContext.Provider>

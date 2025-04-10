@@ -6,14 +6,8 @@ import { Languages } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const LanguageSwitcher: React.FC = () => {
-  const { language, setLanguage } = useLanguage();
+  const { language, toggleLanguage } = useLanguage();
   const { t } = useTranslation();
-  
-  const toggleLanguage = () => {
-    const newLanguage = language === 'en' ? 'ar' : 'en';
-    console.log(`Switching language from ${language} to ${newLanguage}`);
-    setLanguage(newLanguage);
-  };
   
   return (
     <Button 

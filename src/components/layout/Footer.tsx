@@ -2,8 +2,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Instagram, Facebook, Twitter, Mail, Phone } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/lib/utils';
 
 const Footer: React.FC = () => {
+  const { t } = useTranslation();
+  const { isRTL } = useLanguage();
+  
   return (
     <footer className="bg-white border-t mt-16">
       <div className="container mx-auto px-4 py-12">
@@ -14,9 +20,9 @@ const Footer: React.FC = () => {
               <span className="text-2xl font-bold text-primary">Zames</span>
             </Link>
             <p className="mt-4 text-muted-foreground">
-              Connect with the best skin and body care specialists in your area.
+              {t('home.subtitle')}
             </p>
-            <div className="flex mt-6 space-x-4">
+            <div className={cn("flex mt-6 space-x-4", isRTL && "space-x-reverse")}>
               <a href="#" className="text-muted-foreground hover:text-primary">
                 <Instagram size={20} />
               </a>
@@ -31,31 +37,31 @@ const Footer: React.FC = () => {
 
           {/* Services */}
           <div className="col-span-1">
-            <h3 className="text-lg font-semibold mb-4">Services</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('common.services')}</h3>
             <ul className="space-y-3">
               <li>
                 <Link to="#" className="text-muted-foreground hover:text-primary">
-                  Facial Treatments
+                  {t('clinics.services')}
                 </Link>
               </li>
               <li>
                 <Link to="#" className="text-muted-foreground hover:text-primary">
-                  Body Treatments
+                  {t('home.ourServices')}
                 </Link>
               </li>
               <li>
                 <Link to="#" className="text-muted-foreground hover:text-primary">
-                  Massages
+                  {t('common.specialOffers')}
                 </Link>
               </li>
               <li>
                 <Link to="#" className="text-muted-foreground hover:text-primary">
-                  Skincare Consultations
+                  {t('clinics.services')}
                 </Link>
               </li>
               <li>
                 <Link to="#" className="text-muted-foreground hover:text-primary">
-                  Special Packages
+                  {t('offers.specialOffers')}
                 </Link>
               </li>
             </ul>
@@ -63,31 +69,31 @@ const Footer: React.FC = () => {
 
           {/* Company */}
           <div className="col-span-1">
-            <h3 className="text-lg font-semibold mb-4">Company</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('about.aboutCompany')}</h3>
             <ul className="space-y-3">
               <li>
                 <Link to="#" className="text-muted-foreground hover:text-primary">
-                  About Us
+                  {t('common.about')}
                 </Link>
               </li>
               <li>
                 <Link to="#" className="text-muted-foreground hover:text-primary">
-                  Careers
+                  {t('about.joinUs')}
                 </Link>
               </li>
               <li>
                 <Link to="#" className="text-muted-foreground hover:text-primary">
-                  Blog
+                  {t('about.ourBusinessModel')}
                 </Link>
               </li>
               <li>
                 <Link to="#" className="text-muted-foreground hover:text-primary">
-                  Partners
+                  {t('about.strategicPartnerships')}
                 </Link>
               </li>
               <li>
                 <Link to="#" className="text-muted-foreground hover:text-primary">
-                  For Vendors
+                  {t('about.contactPartner')}
                 </Link>
               </li>
             </ul>
@@ -95,24 +101,24 @@ const Footer: React.FC = () => {
 
           {/* Contact */}
           <div className="col-span-1">
-            <h3 className="text-lg font-semibold mb-4">Contact</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('common.contact')}</h3>
             <ul className="space-y-3">
-              <li className="flex items-center text-muted-foreground">
-                <Mail size={18} className="mr-2" />
+              <li className={cn("flex items-center text-muted-foreground", isRTL && "flex-row-reverse")}>
+                <Mail size={18} className={cn(isRTL ? "mr-0 ml-2" : "mr-2")} />
                 <span>info@zames.marketing</span>
               </li>
-              <li className="flex items-center text-muted-foreground">
-                <Phone size={18} className="mr-2" />
+              <li className={cn("flex items-center text-muted-foreground", isRTL && "flex-row-reverse")}>
+                <Phone size={18} className={cn(isRTL ? "mr-0 ml-2" : "mr-2")} />
                 <span>+971 56 910 2909</span>
               </li>
               <li className="mt-4">
                 <Link to="/contact" className="text-primary hover:underline">
-                  Contact Us
+                  {t('contact.title')}
                 </Link>
               </li>
               <li>
                 <Link to="/help" className="text-primary hover:underline">
-                  Help Center
+                  {t('contact.helpCenter')}
                 </Link>
               </li>
             </ul>
@@ -121,19 +127,19 @@ const Footer: React.FC = () => {
 
         {/* Bottom Section with Copyright */}
         <div className="border-t mt-12 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className={cn("flex flex-col md:flex-row justify-between items-center", isRTL && "flex-row-reverse")}>
             <p className="text-muted-foreground text-sm">
-              &copy; {new Date().getFullYear()} Zames. All rights reserved.
+              &copy; {new Date().getFullYear()} Zames. {t('footer.allRightsReserved')}
             </p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
+            <div className={cn("flex space-x-6 mt-4 md:mt-0", isRTL && "space-x-reverse")}>
               <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary">
-                Terms of Service
+                {t('footer.terms')}
               </Link>
               <Link to="/privacy" className="text-sm text-muted-foreground hover:text-primary">
-                Privacy Policy
+                {t('footer.privacy')}
               </Link>
               <Link to="/cookies" className="text-sm text-muted-foreground hover:text-primary">
-                Cookie Policy
+                {t('footer.cookies')}
               </Link>
             </div>
           </div>

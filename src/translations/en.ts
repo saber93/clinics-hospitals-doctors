@@ -273,7 +273,8 @@ export default {
     weekdayHours: '9:00 AM - 6:00 PM',
     weekends: 'Saturday',
     weekendHours: '10:00 AM - 4:00 PM',
-    closed: 'Sunday: Closed'
+    closed: 'Sunday: Closed',
+    helpCenter: 'Help Center'
   },
   notFound: {
     title: '404',

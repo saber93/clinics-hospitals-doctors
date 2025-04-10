@@ -13,7 +13,7 @@ const App = () => {
   const { loading } = useAppAuth();
   const location = useLocation();
   const { t } = useTranslation();
-  const { isRTL, language } = useLanguage();
+  const { isRTL, direction } = useLanguage();
 
   // Check if current route is an admin route to hide footer
   const isAdminRoute = 
@@ -35,7 +35,8 @@ const App = () => {
     <CartProvider>
       <div 
         className={cn("min-h-screen flex flex-col", isRTL && "rtl-content")}
-        dir={isRTL ? "rtl" : "ltr"}
+        dir={direction}
+        lang={isRTL ? "ar" : "en"}
       >
         <GlassyNavbar />
         <div className="flex-grow">

@@ -1,56 +1,51 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import translations from '@/translations';
 
 export function useTranslation() {
   const { language } = useLanguage();
   
-  // Using language directly from context without local state to prevent stale data
   const t = useCallback((key: string): string => {
     if (!key) return '';
     
     // Split the key by dots to access nested properties
     const keys = key.split('.');
     
-    // Start with the language object
-    let translation: any = translations[language as keyof typeof translations];
+    // Get the appropriate language object, or fallback to English
+    let translationObj: any = translations[language as keyof typeof translations] || translations.en;
     
-    if (!translation) {
-      console.warn(`Translation for language "${language}" not found, using English as fallback.`);
-      translation = translations.en;
-    }
-    
-    // Traverse the object using the keys
+    // Deep access for nested keys
+    let currentObj = translationObj;
     for (const k of keys) {
-      if (!translation || !translation[k]) {
-        // First try to find the key in English as fallback
+      if (!currentObj || typeof currentObj[k] === 'undefined') {
+        // Key not found in current language, try English fallback
         if (language !== 'en') {
-          let englishTranslation = translations.en;
-          let found = true;
+          let englishObj = translations.en;
+          let englishKeyExists = true;
           
+          // Check if key exists in English
           for (const fallbackKey of keys) {
-            if (!englishTranslation || !englishTranslation[fallbackKey]) {
-              found = false;
+            if (!englishObj || typeof englishObj[fallbackKey] === 'undefined') {
+              englishKeyExists = false;
               break;
             }
-            englishTranslation = englishTranslation[fallbackKey];
+            englishObj = englishObj[fallbackKey];
           }
           
-          if (found) {
-            return typeof englishTranslation === 'string' ? englishTranslation : key;
+          if (englishKeyExists) {
+            return typeof englishObj === 'string' ? englishObj : key;
           }
         }
         
-        // If still not found, return the key and log a warning
+        // Key not found in current language or English fallback
         console.warn(`Translation key "${key}" not found in language "${language}"`);
         return key;
       }
-      translation = translation[k];
+      currentObj = currentObj[k];
     }
     
-    // Make sure we return a string
-    return typeof translation === 'string' ? translation : key;
+    return typeof currentObj === 'string' ? currentObj : key;
   }, [language]);
   
   return { t, currentLanguage: language };
