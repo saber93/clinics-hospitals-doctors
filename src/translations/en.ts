@@ -1,3 +1,4 @@
+
 export default {
   common: {
     home: 'Home',
@@ -62,6 +63,7 @@ export default {
     learnMore: 'Learn More',
     heroTitle: 'Transform Your Healthcare Journey',
     heroSubtitle: 'Connect with top clinics and specialists for personalized care',
+    trustedByPatients: 'Trusted by 10,000+ Patients',
     transformHealthcare: 'Ready to transform your healthcare journey?',
     joinThousands: 'Join thousands of happy clients who have found their perfect skincare match through Skinnect. Your journey to healthier skin is just a click away.',
     getStartedToday: 'Get Started Today',

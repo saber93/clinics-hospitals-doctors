@@ -22,6 +22,16 @@ const HeroSection = () => {
             <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8">
               {t('home.heroSubtitle')}
             </p>
+            <div className="flex space-x-4 items-center mb-6">
+              <div className="flex">
+                {[...Array(5)].map((_, i) => (
+                  <span key={i} className="text-yellow-500 text-lg">★</span>
+                ))}
+              </div>
+              <span className="text-gray-700 dark:text-gray-300">
+                {t('home.trustedByPatients')}
+              </span>
+            </div>
             <div className={cn("flex space-x-4", isRTL && "space-x-reverse")}>
               <Button 
                 size="lg" 

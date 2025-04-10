@@ -34,6 +34,7 @@ export function useTranslation() {
           }
           
           if (englishKeyExists) {
+            console.log(`Translation key "${key}" not found in "${language}", using English fallback.`);
             return typeof englishObj === 'string' ? englishObj : key;
           }
         }
