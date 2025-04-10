@@ -1,72 +1,54 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Calendar, Search, Star, Shield } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/lib/utils';
 
 const HeroSection = () => {
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
+  const { isRTL } = useLanguage();
+  
   return (
-    <section className="py-16 md:py-24 px-4 bg-white">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center">
-        <div className="md:w-3/5 mb-10 md:mb-0 pr-0 md:pr-8">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-            Your Marketing Deserves
-            <span className="text-primary block mt-2">Expert Care</span>
-          </h1>
-          <p className="mt-5 text-lg text-gray-600 max-w-xl">
-            At Zams Marketing Management Company, we bring a unique & innovative experience to the UAE market. Our approach centers on building strategic partnerships that create mutual value & sustainable growth. Through our extensive customer & influencer network, we connect businesses with their ideal audience, amplifying their market presence & enhancing their competitive edge.
-          </p>
-          <div className="mt-8 flex flex-col sm:flex-row gap-4">
-            <Button 
-              size="lg" 
-              className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-shadow"
-              onClick={() => navigate('/clinics')}
-            >
-              <Search className="w-4 h-4 mr-2" /> Find Clinics
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="w-full sm:w-auto"
-              onClick={() => navigate('/reservations')}
-            >
-              <Calendar className="w-4 h-4 mr-2" /> Book Appointment
-            </Button>
-          </div>
-          <div className="mt-6 flex items-center">
-            <Badge variant="secondary" className="mr-2">Trusted by 10,000+ patients</Badge>
-            <div className="flex">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star key={star} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-              ))}
+    <div className="relative bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-gray-950 py-20 md:py-32">
+      <div className="max-w-7xl mx-auto px-4 md:px-8">
+        <div className={cn("grid md:grid-cols-2 gap-12 items-center", isRTL && "md:grid-flow-col")}>
+          <div className={cn("", isRTL && "text-right")}>
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">
+              {t('home.heroTitle')}
+            </h1>
+            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8">
+              {t('home.heroSubtitle')}
+            </p>
+            <div className={cn("flex space-x-4", isRTL && "space-x-reverse")}>
+              <Button 
+                size="lg" 
+                onClick={() => navigate('/clinics')}
+                className="px-8"
+              >
+                {t('home.getStarted')}
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                onClick={() => navigate('/about')}
+              >
+                {t('home.learnMore')}
+              </Button>
             </div>
           </div>
-        </div>
-        <div className="md:w-2/5 relative">
-          <div className="rounded-2xl overflow-hidden shadow-2xl max-w-lg mx-auto">
+          <div className="relative flex justify-center">
             <img 
               src="/lovable-uploads/f538345f-52aa-4960-a4a2-c377edde5280.png" 
-              alt="Team collaborating on healthcare planning" 
-              className="w-full h-[450px] md:h-[500px] object-cover"
+              alt="Hero" 
+              className="max-w-full rounded-lg shadow-xl"
             />
-          </div>
-          <div className="absolute -bottom-6 -right-6 bg-white p-4 rounded-xl shadow-lg hidden md:block">
-            <div className="flex items-center">
-              <div className="bg-green-100 p-2 rounded-full">
-                <Shield className="h-6 w-6 text-green-600" />
-              </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium">Verified Specialists</p>
-                <p className="text-xs text-gray-500">100% certified professionals</p>
-              </div>
-            </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

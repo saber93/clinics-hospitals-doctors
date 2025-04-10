@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -13,9 +14,15 @@ const ModernFooter: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 md:px-8 mb-8">
         <div className={cn("grid grid-cols-1 md:grid-cols-4 gap-8", isRTL && "text-right")}>
           <div>
-            <h3 className="text-lg font-semibold mb-4">Skinnect</h3>
+            <h3 className="text-lg font-semibold mb-4">
+              <img 
+                src="/lovable-uploads/96b7f889-8783-4072-b164-abacb94bc958.png" 
+                alt={t('common.skinnect')} 
+                className="h-8 md:h-10 object-contain"
+              />
+            </h3>
             <p className="text-gray-500 dark:text-gray-400 mb-4">
-              Connecting skin specialists and clients for better healthcare experiences.
+              {t('home.subtitle')}
             </p>
             <div className={cn("flex space-x-4", isRTL && "space-x-reverse")}>
               <a href="#" className="text-gray-400 hover:text-primary">
@@ -86,21 +93,21 @@ const ModernFooter: React.FC = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">{t('contact.title')}</h3>
             <ul className="space-y-2">
-              <li className="flex items-start">
+              <li className={cn("flex items-start", isRTL && "flex-row-reverse")}>
                 <span className="text-gray-500">{t('contact.emailUs')}:</span>
-                <a href="mailto:info@skinnect.com" className="text-gray-500 hover:text-primary ml-1">
+                <a href="mailto:info@skinnect.com" className={cn("text-gray-500 hover:text-primary", isRTL ? "mr-1" : "ml-1")}>
                   info@skinnect.com
                 </a>
               </li>
-              <li className="flex items-start">
+              <li className={cn("flex items-start", isRTL && "flex-row-reverse")}>
                 <span className="text-gray-500">{t('contact.callUs')}:</span>
-                <a href="tel:+971501234567" className="text-gray-500 hover:text-primary ml-1">
+                <a href="tel:+971501234567" className={cn("text-gray-500 hover:text-primary", isRTL ? "mr-1" : "ml-1")}>
                   +971 50 123 4567
                 </a>
               </li>
-              <li className="flex items-start">
+              <li className={cn("flex items-start", isRTL && "flex-row-reverse")}>
                 <span className="text-gray-500">{t('contact.officeAddress')}:</span>
-                <span className="text-gray-500 ml-1">
+                <span className={cn("text-gray-500", isRTL ? "mr-1" : "ml-1")}>
                   Dubai Healthcare City, UAE
                 </span>
               </li>

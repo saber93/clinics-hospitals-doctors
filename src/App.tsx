@@ -24,7 +24,11 @@ const App = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div 
+        className="min-h-screen flex items-center justify-center"
+        dir={direction}
+        lang={isRTL ? "ar" : "en"}
+      >
         <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
         <span className={cn("ml-2", isRTL && "mr-2 ml-0")}>{t('common.loading')}</span>
       </div>
@@ -39,7 +43,7 @@ const App = () => {
         lang={isRTL ? "ar" : "en"}
       >
         <GlassyNavbar />
-        <div className="flex-grow">
+        <div className="flex-grow mt-16">
           <AppRoutes />
         </div>
         {!isAdminRoute && <ModernFooter />}

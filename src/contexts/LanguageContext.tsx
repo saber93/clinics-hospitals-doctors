@@ -58,7 +58,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     document.documentElement.lang = language;
     document.documentElement.dir = newDirection;
     
-    // Add a class to the body for RTL-specific styling
+    // Add or remove the rtl class from body
     if (newDirection === 'rtl') {
       document.body.classList.add('rtl');
     } else {

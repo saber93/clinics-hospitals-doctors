@@ -142,3 +142,13 @@
 .rtl .text-right {
   text-align: left;
 }
+
+/* Enhanced RTL styles for flex items */
+.rtl .flex-row {
+  flex-direction: row-reverse;
+}
+
+/* Enhanced RTL support for alignment and margins in common components */
+.rtl [dir="rtl"] * {
+  text-align: right;
+}
