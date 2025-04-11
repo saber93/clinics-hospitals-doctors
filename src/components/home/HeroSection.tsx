@@ -18,7 +18,11 @@ const HeroSection = () => {
           <div className={cn("", isRTL && "text-right")}>
             <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">
               <span className="block">{t('home.marketingDeserves')}</span>
-              <span className="block text-orange-500">{t('home.expertCare')}</span>
+              {isRTL ? (
+                <span className="block text-orange-500 mt-2">{t('home.expertCare')}</span>
+              ) : (
+                <span className="block text-orange-500">{t('home.expertCare')}</span>
+              )}
             </h1>
             <div className={cn("flex items-center mb-6", isRTL && "flex-row-reverse justify-end")}>
               <div className="flex">

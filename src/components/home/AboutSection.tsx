@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 const AboutSection = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { isRTL } = useLanguage();
+  const { isRTL, language } = useLanguage();
   
   return (
     <section className="py-16 md:py-24 bg-gray-50">
@@ -20,7 +20,10 @@ const AboutSection = () => {
             alt={t('about.subtitle')} 
             className="rounded-lg shadow-xl object-cover h-[500px] w-full"
           />
-          <div className="absolute bottom-0 right-0 transform translate-y-1/4 translate-x-0 lg:translate-x-1/4 bg-black text-white p-8 rounded-lg shadow-xl inline-block">
+          <div className={cn(
+            "absolute bottom-0 transform translate-y-1/4 bg-black text-white p-8 rounded-lg shadow-xl inline-block",
+            language === 'en' ? "left-0 lg:translate-x-1/4" : "right-0 lg:-translate-x-1/4"
+          )}>
             <h3 className="text-2xl md:text-3xl font-bold flex flex-col">
               <span>{t('about.ourBusinessModel')}</span>
               <span>{t('about.strategicPartnerships')}</span>
