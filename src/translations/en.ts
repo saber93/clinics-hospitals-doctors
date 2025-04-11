@@ -42,7 +42,10 @@ export default {
     success: 'Success',
     cart: 'Cart',
     toggleMenu: 'Toggle Menu',
-    skinnect: 'Skinnect'
+    skinnect: 'Skinnect',
+    switchToArabic: 'Switch to Arabic',
+    switchToEnglish: 'Switch to English',
+    language: 'Language'
   },
   auth: {
     emailPlaceholder: 'Email address',
@@ -291,5 +294,22 @@ export default {
     terms: 'Terms of Service',
     privacy: 'Privacy Policy',
     cookies: 'Cookies Policy'
+  },
+  glossary: {
+    // Technical or domain-specific terms that need consistent translation
+    "common.products": "Products", // Can be overridden in Arabic for specific context
+    "common.services": "Services",
+    "common.marketing": "Marketing",
+    "common.healthCare": "Healthcare",
+    "company.name": "Zams Marketing Management Company",
+    "common.partnerships": "Strategic Partnerships",
+    // Medical terms
+    "medical.skincare": "Skincare",
+    "medical.dermatology": "Dermatology",
+    "medical.aesthetics": "Aesthetics",
+    // Business terms
+    "business.kpi": "Key Performance Indicators (KPIs)",
+    "business.roi": "Return on Investment (ROI)",
+    "business.sustainable": "Sustainable Growth"
   }
 };

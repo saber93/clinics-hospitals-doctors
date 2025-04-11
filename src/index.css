@@ -152,3 +152,42 @@
 .rtl [dir="rtl"] * {
   text-align: right;
 }
+
+/* Custom scrollbar styles for RTL */
+.rtl ::-webkit-scrollbar-button:single-button:start {
+  display: none;
+}
+
+.rtl ::-webkit-scrollbar-button:single-button:end {
+  display: block;
+}
+
+/* RTL form field styling adjustments */
+.rtl input[type="text"],
+.rtl input[type="email"],
+.rtl input[type="password"],
+.rtl textarea {
+  text-align: right;
+}
+
+/* RTL icon positioning adjustments */
+.rtl .icon-left {
+  margin-right: 0;
+  margin-left: 0.5rem;
+}
+
+.rtl .icon-right {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+/* Enhanced padding control for RTL */
+.rtl .pl-4 {
+  padding-left: 0;
+  padding-right: 1rem;
+}
+
+.rtl .pr-4 {
+  padding-right: 0;
+  padding-left: 1rem;
+}

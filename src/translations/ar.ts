@@ -42,7 +42,10 @@ export default {
     success: 'تم بنجاح',
     cart: 'سلة التسوق',
     toggleMenu: 'فتح/إغلاق القائمة',
-    skinnect: 'سكيننكت'
+    skinnect: 'سكيننكت',
+    switchToArabic: 'التبديل إلى العربية',
+    switchToEnglish: 'التبديل إلى الإنجليزية', 
+    language: 'اللغة'
   },
   auth: {
     emailPlaceholder: 'عنوان البريد الإلكتروني',
@@ -291,5 +294,22 @@ export default {
     terms: 'شروط الخدمة',
     privacy: 'سياسة الخصوصية',
     cookies: 'سياسة ملفات تعريف الارتباط'
+  },
+  glossary: {
+    // Technical terms with custom Arabic translations
+    "common.products": "المنتجات",
+    "common.services": "الخدمات",
+    "common.marketing": "التسويق",
+    "common.healthCare": "الرعاية الصحية",
+    "company.name": "شركة زامس للإدارة التسويقية",
+    "common.partnerships": "الشراكات الاستراتيجية",
+    // Medical terms
+    "medical.skincare": "العناية بالبشرة",
+    "medical.dermatology": "طب الجلدية",
+    "medical.aesthetics": "التجميل",
+    // Business terms
+    "business.kpi": "مؤشرات الأداء الرئيسية",
+    "business.roi": "العائد على الاستثمار",
+    "business.sustainable": "النمو المستدام"
   }
 };

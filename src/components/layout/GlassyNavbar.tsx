@@ -11,8 +11,6 @@ import AuthButtons from './navbar/AuthButtons';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
-import { supabase } from '@/integrations/supabase/client';
-import { useEffect, useState } from 'react';
 import LanguageSwitcher from './navbar/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTranslation } from '@/hooks/useTranslation';

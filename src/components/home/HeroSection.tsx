@@ -20,13 +20,13 @@ const HeroSection = () => {
               <span className="block">{t('home.marketingDeserves')}</span>
               <span className="block text-orange-500">{t('home.expertCare')}</span>
             </h1>
-            <div className="flex items-center mb-6">
+            <div className={cn("flex items-center mb-6", isRTL && "flex-row-reverse justify-end")}>
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
                   <span key={i} className="text-yellow-500 text-lg">★</span>
                 ))}
               </div>
-              <span className="text-gray-700 dark:text-gray-300 ml-2">
+              <span className={cn("text-gray-700 dark:text-gray-300", isRTL ? "mr-2" : "ml-2")}>
                 {t('home.trustedByPatients')}
               </span>
             </div>

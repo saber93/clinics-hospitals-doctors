@@ -46,6 +46,26 @@ export function useTranslation() {
       currentObj = currentObj[k];
     }
     
+    // Check if the translation exists in the glossary for overrides
+    const glossaryKey = `glossary.${keys.join('.')}`;
+    const glossaryParts = glossaryKey.split('.');
+    let glossaryObj = translationObj;
+    let glossaryExists = true;
+    
+    // Check if key exists in glossary
+    for (const gKey of glossaryParts) {
+      if (!glossaryObj || typeof glossaryObj[gKey] === 'undefined') {
+        glossaryExists = false;
+        break;
+      }
+      glossaryObj = glossaryObj[gKey];
+    }
+    
+    // Return glossary override if it exists
+    if (glossaryExists && typeof glossaryObj === 'string') {
+      return glossaryObj;
+    }
+    
     return typeof currentObj === 'string' ? currentObj : key;
   }, [language]);
   
