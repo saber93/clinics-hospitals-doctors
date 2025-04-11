@@ -10,7 +10,7 @@ interface ServiceCardProps {
   description: string;
   icon?: React.FC;
   iconName?: string;
-  isActive?: boolean; // Add this prop to interface
+  isActive?: boolean;
 }
 
 const ServiceCard = ({ title, description, icon: Icon, iconName, isActive }: ServiceCardProps) => {

@@ -85,9 +85,9 @@ export function useServiceForm() {
             icon_name: data.icon_name,
             display_order: data.display_order,
             is_active: data.is_active,
-            // Add multilingual fields
-            title_ar: data.title_ar,
-            description_ar: data.description_ar,
+            // Add multilingual fields if they exist
+            ...(data.title_ar && { title_ar: data.title_ar }),
+            ...(data.description_ar && { description_ar: data.description_ar }),
             updated_at: new Date().toISOString()
           })
           .eq('id', id);
@@ -105,9 +105,9 @@ export function useServiceForm() {
             icon_name: data.icon_name,
             display_order: data.display_order,
             is_active: data.is_active,
-            // Add multilingual fields
-            title_ar: data.title_ar,
-            description_ar: data.description_ar
+            // Add multilingual fields if they exist
+            ...(data.title_ar && { title_ar: data.title_ar }),
+            ...(data.description_ar && { description_ar: data.description_ar })
           })
           .select('id')
           .single();

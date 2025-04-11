@@ -67,7 +67,8 @@ export function useBlogForm() {
     if (blog) {
       form.reset({
         title: blog.title || '',
-        // Use optional chaining to safely access potential undefined properties
+        // Use optional chaining and provide defaults for multilingual fields
+        // that might not exist in the database yet
         title_ar: blog.title_ar || '',
         slug: blog.slug || '',
         category: blog.category || '',
@@ -89,15 +90,16 @@ export function useBlogForm() {
           .from('blogs')
           .update({
             title: data.title,
-            title_ar: data.title_ar,
             slug: data.slug,
             category: data.category,
             excerpt: data.excerpt,
-            excerpt_ar: data.excerpt_ar,
             content: data.content,
-            content_ar: data.content_ar,
             image_url: data.image_url,
             is_published: data.is_published,
+            // Add multilingual fields if they're being used
+            ...(data.title_ar && { title_ar: data.title_ar }),
+            ...(data.excerpt_ar && { excerpt_ar: data.excerpt_ar }),
+            ...(data.content_ar && { content_ar: data.content_ar }),
             updated_at: new Date().toISOString()
           })
           .eq('id', id);
@@ -110,15 +112,16 @@ export function useBlogForm() {
           .from('blogs')
           .insert({
             title: data.title,
-            title_ar: data.title_ar,
             slug: data.slug,
             category: data.category,
             excerpt: data.excerpt,
-            excerpt_ar: data.excerpt_ar,
             content: data.content,
-            content_ar: data.content_ar,
             image_url: data.image_url,
-            is_published: data.is_published
+            is_published: data.is_published,
+            // Add multilingual fields if they're being used
+            ...(data.title_ar && { title_ar: data.title_ar }),
+            ...(data.excerpt_ar && { excerpt_ar: data.excerpt_ar }),
+            ...(data.content_ar && { content_ar: data.content_ar })
           })
           .select('id')
           .single();
