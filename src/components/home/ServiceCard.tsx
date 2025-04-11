@@ -26,10 +26,11 @@ const ServiceCard = ({ title, description, icon: Icon, iconName, isActive }: Ser
     }
     
     // If an iconName is provided, look it up in LucideIcons
-    if (iconName && iconName in LucideIcons) {
-      // Get the icon component dynamically and safely cast it
-      const DynamicIcon = LucideIcons[iconName as keyof typeof LucideIcons];
-      return <DynamicIcon size={24} />;
+    if (iconName && typeof iconName === 'string') {
+      const IconComponent = LucideIcons[iconName as keyof typeof LucideIcons];
+      if (IconComponent) {
+        return React.createElement(IconComponent, { size: 24 });
+      }
     }
     
     // Default fallback icon
