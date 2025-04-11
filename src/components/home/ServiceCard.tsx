@@ -4,6 +4,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 import * as LucideIcons from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
+import { Layers } from 'lucide-react';
 
 interface ServiceCardProps {
   title: string;
@@ -17,39 +18,24 @@ const ServiceCard = ({ title, description, icon: Icon, iconName, isActive }: Ser
   const { isRTL } = useLanguage();
   const { t } = useTranslation();
   
-  let IconComponent: React.ReactNode = null;
+  // Render the icon based on what was provided
+  const renderIcon = () => {
+    // If a custom Icon component is provided, use it
+    if (Icon) {
+      return <Icon />;
+    }
+    
+    // If an iconName is provided, look it up in LucideIcons
+    if (iconName && iconName in LucideIcons) {
+      // Get the icon component dynamically and safely cast it
+      const DynamicIcon = LucideIcons[iconName as keyof typeof LucideIcons];
+      return <DynamicIcon size={24} />;
+    }
+    
+    // Default fallback icon
+    return <Layers size={24} />;
+  };
   
-  if (Icon) {
-    IconComponent = <Icon />;
-  } else if (iconName && LucideIcons[iconName as keyof typeof LucideIcons]) {
-    // Fix: Don't try to use DynamicIcon as a component directly
-    // Instead, get the actual component from LucideIcons
-    const IconComponent = LucideIcons[iconName as keyof typeof LucideIcons];
-    return (
-      <div className={cn(
-        "p-6 rounded-xl bg-white shadow-md hover:shadow-lg transition-shadow h-full flex flex-col", 
-        isRTL && "text-right",
-        isActive && "border-2 border-primary"
-      )}>
-        <div className="mb-4 text-primary">
-          <IconComponent size={24} />
-        </div>
-        <h3 className="text-xl font-semibold mb-3">{title}</h3>
-        <p className="text-gray-600 flex-grow">{description}</p>
-        <button className={cn("text-primary font-medium mt-4 hover:underline flex items-center", 
-                         isRTL ? "justify-end" : "justify-start")}>
-          {t('common.readMore')} 
-          {isRTL ? (
-            <LucideIcons.ChevronLeft size={16} className="ml-1" />
-          ) : (
-            <LucideIcons.ChevronRight size={16} className="ml-1" />
-          )}
-        </button>
-      </div>
-    );
-  }
-  
-  // If we reached here, either there is an Icon prop or no valid icon, use the original return
   return (
     <div className={cn(
       "p-6 rounded-xl bg-white shadow-md hover:shadow-lg transition-shadow h-full flex flex-col", 
@@ -57,7 +43,7 @@ const ServiceCard = ({ title, description, icon: Icon, iconName, isActive }: Ser
       isActive && "border-2 border-primary"
     )}>
       <div className="mb-4 text-primary">
-        {IconComponent || <LucideIcons.Layers size={24} />}
+        {renderIcon()}
       </div>
       <h3 className="text-xl font-semibold mb-3">{title}</h3>
       <p className="text-gray-600 flex-grow">{description}</p>
