@@ -1,4 +1,3 @@
-
 export default {
   common: {
     home: 'Home',
@@ -295,7 +294,7 @@ export default {
     chatSettings: 'Chat Settings',
     doctorSettings: 'Doctor Settings',
     adminSettings: 'Admin Settings',
-    noPermission: 'You don't have permission to access chat settings',
+    noPermission: "You don't have permission to access chat settings",
     lastActive: 'Last active'
   },
   contact: {
