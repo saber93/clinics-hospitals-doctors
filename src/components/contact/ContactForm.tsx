@@ -8,6 +8,9 @@ import { Label } from '@/components/ui/label';
 import { Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/lib/utils';
 
 const ContactForm = () => {
   const [name, setName] = useState('');
@@ -16,6 +19,8 @@ const ContactForm = () => {
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const { t } = useTranslation();
+  const { isRTL } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +40,7 @@ const ContactForm = () => {
         throw error;
       }
 
-      toast.success('Message sent successfully!');
+      toast.success(t('contact.messageSent'));
       setName('');
       setEmail('');
       setSubject('');
@@ -55,49 +60,52 @@ const ContactForm = () => {
   return (
     <Card className="shadow-lg border-none">
       <CardContent className="p-6">
-        <h2 className="text-xl font-semibold mb-4">Send us a Message</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <h2 className="text-xl font-semibold mb-4">{t('contact.sendMessage')}</h2>
+        <form onSubmit={handleSubmit} className={cn("space-y-4", isRTL && "rtl-content text-right")}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Your Name</Label>
+              <Label htmlFor="name">{t('contact.fullName')}</Label>
               <Input 
                 id="name" 
-                placeholder="John Doe" 
+                placeholder={isRTL ? "محمد أحمد" : "John Doe"} 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+                className={isRTL ? "text-right" : ""}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
+              <Label htmlFor="email">{t('contact.email')}</Label>
               <Input 
                 id="email" 
                 type="email" 
-                placeholder="john@example.com" 
+                placeholder={isRTL ? "محمد@example.com" : "john@example.com"} 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className={isRTL ? "text-right" : ""}
               />
             </div>
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="subject">Subject</Label>
+            <Label htmlFor="subject">{t('contact.subject')}</Label>
             <Input 
               id="subject" 
-              placeholder="How can we help you?" 
+              placeholder={isRTL ? "كيف يمكننا مساعدتك؟" : "How can we help you?"} 
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               required
+              className={isRTL ? "text-right" : ""}
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="message">Message</Label>
+            <Label htmlFor="message">{t('contact.message')}</Label>
             <Textarea 
               id="message" 
-              placeholder="Please provide details about your inquiry..." 
-              className="min-h-[150px]" 
+              placeholder={isRTL ? "يرجى تقديم تفاصيل حول استفسارك..." : "Please provide details about your inquiry..."} 
+              className={cn("min-h-[150px]", isRTL && "text-right")} 
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               required
@@ -109,10 +117,10 @@ const ContactForm = () => {
             className="w-full sm:w-auto transition-all duration-300"
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Sending...' : submitted ? 
+            {isSubmitting ? t('contact.sending') : submitted ? 
               <span className="flex items-center">
-                <Check className="mr-2 h-4 w-4" /> Sent!
-              </span> : 'Send Message'}
+                <Check className="mr-2 h-4 w-4" /> {t('contact.messageSent')}
+              </span> : t('contact.sendMessage')}
           </Button>
         </form>
       </CardContent>

@@ -10,14 +10,19 @@ import MedicalSuppliesSection from '@/components/about/MedicalSuppliesSection';
 import VisionObjectivesSection from '@/components/about/VisionObjectivesSection';
 import BusinessModelSection from '@/components/about/BusinessModelSection';
 import ConclusionSection from '@/components/about/ConclusionSection';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/lib/utils';
 
 const About = () => {
   // We need 17 refs for all the animated elements
   const { fadeRefsRef } = useIntersectionAnimation(17);
+  const { t } = useTranslation();
+  const { isRTL } = useLanguage();
   
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 py-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className={cn("max-w-4xl mx-auto px-4 sm:px-6 lg:px-8", isRTL && "rtl-content")}>
         <AboutHeader ref={(el) => fadeRefsRef.current[0] = el} />
         
         <CompanyIntroSection 

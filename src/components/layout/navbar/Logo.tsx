@@ -8,7 +8,7 @@ const Logo: React.FC = () => {
   
   return (
     <Link to="/" className="flex items-center space-x-2" aria-label={t('common.home')}>
-      <span className="font-semibold text-xl">{t('common.skinnect')}</span>
+      <span className="font-semibold text-xl">{t('common.zames')}</span>
     </Link>
   );
 };

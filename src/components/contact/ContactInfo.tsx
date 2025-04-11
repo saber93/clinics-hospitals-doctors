@@ -1,45 +1,52 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { MapPin, Mail, Phone, Clock } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/lib/utils';
 
 const ContactInfo = () => {
+  const { t } = useTranslation();
+  const { isRTL } = useLanguage();
+  
   return (
-    <Card className="shadow-lg border-none mb-6">
+    <Card className="shadow-md border-none mb-6">
       <CardContent className="p-6">
-        <h2 className="text-xl font-semibold mb-4">Contact Information</h2>
-        <ul className="space-y-4">
-          <li className="flex items-start">
-            <MapPin className="h-5 w-5 text-primary mr-3 mt-0.5" />
+        <h3 className="text-lg font-semibold mb-4">{t('contact.officeAddress')}</h3>
+        
+        <div className="space-y-4">
+          <div className={cn("flex items-start", isRTL && "flex-row-reverse text-right")}>
+            <MapPin className={cn("h-5 w-5 text-gray-500 flex-shrink-0", isRTL ? "ml-3" : "mr-3")} />
+            <span>UAE - 15h Street, Office 478 - Dubai, B.O. 81566</span>
+          </div>
+          
+          <div className={cn("flex items-start", isRTL && "flex-row-reverse text-right")}>
+            <Mail className={cn("h-5 w-5 text-gray-500 flex-shrink-0", isRTL ? "ml-3" : "mr-3")} />
             <div>
-              <p className="font-medium">Headquarters</p>
-              <p className="text-gray-600">UAE —15h Street, Office 478 - Dubai, B.O. 81566</p>
+              <p className="font-semibold mb-1">{t('contact.emailUs')}</p>
+              <a href="mailto:info@zames.ae" className="text-blue-600 hover:underline">info@zames.ae</a>
             </div>
-          </li>
-          <li className="flex items-start">
-            <Phone className="h-5 w-5 text-primary mr-3 mt-0.5" />
+          </div>
+          
+          <div className={cn("flex items-start", isRTL && "flex-row-reverse text-right")}>
+            <Phone className={cn("h-5 w-5 text-gray-500 flex-shrink-0", isRTL ? "ml-3" : "mr-3")} />
             <div>
-              <p className="font-medium">Support Hotline</p>
-              <p className="text-gray-600">+971 56 910 2909</p>
+              <p className="font-semibold mb-1">{t('contact.callUs')}</p>
+              <a href="tel:+971512345678" className="text-blue-600 hover:underline">+971 51 234 5678</a>
             </div>
-          </li>
-          <li className="flex items-start">
-            <Mail className="h-5 w-5 text-primary mr-3 mt-0.5" />
+          </div>
+          
+          <div className={cn("flex items-start", isRTL && "flex-row-reverse text-right")}>
+            <Clock className={cn("h-5 w-5 text-gray-500 flex-shrink-0", isRTL ? "ml-3" : "mr-3")} />
             <div>
-              <p className="font-medium">Email</p>
-              <p className="text-gray-600">info@zames.marketing</p>
+              <p className="font-semibold mb-1">{t('contact.hours')}</p>
+              <p>{t('contact.weekdays')}: {t('contact.weekdayHours')}</p>
+              <p>{t('contact.weekends')}: {t('contact.weekendHours')}</p>
+              <p>{t('contact.closed')}</p>
             </div>
-          </li>
-          <li className="flex items-start">
-            <Clock className="h-5 w-5 text-primary mr-3 mt-0.5" />
-            <div>
-              <p className="font-medium">Support Hours</p>
-              <p className="text-gray-600">Monday - Friday: 9:00 AM - 6:00 PM</p>
-              <p className="text-gray-600">Saturday: 10:00 AM - 4:00 PM</p>
-              <p className="text-gray-600">Sunday: Closed</p>
-            </div>
-          </li>
-        </ul>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );

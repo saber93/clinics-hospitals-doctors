@@ -1,4 +1,3 @@
-
 export default {
   common: {
     home: 'Home',
@@ -42,7 +41,7 @@ export default {
     success: 'Success',
     cart: 'Cart',
     toggleMenu: 'Toggle Menu',
-    skinnect: 'ZAMES',
+    zames: 'ZAMES',
     switchToArabic: 'Switch to Arabic',
     switchToEnglish: 'Switch to English',
     language: 'Language',
@@ -116,7 +115,24 @@ export default {
     joinUs: 'Join Us on Our Journey',
     joinUsDescription: 'Zams Marketing Management Company brings a unique experience to the UAE market, combining innovative marketing solutions with a deep commitment to building trust-based, strategic partnerships. Our dedication to excellence, coupled with our performance-driven approach, ensures that we deliver measurable results for all our partners.',
     invitePartners: 'We invite potential partners to collaborate with us for mutual success. Together, we can create an integrated ecosystem where businesses thrive and customers receive exceptional products and services.',
-    contactPartner: 'Contact Us to Become a Partner'
+    contactPartner: 'Contact Us to Become a Partner',
+    
+    corporateService: 'CORPORATE SERVICE',
+    newTitle: 'We help you achieve sustainable growth',
+    guaranteesTitle: 'Guarantees Measurable',
+    guaranteesSubtitle: 'Success',
+    benefit1: 'Extensive network of customers and influencers',
+    benefit2: 'Performance-based business model with no upfront costs',
+    benefit3: 'Deep understanding of the UAE market dynamics',
+    benefit4: 'Integrated ecosystem connecting suppliers, service providers, and customers'
+  },
+  marketing: {
+    strategy1Title: 'Data-Driven Marketing',
+    strategy1Description: 'We utilize advanced analytics and data insights to create targeted marketing strategies that deliver measurable results.',
+    strategy2Title: 'Strategic Partnerships',
+    strategy2Description: 'Our network of influencers and partners helps amplify your brand message to reach your ideal target audience.',
+    strategy3Title: 'Performance-Based Model',
+    strategy3Description: 'Our compensation is tied to your success, ensuring we're fully invested in delivering tangible business outcomes.'
   },
   visionmission: {
     sectionTitle: 'OUR VISION AND OBJECTIVES:',
