@@ -36,7 +36,6 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = ({ services, api, setApi
                 title={service.title}
                 description={service.description}
                 icon={service.icon}
-                isActive={index === 1}
               />
             </CarouselItem>
           ))}

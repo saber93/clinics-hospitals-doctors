@@ -105,7 +105,7 @@ export default {
     objective2Description: 'تنفيذ نظام مؤشرات أداء قوي يربط المكافآت المالية بتحقيق أهداف محددة.',
     objective3Title: 'تقليل المخاطر',
     objective3Description: 'القضاء على التكاليف المقدمة والمخاطر المالية لشركائنا من خلال نموذج التعويض القائم على الأداء.',
-    objective4Title: 'ت��زيز الابتكار',
+    objective4Title: 'ت���زيز الابتكار',
     objective4Description: 'تطوير حلول تسويقية مبتكرة باستمرار تلبي الاحتياجات المتطورة لسوق الإمارات العربية المتحدة.',
     teamImageAlt: 'فريق يتعاون على رؤية استراتيجية',
     strategicImageAlt: 'التخطيط والتنفيذ الاستراتيجي'
@@ -176,7 +176,7 @@ export default {
   },
   hospitals: {
     findHospital: 'ابحث عن أفضل المنشآت الصحية',
-    discoverHospitals: 'اكتشف وتواص�� مع المستشفيات الرائدة والمراكز الطبية',
+    discoverHospitals: 'اكتشف وتواص���� مع المستشفيات الرائدة والمراكز الطبية',
     scheduleAppointment: 'جدولة موعد',
     hospitalsFound: 'تم العثور على مستشفيات'
   },
@@ -264,7 +264,7 @@ export default {
   admin: {
     dashboard: 'لوحة تحكم المسؤول',
     manageUsers: 'إدارة المستخدمين',
-    totalUsers: 'إجمالي المستخدمي��',
+    totalUsers: 'إجمالي المستخد��ي��',
     totalVendors: 'إجمالي البائعين',
     totalClients: 'إجمالي العملاء',
     revenue: 'الإيرادات',
@@ -329,18 +329,15 @@ export default {
     cookies: 'سياسة ملفات تعريف الارتباط'
   },
   glossary: {
-    // Technical terms with custom Arabic translations
     "common.products": "المنتجات",
     "common.services": "الخدمات",
     "common.marketing": "التسويق",
     "common.healthCare": "الرعاية الصحية",
     "company.name": "شركة زامس للإدارة التسويقية",
     "common.partnerships": "الشراكات الاستراتيجية",
-    // Medical terms
     "medical.skincare": "العناية بالبشرة",
     "medical.dermatology": "طب الجلدية",
     "medical.aesthetics": "التجميل",
-    // Business terms
     "business.kpi": "مؤشرات الأداء الرئيسية",
     "business.roi": "العائد على الاستثمار",
     "business.sustainable": "النمو المستدام"

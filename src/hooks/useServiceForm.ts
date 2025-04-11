@@ -60,7 +60,8 @@ export function useServiceForm() {
   useEffect(() => {
     if (service) {
       form.reset({
-        title: service.name || service.title || '',
+        // Use name field as title for backward compatibility
+        title: service.name || '',
         title_ar: service.title_ar || '',
         description: service.description || '',
         description_ar: service.description_ar || '',
@@ -78,14 +79,15 @@ export function useServiceForm() {
         const { error } = await supabase
           .from('services')
           .update({
-            name: data.title, // For backward compatibility
-            title: data.title,
-            title_ar: data.title_ar,
+            // Use name field for backward compatibility
+            name: data.title,
             description: data.description,
-            description_ar: data.description_ar,
             icon_name: data.icon_name,
             display_order: data.display_order,
             is_active: data.is_active,
+            // Add multilingual fields
+            title_ar: data.title_ar,
+            description_ar: data.description_ar,
             updated_at: new Date().toISOString()
           })
           .eq('id', id);
@@ -97,14 +99,15 @@ export function useServiceForm() {
         const { data: newService, error } = await supabase
           .from('services')
           .insert({
-            name: data.title, // For backward compatibility
-            title: data.title,
-            title_ar: data.title_ar,
+            // Use name field for backward compatibility
+            name: data.title,
             description: data.description,
-            description_ar: data.description_ar,
             icon_name: data.icon_name,
             display_order: data.display_order,
-            is_active: data.is_active
+            is_active: data.is_active,
+            // Add multilingual fields
+            title_ar: data.title_ar,
+            description_ar: data.description_ar
           })
           .select('id')
           .single();

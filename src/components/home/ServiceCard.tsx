@@ -10,9 +10,10 @@ interface ServiceCardProps {
   description: string;
   icon?: React.FC;
   iconName?: string;
+  isActive?: boolean; // Add this prop to interface
 }
 
-const ServiceCard = ({ title, description, icon: Icon, iconName }: ServiceCardProps) => {
+const ServiceCard = ({ title, description, icon: Icon, iconName, isActive }: ServiceCardProps) => {
   const { isRTL } = useLanguage();
   const { t } = useTranslation();
   
@@ -30,8 +31,11 @@ const ServiceCard = ({ title, description, icon: Icon, iconName }: ServiceCardPr
   }
   
   return (
-    <div className={cn("p-6 rounded-xl bg-white shadow-md hover:shadow-lg transition-shadow h-full flex flex-col", 
-                      isRTL && "text-right")}>
+    <div className={cn(
+      "p-6 rounded-xl bg-white shadow-md hover:shadow-lg transition-shadow h-full flex flex-col", 
+      isRTL && "text-right",
+      isActive && "border-2 border-primary"
+    )}>
       <div className="mb-4 text-primary">
         {IconComponent}
       </div>

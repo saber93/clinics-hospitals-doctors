@@ -67,6 +67,7 @@ export function useBlogForm() {
     if (blog) {
       form.reset({
         title: blog.title || '',
+        // Use optional chaining to safely access potential undefined properties
         title_ar: blog.title_ar || '',
         slug: blog.slug || '',
         category: blog.category || '',
