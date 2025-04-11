@@ -1,3 +1,4 @@
+
 export default {
   common: {
     home: 'Home',
@@ -132,7 +133,7 @@ export default {
     strategy2Title: 'Strategic Partnerships',
     strategy2Description: 'Our network of influencers and partners helps amplify your brand message to reach your ideal target audience.',
     strategy3Title: 'Performance-Based Model',
-    strategy3Description: 'Our compensation is tied to your success, ensuring we're fully invested in delivering tangible business outcomes.'
+    strategy3Description: 'Our compensation is tied to your success, ensuring we\'re fully invested in delivering tangible business outcomes.'
   },
   visionmission: {
     sectionTitle: 'OUR VISION AND OBJECTIVES:',

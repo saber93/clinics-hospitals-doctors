@@ -145,7 +145,7 @@ export default {
     objective2Description: 'تنفيذ نظام مؤشرات أداء قوي يربط المكافآت المالية بتحقيق أهداف محددة.',
     objective3Title: 'تقليل المخاطر',
     objective3Description: 'القضاء على التكاليف المقدمة والمخاطر المالية لشركائنا من خلال نموذج التعويض القائم على الأداء.',
-    objective4Title: 'ت���زيز الابتكار',
+    objective4Title: 'تعزيز الابتكار',
     objective4Description: 'تطوير حلول تسويقية مبتكرة باستمرار تلبي الاحتياجات المتطورة لسوق الإمارات العربية المتحدة.',
     teamImageAlt: 'فريق يتعاون على رؤية استراتيجية',
     strategicImageAlt: 'التخطيط والتنفيذ الاستراتيجي'
@@ -216,7 +216,7 @@ export default {
   },
   hospitals: {
     findHospital: 'ابحث عن أفضل المنشآت الصحية',
-    discoverHospitals: 'اكتشف وتواص���� مع المستشفيات الرائدة والمراكز الطبية',
+    discoverHospitals: 'اكتشف وتواصل مع المستشفيات الرائدة والمراكز الطبية',
     scheduleAppointment: 'جدولة موعد',
     hospitalsFound: 'تم العثور على مستشفيات'
   },
@@ -304,7 +304,7 @@ export default {
   admin: {
     dashboard: 'لوحة تحكم المسؤول',
     manageUsers: 'إدارة المستخدمين',
-    totalUsers: 'إجمالي المستخد��ي��',
+    totalUsers: 'إجمالي المستخدمين',
     totalVendors: 'إجمالي البائعين',
     totalClients: 'إجمالي العملاء',
     revenue: 'الإيرادات',
