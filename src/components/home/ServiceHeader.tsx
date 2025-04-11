@@ -1,30 +1,46 @@
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/lib/utils';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-export interface ServiceHeaderProps {
+interface ServiceHeaderProps {
   scrollPrev: () => void;
   scrollNext: () => void;
 }
 
-export default function ServiceHeader({ scrollPrev, scrollNext }: ServiceHeaderProps) {
+const ServiceHeader = ({ scrollPrev, scrollNext }: ServiceHeaderProps) => {
+  const { t } = useTranslation();
+  const { isRTL } = useLanguage();
+  
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
-      <div>
-        <h2 className="text-3xl font-bold mb-2">Our Services</h2>
-        <p className="text-gray-600 max-w-2xl">
-          We offer a comprehensive range of marketing services tailored to the unique needs of medical practitioners and healthcare facilities.
-        </p>
-      </div>
-      <div className="flex space-x-2 mt-4 md:mt-0">
-        <Button onClick={scrollPrev} variant="outline" size="icon">
-          <ChevronLeft className="h-5 w-5" />
-        </Button>
-        <Button onClick={scrollNext} variant="outline" size="icon">
-          <ChevronRight className="h-5 w-5" />
-        </Button>
+    <div className="mb-12">
+      <div className={cn("flex justify-between items-end", isRTL && "flex-row-reverse")}>
+        <div>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('services.sectionTitle')}</h2>
+          <p className="text-lg text-gray-600">{t('services.sectionDescription')}</p>
+        </div>
+        
+        <div className={cn("flex space-x-2", isRTL && "flex-row-reverse space-x-reverse")}>
+          <button 
+            onClick={scrollPrev} 
+            className="p-2 rounded-full border hover:bg-gray-100 text-gray-700"
+            aria-label={t('common.previous')}
+          >
+            {isRTL ? <ChevronRight size={24} /> : <ChevronLeft size={24} />}
+          </button>
+          <button 
+            onClick={scrollNext} 
+            className="p-2 rounded-full border hover:bg-gray-100 text-gray-700"
+            aria-label={t('common.next')}
+          >
+            {isRTL ? <ChevronLeft size={24} /> : <ChevronRight size={24} />}
+          </button>
+        </div>
       </div>
     </div>
   );
-}
+};
+
+export default ServiceHeader;

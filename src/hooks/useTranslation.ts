@@ -15,7 +15,27 @@ export function useTranslation() {
     // Get the appropriate language object, or fallback to English
     let translationObj: any = translations[language as keyof typeof translations] || translations.en;
     
-    // Deep access for nested keys
+    // Check if the key exists in the glossary first (for overrides)
+    const glossaryKey = `glossary.${key}`;
+    const glossaryParts = glossaryKey.split('.');
+    let glossaryObj = translationObj;
+    let glossaryExists = true;
+    
+    // Check if key exists in glossary
+    for (const gKey of glossaryParts) {
+      if (!glossaryObj || typeof glossaryObj[gKey] === 'undefined') {
+        glossaryExists = false;
+        break;
+      }
+      glossaryObj = glossaryObj[gKey];
+    }
+    
+    // Return glossary override if it exists
+    if (glossaryExists && typeof glossaryObj === 'string') {
+      return glossaryObj;
+    }
+    
+    // Deep access for nested keys in main translations
     let currentObj = translationObj;
     for (const k of keys) {
       if (!currentObj || typeof currentObj[k] === 'undefined') {
@@ -44,26 +64,6 @@ export function useTranslation() {
         return key;
       }
       currentObj = currentObj[k];
-    }
-    
-    // Check if the translation exists in the glossary for overrides
-    const glossaryKey = `glossary.${keys.join('.')}`;
-    const glossaryParts = glossaryKey.split('.');
-    let glossaryObj = translationObj;
-    let glossaryExists = true;
-    
-    // Check if key exists in glossary
-    for (const gKey of glossaryParts) {
-      if (!glossaryObj || typeof glossaryObj[gKey] === 'undefined') {
-        glossaryExists = false;
-        break;
-      }
-      glossaryObj = glossaryObj[gKey];
-    }
-    
-    // Return glossary override if it exists
-    if (glossaryExists && typeof glossaryObj === 'string') {
-      return glossaryObj;
     }
     
     return typeof currentObj === 'string' ? currentObj : key;

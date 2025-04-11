@@ -1,44 +1,44 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'sonner';
-import { Service, adaptDatabaseService } from '@/types/cms';
+import { useToast } from '@/components/ui/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 
-// Define the form schema
-export const serviceFormSchema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
-  icon_name: z.string().min(1, 'Icon name is required'),
-  display_order: z.coerce.number().int().nonnegative(),
-  is_active: z.boolean().default(true),
-});
-
-export type ServiceFormValues = z.infer<typeof serviceFormSchema>;
+// Extend ServiceFormValues to support multilingual content
+export interface ServiceFormValues {
+  title: string;
+  title_ar?: string;
+  description: string;
+  description_ar?: string;
+  icon_name: string;
+  display_order: number;
+  is_active: boolean;
+}
 
 export function useServiceForm() {
-  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const isEditMode = Boolean(id);
-  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const { language } = useLanguage();
+  const isEditMode = !!id;
   
   const form = useForm<ServiceFormValues>({
-    resolver: zodResolver(serviceFormSchema),
     defaultValues: {
       title: '',
+      title_ar: '',
       description: '',
-      icon_name: '',
+      description_ar: '',
+      icon_name: 'Layers',
       display_order: 0,
-      is_active: true,
-    },
+      is_active: true
+    }
   });
-
-  // Fetch service details if in edit mode
-  const { isLoading: isFetchingService } = useQuery({
+  
+  // Fetch service if in edit mode
+  const { data: service, isLoading: isFetchingService } = useQuery({
     queryKey: ['service', id],
     queryFn: async () => {
       if (!id) return null;
@@ -48,89 +48,94 @@ export function useServiceForm() {
         .select('*')
         .eq('id', id)
         .single();
-        
-      if (error) {
-        toast.error(`Error fetching service: ${error.message}`);
-        throw error;
-      }
       
-      if (data) {
-        // Convert database format to our CMS format
-        const serviceData = adaptDatabaseService(data);
-        
-        // Populate the form with the fetched data
-        form.reset({
-          title: serviceData.title,
-          description: serviceData.description,
-          icon_name: serviceData.icon_name,
-          display_order: serviceData.display_order,
-          is_active: serviceData.is_active,
-        });
-        
-        return serviceData;
-      }
+      if (error) throw error;
       
-      return null;
+      return data;
     },
-    enabled: isEditMode,
+    enabled: isEditMode
   });
   
-  // Create/Edit mutation
+  // Update form when service is fetched
+  useEffect(() => {
+    if (service) {
+      form.reset({
+        title: service.name || service.title || '',
+        title_ar: service.title_ar || '',
+        description: service.description || '',
+        description_ar: service.description_ar || '',
+        icon_name: service.icon_name || 'Layers',
+        display_order: service.display_order || 0,
+        is_active: typeof service.is_active !== 'undefined' ? service.is_active : true
+      });
+    }
+  }, [service, form]);
+  
+  // Mutation to save service
   const mutation = useMutation({
-    mutationFn: async (values: ServiceFormValues) => {
+    mutationFn: async (data: ServiceFormValues) => {
       if (isEditMode) {
-        // Update existing service
         const { error } = await supabase
           .from('services')
           .update({
-            name: values.title, // Map to database field
-            description: values.description,
-            icon_name: values.icon_name,
-            display_order: values.display_order,
-            is_active: values.is_active,
-            updated_at: new Date().toISOString(),
+            name: data.title, // For backward compatibility
+            title: data.title,
+            title_ar: data.title_ar,
+            description: data.description,
+            description_ar: data.description_ar,
+            icon_name: data.icon_name,
+            display_order: data.display_order,
+            is_active: data.is_active,
+            updated_at: new Date().toISOString()
           })
           .eq('id', id);
-          
-        if (error) throw new Error(error.message);
-        return { ...values, id } as Service;
+        
+        if (error) throw error;
+        
+        return { success: true, id };
       } else {
-        // Create new service
-        const { data, error } = await supabase
+        const { data: newService, error } = await supabase
           .from('services')
-          .insert([{
-            name: values.title, // Map to database field
-            description: values.description,
-            icon_name: values.icon_name,
-            display_order: values.display_order,
-            is_active: values.is_active,
-            // Adding required fields for the services table
-            duration: 0, // Default value
-            price: 0, // Default value
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          }])
-          .select();
-          
-        if (error) throw new Error(error.message);
-        return adaptDatabaseService(data[0]);
+          .insert({
+            name: data.title, // For backward compatibility
+            title: data.title,
+            title_ar: data.title_ar,
+            description: data.description,
+            description_ar: data.description_ar,
+            icon_name: data.icon_name,
+            display_order: data.display_order,
+            is_active: data.is_active
+          })
+          .select('id')
+          .single();
+        
+        if (error) throw error;
+        
+        return { success: true, id: newService.id };
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['services'] });
-      if (isEditMode) {
-        queryClient.invalidateQueries({ queryKey: ['service', id] });
-      }
-      toast.success(isEditMode ? 'Service updated successfully' : 'Service created successfully');
-      navigate('/admin/services');
+    onSuccess: (data) => {
+      toast({
+        title: isEditMode ? "Service updated" : "Service created",
+        description: isEditMode 
+          ? "The service has been updated successfully."
+          : "The new service has been created successfully.",
+      });
+      
+      navigate(`/admin/services`);
     },
-    onError: (error: Error) => {
-      toast.error(`Failed to ${isEditMode ? 'update' : 'create'} service: ${error.message}`);
-    },
+    onError: (error) => {
+      console.error("Error saving service:", error);
+      toast({
+        title: "Error",
+        description: `Failed to ${isEditMode ? 'update' : 'create'} service.`,
+        variant: "destructive",
+      });
+    }
   });
   
-  const onSubmit = (values: ServiceFormValues) => {
-    mutation.mutate(values);
+  const onSubmit = (data: ServiceFormValues) => {
+    mutation.mutate(data);
   };
   
   return {
@@ -138,6 +143,6 @@ export function useServiceForm() {
     isEditMode,
     isFetchingService,
     mutation,
-    onSubmit,
+    onSubmit
   };
 }

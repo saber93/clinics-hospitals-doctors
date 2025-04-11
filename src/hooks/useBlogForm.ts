@@ -1,65 +1,50 @@
+
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'sonner';
-import { Blog } from '@/types/cms';
-import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/components/ui/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 
-// Define the form schema
-export const blogFormSchema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters'),
-  slug: z.string().min(3, 'Slug must be at least 3 characters').regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be lowercase, no spaces, hyphens allowed'),
-  category: z.string().min(1, 'Category is required'),
-  excerpt: z.string().min(10, 'Excerpt must be at least 10 characters'),
-  content: z.string().min(50, 'Content must be at least 50 characters'),
-  image_url: z.string().url('Please enter a valid URL').or(z.string().length(0)),
-  is_published: z.boolean().default(false),
-});
-
-export type BlogFormValues = z.infer<typeof blogFormSchema>;
+// Extend BlogFormValues to support multilingual content
+export interface BlogFormValues {
+  title: string;
+  title_ar?: string;
+  slug: string;
+  category: string;
+  excerpt: string;
+  excerpt_ar?: string;
+  content: string;
+  content_ar?: string;
+  image_url?: string;
+  is_published: boolean;
+}
 
 export function useBlogForm() {
-  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const isEditMode = Boolean(id);
-  const queryClient = useQueryClient();
-  const { session } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const { language } = useLanguage();
+  const isEditMode = !!id;
   
   const form = useForm<BlogFormValues>({
-    resolver: zodResolver(blogFormSchema),
     defaultValues: {
       title: '',
+      title_ar: '',
       slug: '',
       category: '',
       excerpt: '',
+      excerpt_ar: '',
       content: '',
+      content_ar: '',
       image_url: '',
-      is_published: false,
-    },
+      is_published: false
+    }
   });
   
-  const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/\s+/g, '-');
-  };
-  
-  useEffect(() => {
-    const subscription = form.watch((value, { name }) => {
-      if (name === 'title' && value.title && !form.getValues('slug')) {
-        form.setValue('slug', generateSlug(value.title as string));
-      }
-    });
-    
-    return () => subscription.unsubscribe();
-  }, [form]);
-
-  const { isLoading: isFetchingBlog } = useQuery({
+  // Fetch blog if in edit mode
+  const { data: blog, isLoading: isFetchingBlog } = useQuery({
     queryKey: ['blog', id],
     queryFn: async () => {
       if (!id) return null;
@@ -69,92 +54,101 @@ export function useBlogForm() {
         .select('*')
         .eq('id', id)
         .single();
-        
-      if (error) {
-        toast.error(`Error fetching blog: ${error.message}`);
-        throw error;
-      }
       
-      if (data) {
-        const blogData = data as Blog;
-        
-        form.reset({
-          title: blogData.title,
-          slug: blogData.slug,
-          category: blogData.category,
-          excerpt: blogData.excerpt,
-          content: blogData.content,
-          image_url: blogData.image_url || '',
-          is_published: blogData.is_published,
-        });
-        
-        return blogData;
-      }
+      if (error) throw error;
       
-      return null;
+      return data;
     },
-    enabled: isEditMode,
+    enabled: isEditMode
   });
   
+  // Update form when blog is fetched
+  useEffect(() => {
+    if (blog) {
+      form.reset({
+        title: blog.title || '',
+        title_ar: blog.title_ar || '',
+        slug: blog.slug || '',
+        category: blog.category || '',
+        excerpt: blog.excerpt || '',
+        excerpt_ar: blog.excerpt_ar || '',
+        content: blog.content || '',
+        content_ar: blog.content_ar || '',
+        image_url: blog.image_url || '',
+        is_published: blog.is_published || false
+      });
+    }
+  }, [blog, form]);
+  
+  // Mutation to save blog
   const mutation = useMutation({
-    mutationFn: async (values: BlogFormValues) => {
-      if (!session?.user) {
-        throw new Error('You must be logged in to create or edit blogs');
-      }
-
-      const blogData = {
-        title: values.title,
-        slug: values.slug,
-        category: values.category,
-        excerpt: values.excerpt,
-        content: values.content,
-        image_url: values.image_url || null,
-        is_published: values.is_published,
-        user_id: session.user.id
-      };
-
+    mutationFn: async (data: BlogFormValues) => {
       if (isEditMode) {
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from('blogs')
           .update({
-            ...blogData,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', id)
-          .select();
-          
-        if (error) throw new Error(error.message);
-        return data?.[0] as Blog;
-      } else {
-        const { data, error } = await supabase
-          .from('blogs')
-          .insert({
-            ...blogData,
-            created_at: new Date().toISOString(),
+            title: data.title,
+            title_ar: data.title_ar,
+            slug: data.slug,
+            category: data.category,
+            excerpt: data.excerpt,
+            excerpt_ar: data.excerpt_ar,
+            content: data.content,
+            content_ar: data.content_ar,
+            image_url: data.image_url,
+            is_published: data.is_published,
             updated_at: new Date().toISOString()
           })
-          .select();
-          
-        if (error) throw new Error(error.message);
-        return data[0] as Blog;
+          .eq('id', id);
+        
+        if (error) throw error;
+        
+        return { success: true, id };
+      } else {
+        const { data: newBlog, error } = await supabase
+          .from('blogs')
+          .insert({
+            title: data.title,
+            title_ar: data.title_ar,
+            slug: data.slug,
+            category: data.category,
+            excerpt: data.excerpt,
+            excerpt_ar: data.excerpt_ar,
+            content: data.content,
+            content_ar: data.content_ar,
+            image_url: data.image_url,
+            is_published: data.is_published
+          })
+          .select('id')
+          .single();
+        
+        if (error) throw error;
+        
+        return { success: true, id: newBlog.id };
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['blogs'] });
-      if (isEditMode) {
-        queryClient.invalidateQueries({ queryKey: ['blog', id] });
-      }
-      toast.success(isEditMode ? 'Blog updated successfully' : 'Blog created successfully');
-      navigate('/admin/blogs');
+    onSuccess: (data) => {
+      toast({
+        title: isEditMode ? "Blog updated" : "Blog created",
+        description: isEditMode 
+          ? "Your blog post has been updated successfully."
+          : "Your new blog post has been created successfully.",
+      });
+      
+      navigate(`/admin/blogs`);
     },
-    onError: (error: Error) => {
-      console.error('Error in blog operation:', error);
-      toast.error(`Failed to ${isEditMode ? 'update' : 'create'} blog: ${error.message}`);
-    },
+    onError: (error) => {
+      console.error("Error saving blog:", error);
+      toast({
+        title: "Error",
+        description: `Failed to ${isEditMode ? 'update' : 'create'} blog post.`,
+        variant: "destructive",
+      });
+    }
   });
   
-  const onSubmit = (values: BlogFormValues) => {
-    mutation.mutate(values);
+  const onSubmit = (data: BlogFormValues) => {
+    mutation.mutate(data);
   };
   
   return {
@@ -162,6 +156,6 @@ export function useBlogForm() {
     isEditMode,
     isFetchingBlog,
     mutation,
-    onSubmit,
+    onSubmit
   };
 }

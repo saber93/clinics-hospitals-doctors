@@ -45,7 +45,10 @@ export default {
     skinnect: 'Skinnect',
     switchToArabic: 'Switch to Arabic',
     switchToEnglish: 'Switch to English',
-    language: 'Language'
+    language: 'Language',
+    readMore: 'Read More',
+    previous: 'Previous',
+    next: 'Next'
   },
   auth: {
     emailPlaceholder: 'Email address',
@@ -91,6 +94,37 @@ export default {
     joinUsDescription: 'Zams Marketing Management Company brings a unique experience to the UAE market, combining innovative marketing solutions with a deep commitment to building trust-based, strategic partnerships. Our dedication to excellence, coupled with our performance-driven approach, ensures that we deliver measurable results for all our partners.',
     invitePartners: 'We invite potential partners to collaborate with us for mutual success. Together, we can create an integrated ecosystem where businesses thrive and customers receive exceptional products and services.',
     contactPartner: 'Contact Us to Become a Partner'
+  },
+  visionmission: {
+    sectionTitle: 'OUR VISION AND OBJECTIVES:',
+    visionTitle: 'Vision',
+    visionDescription: 'To be the bridge that connects service/product providers with customers, creating an integrated ecosystem where all participants thrive through mutual benefit and collaborative growth.',
+    objectivesTitle: 'Objectives',
+    objective1Title: 'Establish Valuable Partnerships',
+    objective1Description: 'Create and nurture strategic relationships that deliver measurable value to all parties involved.',
+    objective2Title: 'Drive Performance',
+    objective2Description: 'Implement a robust performance indicator system that ties financial rewards to achieving specific targets.',
+    objective3Title: 'Minimize Risk',
+    objective3Description: 'Eliminate upfront costs and financial risks for our partners through our performance-based compensation model.',
+    objective4Title: 'Foster Innovation',
+    objective4Description: 'Continuously develop innovative marketing solutions that address the evolving needs of the UAE market.',
+    teamImageAlt: 'Team collaborating on strategic vision',
+    strategicImageAlt: 'Strategic planning and execution'
+  },
+  partnerships: {
+    sectionTitle: 'Our Strategic Partnerships',
+    hospitals: 'Hospitals',
+    clinics: 'Clinics',
+    doctors: 'Doctors',
+    pharmacies: 'Pharmacies',
+    clients: 'Clients',
+    logistics: 'Logistics',
+    supplierBHC: 'Supplier BHC',
+    supplierNDS: 'Supplier NDS'
+  },
+  services: {
+    sectionTitle: 'Our Services',
+    sectionDescription: 'We offer a comprehensive range of marketing services tailored to the unique needs of medical practitioners and healthcare facilities.'
   },
   doctors: {
     findDoctor: 'Find a Doctor',
@@ -261,7 +295,7 @@ export default {
     chatSettings: 'Chat Settings',
     doctorSettings: 'Doctor Settings',
     adminSettings: 'Admin Settings',
-    noPermission: 'You don’t have permission to access chat settings',
+    noPermission: 'You don't have permission to access chat settings',
     lastActive: 'Last active'
   },
   contact: {

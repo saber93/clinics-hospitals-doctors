@@ -7,9 +7,13 @@ import ServiceCard from './ServiceCard';
 import ServiceHeader from './ServiceHeader';
 import useEmblaCarousel from 'embla-carousel-react';
 import { services as mockServices } from './servicesData';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function ServicesSection() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false });
+  const { t } = useTranslation();
+  const { language, isRTL } = useLanguage();
 
   // Simplified fetch function that removes the non-existent is_active filter
   const fetchServices = async (): Promise<Service[]> => {
@@ -55,7 +59,11 @@ export default function ServicesSection() {
               // Use mock services as fallback when loading
               mockServices.map((mockService, index) => (
                 <div key={index} className="flex-[0_0_90%] md:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0 px-4">
-                  <ServiceCard title={mockService.title} description={mockService.description} icon={mockService.icon} />
+                  <ServiceCard 
+                    title={language === 'ar' && mockService.titleAr ? mockService.titleAr : mockService.title} 
+                    description={language === 'ar' && mockService.descriptionAr ? mockService.descriptionAr : mockService.description} 
+                    icon={mockService.icon} 
+                  />
                 </div>
               ))
             ) : (

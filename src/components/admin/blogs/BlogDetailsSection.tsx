@@ -4,29 +4,86 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/comp
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { CardContent } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UseFormReturn } from 'react-hook-form';
 import { BlogFormValues } from '@/hooks/useBlogForm';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface BlogDetailsSectionProps {
   form: UseFormReturn<BlogFormValues>;
 }
 
 export default function BlogDetailsSection({ form }: BlogDetailsSectionProps) {
+  const { t } = useTranslation();
+  
   return (
     <CardContent className="pt-6">
-      <FormField
-        control={form.control}
-        name="title"
-        render={({ field }) => (
-          <FormItem className="mb-4">
-            <FormLabel>Title</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter blog title" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <Tabs defaultValue="en" className="w-full mb-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="en">English</TabsTrigger>
+          <TabsTrigger value="ar">العربية</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="en" className="mt-6">
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem className="mb-4">
+                <FormLabel>Title</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter blog title" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="excerpt"
+            render={({ field }) => (
+              <FormItem className="mb-4">
+                <FormLabel>Excerpt</FormLabel>
+                <FormControl>
+                  <Input placeholder="Brief summary of the blog post" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </TabsContent>
+        
+        <TabsContent value="ar" className="mt-6">
+          <FormField
+            control={form.control}
+            name="title_ar"
+            render={({ field }) => (
+              <FormItem className="mb-4">
+                <FormLabel>Title (Arabic)</FormLabel>
+                <FormControl>
+                  <Input placeholder="أدخل عنوان المدونة" {...field} className="text-right" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="excerpt_ar"
+            render={({ field }) => (
+              <FormItem className="mb-4">
+                <FormLabel>Excerpt (Arabic)</FormLabel>
+                <FormControl>
+                  <Input placeholder="ملخص موجز للمدونة" {...field} className="text-right" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </TabsContent>
+      </Tabs>
       
       <FormField
         control={form.control}

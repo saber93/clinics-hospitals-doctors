@@ -1,20 +1,26 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/lib/utils';
 
 const StrategicPartnershipSection = () => {
+  const { t } = useTranslation();
+  const { isRTL } = useLanguage();
+  
   const partnershipStats = [
-    { value: 40, label: 'Hospitals' },
-    { value: 197, label: 'Clinics' },
-    { value: 136, label: 'Doctors' },
-    { value: 24, label: 'Pharmacies' }
+    { value: 40, label: t('partnerships.hospitals') },
+    { value: 197, label: t('partnerships.clinics') },
+    { value: 136, label: t('partnerships.doctors') },
+    { value: 24, label: t('partnerships.pharmacies') }
   ];
   
   const clientStats = [
-    { value: 160, suffix: 'k', label: 'Clients' },
-    { value: 4, label: 'Logistics' },
-    { value: 18, label: 'Supplier BHC' },
-    { value: 9, label: 'Supplier NDS' }
+    { value: 160, suffix: 'k', label: t('partnerships.clients') },
+    { value: 4, label: t('partnerships.logistics') },
+    { value: 18, label: t('partnerships.supplierBHC') },
+    { value: 9, label: t('partnerships.supplierNDS') }
   ];
 
   const sectionRef = useRef<HTMLElement>(null);
@@ -24,7 +30,7 @@ const StrategicPartnershipSection = () => {
     <section ref={sectionRef} className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Our Strategic Partnerships</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">{t('partnerships.sectionTitle')}</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
