@@ -67,15 +67,14 @@ export function useBlogForm() {
     if (blog) {
       form.reset({
         title: blog.title || '',
-        // Use optional chaining and provide defaults for multilingual fields
-        // that might not exist in the database yet
-        title_ar: blog.title_ar || '',
+        // For optional fields that might not exist in the database, use optional chaining with TypeScript assertions
+        title_ar: (blog as any).title_ar || '',
         slug: blog.slug || '',
         category: blog.category || '',
         excerpt: blog.excerpt || '',
-        excerpt_ar: blog.excerpt_ar || '',
+        excerpt_ar: (blog as any).excerpt_ar || '',
         content: blog.content || '',
-        content_ar: blog.content_ar || '',
+        content_ar: (blog as any).content_ar || '',
         image_url: blog.image_url || '',
         is_published: blog.is_published || false
       });
@@ -96,7 +95,7 @@ export function useBlogForm() {
             content: data.content,
             image_url: data.image_url,
             is_published: data.is_published,
-            // Add multilingual fields if they're being used
+            // Add multilingual fields conditionally
             ...(data.title_ar && { title_ar: data.title_ar }),
             ...(data.excerpt_ar && { excerpt_ar: data.excerpt_ar }),
             ...(data.content_ar && { content_ar: data.content_ar }),
@@ -118,7 +117,7 @@ export function useBlogForm() {
             content: data.content,
             image_url: data.image_url,
             is_published: data.is_published,
-            // Add multilingual fields if they're being used
+            // Add multilingual fields conditionally
             ...(data.title_ar && { title_ar: data.title_ar }),
             ...(data.excerpt_ar && { excerpt_ar: data.excerpt_ar }),
             ...(data.content_ar && { content_ar: data.content_ar })

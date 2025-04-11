@@ -16,6 +16,9 @@ export interface ServiceFormValues {
   icon_name: string;
   display_order: number;
   is_active: boolean;
+  // Add required fields for database compatibility
+  duration?: number;
+  price?: number;
 }
 
 export function useServiceForm() {
@@ -33,7 +36,10 @@ export function useServiceForm() {
       description_ar: '',
       icon_name: 'Layers',
       display_order: 0,
-      is_active: true
+      is_active: true,
+      // Default values for required fields
+      duration: 30, // Default 30 minutes
+      price: 0 // Default 0 price
     }
   });
   
@@ -62,12 +68,15 @@ export function useServiceForm() {
       form.reset({
         // Use name field as title for backward compatibility
         title: service.name || '',
-        title_ar: service.title_ar || '',
+        title_ar: (service as any).title_ar || '',
         description: service.description || '',
-        description_ar: service.description_ar || '',
+        description_ar: (service as any).description_ar || '',
         icon_name: service.icon_name || 'Layers',
         display_order: service.display_order || 0,
-        is_active: typeof service.is_active !== 'undefined' ? service.is_active : true
+        is_active: typeof service.is_active !== 'undefined' ? service.is_active : true,
+        // Include required database fields
+        duration: service.duration || 30,
+        price: service.price || 0
       });
     }
   }, [service, form]);
@@ -85,7 +94,10 @@ export function useServiceForm() {
             icon_name: data.icon_name,
             display_order: data.display_order,
             is_active: data.is_active,
-            // Add multilingual fields if they exist
+            // Include required fields
+            duration: data.duration || 30,
+            price: data.price || 0,
+            // Add multilingual fields conditionally
             ...(data.title_ar && { title_ar: data.title_ar }),
             ...(data.description_ar && { description_ar: data.description_ar }),
             updated_at: new Date().toISOString()
@@ -105,7 +117,10 @@ export function useServiceForm() {
             icon_name: data.icon_name,
             display_order: data.display_order,
             is_active: data.is_active,
-            // Add multilingual fields if they exist
+            // Include required fields
+            duration: data.duration || 30,
+            price: data.price || 0,
+            // Add multilingual fields conditionally
             ...(data.title_ar && { title_ar: data.title_ar }),
             ...(data.description_ar && { description_ar: data.description_ar })
           })
