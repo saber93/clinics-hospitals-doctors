@@ -17,7 +17,7 @@ const ModernFooter: React.FC = () => {
             <h3 className="text-lg font-semibold mb-4">
               <img 
                 src="/lovable-uploads/96b7f889-8783-4072-b164-abacb94bc958.png" 
-                alt={t('common.skinnect')} 
+                alt={t('common.zames')} 
                 className="h-8 md:h-10 object-contain"
               />
             </h3>
@@ -95,8 +95,8 @@ const ModernFooter: React.FC = () => {
             <ul className="space-y-2">
               <li className={cn("flex items-start", isRTL && "flex-row-reverse")}>
                 <span className="text-gray-500">{t('contact.emailUs')}:</span>
-                <a href="mailto:info@skinnect.com" className={cn("text-gray-500 hover:text-primary", isRTL ? "mr-1" : "ml-1")}>
-                  info@skinnect.com
+                <a href="mailto:info@zames.marketing" className={cn("text-gray-500 hover:text-primary", isRTL ? "mr-1" : "ml-1")}>
+                  info@zames.marketing
                 </a>
               </li>
               <li className={cn("flex items-start", isRTL && "flex-row-reverse")}>
@@ -120,7 +120,7 @@ const ModernFooter: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className={cn("flex flex-col md:flex-row justify-between items-center", isRTL && "flex-row-reverse")}>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              © 2025 Skinnect. {t('footer.allRightsReserved')}
+              © 2025 ZAMES. {t('footer.allRightsReserved')}
             </p>
             <div className={cn("flex space-x-4 mt-4 md:mt-0", isRTL && "space-x-reverse")}>
               <Link to="/terms" className="text-sm text-gray-500 hover:text-primary">

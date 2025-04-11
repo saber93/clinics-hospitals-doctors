@@ -25,7 +25,7 @@ const ContactInfo = () => {
             <Mail className={cn("h-5 w-5 text-gray-500 flex-shrink-0", isRTL ? "ml-3" : "mr-3")} />
             <div>
               <p className="font-semibold mb-1">{t('contact.emailUs')}</p>
-              <a href="mailto:info@zames.ae" className="text-blue-600 hover:underline">info@zames.ae</a>
+              <a href="mailto:info@zames.marketing" className="text-blue-600 hover:underline">info@zames.marketing</a>
             </div>
           </div>
           
