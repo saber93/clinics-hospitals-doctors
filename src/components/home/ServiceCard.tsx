@@ -27,9 +27,10 @@ const ServiceCard = ({ title, description, icon: Icon, iconName, isActive }: Ser
     
     // If an iconName is provided, look it up in LucideIcons
     if (iconName && typeof iconName === 'string') {
-      const IconComponent = LucideIcons[iconName as keyof typeof LucideIcons];
+      // Type assertion to ensure TypeScript knows this is a valid component
+      const IconComponent = (LucideIcons as any)[iconName];
       if (IconComponent) {
-        return React.createElement(IconComponent, { size: 24 });
+        return <IconComponent size={24} />;
       }
     }
     
