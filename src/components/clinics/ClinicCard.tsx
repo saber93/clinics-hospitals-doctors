@@ -16,12 +16,9 @@ const ClinicCard: React.FC<ClinicCardProps> = ({ clinic, view }) => {
   const { isFavorite, toggleFavorite } = useFavorites();
 
   const handleClinicSelect = () => {
-    navigate(`/clinics/${clinic.id}`, { 
-      state: { 
-        clinicName: clinic.name,
-        clinicId: clinic.id
-      } 
-    });
+    // Open in new tab with custom domain structure
+    const url = `https://${clinic.id}.zames.marketing`;
+    window.open(url, '_blank');
   };
 
   const handleBooking = (e: React.MouseEvent) => {

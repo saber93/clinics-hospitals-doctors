@@ -16,12 +16,9 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, view }) => {
   const { isFavorite, toggleFavorite } = useFavorites();
 
   const handleDoctorSelect = () => {
-    navigate(`/doctors/${doctor.id}`, { 
-      state: { 
-        doctorName: doctor.name,
-        doctorId: doctor.id
-      } 
-    });
+    // Open in new tab with custom domain structure
+    const url = `https://doctor-${doctor.id}.zames.marketing`;
+    window.open(url, '_blank');
   };
 
   const handleBooking = (e: React.MouseEvent) => {

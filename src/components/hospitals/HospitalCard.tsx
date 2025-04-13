@@ -28,13 +28,9 @@ const HospitalCard: React.FC<HospitalCardProps> = ({ hospital, view }) => {
   const { isFavorite, toggleFavorite } = useFavorites();
 
   const handleHospitalSelect = () => {
-    // For now, we'll navigate to a placeholder route
-    navigate(`/hospitals/${hospital.id}`, { 
-      state: { 
-        hospitalName: hospital.name,
-        hospitalId: hospital.id
-      } 
-    });
+    // Open in new tab with custom domain structure
+    const url = `https://hospital-${hospital.id}.zames.marketing`;
+    window.open(url, '_blank');
   };
 
   const handleBooking = (e: React.MouseEvent) => {
