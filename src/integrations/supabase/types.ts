@@ -227,6 +227,7 @@ export type Database = {
         Row: {
           category: string
           created_at: string | null
+          custom_domain: string | null
           description: string
           id: string
           image_url: string | null
@@ -241,6 +242,7 @@ export type Database = {
         Insert: {
           category: string
           created_at?: string | null
+          custom_domain?: string | null
           description: string
           id?: string
           image_url?: string | null
@@ -255,6 +257,7 @@ export type Database = {
         Update: {
           category?: string
           created_at?: string | null
+          custom_domain?: string | null
           description?: string
           id?: string
           image_url?: string | null
@@ -328,6 +331,7 @@ export type Database = {
       doctors: {
         Row: {
           created_at: string | null
+          custom_domain: string | null
           description: string
           id: string
           image_url: string | null
@@ -341,6 +345,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          custom_domain?: string | null
           description: string
           id?: string
           image_url?: string | null
@@ -354,6 +359,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          custom_domain?: string | null
           description?: string
           id?: string
           image_url?: string | null
@@ -371,6 +377,7 @@ export type Database = {
         Row: {
           category: string
           created_at: string | null
+          custom_domain: string | null
           description: string
           id: string
           image_url: string | null
@@ -383,6 +390,7 @@ export type Database = {
         Insert: {
           category: string
           created_at?: string | null
+          custom_domain?: string | null
           description: string
           id?: string
           image_url?: string | null
@@ -395,6 +403,7 @@ export type Database = {
         Update: {
           category?: string
           created_at?: string | null
+          custom_domain?: string | null
           description?: string
           id?: string
           image_url?: string | null

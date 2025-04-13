@@ -1,4 +1,3 @@
-
 export interface Clinic {
   id: string;
   name: string;
@@ -23,6 +22,7 @@ export interface Clinic {
     imageUrl?: string;
     additionalImages?: string[];
   }>;
+  custom_domain?: string;
 }
 
 export interface Category {

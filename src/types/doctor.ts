@@ -1,4 +1,3 @@
-
 export interface Doctor {
   id: string;
   name: string;
@@ -19,6 +18,7 @@ export interface Doctor {
   languages?: string[];
   consultationFee?: number;
   theme?: any;
+  custom_domain?: string;
 }
 
 export interface Specialty {

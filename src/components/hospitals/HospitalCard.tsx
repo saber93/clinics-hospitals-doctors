@@ -19,6 +19,7 @@ export interface HospitalCardProps {
     reviews?: number;
     specialties?: string[];
     featured?: boolean;
+    custom_domain?: string;
   };
   view: 'grid' | 'list';
 }
@@ -28,8 +29,10 @@ const HospitalCard: React.FC<HospitalCardProps> = ({ hospital, view }) => {
   const { isFavorite, toggleFavorite } = useFavorites();
 
   const handleHospitalSelect = () => {
-    // Open in new tab with custom domain structure
-    const url = `https://hospital-${hospital.id}.zames.marketing`;
+    // Use custom domain if available, otherwise fallback to default pattern
+    const url = hospital.custom_domain 
+      ? hospital.custom_domain 
+      : `https://hospital-${hospital.id}.zames.marketing`;
     window.open(url, '_blank');
   };
 
