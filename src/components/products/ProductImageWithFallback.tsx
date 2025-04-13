@@ -1,6 +1,7 @@
 
 import { ImageOff } from "lucide-react";
 import { useState, useEffect } from "react";
+import { getOptimizedImageUrl } from "@/utils/imageOptimization";
 
 interface ProductImageWithFallbackProps {
   imageUrl: string | undefined;
@@ -46,22 +47,22 @@ const ProductImageWithFallback = ({
     setHasError(true);
   };
 
-  // Get image URL with fallback logic
+  // Get image URL with fallback logic and optimization
   const getImageUrl = (): string => {
     // Special case for products we know have issues - updated with relevant product images
     if (productName.includes("Gentle Exfoliating Scrub")) {
-      return "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=800&auto=format&fit=crop"; // Facial scrub
+      return getOptimizedImageUrl("https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=800&auto=format&fit=crop"); // Facial scrub
     }
     
     if (productName.includes("Anti-Aging Night Cream")) {
-      return "https://images.unsplash.com/photo-1567721913486-6585f069b332?q=80&w=800&auto=format&fit=crop"; // Night cream
+      return getOptimizedImageUrl("https://images.unsplash.com/photo-1567721913486-6585f069b332?q=80&w=800&auto=format&fit=crop"); // Night cream
     }
     
     if (!imageUrl || hasError) {
-      return fallbackImages[index % fallbackImages.length];
+      return getOptimizedImageUrl(fallbackImages[index % fallbackImages.length]);
     }
     
-    return imageUrl;
+    return getOptimizedImageUrl(imageUrl);
   };
 
   return (
@@ -71,6 +72,7 @@ const ProductImageWithFallback = ({
         alt={productName}
         className={`object-cover w-full h-full transition-transform duration-300 hover:scale-105 ${className}`}
         onError={handleImageError}
+        loading="lazy"
         key={`img-${productId}-${hasError ? 'fallback' : 'original'}-${Date.now()}`}
       />
       {hasError && (

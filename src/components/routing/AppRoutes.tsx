@@ -5,64 +5,66 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { ProtectedRoute } from './ProtectedRoute';
 import { PublicRoute } from './PublicRoute';
 import Loading from '@/components/ui/Loading';
+import GlobalLoadingIndicator from '@/components/ui/GlobalLoadingIndicator';
 import NotFound from '@/pages/NotFound';
 import AdminDashboardLayout from '@/pages/admin/AdminDashboardLayout';
 
-// Lazy load pages to improve performance
-const Home = lazy(() => import('@/pages/Home'));
-const Auth = lazy(() => import('@/pages/Auth'));
-const Dashboard = lazy(() => import('@/pages/Dashboard'));
-const DoctorDashboard = lazy(() => import('@/pages/DoctorDashboard'));
-const VendorDashboard = lazy(() => import('@/pages/VendorDashboard'));
-const CenterDashboard = lazy(() => import('@/pages/CenterDashboard'));
-const ClientDashboard = lazy(() => import('@/pages/ClientDashboard'));
-const Products = lazy(() => import('@/pages/Products'));
-const ProductDetails = lazy(() => import('@/pages/ProductDetails'));
-const ProductForm = lazy(() => import('@/pages/ProductForm'));
-const ProductsManagement = lazy(() => import('@/pages/ProductsManagement'));
-const Categories = lazy(() => import('@/pages/Categories'));
-const CategoryForm = lazy(() => import('@/pages/CategoryForm'));
-const Clinics = lazy(() => import('@/pages/Clinics'));
-const Doctors = lazy(() => import('@/pages/Doctors'));
-const DoctorDetails = lazy(() => import('@/pages/DoctorDetails'));
-const Hospitals = lazy(() => import('@/pages/Hospitals'));
-const ClinicDetails = lazy(() => import('@/pages/ClinicDetails'));
-const Reservations = lazy(() => import('@/pages/Reservations'));
-const MyReservations = lazy(() => import('@/pages/MyReservations'));
-const Vouchers = lazy(() => import('@/pages/Vouchers'));
-const Offers = lazy(() => import('@/pages/Offers'));
-const About = lazy(() => import('@/pages/About'));
-const Contact = lazy(() => import('@/pages/Contact'));
-const AllBookings = lazy(() => import('@/pages/AllBookings'));
-const AdminDashboard = lazy(() => import('@/pages/AdminDashboard'));
-const TotalVendors = lazy(() => import('@/pages/TotalVendors'));
-const TotalClients = lazy(() => import('@/pages/TotalClients'));
-const ChatPage = lazy(() => import('@/pages/ChatPage'));
-const ChatSessions = lazy(() => import('@/pages/ChatSessions'));
-const ChatSettings = lazy(() => import('@/pages/ChatSettings'));
-const SellerVouchers = lazy(() => import('@/pages/VoucherManagement'));
-const VoucherForm = lazy(() => import('@/pages/AddVoucher'));
-const EditVoucherPage = lazy(() => import('@/pages/EditVoucher'));
-const AddProduct = lazy(() => import('@/pages/AddProduct'));
-const EditProduct = lazy(() => import('@/pages/EditProduct'));
-const Cart = lazy(() => import('@/pages/Cart'));
-const Profile = lazy(() => import('@/pages/Profile'));
-const ProfileSettings = lazy(() => import('@/pages/ProfileSettings'));
+// Lazy load pages with explicit loading chunks to improve performance
+const Home = lazy(() => import(/* webpackChunkName: "home" */ '@/pages/Home'));
+const Auth = lazy(() => import(/* webpackChunkName: "auth" */ '@/pages/Auth'));
+const Dashboard = lazy(() => import(/* webpackChunkName: "dashboard" */ '@/pages/Dashboard'));
+const DoctorDashboard = lazy(() => import(/* webpackChunkName: "doctor-dashboard" */ '@/pages/DoctorDashboard'));
+const VendorDashboard = lazy(() => import(/* webpackChunkName: "vendor-dashboard" */ '@/pages/VendorDashboard'));
+const CenterDashboard = lazy(() => import(/* webpackChunkName: "center-dashboard" */ '@/pages/CenterDashboard'));
+const ClientDashboard = lazy(() => import(/* webpackChunkName: "client-dashboard" */ '@/pages/ClientDashboard'));
+const Products = lazy(() => import(/* webpackChunkName: "products" */ '@/pages/Products'));
+const ProductDetails = lazy(() => import(/* webpackChunkName: "product-details" */ '@/pages/ProductDetails'));
+const ProductForm = lazy(() => import(/* webpackChunkName: "product-form" */ '@/pages/ProductForm'));
+const ProductsManagement = lazy(() => import(/* webpackChunkName: "products-management" */ '@/pages/ProductsManagement'));
+const Categories = lazy(() => import(/* webpackChunkName: "categories" */ '@/pages/Categories'));
+const CategoryForm = lazy(() => import(/* webpackChunkName: "category-form" */ '@/pages/CategoryForm'));
+const Clinics = lazy(() => import(/* webpackChunkName: "clinics" */ '@/pages/Clinics'));
+const Doctors = lazy(() => import(/* webpackChunkName: "doctors" */ '@/pages/Doctors'));
+const DoctorDetails = lazy(() => import(/* webpackChunkName: "doctor-details" */ '@/pages/DoctorDetails'));
+const Hospitals = lazy(() => import(/* webpackChunkName: "hospitals" */ '@/pages/Hospitals'));
+const ClinicDetails = lazy(() => import(/* webpackChunkName: "clinic-details" */ '@/pages/ClinicDetails'));
+const Reservations = lazy(() => import(/* webpackChunkName: "reservations" */ '@/pages/Reservations'));
+const MyReservations = lazy(() => import(/* webpackChunkName: "my-reservations" */ '@/pages/MyReservations'));
+const Vouchers = lazy(() => import(/* webpackChunkName: "vouchers" */ '@/pages/Vouchers'));
+const Offers = lazy(() => import(/* webpackChunkName: "offers" */ '@/pages/Offers'));
+const About = lazy(() => import(/* webpackChunkName: "about" */ '@/pages/About'));
+const Contact = lazy(() => import(/* webpackChunkName: "contact" */ '@/pages/Contact'));
+const AllBookings = lazy(() => import(/* webpackChunkName: "all-bookings" */ '@/pages/AllBookings'));
+const AdminDashboard = lazy(() => import(/* webpackChunkName: "admin-dashboard" */ '@/pages/AdminDashboard'));
+const TotalVendors = lazy(() => import(/* webpackChunkName: "total-vendors" */ '@/pages/TotalVendors'));
+const TotalClients = lazy(() => import(/* webpackChunkName: "total-clients" */ '@/pages/TotalClients'));
+const ChatPage = lazy(() => import(/* webpackChunkName: "chat-page" */ '@/pages/ChatPage'));
+const ChatSessions = lazy(() => import(/* webpackChunkName: "chat-sessions" */ '@/pages/ChatSessions'));
+const ChatSettings = lazy(() => import(/* webpackChunkName: "chat-settings" */ '@/pages/ChatSettings'));
+const SellerVouchers = lazy(() => import(/* webpackChunkName: "seller-vouchers" */ '@/pages/VoucherManagement'));
+const VoucherForm = lazy(() => import(/* webpackChunkName: "voucher-form" */ '@/pages/AddVoucher'));
+const EditVoucherPage = lazy(() => import(/* webpackChunkName: "edit-voucher" */ '@/pages/EditVoucher'));
+const AddProduct = lazy(() => import(/* webpackChunkName: "add-product" */ '@/pages/AddProduct'));
+const EditProduct = lazy(() => import(/* webpackChunkName: "edit-product" */ '@/pages/EditProduct'));
+const Cart = lazy(() => import(/* webpackChunkName: "cart" */ '@/pages/Cart'));
+const Profile = lazy(() => import(/* webpackChunkName: "profile" */ '@/pages/Profile'));
+const ProfileSettings = lazy(() => import(/* webpackChunkName: "profile-settings" */ '@/pages/ProfileSettings'));
 
 // Admin pages
-const BlogsPage = lazy(() => import('@/pages/admin/BlogsPage'));
-const BlogFormPage = lazy(() => import('@/pages/admin/BlogFormPage'));
-const ServicesPage = lazy(() => import('@/pages/admin/ServicesPage'));
-const ServiceFormPage = lazy(() => import('@/pages/admin/ServiceFormPage'));
-const ContactMessagesPage = lazy(() => import('@/pages/admin/ContactMessagesPage'));
-const AnalyticsPage = lazy(() => import('@/pages/admin/AnalyticsPage'));
-const SettingsPage = lazy(() => import('@/pages/admin/SettingsPage'));
-const ThemeManagementPage = lazy(() => import('@/pages/admin/ThemeManagementPage'));
-const ThemeEditorPage = lazy(() => import('@/pages/admin/ThemeEditorPage'));
+const BlogsPage = lazy(() => import(/* webpackChunkName: "blogs-page" */ '@/pages/admin/BlogsPage'));
+const BlogFormPage = lazy(() => import(/* webpackChunkName: "blog-form" */ '@/pages/admin/BlogFormPage'));
+const ServicesPage = lazy(() => import(/* webpackChunkName: "services-page" */ '@/pages/admin/ServicesPage'));
+const ServiceFormPage = lazy(() => import(/* webpackChunkName: "service-form" */ '@/pages/admin/ServiceFormPage'));
+const ContactMessagesPage = lazy(() => import(/* webpackChunkName: "contact-messages" */ '@/pages/admin/ContactMessagesPage'));
+const AnalyticsPage = lazy(() => import(/* webpackChunkName: "analytics" */ '@/pages/admin/AnalyticsPage'));
+const SettingsPage = lazy(() => import(/* webpackChunkName: "settings" */ '@/pages/admin/SettingsPage'));
+const ThemeManagementPage = lazy(() => import(/* webpackChunkName: "theme-management" */ '@/pages/admin/ThemeManagementPage'));
+const ThemeEditorPage = lazy(() => import(/* webpackChunkName: "theme-editor" */ '@/pages/admin/ThemeEditorPage'));
 
 const AppRoutes = () => {
   return (
     <AuthProvider>
+      <GlobalLoadingIndicator />
       <Suspense fallback={<Loading />}>
         <Routes>
           <Route path="/" element={<Home />} />
