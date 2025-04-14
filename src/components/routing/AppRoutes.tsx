@@ -10,18 +10,27 @@ import AdminDashboardLayout from '@/pages/admin/AdminDashboardLayout';
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 
-// Error boundary component to catch lazy loading errors
-class LazyLoadErrorBoundary extends React.Component {
-  constructor(props) {
+interface LazyLoadErrorBoundaryProps {
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
+}
+
+interface LazyLoadErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class LazyLoadErrorBoundary extends React.Component<LazyLoadErrorBoundaryProps, LazyLoadErrorBoundaryState> {
+  constructor(props: LazyLoadErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false, error: null };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(error: Error): LazyLoadErrorBoundaryState {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error, errorInfo) {
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error("Lazy loading error:", error, errorInfo);
   }
 
@@ -52,8 +61,7 @@ class LazyLoadErrorBoundary extends React.Component {
   }
 }
 
-// Modified dynamic import approach to handle failures more explicitly
-const loadComponent = (componentPath) => {
+const loadComponent = (componentPath: string) => {
   return lazy(() => {
     console.log(`Loading component: ${componentPath}`);
     return import(`@/pages/${componentPath}`)
@@ -64,7 +72,6 @@ const loadComponent = (componentPath) => {
   });
 };
 
-// Lazy load pages with explicit error handling
 const Home = loadComponent('Home');
 const Auth = loadComponent('Auth');
 const Dashboard = loadComponent('Dashboard');
@@ -105,7 +112,6 @@ const Cart = loadComponent('Cart');
 const Profile = loadComponent('Profile');
 const ProfileSettings = loadComponent('ProfileSettings');
 
-// Admin pages
 const BlogsPage = loadComponent('admin/BlogsPage');
 const BlogFormPage = loadComponent('admin/BlogFormPage');
 const ServicesPage = loadComponent('admin/ServicesPage');
@@ -116,7 +122,6 @@ const SettingsPage = loadComponent('admin/SettingsPage');
 const ThemeManagementPage = loadComponent('admin/ThemeManagementPage');
 const ThemeEditorPage = loadComponent('admin/ThemeEditorPage');
 
-// Common error fallback for all lazy loaded components
 const DefaultErrorFallback = (
   <div className="min-h-screen bg-gray-50 p-6">
     <Alert variant="destructive">
