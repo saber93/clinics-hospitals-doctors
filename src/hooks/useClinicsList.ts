@@ -1,69 +1,81 @@
-
 import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
 import { Clinic } from '@/types/clinic';
 
 interface UseClinicListProps {
-  clinicsData: Clinic[];
+  clinicsData?: Clinic[];
 }
 
-export const useClinicsList = ({ clinicsData }: UseClinicListProps) => {
+export const useClinicsList = ({ clinicsData: initialData }: UseClinicListProps = {}) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [offerFilter, setOfferFilter] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
   const [viewMode, setViewMode] = useState('grid');
-  const [filteredClinics, setFilteredClinics] = useState(clinicsData);
-  const [visibleClinics, setVisibleClinics] = useState<Clinic[]>([]);
   const [visibleCount, setVisibleCount] = useState(6);
-  const [hasMore, setHasMore] = useState(true);
-  
-  const categories = ['all', ...new Set(clinicsData.map(clinic => clinic.category))];
 
-  useEffect(() => {
-    let result = clinicsData;
+  const { data: clinicsData = [], isLoading } = useQuery({
+    queryKey: ['clinics'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('clinics')
+        .select('*');
 
+      if (error) throw error;
+
+      return data.map(clinic => ({
+        ...clinic,
+        imageUrl: clinic.image_url,
+        offerPercentage: clinic.offer_percentage || 0,
+        rating: 4.5, // Default rating until we implement ratings
+        reviews: 0, // Default reviews until we implement reviews system
+        featured: false // Default featured flag
+      }));
+    },
+    initialData
+  });
+
+  const filteredClinics = clinicsData.filter(clinic => {
     if (searchTerm) {
-      result = result.filter(clinic => 
-        clinic.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        clinic.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        clinic.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        clinic.specialties?.some(specialty => specialty.toLowerCase().includes(searchTerm.toLowerCase()))
+      const searchLower = searchTerm.toLowerCase();
+      const nameMatch = clinic.name.toLowerCase().includes(searchLower);
+      const descMatch = clinic.description.toLowerCase().includes(searchLower);
+      const locationMatch = clinic.location.toLowerCase().includes(searchLower);
+      const specialtiesMatch = clinic.specialties?.some(specialty => 
+        specialty.toLowerCase().includes(searchLower)
       );
+      
+      if (!(nameMatch || descMatch || locationMatch || specialtiesMatch)) {
+        return false;
+      }
     }
 
-    if (categoryFilter !== 'all') {
-      result = result.filter(clinic => clinic.category === categoryFilter);
+    if (categoryFilter !== 'all' && clinic.category !== categoryFilter) {
+      return false;
     }
 
-    if (offerFilter === 'offers') {
-      result = result.filter(clinic => clinic.offerPercentage > 0);
-    } else if (offerFilter === 'no-offers') {
-      result = result.filter(clinic => clinic.offerPercentage === 0);
+    if (offerFilter === 'offers' && !clinic.offerPercentage) {
+      return false;
+    } else if (offerFilter === 'no-offers' && clinic.offerPercentage > 0) {
+      return false;
     }
 
-    if (sortBy === 'rating') {
-      result = [...result].sort((a, b) => (b.rating || 0) - (a.rating || 0));
-    } else if (sortBy === 'reviews') {
-      result = [...result].sort((a, b) => (b.reviews || 0) - (a.reviews || 0));
-    } else if (sortBy === 'offers') {
-      result = [...result].sort((a, b) => b.offerPercentage - a.offerPercentage);
-    } else if (sortBy === 'featured') {
-      result = [...result].sort((a, b) => (a.featured === b.featured) ? 0 : a.featured ? -1 : 1);
-    }
+    return true;
+  });
 
-    setFilteredClinics(result);
-  }, [searchTerm, categoryFilter, offerFilter, sortBy, clinicsData]);
+  if (sortBy === 'rating') {
+    filteredClinics.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+  } else if (sortBy === 'reviews') {
+    filteredClinics.sort((a, b) => (b.reviews || 0) - (a.reviews || 0));
+  } else if (sortBy === 'offers') {
+    filteredClinics.sort((a, b) => b.offerPercentage - a.offerPercentage);
+  } else if (sortBy === 'featured') {
+    filteredClinics.sort((a, b) => (a.featured === b.featured) ? 0 : a.featured ? -1 : 1);
+  }
 
-  useEffect(() => {
-    // Update visible clinics whenever the filtered clinics change or visibleCount changes
-    setVisibleClinics(filteredClinics.slice(0, visibleCount));
-    // Check if there are more clinics to show
-    setHasMore(filteredClinics.length > visibleCount);
-    
-    console.log('Filtered clinics:', filteredClinics.length);
-    console.log('Visible count:', visibleCount);
-    console.log('Has more:', filteredClinics.length > visibleCount);
-  }, [filteredClinics, visibleCount]);
+  const visibleClinics = filteredClinics.slice(0, visibleCount);
+  const hasMore = filteredClinics.length > visibleCount;
 
   const clearFilters = () => {
     setSearchTerm('');
@@ -89,8 +101,9 @@ export const useClinicsList = ({ clinicsData }: UseClinicListProps) => {
     filteredClinics,
     visibleClinics,
     hasMore,
-    categories,
+    categories: ['Dental', 'Medical', 'Specialist'], // You might want to fetch these from Supabase later
     clearFilters,
-    loadMoreClinics
+    loadMoreClinics,
+    isLoading
   };
 };

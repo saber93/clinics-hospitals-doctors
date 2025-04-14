@@ -29,14 +29,13 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
   const { isRTL } = useLanguage();
   const { t } = useTranslation();
 
-  // Use toggleMobileMenu if provided, otherwise fall back to onClose
   const closeMenu = toggleMobileMenu || onClose || (() => {});
 
   if (!isOpen) return null;
 
   return (
     <div className="md:hidden fixed inset-0 bg-background/95 backdrop-blur-sm z-50 animate-in fade-in">
-      <div className="container h-full flex flex-col">
+      <div className="container h-full flex flex-col bg-background shadow-lg">
         <div className="flex justify-end py-4">
           <Button variant="ghost" size="icon" onClick={closeMenu} aria-label={t('common.toggleMenu')}>
             <X size={24} />
@@ -53,7 +52,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                 <NavLink 
                   name={t(`common.${link.name.toLowerCase()}`)} 
                   path={link.path}
-                  className="py-2 w-full flex justify-center"
+                  className="py-2 w-full flex justify-center hover:bg-accent rounded-md"
                   onClick={closeMenu}
                 />
               </li>

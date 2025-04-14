@@ -1,6 +1,7 @@
-
 import { useState, useEffect, useMemo } from 'react';
 import { useFavorites } from './useFavorites';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
 
 interface Hospital {
   id: string;
@@ -18,12 +19,10 @@ interface Hospital {
 }
 
 interface UseHospitalsListProps {
-  hospitalsData: Hospital[];
   initialPageSize?: number;
 }
 
 export function useHospitalsList({ 
-  hospitalsData, 
   initialPageSize = 9 
 }: UseHospitalsListProps) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -35,7 +34,26 @@ export function useHospitalsList({
   
   const { favorites } = useFavorites();
 
-  // Extract unique categories from data
+  const { data: hospitalsData = [], isLoading } = useQuery({
+    queryKey: ['hospitals'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('hospitals')
+        .select('*');
+
+      if (error) throw error;
+
+      return data.map(hospital => ({
+        ...hospital,
+        imageUrl: hospital.image_url,
+        offerPercentage: hospital.offer_percentage || 0,
+        rating: 4.5, // Default rating until we implement ratings
+        reviews: 0, // Default reviews until we implement reviews system
+        featured: false // Default featured flag
+      }));
+    }
+  });
+
   const categories = useMemo(() => {
     const categorySet = new Set<string>();
     hospitalsData.forEach(hospital => {
@@ -44,11 +62,9 @@ export function useHospitalsList({
     return Array.from(categorySet);
   }, [hospitalsData]);
 
-  // Apply filters
   const filteredHospitals = useMemo(() => {
     let result = [...hospitalsData];
     
-    // Search filter
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
       result = result.filter(
@@ -58,19 +74,16 @@ export function useHospitalsList({
       );
     }
     
-    // Category filter
     if (categoryFilter && categoryFilter !== 'all') {
       result = result.filter(hospital => hospital.category === categoryFilter);
     }
     
-    // Offer filter
     if (offerFilter) {
       result = result.filter(hospital => 
         hospital.offerPercentage && hospital.offerPercentage > 0
       );
     }
     
-    // Sort
     if (sortBy === 'rating') {
       result.sort((a, b) => (b.rating || 0) - (a.rating || 0));
     } else if (sortBy === 'name') {
@@ -86,7 +99,6 @@ export function useHospitalsList({
     return result;
   }, [hospitalsData, searchTerm, categoryFilter, offerFilter, sortBy]);
 
-  // Pagination
   const [visibleHospitals, setVisibleHospitals] = useState<Hospital[]>([]);
   
   useEffect(() => {
@@ -120,8 +132,9 @@ export function useHospitalsList({
     filteredHospitals,
     visibleHospitals,
     hasMore,
-    categories,
+    categories: ['General', 'Specialty', 'Teaching'], // You might want to fetch these from Supabase later
     clearFilters,
     loadMoreHospitals,
+    isLoading
   };
 }

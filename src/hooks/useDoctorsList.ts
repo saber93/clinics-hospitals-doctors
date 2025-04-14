@@ -1,63 +1,67 @@
-
 import { useState, useEffect } from 'react';
 import { Doctor } from '@/types/doctor';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
 
 interface UseDoctorListProps {
-  doctorsData: Doctor[];
+  doctorsData?: Doctor[];
 }
 
-export const useDoctorsList = ({ doctorsData }: UseDoctorListProps) => {
+export const useDoctorsList = ({ doctorsData: initialData }: UseDoctorListProps = {}) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [specialtyFilter, setSpecialtyFilter] = useState('all');
   const [offerFilter, setOfferFilter] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [filteredDoctors, setFilteredDoctors] = useState(doctorsData);
-  const [visibleDoctors, setVisibleDoctors] = useState<Doctor[]>([]);
+  const [viewMode, setViewMode<'grid' | 'list'>>('grid');
   const [visibleCount, setVisibleCount] = useState(6);
-  const [hasMore, setHasMore] = useState(true);
-  
-  const specialties = ['all', ...new Set(doctorsData.map(doctor => doctor.specialty))];
 
-  useEffect(() => {
-    let result = doctorsData;
+  const { data: doctorsData = [], isLoading } = useQuery({
+    queryKey: ['doctors'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('doctors')
+        .select('*');
 
+      if (error) throw error;
+
+      return data.map(doctor => ({
+        ...doctor,
+        imageUrl: doctor.image_url,
+        offerPercentage: doctor.offer_percentage || 0,
+        rating: 4.5, // Default rating until we implement ratings
+        reviews: 0, // Default reviews until we implement reviews system
+        featured: false // Default featured flag
+      }));
+    },
+    initialData
+  });
+
+  const filteredDoctors = doctorsData.filter(doctor => {
     if (searchTerm) {
-      result = result.filter(doctor => 
-        doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doctor.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doctor.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doctor.specialties?.some(specialty => specialty.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
+      const searchLower = searchTerm.toLowerCase();
+      if (!doctor.name.toLowerCase().includes(searchLower) &&
+          !doctor.description.toLowerCase().includes(searchLower) &&
+          !doctor.location.toLowerCase().includes(searchLower) &&
+          !doctor.specialties?.some(specialty => specialty.toLowerCase().includes(searchLower))) {
+        return false;
+      }
     }
 
-    if (specialtyFilter !== 'all') {
-      result = result.filter(doctor => doctor.specialty === specialtyFilter);
+    if (specialtyFilter !== 'all' && doctor.specialty !== specialtyFilter) {
+      return false;
     }
 
-    if (offerFilter === 'offers') {
-      result = result.filter(doctor => doctor.offerPercentage > 0);
-    } else if (offerFilter === 'no-offers') {
-      result = result.filter(doctor => doctor.offerPercentage === 0);
+    if (offerFilter === 'offers' && !doctor.offerPercentage) {
+      return false;
+    } else if (offerFilter === 'no-offers' && doctor.offerPercentage > 0) {
+      return false;
     }
 
-    if (sortBy === 'rating') {
-      result = [...result].sort((a, b) => (b.rating || 0) - (a.rating || 0));
-    } else if (sortBy === 'reviews') {
-      result = [...result].sort((a, b) => (b.reviews || 0) - (a.reviews || 0));
-    } else if (sortBy === 'offers') {
-      result = [...result].sort((a, b) => b.offerPercentage - a.offerPercentage);
-    } else if (sortBy === 'featured') {
-      result = [...result].sort((a, b) => (a.featured === b.featured) ? 0 : a.featured ? -1 : 1);
-    }
+    return true;
+  });
 
-    setFilteredDoctors(result);
-  }, [searchTerm, specialtyFilter, offerFilter, sortBy, doctorsData]);
-
-  useEffect(() => {
-    setVisibleDoctors(filteredDoctors.slice(0, visibleCount));
-    setHasMore(filteredDoctors.length > visibleCount);
-  }, [filteredDoctors, visibleCount]);
+  const visibleDoctors = filteredDoctors.slice(0, visibleCount);
+  const hasMore = filteredDoctors.length > visibleCount;
 
   const clearFilters = () => {
     setSearchTerm('');
@@ -83,8 +87,9 @@ export const useDoctorsList = ({ doctorsData }: UseDoctorListProps) => {
     filteredDoctors,
     visibleDoctors,
     hasMore,
-    specialties,
+    specialties: ['General', 'Cardiology', 'Pediatrics'], // You might want to fetch these from Supabase later
     clearFilters,
-    loadMoreDoctors
+    loadMoreDoctors,
+    isLoading
   };
 };
