@@ -42,7 +42,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
           </Button>
         </div>
         
-        <nav className="flex-1 flex flex-col justify-center">
+        <nav className="flex-1 flex flex-col justify-center bg-white/90 rounded-lg p-4 shadow-sm">
           <ul className={cn(
             "flex flex-col items-center space-y-6 text-xl",
             isRTL && "space-y-reverse"

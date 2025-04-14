@@ -44,13 +44,18 @@ export function useHospitalsList({
       if (error) throw error;
 
       return data.map(hospital => ({
-        ...hospital,
-        imageUrl: hospital.image_url,
+        id: hospital.id,
+        name: hospital.name,
+        description: hospital.description,
+        location: hospital.location,
+        category: hospital.category,
         offerPercentage: hospital.offer_percentage || 0,
+        imageUrl: hospital.image_url,
         rating: 4.5, // Default rating until we implement ratings
         reviews: 0, // Default reviews until we implement reviews system
-        featured: false // Default featured flag
-      }));
+        featured: false, // Default featured flag
+        specialties: [] // Add default specialties array
+      } as Hospital));
     }
   });
 

@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Doctor } from '@/types/doctor';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
@@ -25,16 +25,24 @@ export const useDoctorsList = ({ doctorsData: initialData }: UseDoctorListProps 
 
       if (error) throw error;
 
+      // Transform the database data to match our Doctor interface
       return data.map(doctor => ({
-        ...doctor,
-        imageUrl: doctor.image_url,
+        id: doctor.id,
+        name: doctor.name,
+        description: doctor.description,
+        location: doctor.location,
+        specialty: doctor.specialty,
+        subSpecialty: doctor.sub_specialty,
         offerPercentage: doctor.offer_percentage || 0,
+        imageUrl: doctor.image_url,
         rating: 4.5, // Default rating until we implement ratings
         reviews: 0, // Default reviews until we implement reviews system
-        featured: false // Default featured flag
-      }));
+        featured: false, // Default featured flag
+        specialties: [], // Add default specialties array
+        custom_domain: doctor.custom_domain
+      } as Doctor));
     },
-    initialData
+    initialData: initialData ? () => initialData : undefined
   });
 
   const filteredDoctors = doctorsData.filter(doctor => {

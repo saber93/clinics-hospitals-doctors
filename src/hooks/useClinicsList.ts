@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+
+import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { Clinic } from '@/types/clinic';
@@ -24,29 +25,33 @@ export const useClinicsList = ({ clinicsData: initialData }: UseClinicListProps 
 
       if (error) throw error;
 
+      // Transform the database data to match our Clinic interface
       return data.map(clinic => ({
-        ...clinic,
-        imageUrl: clinic.image_url,
+        id: clinic.id,
+        name: clinic.name,
+        description: clinic.description,
+        location: clinic.location,
+        category: clinic.category,
+        subCategory: clinic.sub_category,
         offerPercentage: clinic.offer_percentage || 0,
+        imageUrl: clinic.image_url,
         rating: 4.5, // Default rating until we implement ratings
         reviews: 0, // Default reviews until we implement reviews system
-        featured: false // Default featured flag
-      }));
+        featured: false, // Default featured flag
+        specialties: [], // Add default specialties array
+        custom_domain: clinic.custom_domain
+      } as Clinic));
     },
-    initialData
+    initialData: initialData ? () => initialData : undefined
   });
 
   const filteredClinics = clinicsData.filter(clinic => {
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
-      const nameMatch = clinic.name.toLowerCase().includes(searchLower);
-      const descMatch = clinic.description.toLowerCase().includes(searchLower);
-      const locationMatch = clinic.location.toLowerCase().includes(searchLower);
-      const specialtiesMatch = clinic.specialties?.some(specialty => 
-        specialty.toLowerCase().includes(searchLower)
-      );
-      
-      if (!(nameMatch || descMatch || locationMatch || specialtiesMatch)) {
+      if (!clinic.name.toLowerCase().includes(searchLower) &&
+          !clinic.description.toLowerCase().includes(searchLower) &&
+          !clinic.location.toLowerCase().includes(searchLower) &&
+          !clinic.specialties?.some(specialty => specialty.toLowerCase().includes(searchLower))) {
         return false;
       }
     }
@@ -64,6 +69,7 @@ export const useClinicsList = ({ clinicsData: initialData }: UseClinicListProps 
     return true;
   });
 
+  // Sort the filtered clinics based on the selected sort option
   if (sortBy === 'rating') {
     filteredClinics.sort((a, b) => (b.rating || 0) - (a.rating || 0));
   } else if (sortBy === 'reviews') {
