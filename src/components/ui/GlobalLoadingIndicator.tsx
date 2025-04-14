@@ -3,9 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import LoadingSpinner from './LoadingSpinner';
 
+interface LoadingError extends Error {
+  code?: string;
+}
+
 const GlobalLoadingIndicator = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingError, setLoadingError] = useState<Error | null>(null);
+  const [loadingError, setLoadingError] = useState<LoadingError | null>(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -35,7 +39,9 @@ const GlobalLoadingIndicator = () => {
         event.message.includes('Loading chunk')
       )) {
         console.error('Module loading error detected:', event.message);
-        setLoadingError(new Error(event.message));
+        const error = new Error(event.message) as LoadingError;
+        error.code = 'CHUNK_LOAD_ERROR';
+        setLoadingError(error);
         setIsLoading(false); // Stop loading indicator if module fails to load
       }
     };
