@@ -1,4 +1,3 @@
-
 import React, { Suspense } from 'react';
 import HeroSection from '@/components/hospitals/HeroSection';
 import HospitalFilters from '@/components/hospitals/HospitalFilters';
@@ -7,7 +6,6 @@ import TestimonialsSection from '@/components/hospitals/TestimonialsSection';
 import HospitalsHeader from '@/components/hospitals/HospitalsHeader';
 import HospitalsListView from '@/components/hospitals/HospitalsListView';
 import { useHospitalsList } from '@/hooks/useHospitalsList';
-import { hospitalsData } from '@/data/hospitalsData';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
@@ -87,7 +85,7 @@ const Hospitals = () => {
       categories,
       clearFilters,
       loadMoreHospitals
-    } = useHospitalsList({ hospitalsData });
+    } = useHospitalsList({ initialPageSize: 9 });
 
     return (
       <HospitalsErrorBoundary>
