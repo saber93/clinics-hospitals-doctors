@@ -16,8 +16,27 @@ const GlobalLoadingIndicator = () => {
       setIsLoading(false);
     }, 800); // Timeout balances between showing loader for too short/long time
     
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+    };
   }, [location.pathname]);
+
+  // Add error handling for dynamic imports
+  useEffect(() => {
+    const handleError = (event: ErrorEvent) => {
+      // Check if the error is related to dynamic imports
+      if (event.message && event.message.includes('Failed to fetch dynamically imported module')) {
+        console.error('Module loading error detected:', event.message);
+        setIsLoading(false); // Stop loading indicator if module fails to load
+      }
+    };
+
+    window.addEventListener('error', handleError);
+    
+    return () => {
+      window.removeEventListener('error', handleError);
+    };
+  }, []);
 
   if (!isLoading) return null;
   

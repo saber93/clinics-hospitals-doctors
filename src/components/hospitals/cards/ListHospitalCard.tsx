@@ -3,7 +3,8 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Star, MapPin, Heart } from 'lucide-react';
+import { Star, MapPin, Heart, ImageOff } from 'lucide-react';
+import { getOptimizedImageUrl } from '@/utils/imageOptimization';
 
 interface ListHospitalCardProps {
   hospital: {
@@ -33,6 +34,23 @@ const ListHospitalCard: React.FC<ListHospitalCardProps> = ({
   handleFavoriteToggle,
   isFavorite
 }) => {
+  const [imageError, setImageError] = React.useState(false);
+  
+  const handleImageError = () => {
+    console.log(`Image error for hospital ${hospital.id} with url:`, hospital.imageUrl);
+    setImageError(true);
+  };
+
+  // Get a fallback image if the original image fails to load
+  const getFallbackImage = () => {
+    // Default fallback image from Unsplash
+    return "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&auto=format&fit=crop&q=60";
+  };
+
+  const imageSource = imageError || !hospital.imageUrl 
+    ? getFallbackImage()
+    : getOptimizedImageUrl(hospital.imageUrl);
+  
   return (
     <Card 
       className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer"
@@ -41,10 +59,19 @@ const ListHospitalCard: React.FC<ListHospitalCardProps> = ({
       <div className="flex flex-col md:flex-row">
         <div className="relative md:w-1/4 h-48 md:h-auto">
           <img 
-            src={hospital.imageUrl} 
+            src={imageSource} 
             alt={hospital.name}
             className="w-full h-full object-cover"
+            onError={handleImageError}
+            loading="lazy"
           />
+          
+          {imageError && (
+            <div className="absolute bottom-0 left-0 right-0 bg-amber-500 bg-opacity-70 text-white text-xs p-1 text-center flex items-center justify-center">
+              <ImageOff className="h-3 w-3 mr-1" />
+              Using fallback image
+            </div>
+          )}
           
           {/* Featured badge */}
           {hospital.featured && (
