@@ -2,9 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import LoadingSpinner from './LoadingSpinner';
+import { toast } from 'sonner';
 
 interface LoadingError extends Error {
   code?: string;
+  details?: string;
 }
 
 const GlobalLoadingIndicator = () => {
@@ -39,10 +41,19 @@ const GlobalLoadingIndicator = () => {
         event.message.includes('Loading chunk')
       )) {
         console.error('Module loading error detected:', event.message);
+        
         const error = new Error(event.message) as LoadingError;
         error.code = 'CHUNK_LOAD_ERROR';
+        error.details = `Path: ${location.pathname}, Time: ${new Date().toISOString()}`;
+        
         setLoadingError(error);
         setIsLoading(false); // Stop loading indicator if module fails to load
+        
+        // Display a toast for better user experience
+        toast.error("Failed to load page component", {
+          description: "Please try refreshing the page",
+          duration: 5000,
+        });
       }
     };
 
@@ -51,7 +62,7 @@ const GlobalLoadingIndicator = () => {
     return () => {
       window.removeEventListener('error', handleError);
     };
-  }, []);
+  }, [location.pathname]);
 
   if (loadingError) {
     console.error('Loading error in GlobalLoadingIndicator:', loadingError);

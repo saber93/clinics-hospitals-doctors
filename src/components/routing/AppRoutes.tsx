@@ -1,3 +1,4 @@
+
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -9,6 +10,7 @@ import NotFound from '@/pages/NotFound';
 import AdminDashboardLayout from '@/pages/admin/AdminDashboardLayout';
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface LazyLoadErrorBoundaryProps {
   children: React.ReactNode;
@@ -34,6 +36,11 @@ class LazyLoadErrorBoundary extends React.Component<LazyLoadErrorBoundaryProps, 
     console.error("Lazy loading error:", error, errorInfo);
   }
 
+  handleRetry = () => {
+    this.setState({ hasError: false, error: null });
+    window.location.reload();
+  };
+
   render() {
     if (this.state.hasError) {
       if (this.props.fallback) {
@@ -44,13 +51,17 @@ class LazyLoadErrorBoundary extends React.Component<LazyLoadErrorBoundaryProps, 
         <div className="container mx-auto p-4">
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
+            <AlertTitle>Error Loading Page</AlertTitle>
             <AlertDescription>
-              Failed to load this page. Please try refreshing the browser.
-              <br />
-              <code className="text-xs bg-gray-100 p-1 rounded mt-2 block">
-                {this.state.error?.message || "Unknown error"}
-              </code>
+              <p className="mb-4">Failed to load this page. Please try refreshing the browser.</p>
+              <Button onClick={this.handleRetry} variant="outline" size="sm">
+                Refresh Page
+              </Button>
+              <div className="mt-4 p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-x-auto">
+                <code className="text-xs break-all">
+                  {this.state.error?.message || "Unknown error"}
+                </code>
+              </div>
             </AlertDescription>
           </Alert>
         </div>
@@ -128,7 +139,10 @@ const DefaultErrorFallback = (
       <AlertCircle className="h-4 w-4" />
       <AlertTitle>Error Loading Page</AlertTitle>
       <AlertDescription>
-        There was a problem loading this page. Please try refreshing the browser.
+        <p className="mb-4">There was a problem loading this page. Please try refreshing the browser.</p>
+        <Button onClick={() => window.location.reload()} variant="outline" size="sm">
+          Refresh Page
+        </Button>
       </AlertDescription>
     </Alert>
   </div>

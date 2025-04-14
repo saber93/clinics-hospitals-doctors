@@ -9,7 +9,7 @@ import { LanguageProvider } from './contexts/LanguageContext';
 import { Toaster } from './components/ui/sonner';
 import { preloadCriticalImages } from './utils/imageOptimization';
 
-// Add global error handler for chunk loading errors
+// Enhanced global error handler for chunk loading errors
 window.addEventListener('error', (event) => {
   // Check if the error is related to loading a chunk
   if (event.message && (
@@ -18,7 +18,19 @@ window.addEventListener('error', (event) => {
     event.message.includes('Loading chunk')
   )) {
     console.error('Chunk loading error detected:', event.message);
-    // The error will be handled by the error boundary in App.tsx
+    console.error('Error details:', {
+      message: event.message,
+      filename: event.filename,
+      lineno: event.lineno,
+      colno: event.colno,
+      timestamp: new Date().toISOString(),
+      url: window.location.href
+    });
+    
+    // Don't show the default browser error dialog
+    event.preventDefault();
+    
+    // The error will be handled by the error boundaries in App.tsx and AppRoutes.tsx
   }
 });
 
@@ -29,7 +41,8 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false, // Don't refetch data when the window regains focus
       staleTime: 5 * 60 * 1000, // Data is considered fresh for 5 minutes
       gcTime: 10 * 60 * 1000, // Keep unused data in cache for 10 minutes (replaces cacheTime)
-      retry: 1, // Reduce retry attempts to avoid excessive requests on failure
+      retry: 2, // Increase retry attempts for network issues
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff with max 30s
     },
   },
 });
