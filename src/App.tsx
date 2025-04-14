@@ -12,6 +12,7 @@ import { Suspense, useState, useEffect } from "react";
 import LoadingSpinner from "./components/ui/LoadingSpinner";
 import { Alert, AlertTitle, AlertDescription } from "./components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { Button } from "./components/ui/button";
 
 const App = () => {
   const { loading } = useAppAuth();
@@ -23,7 +24,11 @@ const App = () => {
   // Add error boundary for dynamic imports
   useEffect(() => {
     const handleError = (event: ErrorEvent) => {
-      if (event.message && event.message.includes('Failed to fetch dynamically imported module')) {
+      if (event.message && (
+        event.message.includes('Failed to fetch dynamically imported module') ||
+        event.message.includes('ChunkLoadError') ||
+        event.message.includes('Loading chunk')
+      )) {
         console.error('Module loading error detected:', event.message);
         setError(new Error(event.message));
       }
@@ -40,6 +45,11 @@ const App = () => {
   useEffect(() => {
     setError(null);
   }, [location.pathname]);
+
+  // Function to handle manual refresh
+  const handleRefresh = () => {
+    window.location.reload();
+  };
 
   if (loading) {
     return (
@@ -76,8 +86,12 @@ const App = () => {
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Error Loading Page</AlertTitle>
                 <AlertDescription>
-                  There was a problem loading this page. Please try refreshing the browser.
-                  <br />
+                  There was a problem loading this page. This might be due to a network issue or a problem with the application.
+                  <div className="mt-4">
+                    <Button onClick={handleRefresh} variant="outline">
+                      Refresh Page
+                    </Button>
+                  </div>
                   <code className="text-xs bg-gray-100 p-1 rounded mt-2 block">
                     {error.message}
                   </code>

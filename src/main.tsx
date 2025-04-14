@@ -9,6 +9,19 @@ import { LanguageProvider } from './contexts/LanguageContext';
 import { Toaster } from './components/ui/sonner';
 import { preloadCriticalImages } from './utils/imageOptimization';
 
+// Add global error handler for chunk loading errors
+window.addEventListener('error', (event) => {
+  // Check if the error is related to loading a chunk
+  if (event.message && (
+    event.message.includes('Failed to fetch dynamically imported module') ||
+    event.message.includes('ChunkLoadError') ||
+    event.message.includes('Loading chunk')
+  )) {
+    console.error('Chunk loading error detected:', event.message);
+    // The error will be handled by the error boundary in App.tsx
+  }
+});
+
 // Configure query client with caching for better performance
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -16,6 +29,7 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false, // Don't refetch data when the window regains focus
       staleTime: 5 * 60 * 1000, // Data is considered fresh for 5 minutes
       gcTime: 10 * 60 * 1000, // Keep unused data in cache for 10 minutes (replaces cacheTime)
+      retry: 1, // Reduce retry attempts to avoid excessive requests on failure
     },
   },
 });

@@ -5,9 +5,13 @@ import LoadingSpinner from './LoadingSpinner';
 
 const GlobalLoadingIndicator = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingError, setLoadingError] = useState<Error | null>(null);
   const location = useLocation();
 
   useEffect(() => {
+    // Reset error state on route change
+    setLoadingError(null);
+    
     // Show loading indicator when route changes
     setIsLoading(true);
     
@@ -25,8 +29,13 @@ const GlobalLoadingIndicator = () => {
   useEffect(() => {
     const handleError = (event: ErrorEvent) => {
       // Check if the error is related to dynamic imports
-      if (event.message && event.message.includes('Failed to fetch dynamically imported module')) {
+      if (event.message && (
+        event.message.includes('Failed to fetch dynamically imported module') ||
+        event.message.includes('ChunkLoadError') ||
+        event.message.includes('Loading chunk')
+      )) {
         console.error('Module loading error detected:', event.message);
+        setLoadingError(new Error(event.message));
         setIsLoading(false); // Stop loading indicator if module fails to load
       }
     };
@@ -37,6 +46,12 @@ const GlobalLoadingIndicator = () => {
       window.removeEventListener('error', handleError);
     };
   }, []);
+
+  if (loadingError) {
+    console.error('Loading error in GlobalLoadingIndicator:', loadingError);
+    // We don't show the error here because it will be handled by the error boundary
+    return null;
+  }
 
   if (!isLoading) return null;
   
