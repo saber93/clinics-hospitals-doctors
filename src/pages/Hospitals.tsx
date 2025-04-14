@@ -1,5 +1,5 @@
 
-import React, { Suspense, ErrorBoundary } from 'react';
+import React, { Suspense } from 'react';
 import HeroSection from '@/components/hospitals/HeroSection';
 import HospitalFilters from '@/components/hospitals/HospitalFilters';
 import HospitalFeatures from '@/components/hospitals/HospitalFeatures';
