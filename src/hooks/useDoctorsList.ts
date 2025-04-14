@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Doctor } from '@/types/doctor';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,7 +13,7 @@ export const useDoctorsList = ({ doctorsData: initialData }: UseDoctorListProps 
   const [specialtyFilter, setSpecialtyFilter] = useState('all');
   const [offerFilter, setOfferFilter] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
-  const [viewMode, setViewMode<'grid' | 'list'>>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [visibleCount, setVisibleCount] = useState(6);
 
   const { data: doctorsData = [], isLoading } = useQuery({
