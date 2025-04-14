@@ -15,27 +15,49 @@ import { AlertCircle } from "lucide-react";
 import { Button } from "./components/ui/button";
 import { toast } from "sonner";
 
+interface AppError extends Error {
+  isChunkLoadError?: boolean;
+  source?: string;
+}
+
 const App = () => {
   const { loading } = useAppAuth();
   const location = useLocation();
   const { t } = useTranslation();
   const { isRTL, direction } = useLanguage();
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<AppError | null>(null);
 
-  // Add error boundary for dynamic imports
+  // Add enhanced error boundary for dynamic imports
   useEffect(() => {
     const handleError = (event: ErrorEvent) => {
-      if (event.message && (
+      // Expanded check for chunk-related errors
+      const isChunkError = event.message && (
         event.message.includes('Failed to fetch dynamically imported module') ||
         event.message.includes('ChunkLoadError') ||
-        event.message.includes('Loading chunk')
-      )) {
-        console.error('Module loading error detected:', event.message);
-        setError(new Error(event.message));
+        event.message.includes('Loading chunk') ||
+        event.message.includes('importing module') ||
+        event.message.includes('chunk ') ||
+        event.message.includes('import(') ||
+        event.filename?.includes('chunk-')
+      );
+      
+      if (isChunkError) {
+        console.error('App.tsx: Module loading error detected:', event.message);
+        console.error('Error filename:', event.filename);
+        
+        const appError = new Error(event.message) as AppError;
+        appError.isChunkLoadError = true;
+        appError.source = 'app-global-handler';
+        setError(appError);
         
         // Show toast for better user experience
         toast.error("Page loading failed", {
-          description: "There was a problem loading this page. Please try again."
+          description: "There was a problem loading this page. Please try again.",
+          duration: 10000,
+          action: {
+            label: "Refresh",
+            onClick: () => window.location.reload()
+          }
         });
       }
     };
@@ -64,6 +86,11 @@ const App = () => {
     setTimeout(() => {
       window.location.href = location.pathname;
     }, 100);
+  };
+
+  // Function to go back to previous page
+  const handleGoBack = () => {
+    window.history.back();
   };
 
   if (loading) {
@@ -97,22 +124,26 @@ const App = () => {
         <div className="flex-grow mt-16">
           {error ? (
             <div className="container mx-auto px-4 py-8">
-              <Alert variant="destructive" className="mb-6">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Error Loading Page</AlertTitle>
+              <Alert variant="destructive" className="mb-6 border border-destructive">
+                <AlertCircle className="h-5 w-5" />
+                <AlertTitle className="text-lg font-semibold">Error Loading Page</AlertTitle>
                 <AlertDescription>
                   <p className="mb-4">There was a problem loading this page. This might be due to a network issue or a problem with the application.</p>
-                  <div className="flex space-x-4 mt-4">
-                    <Button onClick={handleRefresh} variant="outline">
+                  <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                    <Button onClick={handleRefresh} variant="default" size="lg" className="w-full sm:w-auto">
                       Refresh Page
                     </Button>
-                    <Button onClick={handleRetry} variant="default">
+                    <Button onClick={handleRetry} variant="outline" size="lg" className="w-full sm:w-auto">
                       Try Again
                     </Button>
+                    <Button onClick={handleGoBack} variant="secondary" size="lg" className="w-full sm:w-auto">
+                      Go Back
+                    </Button>
                   </div>
-                  <div className="mt-4 p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-x-auto">
-                    <code className="break-all">
+                  <div className="mt-6 p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-x-auto">
+                    <code className="break-all whitespace-pre-wrap">
                       {error.message}
+                      {error.isChunkLoadError ? ' [Chunk Load Error]' : ''}
                     </code>
                   </div>
                 </AlertDescription>

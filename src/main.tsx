@@ -8,16 +8,21 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { Toaster } from './components/ui/sonner';
 import { preloadCriticalImages } from './utils/imageOptimization';
+import { toast } from 'sonner';
 
 // Enhanced global error handler for chunk loading errors
 window.addEventListener('error', (event) => {
-  // Check if the error is related to loading a chunk
+  // Check if the error is related to loading a chunk with more specific patterns
   if (event.message && (
     event.message.includes('Failed to fetch dynamically imported module') ||
     event.message.includes('ChunkLoadError') ||
-    event.message.includes('Loading chunk')
+    event.message.includes('Loading chunk') ||
+    event.message.includes('importing module') ||
+    event.message.includes('chunk ') ||
+    event.message.includes('import(') ||
+    event.filename?.includes('chunk-')
   )) {
-    console.error('Chunk loading error detected:', event.message);
+    console.error('🚨 Chunk loading error detected:', event.message);
     console.error('Error details:', {
       message: event.message,
       filename: event.filename,
@@ -27,10 +32,18 @@ window.addEventListener('error', (event) => {
       url: window.location.href
     });
     
+    // Show a user-friendly toast message
+    toast.error("Failed to load page", {
+      description: "Please try refreshing the page",
+      duration: 10000,
+      action: {
+        label: "Refresh",
+        onClick: () => window.location.reload()
+      }
+    });
+    
     // Don't show the default browser error dialog
     event.preventDefault();
-    
-    // The error will be handled by the error boundaries in App.tsx and AppRoutes.tsx
   }
 });
 

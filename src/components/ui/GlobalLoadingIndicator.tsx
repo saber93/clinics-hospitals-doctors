@@ -31,28 +31,37 @@ const GlobalLoadingIndicator = () => {
     };
   }, [location.pathname]);
 
-  // Add error handling for dynamic imports
+  // Add enhanced error handling for dynamic imports
   useEffect(() => {
     const handleError = (event: ErrorEvent) => {
-      // Check if the error is related to dynamic imports
+      // Check if the error is related to dynamic imports with expanded patterns
       if (event.message && (
         event.message.includes('Failed to fetch dynamically imported module') ||
         event.message.includes('ChunkLoadError') ||
-        event.message.includes('Loading chunk')
+        event.message.includes('Loading chunk') ||
+        event.message.includes('importing module') ||
+        event.message.includes('chunk ') ||
+        event.message.includes('import(') ||
+        event.filename?.includes('chunk-')
       )) {
-        console.error('Module loading error detected:', event.message);
+        console.error('Module loading error detected in GlobalLoadingIndicator:', event.message);
+        console.error('Error filename:', event.filename);
         
         const error = new Error(event.message) as LoadingError;
         error.code = 'CHUNK_LOAD_ERROR';
-        error.details = `Path: ${location.pathname}, Time: ${new Date().toISOString()}`;
+        error.details = `Path: ${location.pathname}, Time: ${new Date().toISOString()}, File: ${event.filename || 'unknown'}`;
         
         setLoadingError(error);
         setIsLoading(false); // Stop loading indicator if module fails to load
         
-        // Display a toast for better user experience
+        // Display a toast for better user experience with a refresh action
         toast.error("Failed to load page component", {
-          description: "Please try refreshing the page",
-          duration: 5000,
+          description: "Try refreshing the page to fix the issue",
+          duration: 8000,
+          action: {
+            label: "Refresh",
+            onClick: () => window.location.reload()
+          }
         });
       }
     };

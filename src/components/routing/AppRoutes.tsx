@@ -11,6 +11,7 @@ import AdminDashboardLayout from '@/pages/admin/AdminDashboardLayout';
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface LazyLoadErrorBoundaryProps {
   children: React.ReactNode;
@@ -29,15 +30,25 @@ class LazyLoadErrorBoundary extends React.Component<LazyLoadErrorBoundaryProps, 
   }
 
   static getDerivedStateFromError(error: Error): LazyLoadErrorBoundaryState {
+    console.error("Error captured in LazyLoadErrorBoundary:", error.message);
     return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error("Lazy loading error:", error, errorInfo);
+    console.error("Lazy loading error caught:", error);
+    console.error("Component stack:", errorInfo.componentStack);
+    
+    // Show a toast notification
+    toast.error("Error loading component", {
+      description: "Please try refreshing the page",
+      duration: 8000
+    });
   }
 
   handleRetry = () => {
     this.setState({ hasError: false, error: null });
+    
+    // Force refresh the page to reload all chunks
     window.location.reload();
   };
 
@@ -48,17 +59,27 @@ class LazyLoadErrorBoundary extends React.Component<LazyLoadErrorBoundaryProps, 
       }
       
       return (
-        <div className="container mx-auto p-4">
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Error Loading Page</AlertTitle>
+        <div className="container mx-auto p-4 my-8">
+          <Alert variant="destructive" className="border border-destructive">
+            <AlertCircle className="h-5 w-5" />
+            <AlertTitle className="text-lg font-semibold">Error Loading Page</AlertTitle>
             <AlertDescription>
-              <p className="mb-4">Failed to load this page. Please try refreshing the browser.</p>
-              <Button onClick={this.handleRetry} variant="outline" size="sm">
-                Refresh Page
-              </Button>
-              <div className="mt-4 p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-x-auto">
-                <code className="text-xs break-all">
+              <p className="mb-4">Failed to load this page. This might be due to network issues or a problem with the application.</p>
+              <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                <Button onClick={this.handleRetry} variant="default" size="lg" className="w-full sm:w-auto">
+                  Refresh Page
+                </Button>
+                <Button 
+                  onClick={() => window.history.back()} 
+                  variant="outline" 
+                  size="lg"
+                  className="w-full sm:w-auto"
+                >
+                  Go Back
+                </Button>
+              </div>
+              <div className="mt-6 p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-x-auto">
+                <code className="text-xs break-all whitespace-pre-wrap">
                   {this.state.error?.message || "Unknown error"}
                 </code>
               </div>
@@ -72,13 +93,22 @@ class LazyLoadErrorBoundary extends React.Component<LazyLoadErrorBoundaryProps, 
   }
 }
 
+// Improve the lazy loading function to add better error logging
 const loadComponent = (componentPath: string) => {
   return lazy(() => {
     console.log(`Loading component: ${componentPath}`);
     return import(`@/pages/${componentPath}`)
       .catch(error => {
         console.error(`Error loading component ${componentPath}:`, error);
-        throw error;
+        console.error(`Stack trace:`, error.stack);
+        
+        // Show toast for component loading errors
+        toast.error(`Failed to load: ${componentPath}`, {
+          description: "Please try refreshing the page",
+          duration: 5000
+        });
+        
+        throw error; // Re-throw to be caught by error boundary
       });
   });
 };
@@ -135,14 +165,24 @@ const ThemeEditorPage = loadComponent('admin/ThemeEditorPage');
 
 const DefaultErrorFallback = (
   <div className="min-h-screen bg-gray-50 p-6">
-    <Alert variant="destructive">
-      <AlertCircle className="h-4 w-4" />
-      <AlertTitle>Error Loading Page</AlertTitle>
+    <Alert variant="destructive" className="border border-destructive max-w-2xl mx-auto">
+      <AlertCircle className="h-5 w-5" />
+      <AlertTitle className="text-lg font-semibold">Error Loading Page</AlertTitle>
       <AlertDescription>
         <p className="mb-4">There was a problem loading this page. Please try refreshing the browser.</p>
-        <Button onClick={() => window.location.reload()} variant="outline" size="sm">
-          Refresh Page
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-3 mt-4">
+          <Button onClick={() => window.location.reload()} variant="default" size="lg" className="w-full sm:w-auto">
+            Refresh Page
+          </Button>
+          <Button 
+            onClick={() => window.history.back()} 
+            variant="outline" 
+            size="lg"
+            className="w-full sm:w-auto"
+          >
+            Go Back
+          </Button>
+        </div>
       </AlertDescription>
     </Alert>
   </div>
