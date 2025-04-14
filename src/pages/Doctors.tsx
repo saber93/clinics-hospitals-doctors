@@ -7,7 +7,6 @@ import TestimonialsSection from '@/components/doctors/TestimonialsSection';
 import DoctorsHeader from '@/components/doctors/DoctorsHeader';
 import DoctorsListView from '@/components/doctors/DoctorsListView';
 import { useDoctorsList } from '@/hooks/useDoctorsList';
-import { doctorsData } from '@/data/doctorsData';
 
 const Doctors = () => {
   const {
@@ -27,7 +26,7 @@ const Doctors = () => {
     specialties,
     clearFilters,
     loadMoreDoctors
-  } = useDoctorsList({ doctorsData });
+  } = useDoctorsList({ initialPageSize: 9 });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -54,7 +53,7 @@ const Doctors = () => {
         <DoctorsListView
           visibleDoctors={visibleDoctors}
           filteredDoctors={filteredDoctors}
-          viewMode={viewMode as 'grid' | 'list'}
+          viewMode={viewMode}
           setViewMode={setViewMode}
           clearFilters={clearFilters}
           hasMore={hasMore}

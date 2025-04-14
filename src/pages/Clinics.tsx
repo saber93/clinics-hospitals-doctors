@@ -1,3 +1,4 @@
+
 import React from 'react';
 import HeroSection from '@/components/clinics/HeroSection';
 import ClinicFilters from '@/components/clinics/ClinicFilters';
@@ -53,7 +54,7 @@ const Clinics = () => {
           visibleClinics={visibleClinics}
           filteredClinics={filteredClinics}
           viewMode={viewMode}
-          setViewMode={setViewMode}
+          setViewMode={setViewMode as (mode: string) => void}
           clearFilters={clearFilters}
           hasMore={hasMore}
           loadMoreClinics={loadMoreClinics}
