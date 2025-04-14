@@ -24,7 +24,7 @@ const Products = () => {
   const [onlyAvailable, setOnlyAvailable] = useState(false);
   const [onlyDiscounted, setOnlyDiscounted] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(6);
+  const [itemsPerPage] = useState(9);
   const { products, loading } = useProducts();
   const { addToCart } = useCart();
   

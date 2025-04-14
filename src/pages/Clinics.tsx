@@ -1,4 +1,3 @@
-
 import React from 'react';
 import HeroSection from '@/components/clinics/HeroSection';
 import ClinicFilters from '@/components/clinics/ClinicFilters';
@@ -7,7 +6,6 @@ import TestimonialsSection from '@/components/clinics/TestimonialsSection';
 import ClinicsHeader from '@/components/clinics/ClinicsHeader';
 import ClinicsListView from '@/components/clinics/ClinicsListView';
 import { useClinicsList } from '@/hooks/useClinicsList';
-import { clinicsData } from '@/data/clinicsData';
 
 const Clinics = () => {
   const {
@@ -26,12 +24,12 @@ const Clinics = () => {
     hasMore,
     categories,
     clearFilters,
-    loadMoreClinics
-  } = useClinicsList({ clinicsData });
+    loadMoreClinics,
+    isLoading
+  } = useClinicsList({ initialPageSize: 9 });
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Added margin-top to push hero section below the navbar */}
       <div className="mt-16">
         <HeroSection />
       </div>
@@ -62,7 +60,6 @@ const Clinics = () => {
         />
       </div>
       
-      {/* Features and Testimonials sections */}
       <ClinicFeatures />
       <TestimonialsSection />
     </div>

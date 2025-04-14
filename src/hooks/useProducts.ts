@@ -20,8 +20,21 @@ export const useProducts = (filterParam?: string) => {
         throw error;
       }
       
-      // Return the data directly as it already matches the Product interface
-      return (data || []) as Product[];
+      return (data || []).map(product => ({
+        id: product.id,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        image_url: product.image_url,
+        additional_images: [],
+        stock_quantity: product.stock_quantity,
+        low_stock_threshold: product.low_stock_threshold,
+        is_available: product.is_available,
+        category: product.category,
+        seller_id: product.seller_id,
+        discount_percentage: product.discount_percentage,
+        is_reservable: false
+      } as Product));
     }
   });
 

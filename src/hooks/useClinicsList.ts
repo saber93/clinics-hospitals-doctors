@@ -1,20 +1,19 @@
-
 import { useState } from 'react';
+import { Clinic } from '@/types/clinic';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
-import { Clinic } from '@/types/clinic';
 
 interface UseClinicListProps {
-  clinicsData?: Clinic[];
+  initialPageSize?: number;
 }
 
-export const useClinicsList = ({ clinicsData: initialData }: UseClinicListProps = {}) => {
+export const useClinicsList = ({ initialPageSize = 9 }: UseClinicListProps = {}) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [offerFilter, setOfferFilter] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
-  const [viewMode, setViewMode] = useState('grid');
-  const [visibleCount, setVisibleCount] = useState(6);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [visibleCount, setVisibleCount] = useState(initialPageSize);
 
   const { data: clinicsData = [], isLoading } = useQuery({
     queryKey: ['clinics'],
@@ -25,8 +24,7 @@ export const useClinicsList = ({ clinicsData: initialData }: UseClinicListProps 
 
       if (error) throw error;
 
-      // Transform the database data to match our Clinic interface
-      return data.map(clinic => ({
+      return (data || []).map(clinic => ({
         id: clinic.id,
         name: clinic.name,
         description: clinic.description,
@@ -34,15 +32,14 @@ export const useClinicsList = ({ clinicsData: initialData }: UseClinicListProps 
         category: clinic.category,
         subCategory: clinic.sub_category,
         offerPercentage: clinic.offer_percentage || 0,
-        imageUrl: clinic.image_url,
+        imageUrl: clinic.image_url || '/placeholder.svg',
         rating: 4.5, // Default rating until we implement ratings
         reviews: 0, // Default reviews until we implement reviews system
         featured: false, // Default featured flag
-        specialties: [], // Add default specialties array
+        specialties: [], // Default specialties array
         custom_domain: clinic.custom_domain
       } as Clinic));
-    },
-    initialData: initialData ? () => initialData : undefined
+    }
   });
 
   const filteredClinics = clinicsData.filter(clinic => {
@@ -69,17 +66,6 @@ export const useClinicsList = ({ clinicsData: initialData }: UseClinicListProps 
     return true;
   });
 
-  // Sort the filtered clinics based on the selected sort option
-  if (sortBy === 'rating') {
-    filteredClinics.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-  } else if (sortBy === 'reviews') {
-    filteredClinics.sort((a, b) => (b.reviews || 0) - (a.reviews || 0));
-  } else if (sortBy === 'offers') {
-    filteredClinics.sort((a, b) => b.offerPercentage - a.offerPercentage);
-  } else if (sortBy === 'featured') {
-    filteredClinics.sort((a, b) => (a.featured === b.featured) ? 0 : a.featured ? -1 : 1);
-  }
-
   const visibleClinics = filteredClinics.slice(0, visibleCount);
   const hasMore = filteredClinics.length > visibleCount;
 
@@ -90,7 +76,7 @@ export const useClinicsList = ({ clinicsData: initialData }: UseClinicListProps 
   };
 
   const loadMoreClinics = () => {
-    setVisibleCount(prevCount => prevCount + 6);
+    setVisibleCount(prevCount => prevCount + initialPageSize);
   };
 
   return {
@@ -107,7 +93,7 @@ export const useClinicsList = ({ clinicsData: initialData }: UseClinicListProps 
     filteredClinics,
     visibleClinics,
     hasMore,
-    categories: ['Dental', 'Medical', 'Specialist'], // You might want to fetch these from Supabase later
+    categories: ['Medical', 'Dental', 'Specialty'], // These could be fetched from a categories table
     clearFilters,
     loadMoreClinics,
     isLoading

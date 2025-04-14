@@ -1,20 +1,19 @@
-
 import { useState } from 'react';
 import { Doctor } from '@/types/doctor';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 
 interface UseDoctorListProps {
-  doctorsData?: Doctor[];
+  initialPageSize?: number;
 }
 
-export const useDoctorsList = ({ doctorsData: initialData }: UseDoctorListProps = {}) => {
+export const useDoctorsList = ({ initialPageSize = 9 }: UseDoctorListProps = {}) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [specialtyFilter, setSpecialtyFilter] = useState('all');
   const [offerFilter, setOfferFilter] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [visibleCount, setVisibleCount] = useState(6);
+  const [visibleCount, setVisibleCount] = useState(initialPageSize);
 
   const { data: doctorsData = [], isLoading } = useQuery({
     queryKey: ['doctors'],
@@ -25,8 +24,7 @@ export const useDoctorsList = ({ doctorsData: initialData }: UseDoctorListProps 
 
       if (error) throw error;
 
-      // Transform the database data to match our Doctor interface
-      return data.map(doctor => ({
+      return (data || []).map(doctor => ({
         id: doctor.id,
         name: doctor.name,
         description: doctor.description,
@@ -34,15 +32,14 @@ export const useDoctorsList = ({ doctorsData: initialData }: UseDoctorListProps 
         specialty: doctor.specialty,
         subSpecialty: doctor.sub_specialty,
         offerPercentage: doctor.offer_percentage || 0,
-        imageUrl: doctor.image_url,
+        imageUrl: doctor.image_url || '/placeholder.svg',
         rating: 4.5, // Default rating until we implement ratings
         reviews: 0, // Default reviews until we implement reviews system
+        specialties: [doctor.specialty], // Convert specialty to array for now
         featured: false, // Default featured flag
-        specialties: [], // Add default specialties array
         custom_domain: doctor.custom_domain
       } as Doctor));
-    },
-    initialData: initialData ? () => initialData : undefined
+    }
   });
 
   const filteredDoctors = doctorsData.filter(doctor => {
@@ -79,7 +76,7 @@ export const useDoctorsList = ({ doctorsData: initialData }: UseDoctorListProps 
   };
 
   const loadMoreDoctors = () => {
-    setVisibleCount(prevCount => prevCount + 6);
+    setVisibleCount(prevCount => prevCount + initialPageSize);
   };
 
   return {
@@ -96,7 +93,7 @@ export const useDoctorsList = ({ doctorsData: initialData }: UseDoctorListProps 
     filteredDoctors,
     visibleDoctors,
     hasMore,
-    specialties: ['General', 'Cardiology', 'Pediatrics'], // You might want to fetch these from Supabase later
+    specialties: ['General', 'Cardiology', 'Pediatrics'], // These could be fetched from a specialties table
     clearFilters,
     loadMoreDoctors,
     isLoading
