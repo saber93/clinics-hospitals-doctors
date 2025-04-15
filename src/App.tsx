@@ -27,7 +27,7 @@ const App = () => {
   const { isRTL, direction } = useLanguage();
   const [error, setError] = useState<AppError | null>(null);
 
-  // Add enhanced error boundary for dynamic imports
+  // Add enhanced error boundary for dynamic imports with more detailed logging
   useEffect(() => {
     const handleError = (event: ErrorEvent) => {
       // Expanded check for chunk-related errors
@@ -46,6 +46,7 @@ const App = () => {
       if (isChunkError) {
         console.error('App.tsx: Module loading error detected:', event.message);
         console.error('Error filename:', event.filename);
+        console.error('Current route:', location.pathname);
         
         const appError = new Error(event.message) as AppError;
         appError.isChunkLoadError = true;
@@ -61,6 +62,15 @@ const App = () => {
             onClick: () => window.location.reload()
           }
         });
+
+        // Clear localStorage and sessionStorage in case of persisted corruption
+        try {
+          localStorage.removeItem('sb-rghakqvaawoopcoeowir-auth-token');
+          sessionStorage.clear();
+          console.log("Cleared storage due to chunk error");
+        } catch (e) {
+          console.error("Failed to clear storage:", e);
+        }
       }
     };
 
@@ -69,7 +79,7 @@ const App = () => {
     return () => {
       window.removeEventListener('error', handleError);
     };
-  }, []);
+  }, [location.pathname]);
 
   // Reset error when location changes
   useEffect(() => {

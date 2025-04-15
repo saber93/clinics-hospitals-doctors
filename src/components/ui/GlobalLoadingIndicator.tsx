@@ -31,10 +31,10 @@ const GlobalLoadingIndicator = () => {
     };
   }, [location.pathname]);
 
-  // Add enhanced error handling for dynamic imports
+  // Add enhanced error handling for dynamic imports with better debugging info
   useEffect(() => {
     const handleError = (event: ErrorEvent) => {
-      // Check if the error is related to dynamic imports with expanded patterns
+      // Expanded check for errors related to dynamic imports
       if (event.message && (
         event.message.includes('Failed to fetch dynamically imported module') ||
         event.message.includes('ChunkLoadError') ||
@@ -48,6 +48,8 @@ const GlobalLoadingIndicator = () => {
       )) {
         console.error('Module loading error detected in GlobalLoadingIndicator:', event.message);
         console.error('Error filename:', event.filename);
+        console.error('Current path:', location.pathname);
+        console.error('Error stack:', event.error?.stack);
         
         const error = new Error(event.message) as LoadingError;
         error.code = 'CHUNK_LOAD_ERROR';
@@ -56,13 +58,27 @@ const GlobalLoadingIndicator = () => {
         setLoadingError(error);
         setIsLoading(false); // Stop loading indicator if module fails to load
         
-        // Display a toast for better user experience with a refresh action
+        // Display a toast with clearer instructions
         toast.error("Failed to load page component", {
-          description: "Try refreshing the page to fix the issue",
+          description: "Clearing your browser cache and refreshing the page may fix this issue",
           duration: 8000,
           action: {
             label: "Refresh",
-            onClick: () => window.location.reload()
+            onClick: () => {
+              // Try to clear any cached data that might be causing the issue
+              if (window.caches) {
+                try {
+                  caches.keys().then(names => {
+                    names.forEach(name => {
+                      caches.delete(name);
+                    });
+                  });
+                } catch (e) {
+                  console.error('Failed to clear cache:', e);
+                }
+              }
+              window.location.reload();
+            }
           }
         });
       }
@@ -74,6 +90,29 @@ const GlobalLoadingIndicator = () => {
       window.removeEventListener('error', handleError);
     };
   }, [location.pathname]);
+
+  // Add a handler for unhandled promise rejections that might be related to page loading
+  useEffect(() => {
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      console.error('Unhandled promise rejection:', event.reason);
+      if (event.reason && typeof event.reason === 'object' && 
+          (event.reason.message?.includes('chunk') || 
+           event.reason.message?.includes('import') ||
+           event.reason.message?.includes('module'))) {
+        
+        toast.error("Failed to load page", {
+          description: "There was a problem loading resources. Try refreshing.",
+          duration: 8000
+        });
+      }
+    };
+
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+    
+    return () => {
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+    };
+  }, []);
 
   if (loadingError) {
     console.error('Loading error in GlobalLoadingIndicator:', loadingError);

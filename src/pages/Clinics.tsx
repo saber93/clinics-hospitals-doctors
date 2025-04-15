@@ -7,6 +7,7 @@ import TestimonialsSection from '@/components/clinics/TestimonialsSection';
 import ClinicsHeader from '@/components/clinics/ClinicsHeader';
 import ClinicsListView from '@/components/clinics/ClinicsListView';
 import { useClinicsList } from '@/hooks/useClinicsList';
+import { toast } from 'sonner';
 
 const Clinics = () => {
   const {
@@ -28,6 +29,28 @@ const Clinics = () => {
     loadMoreClinics,
     isLoading
   } = useClinicsList({ initialPageSize: 9 });
+
+  // Add error handling for data fetching issues
+  React.useEffect(() => {
+    if (isLoading) {
+      console.log("Loading clinics data...");
+    }
+    
+    // Handle any potential errors gracefully
+    window.addEventListener('error', (event) => {
+      if (event.message && event.message.includes('chunk')) {
+        console.error('Chunk loading error in Clinics page:', event);
+        toast.error("There was an error loading the page", {
+          description: "Please try refreshing the page",
+          duration: 5000
+        });
+      }
+    });
+    
+    return () => {
+      window.removeEventListener('error', () => {});
+    };
+  }, [isLoading]);
 
   return (
     <div className="min-h-screen bg-gray-50">

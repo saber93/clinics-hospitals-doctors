@@ -10,8 +10,8 @@ import { Toaster } from './components/ui/sonner';
 import { preloadCriticalImages } from './utils/imageOptimization';
 import { toast } from 'sonner';
 
-// Enhanced global error handler for chunk loading errors
-window.addEventListener('error', (event) => {
+// Create a custom error handler for chunk loading errors
+const handleChunkError = (event: ErrorEvent) => {
   // Check if the error is related to loading a chunk with more specific patterns
   if (event.message && (
     event.message.includes('Failed to fetch dynamically imported module') ||
@@ -34,6 +34,24 @@ window.addEventListener('error', (event) => {
       url: window.location.href
     });
     
+    // Try to recover by clearing cached resources
+    try {
+      console.log('Attempting to clear cached resources...');
+      localStorage.removeItem('sb-rghakqvaawoopcoeowir-auth-token');
+      sessionStorage.clear();
+      
+      if (window.caches) {
+        caches.keys().then(cacheNames => {
+          cacheNames.forEach(cacheName => {
+            caches.delete(cacheName);
+            console.log(`Cache ${cacheName} deleted`);
+          });
+        });
+      }
+    } catch (e) {
+      console.error('Failed to clear caches:', e);
+    }
+    
     // Show a user-friendly toast message
     toast.error("Failed to load page", {
       description: "Please try refreshing the page",
@@ -47,17 +65,52 @@ window.addEventListener('error', (event) => {
     // Don't show the default browser error dialog
     event.preventDefault();
   }
+};
+
+// Add global error handler
+window.addEventListener('error', handleChunkError);
+
+// Add unhandled promise rejection handler
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('Unhandled promise rejection:', event.reason);
+  
+  // If it seems related to a chunk loading issue, handle it
+  if (event.reason && (
+      typeof event.reason.message === 'string' && 
+      (event.reason.message.includes('chunk') || 
+       event.reason.message.includes('import') ||
+       event.reason.message.includes('module')))) {
+    
+    toast.error("Failed to load resources", {
+      description: "Please try refreshing the page",
+      duration: 10000,
+      action: {
+        label: "Refresh",
+        onClick: () => window.location.reload()
+      }
+    });
+    
+    // Mark as handled to prevent default browser handling
+    event.preventDefault();
+  }
 });
 
-// Configure query client with caching for better performance
+// Configure query client with improved caching and error handling
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false, // Don't refetch data when the window regains focus
       staleTime: 5 * 60 * 1000, // Data is considered fresh for 5 minutes
       gcTime: 10 * 60 * 1000, // Keep unused data in cache for 10 minutes (replaces cacheTime)
-      retry: 2, // Increase retry attempts for network issues
+      retry: 3, // Increase retry attempts for network issues
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff with max 30s
+      onError: (error) => {
+        console.error('Query error:', error);
+        toast.error('Failed to load data', {
+          description: 'Please try again later',
+          duration: 5000
+        });
+      }
     },
   },
 });
@@ -66,6 +119,24 @@ const queryClient = new QueryClient({
 preloadCriticalImages([
   '/lovable-uploads/f538345f-52aa-4960-a4a2-c377edde5280.png', // Hero image
 ]);
+
+// Expose logout function globally for error recovery
+window.logoutUser = async () => {
+  try {
+    // Add this function to help users recover from auth-related issues
+    await supabase.auth.signOut();
+    localStorage.removeItem('sb-rghakqvaawoopcoeowir-auth-token');
+    sessionStorage.clear();
+    window.location.href = '/';
+    
+    console.log('User logged out successfully for recovery');
+    return true;
+  } catch (error) {
+    console.error('Error during recovery logout:', error);
+    window.location.href = '/';
+    return false;
+  }
+};
 
 // Use createRoot instead of ReactDOM.render for better performance
 ReactDOM.createRoot(document.getElementById('root')!).render(
