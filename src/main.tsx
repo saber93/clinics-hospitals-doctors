@@ -9,6 +9,7 @@ import { LanguageProvider } from './contexts/LanguageContext';
 import { Toaster } from './components/ui/sonner';
 import { preloadCriticalImages } from './utils/imageOptimization';
 import { toast } from 'sonner';
+import { supabase } from './integrations/supabase/client';
 
 // Create a custom error handler for chunk loading errors
 const handleChunkError = (event: ErrorEvent) => {
@@ -104,12 +105,14 @@ const queryClient = new QueryClient({
       gcTime: 10 * 60 * 1000, // Keep unused data in cache for 10 minutes (replaces cacheTime)
       retry: 3, // Increase retry attempts for network issues
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff with max 30s
-      onError: (error) => {
-        console.error('Query error:', error);
-        toast.error('Failed to load data', {
-          description: 'Please try again later',
-          duration: 5000
-        });
+      meta: {
+        onError: (error: Error) => {
+          console.error('Query error:', error);
+          toast.error('Failed to load data', {
+            description: 'Please try again later',
+            duration: 5000
+          });
+        }
       }
     },
   },
@@ -121,7 +124,7 @@ preloadCriticalImages([
 ]);
 
 // Expose logout function globally for error recovery
-window.logoutUser = async () => {
+window.logoutUser = async (): Promise<void> => {
   try {
     // Add this function to help users recover from auth-related issues
     await supabase.auth.signOut();
@@ -130,11 +133,9 @@ window.logoutUser = async () => {
     window.location.href = '/';
     
     console.log('User logged out successfully for recovery');
-    return true;
   } catch (error) {
     console.error('Error during recovery logout:', error);
     window.location.href = '/';
-    return false;
   }
 };
 
