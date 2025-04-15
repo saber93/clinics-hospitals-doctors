@@ -1,4 +1,3 @@
-
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -93,11 +92,24 @@ class LazyLoadErrorBoundary extends React.Component<LazyLoadErrorBoundaryProps, 
   }
 }
 
-// Improve the lazy loading function to add better error logging
+const Home = lazy(() => import('@/pages/Home'));
+const Index = lazy(() => import('@/pages/Index'));
+const Clinics = lazy(() => import('@/pages/Clinics'));
+const Doctors = lazy(() => import('@/pages/Doctors'));
+const DoctorDetails = lazy(() => import('@/pages/DoctorDetails'));
+const Hospitals = lazy(() => import('@/pages/Hospitals'));
+const About = lazy(() => import('@/pages/About'));
+const Contact = lazy(() => import('@/pages/Contact'));
+const ClinicDetails = lazy(() => import('@/pages/ClinicDetails'));
+const Cart = lazy(() => import('@/pages/Cart'));
+const Offers = lazy(() => import('@/pages/Offers'));
+const Products = lazy(() => import('@/pages/Products'));
+const ProductDetails = lazy(() => import('@/pages/ProductDetails'));
+
 const loadComponent = (componentPath: string) => {
   return lazy(() => {
     console.log(`Loading component: ${componentPath}`);
-    return import(`../../pages/${componentPath}`)
+    return import(`@/pages/${componentPath}`)
       .catch(error => {
         console.error(`Error loading component ${componentPath}:`, error);
         console.error(`Stack trace:`, error.stack);
@@ -113,32 +125,19 @@ const loadComponent = (componentPath: string) => {
   });
 };
 
-// Fixed import paths to use relative paths instead of alias paths
-const Home = lazy(() => import('../../pages/Home'));
-const Index = lazy(() => import('../../pages/Index'));
 const Auth = loadComponent('Auth');
 const Dashboard = loadComponent('Dashboard');
 const DoctorDashboard = loadComponent('DoctorDashboard');
 const VendorDashboard = loadComponent('VendorDashboard');
 const CenterDashboard = loadComponent('CenterDashboard');
 const ClientDashboard = loadComponent('ClientDashboard');
-const Products = loadComponent('Products');
-const ProductDetails = loadComponent('ProductDetails');
 const ProductForm = loadComponent('ProductForm');
 const ProductsManagement = loadComponent('ProductsManagement');
 const Categories = loadComponent('Categories');
 const CategoryForm = loadComponent('CategoryForm');
-const Clinics = loadComponent('Clinics');
-const Doctors = loadComponent('Doctors');
-const DoctorDetails = loadComponent('DoctorDetails');
-const Hospitals = loadComponent('Hospitals');
-const ClinicDetails = loadComponent('ClinicDetails');
 const Reservations = loadComponent('Reservations');
 const MyReservations = loadComponent('MyReservations');
 const Vouchers = loadComponent('Vouchers');
-const Offers = loadComponent('Offers');
-const About = loadComponent('About');
-const Contact = loadComponent('Contact');
 const AllBookings = loadComponent('AllBookings');
 const AdminDashboard = loadComponent('AdminDashboard');
 const TotalVendors = loadComponent('TotalVendors');
@@ -151,7 +150,6 @@ const VoucherForm = loadComponent('AddVoucher');
 const EditVoucherPage = loadComponent('EditVoucher');
 const AddProduct = loadComponent('AddProduct');
 const EditProduct = loadComponent('EditProduct');
-const Cart = loadComponent('Cart');
 const Profile = loadComponent('Profile');
 const ProfileSettings = loadComponent('ProfileSettings');
 
@@ -260,6 +258,7 @@ const AppRoutes = () => {
                 </LazyLoadErrorBoundary>
               </PublicRoute>
             } />
+            
             <Route path="/login" element={
               <PublicRoute><Navigate to="/auth?mode=login" replace /></PublicRoute>
             } />

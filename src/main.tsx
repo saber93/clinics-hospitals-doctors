@@ -42,10 +42,10 @@ const handleChunkError = (event: ErrorEvent) => {
       localStorage.removeItem('sb-rghakqvaawoopcoeowir-auth-token');
       sessionStorage.clear();
       
-      if (window.caches && 'delete' in window.caches) {
-        caches.keys().then(cacheNames => {
+      if ('caches' in window) {
+        window.caches.keys().then(cacheNames => {
           cacheNames.forEach(cacheName => {
-            caches.delete(cacheName).then(() => {
+            window.caches.delete(cacheName).then(() => {
               console.log(`Cache ${cacheName} deleted`);
             });
           });
