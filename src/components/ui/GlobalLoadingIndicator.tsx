@@ -42,6 +42,8 @@ const GlobalLoadingIndicator = () => {
         event.message.includes('importing module') ||
         event.message.includes('chunk ') ||
         event.message.includes('import(') ||
+        event.message.includes('module specifier') ||
+        event.message.includes('@/pages/') ||
         event.filename?.includes('chunk-')
       )) {
         console.error('Module loading error detected in GlobalLoadingIndicator:', event.message);

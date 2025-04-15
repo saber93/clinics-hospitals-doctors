@@ -38,6 +38,8 @@ const App = () => {
         event.message.includes('importing module') ||
         event.message.includes('chunk ') ||
         event.message.includes('import(') ||
+        event.message.includes('module specifier') ||
+        event.message.includes('@/pages/') ||
         event.filename?.includes('chunk-')
       );
       

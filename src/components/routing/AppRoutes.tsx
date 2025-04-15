@@ -97,7 +97,7 @@ class LazyLoadErrorBoundary extends React.Component<LazyLoadErrorBoundaryProps, 
 const loadComponent = (componentPath: string) => {
   return lazy(() => {
     console.log(`Loading component: ${componentPath}`);
-    return import(`@/pages/${componentPath}`)
+    return import(`../../pages/${componentPath}`)
       .catch(error => {
         console.error(`Error loading component ${componentPath}:`, error);
         console.error(`Stack trace:`, error.stack);
@@ -113,7 +113,9 @@ const loadComponent = (componentPath: string) => {
   });
 };
 
-const Home = loadComponent('Home');
+// Fixed import paths to use relative paths instead of alias paths
+const Home = lazy(() => import('../../pages/Home'));
+const Index = lazy(() => import('../../pages/Index'));
 const Auth = loadComponent('Auth');
 const Dashboard = loadComponent('Dashboard');
 const DoctorDashboard = loadComponent('DoctorDashboard');
@@ -196,6 +198,11 @@ const AppRoutes = () => {
         <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/" element={
+              <LazyLoadErrorBoundary fallback={DefaultErrorFallback}>
+                <Index />
+              </LazyLoadErrorBoundary>
+            } />
+            <Route path="/home" element={
               <LazyLoadErrorBoundary fallback={DefaultErrorFallback}>
                 <Home />
               </LazyLoadErrorBoundary>
