@@ -21,9 +21,14 @@ const GlobalLoadingIndicator = () => {
     // Show loading indicator when route changes
     setIsLoading(true);
     
+    // Track the current route for error reporting
+    const currentPath = location.pathname;
+    console.log(`Loading route: ${currentPath}`);
+    
     // Hide loading indicator after a short delay
     const timer = setTimeout(() => {
       setIsLoading(false);
+      console.log(`Route loaded: ${currentPath}`);
     }, 800); // Timeout balances between showing loader for too short/long time
     
     return () => {
@@ -58,6 +63,14 @@ const GlobalLoadingIndicator = () => {
         setLoadingError(error);
         setIsLoading(false); // Stop loading indicator if module fails to load
         
+        // Attempt to clear cached data
+        try {
+          localStorage.removeItem('sb-rghakqvaawoopcoeowir-auth-token');
+          sessionStorage.clear();
+        } catch (e) {
+          console.error('Failed to clear storage:', e);
+        }
+        
         // Display a toast with clearer instructions
         toast.error("Failed to load page component", {
           description: "Clearing your browser cache and refreshing the page may fix this issue",
@@ -66,7 +79,7 @@ const GlobalLoadingIndicator = () => {
             label: "Refresh",
             onClick: () => {
               // Try to clear any cached data that might be causing the issue
-              if (window.caches) {
+              if (window.caches && 'delete' in window.caches) {
                 try {
                   caches.keys().then(names => {
                     names.forEach(name => {
@@ -100,9 +113,26 @@ const GlobalLoadingIndicator = () => {
            event.reason.message?.includes('import') ||
            event.reason.message?.includes('module'))) {
         
+        // Try to clear potentially corrupted browser caches
+        if (window.caches && 'delete' in window.caches) {
+          try {
+            caches.keys().then(names => {
+              names.forEach(name => {
+                caches.delete(name);
+              });
+            });
+          } catch (e) {
+            console.error('Failed to clear cache:', e);
+          }
+        }
+        
         toast.error("Failed to load page", {
           description: "There was a problem loading resources. Try refreshing.",
-          duration: 8000
+          duration: 8000,
+          action: {
+            label: "Refresh",
+            onClick: () => window.location.reload()
+          }
         });
       }
     };

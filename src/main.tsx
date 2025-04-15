@@ -10,6 +10,7 @@ import { Toaster } from './components/ui/sonner';
 import { preloadCriticalImages } from './utils/imageOptimization';
 import { toast } from 'sonner';
 import { supabase } from './integrations/supabase/client';
+import { cleanupInvalidAuth } from './utils/authCleanup';
 
 // Create a custom error handler for chunk loading errors
 const handleChunkError = (event: ErrorEvent) => {
@@ -41,11 +42,12 @@ const handleChunkError = (event: ErrorEvent) => {
       localStorage.removeItem('sb-rghakqvaawoopcoeowir-auth-token');
       sessionStorage.clear();
       
-      if (window.caches) {
+      if (window.caches && 'delete' in window.caches) {
         caches.keys().then(cacheNames => {
           cacheNames.forEach(cacheName => {
-            caches.delete(cacheName);
-            console.log(`Cache ${cacheName} deleted`);
+            caches.delete(cacheName).then(() => {
+              console.log(`Cache ${cacheName} deleted`);
+            });
           });
         });
       }
@@ -94,6 +96,11 @@ window.addEventListener('unhandledrejection', (event) => {
     // Mark as handled to prevent default browser handling
     event.preventDefault();
   }
+});
+
+// Run auth cleanup on startup to fix invalid tokens
+cleanupInvalidAuth().catch(err => {
+  console.error('Auth cleanup error:', err);
 });
 
 // Configure query client with improved caching and error handling
