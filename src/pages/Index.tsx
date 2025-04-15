@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -36,7 +37,7 @@ const Index = () => {
           </div>
           <div>
             <img 
-              src="/lovable-uploads/5181c954-47f3-4619-b052-7465f62f7bde.png"
+              src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80"
               alt="Team collaboration" 
               className="rounded-lg shadow-xl w-full"
             />
