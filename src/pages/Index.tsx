@@ -1,45 +1,103 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Star } from "lucide-react";
 
 const Index = () => {
   return (
     <div className="w-full">
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-16">
-        <div className="max-w-4xl">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Your Marketing Deserves
-            <span className="text-orange-500 block">Expert Care</span>
-          </h1>
-          <p className="text-gray-600 mb-8 text-lg">
-            We help businesses achieve sustainable growth through strategic marketing solutions
-          </p>
-          <Button asChild className="bg-orange-500 hover:bg-orange-600">
-            <Link to="/contact">Get Started <ArrowRight className="ml-2 h-4 w-4" /></Link>
-          </Button>
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Your Marketing Deserves
+              <span className="text-orange-500 block">Expert Care</span>
+            </h1>
+            <div className="flex items-center mb-4">
+              <div className="flex">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-5 w-5 text-yellow-500 fill-yellow-500" />
+                ))}
+              </div>
+              <span className="ml-2 text-gray-700">Trusted by 10,000+ Patients</span>
+            </div>
+            <p className="text-gray-600 mb-8">
+              At Zams Marketing Management Company, we bring a unique & innovative experience to the UAE market. Our approach centers on building strategic partnerships that create mutual value & sustainable growth. Through our extensive customer & influencer network, we connect businesses with their ideal audience, amplifying their market presence & enhancing their competitive edge.
+            </p>
+            <div className="flex gap-4">
+              <Button asChild className="bg-orange-500 hover:bg-orange-600">
+                <Link to="/contact">Get Started</Link>
+              </Button>
+              <Button asChild variant="ghost" className="hover:bg-gray-100">
+                <Link to="/about">Learn More</Link>
+              </Button>
+            </div>
+          </div>
+          <div>
+            <img 
+              src="/lovable-uploads/5181c954-47f3-4619-b052-7465f62f7bde.png"
+              alt="Team collaboration" 
+              className="rounded-lg shadow-xl w-full"
+            />
+          </div>
         </div>
       </section>
 
       {/* Growth Section */}
-      <section className="bg-gray-50 py-16">
-        <div className="container mx-auto px-4 grid md:grid-cols-2 gap-8 items-center">
-          <div>
+      <section className="bg-white py-16">
+        <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
+          <div className="relative">
             <img 
-              src="/lovable-uploads/454cda5b-8224-49a1-8193-8cd03939800c.png" 
-              alt="Team meeting" 
-              className="rounded-lg shadow-lg"
+              src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" 
+              alt="Business success" 
+              className="rounded-lg shadow-xl"
             />
+            <div className="absolute bottom-[-30px] right-0 bg-black text-white p-8 rounded-lg shadow-xl max-w-[300px]">
+              <h3 className="text-2xl font-bold mb-2">Guarantees</h3>
+              <p className="text-xl">Measurable Success</p>
+            </div>
           </div>
           <div>
-            <h2 className="text-3xl font-bold mb-4">We help you achieve sustainable growth</h2>
-            <p className="text-gray-600 mb-6">
-              Our expert team works with you to develop and implement effective marketing strategies that drive results.
-            </p>
-            <Button asChild variant="outline" className="border-orange-500 text-orange-500 hover:bg-orange-50">
-              <Link to="/services">Learn More</Link>
+            <div className="text-gray-500 uppercase tracking-wider font-medium mb-2">CORPORATE SERVICE</div>
+            <h2 className="text-3xl font-bold mb-8">We help you achieve sustainable growth</h2>
+            
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-xl font-semibold mb-2 flex items-baseline">
+                  <span className="text-orange-500 font-bold mr-3">01.</span>
+                  Extensive network of customers and influencers
+                </h3>
+                <div className="mt-2 w-full h-px bg-gray-200"></div>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-semibold mb-2 flex items-baseline">
+                  <span className="text-orange-500 font-bold mr-3">02.</span>
+                  Performance-based business model with no upfront costs
+                </h3>
+                <div className="mt-2 w-full h-px bg-gray-200"></div>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-semibold mb-2 flex items-baseline">
+                  <span className="text-orange-500 font-bold mr-3">03.</span>
+                  Deep understanding of the UAE market dynamics
+                </h3>
+                <div className="mt-2 w-full h-px bg-gray-200"></div>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-semibold mb-2 flex items-baseline">
+                  <span className="text-orange-500 font-bold mr-3">04.</span>
+                  Integrated ecosystem connecting suppliers, service providers, and customers
+                </h3>
+                <div className="mt-2 w-full h-px bg-gray-200"></div>
+              </div>
+            </div>
+            
+            <Button asChild variant="ghost" className="mt-8 border-2 border-orange-500 text-orange-500 hover:bg-orange-50">
+              <Link to="/about">About<ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
           </div>
         </div>
