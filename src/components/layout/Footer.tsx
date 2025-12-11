@@ -102,7 +102,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               <li className={cn("flex items-center text-muted-foreground", isRTL && "flex-row-reverse")}>
                 <Mail size={18} className={cn(isRTL ? "mr-0 ml-2" : "mr-2")} />
-                <span>info@zames.marketing</span>
+                <span>info@agenticsys.ai</span>
               </li>
               <li className={cn("flex items-center text-muted-foreground", isRTL && "flex-row-reverse")}>
                 <Phone size={18} className={cn(isRTL ? "mr-0 ml-2" : "mr-2")} />

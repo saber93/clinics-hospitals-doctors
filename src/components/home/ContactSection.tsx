@@ -75,7 +75,7 @@ const ContactSection = () => {
                 <div className={cn("w-8", isRTL ? "ml-4" : "mr-4")}>
                   <Mail className="h-6 w-6 text-gray-700" />
                 </div>
-                <span className="text-gray-800">info@zames.marketing</span>
+                <span className="text-gray-800">info@agenticsys.ai</span>
               </div>
             </div>
           </div>

@@ -101,10 +101,10 @@ const ModernFooter: React.FC = () => {
               <li className={cn("flex items-start", isRTL && "flex-row-reverse")}>
                 <span className="text-gray-500">{t("contact.emailUs")}:</span>
                 <a
-                  href="mailto:info@zames.marketing"
+                  href="mailto:info@agenticsys.ai"
                   className={cn("text-gray-500 hover:text-primary", isRTL ? "mr-1" : "ml-1")}
                 >
-                  info@zames.marketing
+                  info@agenticsys.ai
                 </a>
               </li>
               <li className={cn("flex items-start", isRTL && "flex-row-reverse")}>
