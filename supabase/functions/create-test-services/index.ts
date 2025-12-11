@@ -102,12 +102,13 @@ serve(async (req) => {
         status: 200
       }
     )
-  } catch (error) {
-    console.error("Error:", error.message)
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error("Error:", errorMessage)
     return new Response(
       JSON.stringify({ 
         success: false,
-        error: error.message 
+        error: errorMessage 
       }),
       { 
         headers: { 

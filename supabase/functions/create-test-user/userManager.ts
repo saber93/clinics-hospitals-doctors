@@ -49,8 +49,9 @@ export async function deleteUserProfileData(supabase: any, userId: string) {
     
     console.log(`Successfully completed cleanup for user ${userId}`);
     return true;
-  } catch (err) {
-    console.error(`Error during user data cleanup: ${err.message}`);
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    console.error(`Error during user data cleanup: ${errorMessage}`);
     // Continue despite errors - we still want to try to delete the user
     return false;
   }
@@ -93,8 +94,9 @@ export async function deleteExistingUser(supabase: any, existingUser: any) {
     // Wait after deletion to ensure it's processed
     await delay(1500);
     return true;
-  } catch (err) {
-    console.error(`Error deleting user: ${err.message}`);
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    console.error(`Error deleting user: ${errorMessage}`);
     throw err;
   }
 }
@@ -134,8 +136,9 @@ export async function createNewUser(supabase: any, email: string, password: stri
     await delay(1500);
     
     return userId;
-  } catch (err) {
-    console.error(`Error creating user: ${err.message}`);
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    console.error(`Error creating user: ${errorMessage}`);
     throw err;
   }
 }
@@ -171,8 +174,9 @@ export async function createUserProfile(supabase: any, userId: string, role: str
     console.log(`Profile created successfully for user ${userId}`);
     await delay(500);
     return true;
-  } catch (err) {
-    console.error(`Error creating profile: ${err.message}`);
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    console.error(`Error creating profile: ${errorMessage}`);
     throw err;
   }
 }
@@ -258,8 +262,9 @@ export async function setupSpecializedSettings(supabase: any, userId: string, ro
     }
     
     return true;
-  } catch (err) {
-    console.error(`Error setting up specialized settings: ${err.message}`);
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    console.error(`Error setting up specialized settings: ${errorMessage}`);
     throw err;
   }
 }
