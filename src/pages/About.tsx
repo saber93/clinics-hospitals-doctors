@@ -21,7 +21,7 @@ const About = () => {
   const { isRTL } = useLanguage();
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 py-12">
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 pt-20 pb-12">
       <div className={cn("max-w-4xl mx-auto px-4 sm:px-6 lg:px-8", isRTL && "rtl-content")}>
         <AboutHeader ref={(el) => fadeRefsRef.current[0] = el} />
         
