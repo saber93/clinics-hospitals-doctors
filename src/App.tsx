@@ -133,7 +133,7 @@ const App = () => {
         lang={isRTL ? "ar" : "en"}
       >
         <GlassyNavbar />
-        <div className="flex-grow mt-16">
+        <div className="flex-grow">
           {error ? (
             <div className="container mx-auto px-4 py-8">
               <Alert variant="destructive" className="mb-6 border border-destructive">
