@@ -44,8 +44,9 @@ export async function checkExistingProfile(supabase: any, name: string, role: st
     
     console.log(`Profile search result: ${data ? 'Found profile with ID ' + data.id : 'No profile found'}`);
     return data;
-  } catch (err) {
-    console.error(`Error in checkExistingProfile: ${err.message}`);
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    console.error(`Error in checkExistingProfile: ${errorMessage}`);
     // Don't throw here, just continue - this is just a check
     return null;
   }
@@ -66,7 +67,7 @@ export async function findExistingUserByEmail(supabase: any, email: string) {
     }
     
     // Find user by email
-    const existingUser = userData?.users?.find(user => user.email === email);
+    const existingUser = userData?.users?.find((user: { email: string }) => user.email === email);
     console.log(`User search result for ${email}: ${existingUser ? 'Found' : 'Not found'}`);
     
     // Extra check: Ensure this is not the problematic user ID
@@ -77,8 +78,9 @@ export async function findExistingUserByEmail(supabase: any, email: string) {
     }
     
     return existingUser;
-  } catch (err) {
-    console.error(`Error searching for existing user: ${err.message}`);
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    console.error(`Error searching for existing user: ${errorMessage}`);
     throw err;
   }
 }
