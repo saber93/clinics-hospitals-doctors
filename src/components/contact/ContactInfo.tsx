@@ -25,7 +25,7 @@ const ContactInfo = () => {
             <div>
               <p className="font-semibold mb-1">{t("contact.emailUs")}</p>
               <a href="mailto:info@agenticsys.ai" className="text-blue-600 hover:underline">
-                agenticsys.ai
+                info@agenticsys.ai
               </a>
             </div>
           </div>
