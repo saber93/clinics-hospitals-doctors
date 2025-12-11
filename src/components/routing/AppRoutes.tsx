@@ -105,6 +105,7 @@ const Cart = lazy(() => import('@/pages/Cart'));
 const Offers = lazy(() => import('@/pages/Offers'));
 const Products = lazy(() => import('@/pages/Products'));
 const ProductDetails = lazy(() => import('@/pages/ProductDetails'));
+const Services = lazy(() => import('@/pages/Services'));
 
 const loadComponent = (componentPath: string) => {
   return lazy(() => {
@@ -248,6 +249,11 @@ const AppRoutes = () => {
             <Route path="/offers" element={
               <LazyLoadErrorBoundary fallback={DefaultErrorFallback}>
                 <Offers />
+              </LazyLoadErrorBoundary>
+            } />
+            <Route path="/services" element={
+              <LazyLoadErrorBoundary fallback={DefaultErrorFallback}>
+                <Services />
               </LazyLoadErrorBoundary>
             } />
             
