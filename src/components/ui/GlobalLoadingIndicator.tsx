@@ -25,11 +25,11 @@ const GlobalLoadingIndicator = () => {
     const currentPath = location.pathname;
     console.log(`Loading route: ${currentPath}`);
     
-    // Hide loading indicator after a short delay
+    // Hide loading indicator after a minimal delay (just for route transition)
     const timer = setTimeout(() => {
       setIsLoading(false);
       console.log(`Route loaded: ${currentPath}`);
-    }, 800); // Timeout balances between showing loader for too short/long time
+    }, 50); // Minimal delay - just enough to prevent flash
     
     return () => {
       clearTimeout(timer);
