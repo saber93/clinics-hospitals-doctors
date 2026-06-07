@@ -242,6 +242,11 @@ const AppRoutes = () => {
                 <Hospitals />
               </LazyLoadErrorBoundary>
             } />
+            <Route path="/hospitals/:id" element={
+              <LazyLoadErrorBoundary fallback={DefaultErrorFallback}>
+                <HospitalDetails />
+              </LazyLoadErrorBoundary>
+            } />
             <Route path="/cart" element={
               <LazyLoadErrorBoundary fallback={DefaultErrorFallback}>
                 <Cart />
