@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { doctorsData } from '@/data/doctorsData';
 import { Doctor } from '@/types/doctor';
+import { supabase } from '@/integrations/supabase/client';
 
 import DoctorDetailsLoading from '@/components/doctors/details/DoctorDetailsLoading';
 import DoctorNotFound from '@/components/doctors/details/DoctorNotFound';
@@ -18,10 +19,40 @@ const DoctorDetails = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Find the doctor with the matching id
-    const foundDoctor = doctorsData.find(doc => doc.id === id);
-    setDoctor(foundDoctor || null);
-    setLoading(false);
+    let cancelled = false;
+    const load = async () => {
+      if (!id) { setLoading(false); return; }
+      setLoading(true);
+
+      const { data } = await supabase
+        .from('doctors')
+        .select('*')
+        .eq('id', id)
+        .maybeSingle();
+
+      if (cancelled) return;
+
+      if (data) {
+        setDoctor({
+          id: data.id,
+          name: data.name,
+          description: data.description,
+          location: data.location,
+          specialty: data.specialty,
+          subSpecialty: data.sub_specialty,
+          offerPercentage: data.offer_percentage || 0,
+          imageUrl: data.image_url || '/placeholder.svg',
+          rating: 4.5,
+          reviews: 0,
+          specialties: [data.specialty],
+        } as Doctor);
+      } else {
+        setDoctor(doctorsData.find(doc => doc.id === id) || null);
+      }
+      setLoading(false);
+    };
+    load();
+    return () => { cancelled = true; };
   }, [id]);
 
   const handleBookAppointment = () => {

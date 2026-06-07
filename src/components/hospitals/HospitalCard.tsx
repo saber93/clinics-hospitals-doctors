@@ -29,9 +29,7 @@ const HospitalCard: React.FC<HospitalCardProps> = ({ hospital, view }) => {
   const { isFavorite, toggleFavorite } = useFavorites();
 
   const handleHospitalSelect = () => {
-    navigate('/reservations', {
-      state: { hospitalName: hospital.name, hospitalId: hospital.id }
-    });
+    navigate(`/hospitals/${hospital.id}`);
   };
 
   const handleBooking = (e: React.MouseEvent) => {
