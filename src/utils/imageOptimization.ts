@@ -4,7 +4,7 @@
 /**
  * Determines if the current environment is development or production
  */
-export const isDev = process.env.NODE_ENV === 'development';
+export const isDev = import.meta.env.DEV;
 
 /**
  * Returns an optimized image URL

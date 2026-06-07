@@ -95,10 +95,6 @@ export function useBlogForm() {
             content: data.content,
             image_url: data.image_url,
             is_published: data.is_published,
-            // Add multilingual fields conditionally
-            ...(data.title_ar && { title_ar: data.title_ar }),
-            ...(data.excerpt_ar && { excerpt_ar: data.excerpt_ar }),
-            ...(data.content_ar && { content_ar: data.content_ar }),
             updated_at: new Date().toISOString()
           })
           .eq('id', id);
@@ -116,11 +112,7 @@ export function useBlogForm() {
             excerpt: data.excerpt,
             content: data.content,
             image_url: data.image_url,
-            is_published: data.is_published,
-            // Add multilingual fields conditionally
-            ...(data.title_ar && { title_ar: data.title_ar }),
-            ...(data.excerpt_ar && { excerpt_ar: data.excerpt_ar }),
-            ...(data.content_ar && { content_ar: data.content_ar })
+            is_published: data.is_published
           })
           .select('id')
           .single();

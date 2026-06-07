@@ -97,9 +97,6 @@ export function useServiceForm() {
             // Include required fields
             duration: data.duration || 30,
             price: data.price || 0,
-            // Add multilingual fields conditionally
-            ...(data.title_ar && { title_ar: data.title_ar }),
-            ...(data.description_ar && { description_ar: data.description_ar }),
             updated_at: new Date().toISOString()
           })
           .eq('id', id);
@@ -119,10 +116,7 @@ export function useServiceForm() {
             is_active: data.is_active,
             // Include required fields
             duration: data.duration || 30,
-            price: data.price || 0,
-            // Add multilingual fields conditionally
-            ...(data.title_ar && { title_ar: data.title_ar }),
-            ...(data.description_ar && { description_ar: data.description_ar })
+            price: data.price || 0
           })
           .select('id')
           .single();
