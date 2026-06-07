@@ -98,6 +98,7 @@ const Clinics = lazy(() => import('@/pages/Clinics'));
 const Doctors = lazy(() => import('@/pages/Doctors'));
 const DoctorDetails = lazy(() => import('@/pages/DoctorDetails'));
 const Hospitals = lazy(() => import('@/pages/Hospitals'));
+const HospitalDetails = lazy(() => import('@/pages/HospitalDetails'));
 const About = lazy(() => import('@/pages/About'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const ClinicDetails = lazy(() => import('@/pages/ClinicDetails'));
