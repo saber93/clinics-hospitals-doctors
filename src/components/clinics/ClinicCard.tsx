@@ -16,11 +16,7 @@ const ClinicCard: React.FC<ClinicCardProps> = ({ clinic, view }) => {
   const { isFavorite, toggleFavorite } = useFavorites();
 
   const handleClinicSelect = () => {
-    // Use custom domain if available, otherwise fallback to default pattern
-    const url = clinic.custom_domain 
-      ? clinic.custom_domain 
-      : `https://${clinic.id}.zames.marketing`;
-    window.open(url, '_blank');
+    navigate(`/clinics/${clinic.id}`);
   };
 
   const handleBooking = (e: React.MouseEvent) => {
